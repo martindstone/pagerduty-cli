@@ -17,11 +17,11 @@ export default class UserList extends Command {
 
     const token = config.getAuth() as string
 
-    if ( !token ) {
+    if (!token) {
       this.error('No auth token found', {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
     }
 
-    if ( !pd.isValidToken(token) ) {
+    if (!pd.isValidToken(token)) {
       this.error(`Token '${token}' is not valid`, {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
     }
 
@@ -32,7 +32,7 @@ export default class UserList extends Command {
       this.log(JSON.stringify(users, null, 2))
       return
     }
-    const columns: Table.Columns = {
+    const columns: Record<string, object> = {
       id: {
         header: 'ID',
       },
@@ -42,18 +42,18 @@ export default class UserList extends Command {
       email: {
       },
       role: {
-        extended: true
+        extended: true,
       },
       notification_rules: {
         header: 'Notif. Rules',
-        get: row => row.notification_rules.length,
+        get: (row: { notification_rules: string | any[] }) => row.notification_rules.length,
         extended: true,
       },
       contact_methods: {
         header: 'Cont. Methods',
-        get: row => row.contact_methods.length,
+        get: (row: { contact_methods: string | any[] }) => row.contact_methods.length,
         extended: true,
-      }
+      },
     }
     const options = {
       printLine: this.log,

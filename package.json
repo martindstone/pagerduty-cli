@@ -11,6 +11,7 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^3",
+    "@types/simple-oauth2": "^4.1.0",
     "axios": "^0.20.0",
     "moment": "^2.28.0",
     "open": "^7.2.1",

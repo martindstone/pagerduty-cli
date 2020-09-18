@@ -17,18 +17,18 @@ export default class UserSet extends Command {
   async run() {
     const {flags} = this.parse(UserSet)
 
-    let token = config.getAuth()
+    const token = config.getAuth()
 
-    if ( !token ) {
+    if (!token) {
       this.error('No auth token found', {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
     }
 
-    if ( !pd.isValidToken(token) ) {
+    if (!pd.isValidToken(token)) {
       this.error(`Token '${token}' is not valid`, {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
     }
 
     cli.action.start('Getting user ID from PD')
-    const data = await pd.request(token, '/users', 'GET', {'query': flags.email})
+    const data = await pd.request(token, '/users', 'GET', {query: flags.email})
     if (!data.users || data.users.length === 0) {
       cli.action.stop(chalk.bold.red('failed!'))
       this.error(`No user was found with email ${flags.email}`, {exit: 1})
@@ -47,7 +47,7 @@ export default class UserSet extends Command {
     }
     body.user[flags.key] = flags.value
     const r = await pd.request(token, `/users/${data.users[0].id}`, 'PUT', null, body)
-    if ( r && r.user && r.user[flags.key] && r.user[flags.key] === flags.value ) {
+    if (r && r.user && r.user[flags.key] && r.user[flags.key] === flags.value) {
       cli.action.stop(chalk.bold.green('done!'))
     } else {
       cli.action.stop(chalk.bold.red('failed!'))

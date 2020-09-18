@@ -19,7 +19,7 @@ export default class IncidentResolve extends Command {
       char: 'i',
       description: 'Incident ID\'s to resolve. Specify multiple times for multiple incidents.',
       multiple: true,
-      exclusive: ['me']
+      exclusive: ['me'],
     }),
   }
 
@@ -28,18 +28,18 @@ export default class IncidentResolve extends Command {
 
     const token = config.getAuth() as string
 
-    if ( !token ) {
+    if (!token) {
       this.error('No auth token found', {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
     }
 
-    if ( !pd.isValidToken(token) ) {
+    if (!pd.isValidToken(token)) {
       this.error(`Token '${token}' is not valid`, {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
     }
 
     let incident_ids: string[] = []
     if (flags.me) {
       const me = await pd.me(token)
-      const params = { user_ids: [me.user.id] }
+      const params = {user_ids: [me.user.id]}
       cli.action.start('Getting incidents from PD')
       const incidents = await pd.fetch(token, '/incidents', params)
       if (incidents.length === 0) {
@@ -47,22 +47,34 @@ export default class IncidentResolve extends Command {
         return
       }
       cli.action.stop(`got ${incidents.length}`)
-      incident_ids = incidents.map(e => e.id)
+      incident_ids = incidents.map((e: { id: any }) => e.id)
     } else if (flags.ids) {
       incident_ids = flags.ids
     } else {
       this.error('You must specify one of: -i, -m', {exit: 1})
     }
 
-    for ( const incident_id of incident_ids ) {
-      cli.action.start(`Resolving incident ${chalk.bold.blue(incident_id)}`)
+    const promises: any[] = []
+    cli.action.start(`Resolving incident(s) ${chalk.bold.blue(incident_ids.join(', '))}`)
+    for (const incident_id of incident_ids) {
       const body = {
         incident: {
           type: 'incident_reference',
-          status: 'resolved'
-        }
+          status: 'resolved',
+        },
       }
-      const r = await pd.request(token, `/incidents/${incident_id}`, 'PUT', null, body)
+      promises.push(pd.request(token, `/incidents/${incident_id}`, 'PUT', null, body))
+    }
+    const rs = await Promise.all(promises)
+    let failed = false
+    for (const r of rs) {
+      if (!(r && r.incident && r.incident.status && r.incident.status === 'resolved')) {
+        failed = true
+      }
+    }
+    if (failed) {
+      cli.action.stop(chalk.bold.red('failed!'))
+    } else {
       cli.action.stop(chalk.bold.green('done'))
     }
   }

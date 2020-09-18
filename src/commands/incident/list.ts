@@ -3,8 +3,6 @@ import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
 import * as config from '../../config'
-import * as moment from 'moment'
-// import { setFlagsFromString } from 'v8'
 
 export default class IncidentList extends Command {
   static description = 'List PagerDuty Incidents'
@@ -21,7 +19,7 @@ export default class IncidentList extends Command {
       description: 'Return only incidents with the given statuses. Specify multiple times for multiple statuses.',
       multiple: true,
       options: ['triggered', 'acknowledged', 'resolved'],
-      default: ['triggered', 'acknowledged', 'resolved']
+      default: ['triggered', 'acknowledged', 'resolved'],
     }),
     assignees: flags.string({
       char: 'e',
@@ -32,12 +30,12 @@ export default class IncidentList extends Command {
     teams: flags.string({
       char: 't',
       description: 'Team names to include. Specify multiple times for multiple teams.',
-      multiple: true
+      multiple: true,
     }),
     services: flags.string({
       char: 'S',
       description: 'Service names to include. Specify multiple times for multiple services.',
-      multiple: true
+      multiple: true,
     }),
     urgencies: flags.string({
       char: 'u',
@@ -49,7 +47,7 @@ export default class IncidentList extends Command {
     json: flags.boolean({
       char: 'j',
       description: 'output full details as JSON',
-      exclusive: ['columns', 'filter', 'sort', 'csv', 'extended']
+      exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
     }),
     ...cli.table.flags(),
   }
@@ -59,11 +57,11 @@ export default class IncidentList extends Command {
 
     const token = config.getAuth() as string
 
-    if ( !token ) {
+    if (!token) {
       this.error('No auth token found', {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
     }
 
-    if ( !pd.isValidToken(token) ) {
+    if (!pd.isValidToken(token)) {
       this.error(`Token '${token}' is not valid`, {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
     }
 
@@ -86,8 +84,9 @@ export default class IncidentList extends Command {
       flags.assignees.forEach(email => {
         promises.push(pd.fetch(token, '/users', {query: email}))
       })
-      const users_raw = await Promise.all(promises)
-      const users = [].concat.apply([], users_raw)
+      const users_raw: any[] = await Promise.all(promises)
+      // eslint-disable-next-line prefer-spread
+      const users = users_raw.flat()
       const user_ids = users.map(e => e.id)
       if (user_ids.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
@@ -104,7 +103,7 @@ export default class IncidentList extends Command {
         promises.push(pd.fetch(token, '/teams', {query: team}))
       })
       const teams_raw = await Promise.all(promises)
-      const teams = [].concat.apply([], teams_raw)
+      const teams = teams_raw.flat()
       const team_ids = teams.map(e => e.id)
       if (team_ids.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
@@ -121,7 +120,7 @@ export default class IncidentList extends Command {
         promises.push(pd.fetch(token, '/services', {query: team}))
       })
       const services_raw = await Promise.all(promises)
-      const services = [].concat.apply([], services_raw)
+      const services = services_raw.flat()
       const service_ids = services.map(e => e.id)
       if (service_ids.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
@@ -141,7 +140,7 @@ export default class IncidentList extends Command {
       this.log(JSON.stringify(incidents, null, 2))
       return
     }
-    const columns = {
+    const columns: Record<string, object> = {
       id: {
         header: 'ID',
       },
@@ -151,43 +150,43 @@ export default class IncidentList extends Command {
       status: {
       },
       priority: {
-        get: row => {
+        get: (row: { priority: { summary: any } }) => {
           if (row.priority && row.priority.summary) {
             return row.priority.summary
           }
           return '--'
-        }
+        },
       },
       urgency: {
       },
       title: {
       },
       created: {
-        get: row => (new Date(row.created_at)).toLocaleString()
+        get: (row: { created_at: string }) => (new Date(row.created_at)).toLocaleString(),
       },
       service: {
-        get: row => row.service.summary
+        get: (row: { service: {summary: string}}) => row.service.summary,
       },
       assigned_to: {
-        get: row => {
+        get: (row: {assignments: any[]}) => {
           if (row.assignments && row.assignments.length > 0) {
             return row.assignments.map(e => e.assignee.summary).join(', ')
           }
           return '--'
-        }
+        },
       },
       teams: {
-        get: row => {
+        get: (row: {teams: any[]}) => {
           if (row.teams && row.teams.length > 0) {
             return row.teams.map(e => e.summary).join(', ')
           }
           return '--'
-        }
+        },
       },
       html_url: {
         header: 'URL',
         extended: true,
-      }
+      },
     }
     const options = {
       printLine: this.log,

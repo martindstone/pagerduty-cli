@@ -1,7 +1,6 @@
-import axios, { Method } from "axios";
-import { publicDecrypt } from 'crypto';
+import axios, {Method} from 'axios'
 
-const BASE_URL = "https://api.pagerduty.com";
+const BASE_URL = 'https://api.pagerduty.com'
 
 export function isBearerToken(token: string): boolean {
   if (token && token.match(/^[0-9a-fA-F]{64}$/)) {
@@ -11,6 +10,7 @@ export function isBearerToken(token: string): boolean {
 }
 
 export function isLegacyToken(token: string): boolean {
+  // eslint-disable-next-line no-useless-escape
   if (token && token.match(/^[0-9a-zA-Z_\-]{20}$/)) {
     return true
   }
@@ -39,7 +39,7 @@ export async function request(
   token: string,
   endpoint: string,
   method: Method = 'GET',
-  params?: object,
+  params: object | null = {},
   data?: object
 ) {
   const h = {
@@ -62,7 +62,7 @@ export async function request(
 export async function fetch(
   token: string,
   endpoint: string,
-  params: object = {}
+  params: object | null = {}
 ) {
   const endpoint_identifier = endpoint.split('/').pop() as string
   const limit = 100
@@ -82,7 +82,7 @@ export async function fetch(
     }
     const pages = await Promise.all(promises)
     pages.forEach(page => {
-      fetchedData = [...fetchedData, ...page[endpoint_identifier]];
+      fetchedData = [...fetchedData, ...page[endpoint_identifier]]
     })
   }
   return fetchedData

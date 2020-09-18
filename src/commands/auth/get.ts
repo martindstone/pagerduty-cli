@@ -3,7 +3,6 @@ import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
 import * as config from '../../config'
-import { pseudoRandomBytes } from 'crypto'
 
 export default class AuthGet extends Command {
   static description = 'Get PagerDuty Auth token'
@@ -13,14 +12,14 @@ export default class AuthGet extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(AuthGet)
+    // const {flags} = this.parse(AuthGet)
     const token = config.getAuth()
 
-    if ( !token ) {
+    if (!token) {
       this.error('No auth token found', {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
     }
 
-    if ( !pd.isValidToken(token) ) {
+    if (!pd.isValidToken(token)) {
       this.error(`Token '${token}' is not valid`, {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
     }
 
