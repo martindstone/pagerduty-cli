@@ -1,7 +1,9 @@
 import {Hook} from '@oclif/config'
 
+const globalAny: any = global
+
 const hook: Hook<'init'> = async function (opts) {
-  global.config = opts.config;
+  globalAny.config = opts.config;
 }
 
 export default hook
