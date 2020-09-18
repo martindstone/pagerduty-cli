@@ -14,6 +14,7 @@
     "@types/fs-extra": "^9.0.1",
     "@types/simple-oauth2": "^4.1.0",
     "axios": "^0.20.0",
+    "cli-ux": "^5.5.0",
     "moment": "^2.28.0",
     "open": "^7.2.1",
     "simple-oauth2": "^4.1.0",
