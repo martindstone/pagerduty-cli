@@ -1,5 +1,4 @@
 import {Command, flags} from '@oclif/command'
-// import * as chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
 import * as config from '../../config'
