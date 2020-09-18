@@ -3,7 +3,6 @@ import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
 import * as pdconfig from '../../config'
-import * as open from 'open'
 import * as http from 'http'
 
 import {AuthorizationCode, AuthorizationTokenConfig} from 'simple-oauth2'
@@ -36,7 +35,7 @@ export default class AuthWeb extends Command {
       state: state,
     })
 
-    open(authorizationUri)
+    cli.open(authorizationUri)
 
     const server = http.createServer()
 
