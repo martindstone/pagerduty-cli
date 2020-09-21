@@ -71,6 +71,9 @@
       "incident": {
         "description": "See/manage PagerDuty incidents"
       }
+    },
+    "macos": {
+      "identifier": "com.pagerduty.cli"
     }
   },
   "repository": "martindstone/pagerduty-cli",

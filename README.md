@@ -61,7 +61,6 @@ USAGE
   $ pd auth:set
 
 OPTIONS
-  -h, --help         show CLI help
   -t, --token=token  A PagerDuty API token
 ```
 
