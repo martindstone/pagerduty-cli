@@ -7,7 +7,7 @@ import * as http from 'http'
 
 import {AuthorizationCode, AuthorizationTokenConfig} from 'simple-oauth2'
 
-export default class AuthWeb extends Command {
+export default class AuthTry extends Command {
   static description = 'Authenticate with PagerDuty in the browser'
 
   static flags = {
@@ -36,7 +36,8 @@ export default class AuthWeb extends Command {
     })
 
     try {
-      await cli.open(authorizationUri)
+      // await cli.open(authorizationUri)
+      throw new Error('poop')
     } catch (error) {
       this.error('Couldn\'t open a browser for web authentication', {
         exit: 1,
@@ -45,6 +46,8 @@ export default class AuthWeb extends Command {
           `Then run ${chalk.bold.blue('pd auth:set')}`],
       })
     }
+
+    cli.url('PagerDuth OAuth Token Giver-Outer', 'https://martindstone.github.io/PDOAuth/')
 
     const server = http.createServer()
 
@@ -105,17 +108,8 @@ export default class AuthWeb extends Command {
       res.end('\n\n  ok you can close the browser window now')
     })
 
-    try {
-      server.listen(8000, () => {
-        cli.action.start('Waiting for browser authentication')
-      })
-    } catch (error) {
-      this.error('Couldn\'t start a local server for web authentication', {
-        exit: 1,
-        suggestions: [
-          `Get a token from ${chalk.bold.blue('https://martindstone.github.io/PDOAuth/')}`,
-          `Then run ${chalk.bold.blue('pd auth:set')}`],
-      })
-    }
+    server.listen(8000, () => {
+      cli.action.start('Waiting for browser authentication')
+    })
   }
 }
