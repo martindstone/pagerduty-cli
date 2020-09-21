@@ -42,7 +42,8 @@ export default class AuthWeb extends Command {
         exit: 1,
         suggestions: [
           `Get a token from ${chalk.bold.blue('https://martindstone.github.io/PDOAuth/')}`,
-          `Then run ${chalk.bold.blue('pd auth:set')}`],
+          `Then run ${chalk.bold.blue('pd auth:set')}`,
+        ],
       })
     }
 
@@ -114,7 +115,8 @@ export default class AuthWeb extends Command {
         exit: 1,
         suggestions: [
           `Get a token from ${chalk.bold.blue('https://martindstone.github.io/PDOAuth/')}`,
-          `Then run ${chalk.bold.blue('pd auth:set')}`],
+          `Then run ${chalk.bold.blue('pd auth:set')}`,
+        ],
       })
     }
   }

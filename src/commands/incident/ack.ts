@@ -1,15 +1,14 @@
-import {Command, flags} from '@oclif/command'
+import Command from '../../base'
+import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
-import * as config from '../../config'
-// import { setFlagsFromString } from 'v8'
 
 export default class IncidentAck extends Command {
   static description = 'Acknowledge PagerDuty Incidents'
 
   static flags = {
-    help: flags.help({char: 'h'}),
+    ...Command.flags,
     me: flags.boolean({
       char: 'm',
       description: 'Acknowledge all incidents assigned to me',
@@ -26,19 +25,18 @@ export default class IncidentAck extends Command {
   async run() {
     const {flags} = this.parse(IncidentAck)
 
-    const token = config.getAuth() as string
-
-    if (!token) {
-      this.error('No auth token found', {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
-    }
-
-    if (!pd.isValidToken(token)) {
-      this.error(`Token '${token}' is not valid`, {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
-    }
+    // get a validated token from base class
+    const token = this.token as string
 
     let incident_ids: string[] = []
     if (flags.me) {
       const me = await pd.me(token)
+      if (!me) {
+        this.error('You can\'t use --me with a legacy API token.', {
+          exit: 1,
+          suggestions: ['pd auth:set', 'pd auth:web'],
+        })
+      }
       const params = {user_ids: [me.user.id]}
       cli.action.start('Getting incidents from PD')
       const incidents = await pd.fetch(token, '/incidents', params)

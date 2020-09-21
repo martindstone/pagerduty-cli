@@ -1,27 +1,21 @@
-import {Command, flags} from '@oclif/command'
+import Command from '../../base'
+// import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
-import * as config from '../../config'
 
 export default class AuthGet extends Command {
   static description = 'Get PagerDuty Auth token'
 
   static flags = {
-    help: flags.help({char: 'h'}),
+    ...Command.flags,
   }
 
   async run() {
     // const {flags} = this.parse(AuthGet)
-    const token = config.getAuth()
 
-    if (!token) {
-      this.error('No auth token found', {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
-    }
-
-    if (!pd.isValidToken(token)) {
-      this.error(`Token '${token}' is not valid`, {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
-    }
+    // get a validated token from base class
+    const token = this.token as string
 
     cli.action.start('Checking token')
     if (pd.isBearerToken(token)) {

@@ -1,13 +1,13 @@
-import {Command, flags} from '@oclif/command'
+import Command from '../../base'
+import {flags} from '@oclif/command'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
-import * as config from '../../config'
 
 export default class UserList extends Command {
   static description = 'List PagerDuty Users'
 
   static flags = {
-    help: flags.help({char: 'h'}),
+    ...Command.flags,
     json: flags.boolean({char: 'j', description: 'output full details as JSON', exclusive: ['columns', 'filter', 'sort', 'csv', 'extended']}),
     ...cli.table.flags(),
   }
@@ -15,15 +15,8 @@ export default class UserList extends Command {
   async run() {
     const {flags} = this.parse(UserList)
 
-    const token = config.getAuth() as string
-
-    if (!token) {
-      this.error('No auth token found', {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
-    }
-
-    if (!pd.isValidToken(token)) {
-      this.error(`Token '${token}' is not valid`, {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
-    }
+    // get a validated token from base class
+    const token = this.token as string
 
     cli.action.start('Getting users from PD')
     const users = await pd.fetch(token, '/users')

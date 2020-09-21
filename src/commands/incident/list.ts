@@ -1,14 +1,16 @@
-import {Command, flags} from '@oclif/command'
+import Command from '../../base'
+import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
-import * as config from '../../config'
+// import * as config from '../../config'
+import * as chrono from 'chrono-node'
 
 export default class IncidentList extends Command {
   static description = 'List PagerDuty Incidents'
 
   static flags = {
-    help: flags.help({char: 'h'}),
+    ...Command.flags,
     me: flags.boolean({
       char: 'm',
       description: 'Return only incidents assigned to me',
@@ -44,6 +46,12 @@ export default class IncidentList extends Command {
       options: ['high', 'low'],
       default: ['high', 'low'],
     }),
+    since: flags.string({
+      description: 'The start of the date range over which you want to search.',
+    }),
+    until: flags.string({
+      description: 'The end of the date range over which you want to search.',
+    }),
     json: flags.boolean({
       char: 'j',
       description: 'output full details as JSON',
@@ -55,15 +63,8 @@ export default class IncidentList extends Command {
   async run() {
     const {flags} = this.parse(IncidentList)
 
-    const token = config.getAuth() as string
-
-    if (!token) {
-      this.error('No auth token found', {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
-    }
-
-    if (!pd.isValidToken(token)) {
-      this.error(`Token '${token}' is not valid`, {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
-    }
+    // get a validated token from base class
+    const token = this.token as string
 
     const params: Record<string, any> = {
       statuses: flags.statuses,
@@ -71,6 +72,12 @@ export default class IncidentList extends Command {
 
     if (flags.me) {
       const me = await pd.me(token)
+      if (!me) {
+        this.error('You can\'t use --me with a legacy API token.', {
+          exit: 1,
+          suggestions: ['pd auth:set', 'pd auth:web'],
+        })
+      }
       params.user_ids = [me.user.id]
     }
 
@@ -129,6 +136,20 @@ export default class IncidentList extends Command {
       cli.action.stop(`got ${services.length}: ${chalk.bold.blue(service_ids.join(', '))}`)
       params.service_ids = service_ids
     }
+
+    if (flags.since) {
+      const since = chrono.parseDate(flags.since)
+      if (since) {
+        params.since = since.toISOString()
+      }
+    }
+    if (flags.until) {
+      const until = chrono.parseDate(flags.until)
+      if (until) {
+        params.until = until.toISOString()
+      }
+    }
+
     cli.action.start('Getting incidents from PD')
     const incidents = await pd.fetch(token, '/incidents', params)
     if (incidents.length === 0) {

@@ -1,14 +1,14 @@
-import {Command, flags} from '@oclif/command'
+import Command from '../../base'
+import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
-import * as config from '../../config'
 
 export default class UserSet extends Command {
   static description = 'Set PagerDuty User attributes'
 
   static flags = {
-    help: flags.help({char: 'h'}),
+    ...Command.flags,
     email: flags.string({char: 'e', description: 'User\'s login email', required: true}),
     key: flags.string({char: 'k', description: 'Attribute key to set', required: true}),
     value: flags.string({char: 'v', description: 'Attribute value to set', required: true}),
@@ -17,15 +17,8 @@ export default class UserSet extends Command {
   async run() {
     const {flags} = this.parse(UserSet)
 
-    const token = config.getAuth()
-
-    if (!token) {
-      this.error('No auth token found', {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
-    }
-
-    if (!pd.isValidToken(token)) {
-      this.error(`Token '${token}' is not valid`, {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
-    }
+    // get a validated token from base class
+    const token = this.token as string
 
     cli.action.start('Getting user ID from PD')
     const data = await pd.request(token, '/users', 'GET', {query: flags.email})

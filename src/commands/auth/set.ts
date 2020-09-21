@@ -1,4 +1,5 @@
-import {Command, flags} from '@oclif/command'
+import Command from '../../base'
+import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
@@ -8,7 +9,7 @@ export default class AuthSet extends Command {
   static description = 'Set PagerDuty Auth token'
 
   static flags = {
-    help: flags.help({char: 'h'}),
+    ...Command.flags,
     token: flags.string({char: 't', description: 'A PagerDuty API token'}),
   }
 

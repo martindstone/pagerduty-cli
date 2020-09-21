@@ -4,7 +4,7 @@ import cli from 'cli-ux'
 
 const globalAny: any = global
 
-export function initConfig():void {
+export function initConfig(): void {
   const configFilePath = path.join(globalAny.config.configDir, 'config.json')
   fs.ensureFileSync(configFilePath)
   fs.writeJsonSync(configFilePath, {token: null})
