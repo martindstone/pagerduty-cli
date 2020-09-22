@@ -38,7 +38,7 @@ export default class AuthWeb extends Command {
     try {
       await cli.open(authorizationUri)
     } catch (error) {
-      this.error('Couldn\'t open a browser for web authentication', {
+      this.error(`Couldn't open a browser for web authentication: ${error}`, {
         exit: 1,
         suggestions: [
           `Get a token from ${chalk.bold.blue('https://martindstone.github.io/PDOAuth/')}`,
