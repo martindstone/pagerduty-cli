@@ -58,7 +58,8 @@
     "commands": "./lib/commands",
     "bin": "pd",
     "plugins": [
-      "@oclif/plugin-help"
+      "@oclif/plugin-help",
+      "@oclif/plugin-update"
     ],
     "hooks": {
       "init": "./lib/hooks/init/set-global-config"

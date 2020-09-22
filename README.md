@@ -35,6 +35,7 @@ USAGE
 * [`pd incident:ack`](#pd-incidentack)
 * [`pd incident:list`](#pd-incidentlist)
 * [`pd incident:resolve`](#pd-incidentresolve)
+* [`pd update [CHANNEL]`](#pd-update-channel)
 * [`pd user:list`](#pd-userlist)
 * [`pd user:set`](#pd-userset)
 
@@ -179,6 +180,17 @@ OPTIONS
 ```
 
 _See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.9/src/commands/incident/resolve.ts)_
+
+## `pd update [CHANNEL]`
+
+update the pd CLI
+
+```
+USAGE
+  $ pd update [CHANNEL]
+```
+
+_See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v1.3.10/src/commands/update.ts)_
 
 ## `pd user:list`
 
