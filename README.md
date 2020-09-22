@@ -169,15 +169,16 @@ _See code: [src/commands/incident/list.ts](https://github.com/martindstone/pager
 
 ## `pd incident:notes`
 
-Acknowledge PagerDuty Incidents
+See or add notes on PagerDuty Incidents
 
 ```
 USAGE
   $ pd incident:notes
 
 OPTIONS
-  -h, --help   show CLI help
-  -i, --id=id  (required) Incident ID.
+  -h, --help       show CLI help
+  -i, --id=id      (required) Incident ID.
+  -n, --note=note  Note to add
 ```
 
 _See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.11/src/commands/incident/notes.ts)_
