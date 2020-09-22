@@ -150,6 +150,12 @@ export default class IncidentList extends Command {
       }
     }
 
+    cli.action.start('Getting incident priorities from PD')
+    const priorities = await pd.fetch(token, '/priorities')
+    const priorities_map: Record<string, any> = {}
+    for (const priority of priorities) {
+      priorities_map[priority.id] = priority
+    }
     cli.action.start('Getting incidents from PD')
     const incidents = await pd.fetch(token, '/incidents', params)
     if (incidents.length === 0) {
@@ -169,16 +175,37 @@ export default class IncidentList extends Command {
         header: '#',
       },
       status: {
+        get: (row: {status: string}) => {
+          switch (row.status) {
+          case 'triggered':
+            return chalk.bold.red(row.status)
+          case 'acknowledged':
+            return chalk.bold.keyword('orange')(row.status)
+          case 'resolved':
+            return chalk.bold.green(row.status)
+          default:
+            return row.status
+          }
+        },
       },
       priority: {
-        get: (row: { priority: { summary: any } }) => {
-          if (row.priority && row.priority.summary) {
+        get: (row: { priority: { summary: string; id: string } }) => {
+          if (row.priority && row.priority.summary && row.priority.id) {
+            if (priorities_map[row.priority.id]) {
+              return chalk.bold.hex(priorities_map[row.priority.id].color)(row.priority.summary)
+            }
             return row.priority.summary
           }
           return '--'
         },
       },
       urgency: {
+        get: (row: { urgency: string }) => {
+          if (row.urgency === 'high') {
+            return chalk.bold(row.urgency)
+          }
+          return row.urgency
+        },
       },
       title: {
       },
