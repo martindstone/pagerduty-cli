@@ -59,6 +59,27 @@ export async function request(
   return r.data
 }
 
+export async function batchedRequest(requests: any[], batchSize = 25) {
+  let promises: any[] = []
+  let results: any[] = []
+  for (const r of requests) {
+    promises.push(request(
+      r.token,
+      r.endpoint,
+      r.method,
+      r.params,
+      r.data
+    ))
+    if (promises.length >= batchSize) {
+      // eslint-disable-next-line no-await-in-loop
+      results = [...results, ...await Promise.all(promises)]
+      promises = []
+    }
+  }
+  results = [...results, ...await Promise.all(promises)]
+  return results
+}
+
 export async function fetch(
   token: string,
   endpoint: string,
