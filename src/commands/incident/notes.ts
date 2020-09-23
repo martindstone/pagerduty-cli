@@ -17,7 +17,9 @@ export default class IncidentNotes extends Command {
     note: flags.string({
       char: 'n',
       description: 'Note to add',
+      exclusive: [...Object.keys(cli.table.flags())],
     }),
+    ...cli.table.flags()
   }
 
   async run() {
