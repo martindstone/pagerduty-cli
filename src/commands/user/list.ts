@@ -8,7 +8,15 @@ export default class UserList extends Command {
 
   static flags = {
     ...Command.flags,
-    json: flags.boolean({char: 'j', description: 'output full details as JSON', exclusive: ['columns', 'filter', 'sort', 'csv', 'extended']}),
+    email: flags.string({
+      char: 'e',
+      description: 'Select users whose login email addresses contain the given text',
+    }),
+    json: flags.boolean({
+      char: 'j',
+      description: 'output full details as JSON',
+      exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
+    }),
     ...cli.table.flags(),
   }
 
@@ -18,8 +26,12 @@ export default class UserList extends Command {
     // get a validated token from base class
     const token = this.token as string
 
+    const params: Record<string, any> = {}
+    if (flags.email) {
+      params.query = flags.email
+    }
     cli.action.start('Getting users from PD')
-    const users = await pd.fetch(token, '/users')
+    const users = await pd.fetch(token, '/users', params)
     cli.action.stop(`got ${users.length}`)
     if (flags.json) {
       this.log(JSON.stringify(users, null, 2))
