@@ -53,6 +53,10 @@ export default class ServiceGet extends Command {
 
     const service_ids: string[] = [...service_ids_set] as string[]
 
+    if (service_ids.length === 0) {
+      this.error('No services selected. Please specify --name or --ids', {exit: 1})
+    }
+
     cli.action.start(`Getting ${chalk.bold.blue(flags.keys.join(flags.delimiter))} on service(s) ${chalk.bold.blue(service_ids.join(', '))}`)
     const requests: any[] = []
     for (const service_id of service_ids) {

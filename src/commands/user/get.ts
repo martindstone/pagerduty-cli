@@ -6,7 +6,7 @@ import * as pd from '../../pd'
 import * as utils from '../../utils'
 
 export default class UserGet extends Command {
-  static description = 'Get PagerDuty User attributes'
+  static description = 'Get PagerDuty User attributes in a script-friendly format'
 
   static flags = {
     ...Command.flags,
@@ -52,6 +52,10 @@ export default class UserGet extends Command {
     }
 
     const user_ids: string[] = [...user_ids_set] as string[]
+
+    if (user_ids.length === 0) {
+      this.error('No users selected. Please specify --email or --ids', {exit: 1})
+    }
 
     cli.action.start(`Getting ${chalk.bold.blue(flags.keys.join(flags.delimiter))} on user(s) ${chalk.bold.blue(user_ids.join(', '))}`)
     const requests: any[] = []
