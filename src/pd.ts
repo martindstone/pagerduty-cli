@@ -116,3 +116,29 @@ export async function me(token: string) {
   const r = await request(token, '/users/me')
   return r
 }
+
+export function putBodyForSetAttributes(
+  pdObjectType: string,
+  pdObjectId: string,
+  attributes: { key: string; value: string | null }[],
+) {
+  const body: Record<string, any> = {
+    [pdObjectType]: {
+      id: pdObjectId,
+      type: `${pdObjectType}_reference`,
+    },
+  }
+  for (const attribute of attributes) {
+    body[pdObjectType][attribute.key] = (attribute.value && attribute.value.trim().length > 0) ? attribute.value : null
+  }
+  return body
+}
+
+export function putBodyForSetAttribute(
+  pdObjectType: string,
+  pdObjectId: string,
+  pdAttributeName: string,
+  pdAttributeValue: string | null
+) {
+  return putBodyForSetAttributes(pdObjectType, pdObjectId, [{key: pdAttributeName, value: pdAttributeValue}])
+}

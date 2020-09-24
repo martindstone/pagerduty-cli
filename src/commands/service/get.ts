@@ -3,9 +3,10 @@ import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
+import * as utils from '../../utils'
 
-export default class ServiceSet extends Command {
-  static description = 'Set PagerDuty Service attributes'
+export default class ServiceGet extends Command {
+  static description = 'Get PagerDuty Service attributes in a script-friendly format'
 
   static flags = {
     ...Command.flags,
@@ -18,20 +19,21 @@ export default class ServiceSet extends Command {
       description: 'Select services with the given ID. Specify multiple times for multiple services.',
       multiple: true,
     }),
-    key: flags.string({
+    keys: flags.string({
       char: 'k',
-      description: 'Attribute key to set',
+      description: 'Attribute names to get. specify multiple times for multiple keys.',
       required: true,
+      multiple: true,
     }),
-    value: flags.string({
-      char: 'v',
-      description: 'Attribute value to set',
-      required: true,
+    delimiter: flags.string({
+      char: 'd',
+      description: 'Output field separator.',
+      default: '|',
     }),
   }
 
   async run() {
-    const {flags} = this.parse(ServiceSet)
+    const {flags} = this.parse(ServiceGet)
 
     // get a validated token from base class
     const token = this.token as string
@@ -49,27 +51,22 @@ export default class ServiceSet extends Command {
       service_ids_set = new Set([...service_ids_set, ...flags.ids])
     }
 
-    const key = flags.key
-    const value = flags.value.trim().length > 0 ? flags.value : null
     const service_ids: string[] = [...service_ids_set] as string[]
 
-    cli.action.start(`Setting ${chalk.bold.blue(flags.key)} = '${chalk.bold.blue(flags.value)}' on service(s) ${chalk.bold.blue(service_ids.join(', '))}`)
+    cli.action.start(`Getting ${chalk.bold.blue(flags.keys.join(flags.delimiter))} on service(s) ${chalk.bold.blue(service_ids.join(', '))}`)
     const requests: any[] = []
     for (const service_id of service_ids) {
-      const body: Record<string, any> = pd.putBodyForSetAttribute('service', service_id, key, value)
       requests.push({
         token: token,
         endpoint: `/services/${service_id}`,
-        method: 'PUT',
-        params: {},
-        data: body,
+        method: 'GET',
       })
     }
     // const rs = await Promise.all(promises)
     const rs = await pd.batchedRequest(requests)
     let failed = false
     for (const r of rs) {
-      if (!(r && r.service && key in r.service && r.service[key] === value)) {
+      if (!(r && r.service)) {
         failed = true
       }
     }
@@ -78,6 +75,9 @@ export default class ServiceSet extends Command {
       this.error('Some requests failed. Please check your services and try again.')
     } else {
       cli.action.stop(chalk.bold.green('done'))
+      for (const r of rs) {
+        this.log(utils.formatRow(r, 'service', flags.keys, flags.delimiter))
+      }
     }
   }
 }

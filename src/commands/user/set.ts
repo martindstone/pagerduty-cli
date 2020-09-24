@@ -31,14 +31,9 @@ export default class UserSet extends Command {
       this.error(`Multiple users exist matching ${chalk.bold.blue(flags.email)}. Please refine your search.`)
     }
     cli.action.stop(`${chalk.bold.blue(flags.email)} has the PagerDuty ID ${chalk.bold.blue(data.users[0].id)}`)
-    cli.action.start(`Setting ${chalk.bold.blue(flags.key)} = ${chalk.bold.blue(flags.value)}`)
-    const body: Record<string, any> = {
-      user: {
-        type: 'user_reference',
-        id: data.users[0].id,
-      },
-    }
-    body.user[flags.key] = flags.value
+    cli.action.start(`Setting ${chalk.bold.blue(flags.key)} = '${chalk.bold.blue(flags.value)} on user ${chalk.bold.blue(data.users[0].id)}'`)
+
+    const body = pd.putBodyForSetAttribute('user', data.users[0].id, flags.key, flags.value)
     const r = await pd.request(token, `/users/${data.users[0].id}`, 'PUT', null, body)
     if (r && r.user && r.user[flags.key] && r.user[flags.key] === flags.value) {
       cli.action.stop(chalk.bold.green('done!'))
@@ -46,6 +41,5 @@ export default class UserSet extends Command {
       cli.action.stop(chalk.bold.red('failed!'))
       this.error(`Failed to set ${flags.key} on ${flags.email}`, {exit: 1})
     }
-    // this.log(r)
   }
 }
