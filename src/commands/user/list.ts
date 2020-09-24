@@ -2,6 +2,8 @@ import Command from '../../base'
 import {flags} from '@oclif/command'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
+import * as utils from '../../utils'
+import dotProp from 'dot-prop'
 
 export default class UserList extends Command {
   static description = 'List PagerDuty Users'
@@ -11,6 +13,11 @@ export default class UserList extends Command {
     email: flags.string({
       char: 'e',
       description: 'Select users whose login email addresses contain the given text',
+    }),
+    keys: flags.string({
+      char: 'k',
+      description: 'Additional fields to display. Specify multiple times for multiple fields.',
+      multiple: true,
     }),
     json: flags.boolean({
       char: 'j',
@@ -27,9 +34,11 @@ export default class UserList extends Command {
     const token = this.token as string
 
     const params: Record<string, any> = {}
+
     if (flags.email) {
       params.query = flags.email
     }
+
     cli.action.start('Getting users from PD')
     const users = await pd.fetch(token, '/users', params)
     cli.action.stop(`got ${users.length}`)
@@ -60,6 +69,16 @@ export default class UserList extends Command {
         extended: true,
       },
     }
+
+    if (flags.keys) {
+      for (const key of flags.keys) {
+        columns[key] = {
+          header: key,
+          get: (row: any) => utils.formatField(dotProp.get(row, key)),
+        }
+      }
+    }
+
     const options = {
       printLine: this.log,
       ...flags, // parsed flags

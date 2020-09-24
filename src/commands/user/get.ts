@@ -76,7 +76,7 @@ export default class UserGet extends Command {
     }
     if (failed) {
       cli.action.stop(chalk.bold.red('failed!'))
-      this.error('Some requests failed. Please check your services and try again.')
+      this.error('Some requests failed. Please check your users and try again.')
     } else {
       cli.action.stop(chalk.bold.green('done'))
       for (const r of rs) {

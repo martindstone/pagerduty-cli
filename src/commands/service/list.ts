@@ -3,6 +3,8 @@ import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
+import * as utils from '../../utils'
+import dotProp from 'dot-prop'
 
 export default class ServiceList extends Command {
   static description = 'List PagerDuty Services'
@@ -13,15 +15,20 @@ export default class ServiceList extends Command {
       char: 'n',
       description: 'Retrieve only services whose names contain this text',
     }),
-    json: flags.boolean({
-      char: 'j',
-      description: 'output full details as JSON',
-      exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
+    keys: flags.string({
+      char: 'k',
+      description: 'Additional fields to display. Specify multiple times for multiple fields.',
+      multiple: true,
     }),
     teams: flags.string({
       char: 't',
       description: 'Team names to include. Specify multiple times for multiple teams.',
       multiple: true,
+    }),
+    json: flags.boolean({
+      char: 'j',
+      description: 'output full details as JSON',
+      exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
     }),
     ...cli.table.flags(),
   }
@@ -95,6 +102,16 @@ export default class ServiceList extends Command {
         },
       },
     }
+
+    if (flags.keys) {
+      for (const key of flags.keys) {
+        columns[key] = {
+          header: key,
+          get: (row: any) => utils.formatField(dotProp.get(row, key)),
+        }
+      }
+    }
+
     const options = {
       printLine: this.log,
       ...flags, // parsed flags

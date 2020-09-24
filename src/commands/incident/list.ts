@@ -3,7 +3,8 @@ import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
-// import * as config from '../../config'
+import * as utils from '../../utils'
+import dotProp from 'dot-prop'
 import * as chrono from 'chrono-node'
 
 export default class IncidentList extends Command {
@@ -51,6 +52,11 @@ export default class IncidentList extends Command {
     }),
     until: flags.string({
       description: 'The end of the date range over which you want to search.',
+    }),
+    keys: flags.string({
+      char: 'k',
+      description: 'Additional fields to display. Specify multiple times for multiple fields.',
+      multiple: true,
     }),
     json: flags.boolean({
       char: 'j',
@@ -236,6 +242,16 @@ export default class IncidentList extends Command {
         extended: true,
       },
     }
+
+    if (flags.keys) {
+      for (const key of flags.keys) {
+        columns[key] = {
+          header: key,
+          get: (row: any) => utils.formatField(dotProp.get(row, key)),
+        }
+      }
+    }
+
     const options = {
       printLine: this.log,
       ...flags, // parsed flags

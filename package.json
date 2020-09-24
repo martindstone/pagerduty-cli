@@ -74,6 +74,9 @@
       },
       "incident": {
         "description": "See/manage PagerDuty incidents"
+      },
+      "service": {
+        "description": "See/manage PagerDuty services"
       }
     },
     "macos": {
