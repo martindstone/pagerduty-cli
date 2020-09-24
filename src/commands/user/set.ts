@@ -9,9 +9,25 @@ export default class UserSet extends Command {
 
   static flags = {
     ...Command.flags,
-    email: flags.string({char: 'e', description: 'User\'s login email', required: true}),
-    key: flags.string({char: 'k', description: 'Attribute key to set', required: true}),
-    value: flags.string({char: 'v', description: 'Attribute value to set', required: true}),
+    email: flags.string({
+      char: 'e',
+      description: 'Select users whose emails contain the given text',
+    }),
+    ids: flags.string({
+      char: 'i',
+      description: 'Select users with the given ID. Specify multiple times for multiple users.',
+      multiple: true,
+    }),
+    key: flags.string({
+      char: 'k',
+      description: 'Attribute key to set',
+      required: true,
+    }),
+    value: flags.string({
+      char: 'v',
+      description: 'Attribute value to set',
+      required: true,
+    }),
   }
 
   async run() {
@@ -20,26 +36,48 @@ export default class UserSet extends Command {
     // get a validated token from base class
     const token = this.token as string
 
-    cli.action.start('Getting user ID from PD')
-    const data = await pd.request(token, '/users', 'GET', {query: flags.email})
-    if (!data.users || data.users.length === 0) {
-      cli.action.stop(chalk.bold.red('failed!'))
-      this.error(`No user was found with email ${flags.email}`, {exit: 1})
+    let user_ids_set = new Set()
+    if (flags.email) {
+      cli.action.start('Getting user IDs from PD')
+      const users = await pd.fetch(token, '/users', {query: flags.email})
+      if (!users || users.length === 0) {
+        cli.action.stop(chalk.bold.red('none found'))
+      }
+      user_ids_set = new Set(users.map((e: {id: string}) => e.id))
     }
-    if (data.users.length > 1) {
-      cli.action.stop(chalk.bold.red('failed!'))
-      this.error(`Multiple users exist matching ${chalk.bold.blue(flags.email)}. Please refine your search.`)
+    if (flags.ids) {
+      user_ids_set = new Set([...user_ids_set, ...flags.ids])
     }
-    cli.action.stop(`${chalk.bold.blue(flags.email)} has the PagerDuty ID ${chalk.bold.blue(data.users[0].id)}`)
-    cli.action.start(`Setting ${chalk.bold.blue(flags.key)} = '${chalk.bold.blue(flags.value)} on user ${chalk.bold.blue(data.users[0].id)}'`)
 
-    const body = pd.putBodyForSetAttribute('user', data.users[0].id, flags.key, flags.value)
-    const r = await pd.request(token, `/users/${data.users[0].id}`, 'PUT', null, body)
-    if (r && r.user && r.user[flags.key] && r.user[flags.key] === flags.value) {
-      cli.action.stop(chalk.bold.green('done!'))
-    } else {
+    const key = flags.key
+    const value = flags.value.trim().length > 0 ? flags.value : null
+    const user_ids: string[] = [...user_ids_set] as string[]
+
+    cli.action.start(`Setting ${chalk.bold.blue(flags.key)} = '${chalk.bold.blue(flags.value)}' on user(s) ${chalk.bold.blue(user_ids.join(', '))}`)
+    const requests: any[] = []
+    for (const user_id of user_ids) {
+      const body: Record<string, any> = pd.putBodyForSetAttribute('user', user_id, key, value)
+      requests.push({
+        token: token,
+        endpoint: `/users/${user_id}`,
+        method: 'PUT',
+        params: {},
+        data: body,
+      })
+    }
+    // const rs = await Promise.all(promises)
+    const rs = await pd.batchedRequest(requests)
+    let failed = false
+    for (const r of rs) {
+      if (!(r && r.user && key in r.user && r.user[key] === value)) {
+        failed = true
+      }
+    }
+    if (failed) {
       cli.action.stop(chalk.bold.red('failed!'))
-      this.error(`Failed to set ${flags.key} on ${flags.email}`, {exit: 1})
+      this.error('Some requests failed. Please check your users and try again.')
+    } else {
+      cli.action.stop(chalk.bold.green('done'))
     }
   }
 }
