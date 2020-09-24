@@ -19,7 +19,7 @@ $ npm install -g pagerduty-cli
 $ pd COMMAND
 running command...
 $ pd (-v|--version|version)
-pagerduty-cli/0.0.14 darwin-x64 node-v14.11.0
+pagerduty-cli/0.0.15 darwin-x64 node-v14.11.0
 $ pd --help [COMMAND]
 USAGE
   $ pd COMMAND
@@ -40,9 +40,11 @@ USAGE
 * [`pd incident:resolve`](#pd-incidentresolve)
 * [`pd service:disable`](#pd-servicedisable)
 * [`pd service:enable`](#pd-serviceenable)
+* [`pd service:get`](#pd-serviceget)
 * [`pd service:list`](#pd-servicelist)
 * [`pd service:set`](#pd-serviceset)
 * [`pd update [CHANNEL]`](#pd-update-channel)
+* [`pd user:get`](#pd-userget)
 * [`pd user:list`](#pd-userlist)
 * [`pd user:set`](#pd-userset)
 
@@ -58,7 +60,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.14/src/commands/auth/get.ts)_
+_See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.15/src/commands/auth/get.ts)_
 
 ## `pd auth:set`
 
@@ -72,7 +74,7 @@ OPTIONS
   -t, --token=token  A PagerDuty API token
 ```
 
-_See code: [src/commands/auth/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.14/src/commands/auth/set.ts)_
+_See code: [src/commands/auth/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.15/src/commands/auth/set.ts)_
 
 ## `pd auth:web`
 
@@ -86,7 +88,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.14/src/commands/auth/web.ts)_
+_See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.15/src/commands/auth/web.ts)_
 
 ## `pd help [COMMAND]`
 
@@ -119,7 +121,7 @@ OPTIONS
   -m, --me       Acknowledge all incidents assigned to me
 ```
 
-_See code: [src/commands/incident/ack.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.14/src/commands/incident/ack.ts)_
+_See code: [src/commands/incident/ack.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.15/src/commands/incident/ack.ts)_
 
 ## `pd incident:list`
 
@@ -170,7 +172,7 @@ OPTIONS
   --until=until                                   The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/incident/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.14/src/commands/incident/list.ts)_
+_See code: [src/commands/incident/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.15/src/commands/incident/list.ts)_
 
 ## `pd incident:notes`
 
@@ -181,12 +183,20 @@ USAGE
   $ pd incident:notes
 
 OPTIONS
-  -h, --help       show CLI help
-  -i, --id=id      (required) Incident ID.
-  -n, --note=note  Note to add
+  -h, --help              show CLI help
+  -i, --id=id             (required) Incident ID.
+  -n, --note=note         Note to add
+  -x, --extended          show extra columns
+  --columns=columns       only show provided columns (comma-separated)
+  --csv                   output is csv format [alias: --output=csv]
+  --filter=filter         filter property by partial string matching, ex: name=foo
+  --no-header             hide table header from output
+  --no-truncate           do not truncate output to fit screen
+  --output=csv|json|yaml  output in a more machine friendly format
+  --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.14/src/commands/incident/notes.ts)_
+_See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.15/src/commands/incident/notes.ts)_
 
 ## `pd incident:open`
 
@@ -202,7 +212,7 @@ OPTIONS
   -m, --me       Open all incidents assigned to me
 ```
 
-_See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.14/src/commands/incident/open.ts)_
+_See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.15/src/commands/incident/open.ts)_
 
 ## `pd incident:priority`
 
@@ -219,7 +229,7 @@ OPTIONS
   -p, --priority=priority  (required) The priority to set.
 ```
 
-_See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.14/src/commands/incident/priority.ts)_
+_See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.15/src/commands/incident/priority.ts)_
 
 ## `pd incident:resolve`
 
@@ -235,7 +245,7 @@ OPTIONS
   -m, --me       Resolve all incidents assigned to me
 ```
 
-_See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.14/src/commands/incident/resolve.ts)_
+_See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.15/src/commands/incident/resolve.ts)_
 
 ## `pd service:disable`
 
@@ -251,7 +261,7 @@ OPTIONS
   -n, --name=name  Select services whose names contain the given text
 ```
 
-_See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.14/src/commands/service/disable.ts)_
+_See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.15/src/commands/service/disable.ts)_
 
 ## `pd service:enable`
 
@@ -267,7 +277,25 @@ OPTIONS
   -n, --name=name  Select services whose names contain the given text
 ```
 
-_See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.14/src/commands/service/enable.ts)_
+_See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.15/src/commands/service/enable.ts)_
+
+## `pd service:get`
+
+Get PagerDuty Service attributes in a script-friendly format
+
+```
+USAGE
+  $ pd service:get
+
+OPTIONS
+  -d, --delimiter=delimiter  [default: |] Output field separator.
+  -h, --help                 show CLI help
+  -i, --ids=ids              Select services with the given ID. Specify multiple times for multiple services.
+  -k, --keys=keys            (required) Attribute names to get. specify multiple times for multiple keys.
+  -n, --name=name            Select services whose names contain the given text
+```
+
+_See code: [src/commands/service/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.15/src/commands/service/get.ts)_
 
 ## `pd service:list`
 
@@ -292,7 +320,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/service/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.14/src/commands/service/list.ts)_
+_See code: [src/commands/service/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.15/src/commands/service/list.ts)_
 
 ## `pd service:set`
 
@@ -310,7 +338,7 @@ OPTIONS
   -v, --value=value  (required) Attribute value to set
 ```
 
-_See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.14/src/commands/service/set.ts)_
+_See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.15/src/commands/service/set.ts)_
 
 ## `pd update [CHANNEL]`
 
@@ -322,6 +350,24 @@ USAGE
 ```
 
 _See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v1.3.10/src/commands/update.ts)_
+
+## `pd user:get`
+
+Get PagerDuty User attributes
+
+```
+USAGE
+  $ pd user:get
+
+OPTIONS
+  -d, --delimiter=delimiter  [default: |] Output field separator.
+  -e, --email=email          Select users whose login email addresses contain the given text
+  -h, --help                 show CLI help
+  -i, --ids=ids              Select users with the given ID. Specify multiple times for multiple users.
+  -k, --keys=keys            (required) Attribute names to get. specify multiple times for multiple keys.
+```
+
+_See code: [src/commands/user/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.15/src/commands/user/get.ts)_
 
 ## `pd user:list`
 
@@ -344,7 +390,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.14/src/commands/user/list.ts)_
+_See code: [src/commands/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.15/src/commands/user/list.ts)_
 
 ## `pd user:set`
 
@@ -361,5 +407,5 @@ OPTIONS
   -v, --value=value  (required) Attribute value to set
 ```
 
-_See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.14/src/commands/user/set.ts)_
+_See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.15/src/commands/user/set.ts)_
 <!-- commandsstop -->
