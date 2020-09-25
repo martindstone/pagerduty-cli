@@ -19,6 +19,11 @@ export default class UserGet extends Command {
       description: 'Select users with the given ID. Specify multiple times for multiple users.',
       multiple: true,
     }),
+    all: flags.boolean({
+      char: 'a',
+      description: 'Select all users.',
+      exclusive: ['email', 'ids'],
+    }),
     keys: flags.string({
       char: 'k',
       description: 'Attribute names to get. specify multiple times for multiple keys.',
@@ -49,6 +54,10 @@ export default class UserGet extends Command {
     }
     if (flags.ids) {
       user_ids_set = new Set([...user_ids_set, ...flags.ids])
+    }
+    if (flags.all) {
+      const users = await pd.fetch(token, '/users')
+      user_ids_set = new Set(users.map((e: {id: string}) => e.id))
     }
 
     const user_ids: string[] = [...user_ids_set] as string[]

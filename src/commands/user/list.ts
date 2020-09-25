@@ -33,7 +33,9 @@ export default class UserList extends Command {
     // get a validated token from base class
     const token = this.token as string
 
-    const params: Record<string, any> = {}
+    const params: Record<string, any> = {
+      include: ['contact_methods', 'notification_rules', 'teams']
+    }
 
     if (flags.email) {
       params.query = flags.email
@@ -58,15 +60,23 @@ export default class UserList extends Command {
       role: {
         extended: true,
       },
-      notification_rules: {
-        header: 'Notif. Rules',
+      team_names: {
+        get: (row: { teams: any[] }) => row.teams.map((e: any) => e.summary).join(', '),
+        extended: true,
+      },
+      num_notification_rules: {
+        header: '#Rules',
         get: (row: { notification_rules: string | any[] }) => row.notification_rules.length,
         extended: true,
       },
-      contact_methods: {
-        header: 'Cont. Methods',
-        get: (row: { contact_methods: string | any[] }) => row.contact_methods.length,
-        extended: true,
+      contact_emails: {
+        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'email_contact_method').map((e: any) => e.address).join(', ')
+      },
+      contact_phones: {
+        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'phone_contact_method').map((e: any) => e.address).join(', ')
+      },
+      contact_sms: {
+        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'sms_contact_method').map((e: any) => e.address).join(', ')
       },
     }
 

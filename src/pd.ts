@@ -40,12 +40,16 @@ export async function request(
   endpoint: string,
   method: Method = 'GET',
   params: object | null = {},
-  data?: object
+  data?: object,
+  headers?: object
 ) {
-  const h = {
+  let h = {
     Accept: 'application/vnd.pagerduty+json;version=2',
     Authorization: authHeaderForToken(token),
     'Content-Type': 'application/json',
+  }
+  if (headers) {
+    h = {...h, ...headers}
   }
   const config = {
     method: method,
@@ -55,7 +59,15 @@ export async function request(
     headers: h,
     data: data,
   }
-  const r = await axios.request(config)
+  let r: any
+  try {
+    r = await axios.request(config)
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.error) {
+      return {error: error.response.data.error}
+    }
+    return {error: 'unknown error'}
+  }
   return r.data
 }
 

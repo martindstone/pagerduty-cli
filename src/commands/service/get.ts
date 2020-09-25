@@ -19,6 +19,11 @@ export default class ServiceGet extends Command {
       description: 'Select services with the given ID. Specify multiple times for multiple services.',
       multiple: true,
     }),
+    all: flags.boolean({
+      char: 'a',
+      description: 'Select all services.',
+      exclusive: ['name', 'ids'],
+    }),
     keys: flags.string({
       char: 'k',
       description: 'Attribute names to get. specify multiple times for multiple keys.',
@@ -49,6 +54,10 @@ export default class ServiceGet extends Command {
     }
     if (flags.ids) {
       service_ids_set = new Set([...service_ids_set, ...flags.ids])
+    }
+    if (flags.all) {
+      const services = await pd.fetch(token, '/services')
+      service_ids_set = new Set(services.map((e: {id: string}) => e.id))
     }
 
     const service_ids: string[] = [...service_ids_set] as string[]
