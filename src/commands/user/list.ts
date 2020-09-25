@@ -34,7 +34,7 @@ export default class UserList extends Command {
     const token = this.token as string
 
     const params: Record<string, any> = {
-      include: ['contact_methods', 'notification_rules', 'teams']
+      include: ['contact_methods', 'notification_rules', 'teams'],
     }
 
     if (flags.email) {
@@ -61,7 +61,7 @@ export default class UserList extends Command {
         extended: true,
       },
       team_names: {
-        get: (row: { teams: any[] }) => row.teams.map((e: any) => e.summary).join(', '),
+        get: (row: { teams: any[] }) => row.teams.map((e: any) => e.summary).join('\n'),
         extended: true,
       },
       num_notification_rules: {
@@ -70,13 +70,13 @@ export default class UserList extends Command {
         extended: true,
       },
       contact_emails: {
-        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'email_contact_method').map((e: any) => e.address).join(', ')
+        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'email_contact_method').map((e: any) => e.address).join('\n'),
       },
       contact_phones: {
-        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'phone_contact_method').map((e: any) => e.address).join(', ')
+        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'phone_contact_method').map((e: any) => e.address).join('\n'),
       },
       contact_sms: {
-        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'sms_contact_method').map((e: any) => e.address).join(', ')
+        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'sms_contact_method').map((e: any) => e.address).join('\n'),
       },
     }
 
