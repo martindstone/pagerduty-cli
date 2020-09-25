@@ -1,6 +1,12 @@
 #!/bin/bash
 {
     set -e
+    printf "WARNING: This installation will overwrite /usr/local/lib/pd and /usr/local/bin/pd. Continue? (y/N) "
+    read yn
+    if [ "$yn" != 'y' ] && [ "$yn" != 'Y' ]; then
+      echo "Aborting."
+      exit 1
+    fi
     SUDO=''
     if [ "$(id -u)" != "0" ]; then
       SUDO='sudo'
