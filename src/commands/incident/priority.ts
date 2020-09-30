@@ -3,6 +3,7 @@ import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
+import * as utils from '../../utils'
 
 export default class IncidentPriority extends Command {
   static description = 'Set priority on PagerDuty Incidents'
@@ -52,7 +53,7 @@ export default class IncidentPriority extends Command {
       cli.action.stop(`got ${incidents.length}`)
       incident_ids = incidents.map((e: { id: any }) => e.id)
     } else if (flags.ids) {
-      incident_ids = flags.ids
+      incident_ids = utils.splitStringArrayOnWhitespace(flags.ids)
     } else {
       this.error('You must specify one of: -i, -m', {exit: 1})
     }

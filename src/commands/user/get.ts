@@ -53,7 +53,7 @@ export default class UserGet extends Command {
       user_ids_set = new Set(users.map((e: {id: string}) => e.id))
     }
     if (flags.ids) {
-      user_ids_set = new Set([...user_ids_set, ...flags.ids])
+      user_ids_set = new Set([...user_ids_set, ...utils.splitStringArrayOnWhitespace(flags.ids)])
     }
     if (flags.all) {
       const users = await pd.fetch(token, '/users')

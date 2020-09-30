@@ -3,6 +3,7 @@ import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
+import * as utils from '../../utils'
 
 export default class IncidentOpen extends Command {
   static description = 'Open PagerDuty Incidents in your browser'
@@ -56,8 +57,9 @@ export default class IncidentOpen extends Command {
     } else if (flags.ids) {
       const users = await pd.fetch(token, '/users', {limit: 1})
       const domain = users[0].html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
+      const ids = utils.splitStringArrayOnWhitespace(flags.ids)
       try {
-        for (const incident_id of flags.ids) {
+        for (const incident_id of ids) {
           cli.open(`https://${domain}.pagerduty.com/incidents/${incident_id}`)
         }
       } catch (error) {

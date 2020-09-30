@@ -3,6 +3,7 @@ import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
+import * as utils from '../../utils'
 
 export default class UserSet extends Command {
   static description = 'Set PagerDuty User attributes'
@@ -46,7 +47,7 @@ export default class UserSet extends Command {
       user_ids_set = new Set(users.map((e: {id: string}) => e.id))
     }
     if (flags.ids) {
-      user_ids_set = new Set([...user_ids_set, ...flags.ids])
+      user_ids_set = new Set([...user_ids_set, ...utils.splitStringArrayOnWhitespace(flags.ids)])
     }
 
     const key = flags.key

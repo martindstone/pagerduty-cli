@@ -3,6 +3,7 @@ import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
+import * as utils from '../../utils'
 
 export default class ServiceSet extends Command {
   static description = 'Set PagerDuty Service attributes'
@@ -46,7 +47,7 @@ export default class ServiceSet extends Command {
       service_ids_set = new Set(services.map((e: {id: string}) => e.id))
     }
     if (flags.ids) {
-      service_ids_set = new Set([...service_ids_set, ...flags.ids])
+      service_ids_set = new Set([...service_ids_set, ...utils.splitStringArrayOnWhitespace(flags.ids)])
     }
 
     const key = flags.key
