@@ -425,7 +425,7 @@ OPTIONS
   -h, --help         show CLI help
   -i, --ids=ids      Select users with the given ID. Specify multiple times for multiple users.
   -k, --key=key      (required) Attribute key to set
-  -p, --pipe         Read service ID's from stdin.
+  -p, --pipe         Read user ID's from stdin.
   -v, --value=value  (required) Attribute value to set
 ```
 
