@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import Command from '../../base'
 import {flags} from '@oclif/command'
 import chalk from 'chalk'
@@ -21,8 +22,8 @@ export default class IncidentList extends Command {
       char: 's',
       description: 'Return only incidents with the given statuses. Specify multiple times for multiple statuses.',
       multiple: true,
-      options: ['triggered', 'acknowledged', 'resolved'],
-      default: ['triggered', 'acknowledged', 'resolved'],
+      options: ['open', 'closed', 'triggered', 'acknowledged', 'resolved'],
+      default: ['open'],
     }),
     assignees: flags.string({
       char: 'e',
@@ -72,8 +73,15 @@ export default class IncidentList extends Command {
     // get a validated token from base class
     const token = this.token as string
 
+    const statuses = [...new Set(flags.statuses)]
+    if (statuses.indexOf('open') >= 0) {
+      statuses.splice(statuses.indexOf('open'), 1, 'triggered', 'acknowledged')
+    }
+    if (statuses.indexOf('closed') >= 0) {
+      statuses.splice(statuses.indexOf('closed'), 1, 'resolved')
+    }
     const params: Record<string, any> = {
-      statuses: flags.statuses,
+      statuses: [...new Set(statuses)],
     }
 
     if (flags.me) {
