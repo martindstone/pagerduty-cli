@@ -32,7 +32,7 @@ export default class UserSet extends Command {
     }),
     pipe: flags.boolean({
       char: 'p',
-      description: 'Read service ID\'s from stdin.',
+      description: 'Read user ID\'s from stdin.',
       exclusive: ['email', 'ids'],
     }),
   }
