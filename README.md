@@ -19,7 +19,7 @@ $ npm install -g pagerduty-cli
 $ pd COMMAND
 running command...
 $ pd (-v|--version|version)
-pagerduty-cli/0.0.23 darwin-x64 node-v14.11.0
+pagerduty-cli/0.0.24 darwin-x64 node-v14.11.0
 $ pd --help [COMMAND]
 USAGE
   $ pd COMMAND
@@ -60,7 +60,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/auth/get.ts)_
+_See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/auth/get.ts)_
 
 ## `pd auth:set`
 
@@ -74,7 +74,7 @@ OPTIONS
   -t, --token=token  A PagerDuty API token
 ```
 
-_See code: [src/commands/auth/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/auth/set.ts)_
+_See code: [src/commands/auth/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/auth/set.ts)_
 
 ## `pd auth:web`
 
@@ -88,7 +88,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/auth/web.ts)_
+_See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/auth/web.ts)_
 
 ## `pd help [COMMAND]`
 
@@ -119,9 +119,10 @@ OPTIONS
   -h, --help     show CLI help
   -i, --ids=ids  Incident ID's to acknowledge. Specify multiple times for multiple incidents.
   -m, --me       Acknowledge all incidents assigned to me
+  -p, --pipe     Read incident ID's from stdin.
 ```
 
-_See code: [src/commands/incident/ack.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/incident/ack.ts)_
+_See code: [src/commands/incident/ack.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/incident/ack.ts)_
 
 ## `pd incident:list`
 
@@ -146,6 +147,8 @@ OPTIONS
                                                               multiple fields.
 
   -m, --me                                                    Return only incidents assigned to me
+
+  -p, --pipe                                                  Print incident ID's only to stdin, for use with pipes.
 
   -s, --statuses=open|closed|triggered|acknowledged|resolved  [default: open] Return only incidents with the given
                                                               statuses. Specify multiple times for multiple statuses.
@@ -176,7 +179,7 @@ OPTIONS
   --until=until                                               The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/incident/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/incident/list.ts)_
+_See code: [src/commands/incident/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/incident/list.ts)_
 
 ## `pd incident:notes`
 
@@ -200,7 +203,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/incident/notes.ts)_
+_See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/incident/notes.ts)_
 
 ## `pd incident:open`
 
@@ -214,9 +217,10 @@ OPTIONS
   -h, --help     show CLI help
   -i, --ids=ids  Incident ID's to open. Specify multiple times for multiple incidents.
   -m, --me       Open all incidents assigned to me
+  -p, --pipe     Read incident ID's from stdin.
 ```
 
-_See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/incident/open.ts)_
+_See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/incident/open.ts)_
 
 ## `pd incident:priority`
 
@@ -230,10 +234,11 @@ OPTIONS
   -h, --help               show CLI help
   -i, --ids=ids            Incident ID's to set priority on. Specify multiple times for multiple incidents.
   -m, --me                 Set priority on all incidents assigned to me
-  -p, --priority=priority  (required) The priority to set.
+  -n, --priority=priority  (required) The name of the priority to set.
+  -p, --pipe               Read incident ID's from stdin.
 ```
 
-_See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/incident/priority.ts)_
+_See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/incident/priority.ts)_
 
 ## `pd incident:resolve`
 
@@ -247,9 +252,10 @@ OPTIONS
   -h, --help     show CLI help
   -i, --ids=ids  Incident ID's to resolve. Specify multiple times for multiple incidents.
   -m, --me       Resolve all incidents assigned to me
+  -p, --pipe     Read incident ID's from stdin.
 ```
 
-_See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/incident/resolve.ts)_
+_See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/incident/resolve.ts)_
 
 ## `pd service:disable`
 
@@ -263,9 +269,10 @@ OPTIONS
   -h, --help       show CLI help
   -i, --ids=ids    Select services with the given ID. Specify multiple times for multiple services.
   -n, --name=name  Select services whose names contain the given text
+  -p, --pipe       Read service ID's from stdin.
 ```
 
-_See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/service/disable.ts)_
+_See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/service/disable.ts)_
 
 ## `pd service:enable`
 
@@ -279,9 +286,10 @@ OPTIONS
   -h, --help       show CLI help
   -i, --ids=ids    Select services with the given ID. Specify multiple times for multiple services.
   -n, --name=name  Select services whose names contain the given text
+  -p, --pipe       Read service ID's from stdin.
 ```
 
-_See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/service/enable.ts)_
+_See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/service/enable.ts)_
 
 ## `pd service:get`
 
@@ -300,7 +308,7 @@ OPTIONS
   -n, --name=name            Select services whose names contain the given text
 ```
 
-_See code: [src/commands/service/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/service/get.ts)_
+_See code: [src/commands/service/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/service/get.ts)_
 
 ## `pd service:list`
 
@@ -315,6 +323,7 @@ OPTIONS
   -j, --json              output full details as JSON
   -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
   -n, --name=name         Retrieve only services whose names contain this text
+  -p, --pipe              Print service ID's only to stdin, for use with pipes.
   -t, --teams=teams       Team names to include. Specify multiple times for multiple teams.
   -x, --extended          show extra columns
   --columns=columns       only show provided columns (comma-separated)
@@ -326,7 +335,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/service/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/service/list.ts)_
+_See code: [src/commands/service/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/service/list.ts)_
 
 ## `pd service:set`
 
@@ -341,10 +350,11 @@ OPTIONS
   -i, --ids=ids      Select services with the given ID. Specify multiple times for multiple services.
   -k, --key=key      (required) Attribute key to set
   -n, --name=name    Select services whose names contain the given text
+  -p, --pipe         Read service ID's from stdin.
   -v, --value=value  (required) Attribute value to set
 ```
 
-_See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/service/set.ts)_
+_See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/service/set.ts)_
 
 ## `pd update [CHANNEL]`
 
@@ -374,7 +384,7 @@ OPTIONS
   -k, --keys=keys            (required) Attribute names to get. specify multiple times for multiple keys.
 ```
 
-_See code: [src/commands/user/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/user/get.ts)_
+_See code: [src/commands/user/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/user/get.ts)_
 
 ## `pd user:list`
 
@@ -389,6 +399,7 @@ OPTIONS
   -h, --help              show CLI help
   -j, --json              output full details as JSON
   -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
+  -p, --pipe              Print service ID's only to stdin, for use with pipes.
   -x, --extended          show extra columns
   --columns=columns       only show provided columns (comma-separated)
   --csv                   output is csv format [alias: --output=csv]
@@ -399,7 +410,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/user/list.ts)_
+_See code: [src/commands/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/user/list.ts)_
 
 ## `pd user:set`
 
@@ -414,8 +425,9 @@ OPTIONS
   -h, --help         show CLI help
   -i, --ids=ids      Select users with the given ID. Specify multiple times for multiple users.
   -k, --key=key      (required) Attribute key to set
+  -p, --pipe         Read service ID's from stdin.
   -v, --value=value  (required) Attribute value to set
 ```
 
-_See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/user/set.ts)_
+_See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/user/set.ts)_
 <!-- commandsstop -->
