@@ -19,7 +19,7 @@ $ npm install -g pagerduty-cli
 $ pd COMMAND
 running command...
 $ pd (-v|--version|version)
-pagerduty-cli/0.0.24 darwin-x64 node-v14.11.0
+pagerduty-cli/0.0.25 darwin-x64 node-v14.11.0
 $ pd --help [COMMAND]
 USAGE
   $ pd COMMAND
@@ -60,7 +60,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/auth/get.ts)_
+_See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.25/src/commands/auth/get.ts)_
 
 ## `pd auth:set`
 
@@ -74,7 +74,7 @@ OPTIONS
   -t, --token=token  A PagerDuty API token
 ```
 
-_See code: [src/commands/auth/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/auth/set.ts)_
+_See code: [src/commands/auth/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.25/src/commands/auth/set.ts)_
 
 ## `pd auth:web`
 
@@ -88,7 +88,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/auth/web.ts)_
+_See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.25/src/commands/auth/web.ts)_
 
 ## `pd help [COMMAND]`
 
@@ -122,7 +122,7 @@ OPTIONS
   -p, --pipe     Read incident ID's from stdin.
 ```
 
-_See code: [src/commands/incident/ack.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/incident/ack.ts)_
+_See code: [src/commands/incident/ack.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.25/src/commands/incident/ack.ts)_
 
 ## `pd incident:list`
 
@@ -179,7 +179,7 @@ OPTIONS
   --until=until                                               The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/incident/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/incident/list.ts)_
+_See code: [src/commands/incident/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.25/src/commands/incident/list.ts)_
 
 ## `pd incident:notes`
 
@@ -203,7 +203,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/incident/notes.ts)_
+_See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.25/src/commands/incident/notes.ts)_
 
 ## `pd incident:open`
 
@@ -220,7 +220,7 @@ OPTIONS
   -p, --pipe     Read incident ID's from stdin.
 ```
 
-_See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/incident/open.ts)_
+_See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.25/src/commands/incident/open.ts)_
 
 ## `pd incident:priority`
 
@@ -238,7 +238,7 @@ OPTIONS
   -p, --pipe               Read incident ID's from stdin.
 ```
 
-_See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/incident/priority.ts)_
+_See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.25/src/commands/incident/priority.ts)_
 
 ## `pd incident:resolve`
 
@@ -255,7 +255,7 @@ OPTIONS
   -p, --pipe     Read incident ID's from stdin.
 ```
 
-_See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/incident/resolve.ts)_
+_See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.25/src/commands/incident/resolve.ts)_
 
 ## `pd service:disable`
 
@@ -272,7 +272,7 @@ OPTIONS
   -p, --pipe       Read service ID's from stdin.
 ```
 
-_See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/service/disable.ts)_
+_See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.25/src/commands/service/disable.ts)_
 
 ## `pd service:enable`
 
@@ -289,7 +289,7 @@ OPTIONS
   -p, --pipe       Read service ID's from stdin.
 ```
 
-_See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/service/enable.ts)_
+_See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.25/src/commands/service/enable.ts)_
 
 ## `pd service:get`
 
@@ -308,7 +308,7 @@ OPTIONS
   -n, --name=name            Select services whose names contain the given text
 ```
 
-_See code: [src/commands/service/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/service/get.ts)_
+_See code: [src/commands/service/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.25/src/commands/service/get.ts)_
 
 ## `pd service:list`
 
@@ -335,7 +335,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/service/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/service/list.ts)_
+_See code: [src/commands/service/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.25/src/commands/service/list.ts)_
 
 ## `pd service:set`
 
@@ -354,7 +354,7 @@ OPTIONS
   -v, --value=value  (required) Attribute value to set
 ```
 
-_See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/service/set.ts)_
+_See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.25/src/commands/service/set.ts)_
 
 ## `pd update [CHANNEL]`
 
@@ -384,7 +384,7 @@ OPTIONS
   -k, --keys=keys            (required) Attribute names to get. specify multiple times for multiple keys.
 ```
 
-_See code: [src/commands/user/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/user/get.ts)_
+_See code: [src/commands/user/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.25/src/commands/user/get.ts)_
 
 ## `pd user:list`
 
@@ -410,7 +410,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/user/list.ts)_
+_See code: [src/commands/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.25/src/commands/user/list.ts)_
 
 ## `pd user:set`
 
@@ -429,5 +429,5 @@ OPTIONS
   -v, --value=value  (required) Attribute value to set
 ```
 
-_See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.24/src/commands/user/set.ts)_
+_See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.25/src/commands/user/set.ts)_
 <!-- commandsstop -->
