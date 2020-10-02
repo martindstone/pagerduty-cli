@@ -77,9 +77,10 @@ export default class AuthWeb extends Command {
             const token = accessToken.token.access_token
             pd.me(token).then(me => {
               if (me && me.user && me.user.html_url) {
-                // const domain = me.user.html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
+                const domain = me.user.html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
                 pdconfig.setAuth(token)
                 cli.action.stop(chalk.bold.green('done'))
+                this.log(`You are logged in to ${chalk.bold.blue(domain)} as ${chalk.bold.blue(me.user.email)}`)
               } else {
                 cli.action.stop(chalk.bold.red('failed - got a token but it wasn\'t valid'))
                 this.error('Invalid token', {exit: 1, suggestions: ['Get a token from the web at https://martindstone.github.io/PDOAuth']})
