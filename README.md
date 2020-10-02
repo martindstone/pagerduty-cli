@@ -399,7 +399,7 @@ OPTIONS
   -h, --help              show CLI help
   -j, --json              output full details as JSON
   -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
-  -p, --pipe              Print service ID's only to stdin, for use with pipes.
+  -p, --pipe              Print user ID's only to stdin, for use with pipes.
   -x, --extended          show extra columns
   --columns=columns       only show provided columns (comma-separated)
   --csv                   output is csv format [alias: --output=csv]

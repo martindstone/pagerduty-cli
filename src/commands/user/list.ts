@@ -27,7 +27,7 @@ export default class UserList extends Command {
     pipe: flags.boolean({
       char: 'p',
       description: 'Print user ID\'s only to stdin, for use with pipes.',
-      exclusive: ['columns', 'filter', 'sort', 'csv', 'extended', 'json', 'keys'],
+      exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
     }),
     ...cli.table.flags(),
   }
@@ -52,9 +52,6 @@ export default class UserList extends Command {
 
     if (flags.json) {
       this.log(JSON.stringify(users, null, 2))
-      this.exit(0)
-    } else if (flags.pipe) {
-      this.log(users.map((e: { id: any }) => e.id).join('\n'))
       this.exit(0)
     }
 
@@ -102,6 +99,15 @@ export default class UserList extends Command {
     const options = {
       printLine: this.log,
       ...flags, // parsed flags
+    }
+    if (flags.pipe) {
+      for (const k of Object.keys(columns)) {
+        if (k !== 'id') {
+          const colAny = columns[k] as any
+          colAny.extended = true
+        }
+      }
+      options['no-header'] = true
     }
     cli.table(users, columns, options)
   }

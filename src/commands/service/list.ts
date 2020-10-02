@@ -33,7 +33,7 @@ export default class ServiceList extends Command {
     pipe: flags.boolean({
       char: 'p',
       description: 'Print service ID\'s only to stdin, for use with pipes.',
-      exclusive: ['columns', 'filter', 'sort', 'csv', 'extended', 'json', 'keys'],
+      exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
     }),
     ...cli.table.flags(),
   }
@@ -73,9 +73,6 @@ export default class ServiceList extends Command {
 
     if (flags.json) {
       this.log(JSON.stringify(services, null, 2))
-      this.exit(0)
-    } else if (flags.pipe) {
-      this.log(services.map((e: { id: any }) => e.id).join('\n'))
       this.exit(0)
     }
 
@@ -126,6 +123,17 @@ export default class ServiceList extends Command {
       printLine: this.log,
       ...flags, // parsed flags
     }
+
+    if (flags.pipe) {
+      for (const k of Object.keys(columns)) {
+        if (k !== 'id') {
+          const colAny = columns[k] as any
+          colAny.extended = true
+        }
+      }
+      options['no-header'] = true
+    }
+
     cli.table(services, columns, options)
   }
 }

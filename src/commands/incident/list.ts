@@ -67,7 +67,7 @@ export default class IncidentList extends Command {
     pipe: flags.boolean({
       char: 'p',
       description: 'Print incident ID\'s only to stdin, for use with pipes.',
-      exclusive: ['columns', 'filter', 'sort', 'csv', 'extended', 'json', 'keys'],
+      exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
     }),
     ...cli.table.flags(),
   }
@@ -185,10 +185,8 @@ export default class IncidentList extends Command {
     if (flags.json) {
       this.log(JSON.stringify(incidents, null, 2))
       this.exit(0)
-    } else if (flags.pipe) {
-      this.log(incidents.map((e: { id: any }) => e.id).join('\n'))
-      this.exit(0)
     }
+
     const columns: Record<string, object> = {
       id: {
         header: 'ID',
@@ -272,6 +270,17 @@ export default class IncidentList extends Command {
       printLine: this.log,
       ...flags, // parsed flags
     }
+
+    if (flags.pipe) {
+      for (const k of Object.keys(columns)) {
+        if (k !== 'id') {
+          const colAny = columns[k] as any
+          colAny.extended = true
+        }
+      }
+      options['no-header'] = true
+    }
+
     cli.table(incidents, columns, options)
   }
 }
