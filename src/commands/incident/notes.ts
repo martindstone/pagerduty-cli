@@ -19,7 +19,7 @@ export default class IncidentNotes extends Command {
       description: 'Note to add',
       exclusive: [...Object.keys(cli.table.flags())],
     }),
-    ...cli.table.flags()
+    ...cli.table.flags(),
   }
 
   async run() {

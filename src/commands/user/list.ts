@@ -24,6 +24,11 @@ export default class UserList extends Command {
       description: 'output full details as JSON',
       exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
     }),
+    pipe: flags.boolean({
+      char: 'p',
+      description: 'Print service ID\'s only to stdin, for use with pipes.',
+      exclusive: ['columns', 'filter', 'sort', 'csv', 'extended', 'json', 'keys'],
+    }),
     ...cli.table.flags(),
   }
 
@@ -44,10 +49,15 @@ export default class UserList extends Command {
     cli.action.start('Getting users from PD')
     const users = await pd.fetch(token, '/users', params)
     cli.action.stop(`got ${users.length}`)
+
     if (flags.json) {
       this.log(JSON.stringify(users, null, 2))
-      return
+      this.exit(0)
+    } else if (flags.pipe) {
+      this.log(users.map((e: { id: any }) => e.id).join('\n'))
+      this.exit(0)
     }
+
     const columns: Record<string, object> = {
       id: {
         header: 'ID',

@@ -2,6 +2,7 @@ import Command from '../../base'
 import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
+import getStream from 'get-stream'
 import * as pd from '../../pd'
 import * as utils from '../../utils'
 
@@ -13,13 +14,18 @@ export default class IncidentResolve extends Command {
     me: flags.boolean({
       char: 'm',
       description: 'Resolve all incidents assigned to me',
-      exclusive: ['ids'],
+      exclusive: ['ids', 'pipe'],
     }),
     ids: flags.string({
       char: 'i',
       description: 'Incident ID\'s to resolve. Specify multiple times for multiple incidents.',
       multiple: true,
-      exclusive: ['me'],
+      exclusive: ['me', 'pipe'],
+    }),
+    pipe: flags.boolean({
+      char: 'p',
+      description: 'Read incident ID\'s from stdin.',
+      exclusive: ['me', 'ids'],
     }),
   }
 
@@ -48,9 +54,17 @@ export default class IncidentResolve extends Command {
       cli.action.stop(`got ${incidents.length}`)
       incident_ids = incidents.map((e: { id: any }) => e.id)
     } else if (flags.ids) {
-      incident_ids = utils.splitStringArrayOnWhitespace(flags.ids)
+      incident_ids = utils.splitDedupAndFlatten(flags.ids)
+    } else if (flags.pipe) {
+      const str: string = await getStream(process.stdin)
+      incident_ids = utils.splitDedupAndFlatten([str])
     } else {
-      this.error('You must specify one of: -i, -m', {exit: 1})
+      this.error('You must specify one of: -i, -m, -p', {exit: 1})
+    }
+
+    const invalid_ids = utils.invalidPagerDutyIDs(incident_ids)
+    if (invalid_ids && invalid_ids.length > 0) {
+      this.error(`Invalid incident ID's: ${invalid_ids.join(', ')}`, {exit: 1})
     }
 
     const requests: any[] = []

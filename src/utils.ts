@@ -23,10 +23,13 @@ export function formatRow(pdObject: object, pathPrefix: string, fields: string[]
   return fields.map(e => formatField(dotProp.get(pdObject, `${pathPrefix}.${e}`))).join(delimiter)
 }
 
-export function splitStringArrayOnWhitespace(arr: string[]) {
-  let retval: string[] = []
-  for (const e of arr) {
-    retval = [...retval, ...(e.split(/[\s]+/).filter(s => s))]
+export function splitDedupAndFlatten(arr: any[]) {
+  if (!arr) {
+    return []
   }
-  return retval
+  return [...new Set(arr.flat().map(e => e.split(/[\s,]+/)).flat().filter(e => e))]
+}
+
+export function invalidPagerDutyIDs(arr: string[]) {
+  return arr.filter(e => !e.match(/^P[\w]{6}/))
 }

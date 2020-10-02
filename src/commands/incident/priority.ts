@@ -2,6 +2,7 @@ import Command from '../../base'
 import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
+import getStream from 'get-stream'
 import * as pd from '../../pd'
 import * as utils from '../../utils'
 
@@ -22,9 +23,14 @@ export default class IncidentPriority extends Command {
       exclusive: ['me'],
     }),
     priority: flags.string({
-      char: 'p',
-      description: 'The priority to set.',
+      char: 'n',
+      description: 'The name of the priority to set.',
       required: true,
+    }),
+    pipe: flags.boolean({
+      char: 'p',
+      description: 'Read incident ID\'s from stdin.',
+      exclusive: ['me', 'ids'],
     }),
   }
 
@@ -53,9 +59,17 @@ export default class IncidentPriority extends Command {
       cli.action.stop(`got ${incidents.length}`)
       incident_ids = incidents.map((e: { id: any }) => e.id)
     } else if (flags.ids) {
-      incident_ids = utils.splitStringArrayOnWhitespace(flags.ids)
+      incident_ids = utils.splitDedupAndFlatten(flags.ids)
+    } else if (flags.pipe) {
+      const str: string = await getStream(process.stdin)
+      incident_ids = utils.splitDedupAndFlatten([str])
     } else {
-      this.error('You must specify one of: -i, -m', {exit: 1})
+      this.error('You must specify one of: -i, -m, -p', {exit: 1})
+    }
+
+    const invalid_ids = utils.invalidPagerDutyIDs(incident_ids)
+    if (invalid_ids && invalid_ids.length > 0) {
+      this.error(`Invalid incident ID's: ${invalid_ids.join(', ')}`, {exit: 1})
     }
 
     cli.action.start('Getting incident priorities from PD')
@@ -72,7 +86,7 @@ export default class IncidentPriority extends Command {
       this.error(`More than one incident priority matches name ${flags.priority}`, {exit: 1})
     }
     const priority_id = filtered_priorities[0]
-    const promises: any[] = []
+    const requests: any[] = []
     cli.action.start(`Setting priority ${chalk.bold.blue(`${flags.priority} (${priority_id})`)} on incident(s) ${chalk.bold.blue(incident_ids.join(', '))}`)
     for (const incident_id of incident_ids) {
       const body = {
@@ -84,9 +98,15 @@ export default class IncidentPriority extends Command {
           },
         },
       }
-      promises.push(pd.request(token, `/incidents/${incident_id}`, 'PUT', null, body))
+      requests.push({
+        token: token,
+        endpoint: `/incidents/${incident_id}`,
+        method: 'PUT',
+        params: {},
+        data: body,
+      })
     }
-    const rs = await Promise.all(promises)
+    const rs = await pd.batchedRequest(requests)
     let failed = false
     for (const r of rs) {
       if (!(r && r.incident && r.incident.priority && r.incident.priority.name === flags.priority)) {

@@ -53,7 +53,7 @@ export default class ServiceGet extends Command {
       service_ids_set = new Set(services.map((e: {id: string}) => e.id))
     }
     if (flags.ids) {
-      service_ids_set = new Set([...service_ids_set, ...utils.splitStringArrayOnWhitespace(flags.ids)])
+      service_ids_set = new Set([...service_ids_set, ...utils.splitDedupAndFlatten(flags.ids)])
     }
     if (flags.all) {
       const services = await pd.fetch(token, '/services')

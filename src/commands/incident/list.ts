@@ -64,6 +64,11 @@ export default class IncidentList extends Command {
       description: 'output full details as JSON',
       exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
     }),
+    pipe: flags.boolean({
+      char: 'p',
+      description: 'Print incident ID\'s only to stdin, for use with pipes.',
+      exclusive: ['columns', 'filter', 'sort', 'csv', 'extended', 'json', 'keys'],
+    }),
     ...cli.table.flags(),
   }
 
@@ -174,12 +179,15 @@ export default class IncidentList extends Command {
     const incidents = await pd.fetch(token, '/incidents', params)
     if (incidents.length === 0) {
       cli.action.stop(chalk.bold.red('none found'))
-      return
+      this.exit(0)
     }
     cli.action.stop(`got ${incidents.length}`)
     if (flags.json) {
       this.log(JSON.stringify(incidents, null, 2))
-      return
+      this.exit(0)
+    } else if (flags.pipe) {
+      this.log(incidents.map((e: { id: any }) => e.id).join('\n'))
+      this.exit(0)
     }
     const columns: Record<string, object> = {
       id: {

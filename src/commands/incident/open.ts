@@ -2,6 +2,7 @@ import Command from '../../base'
 import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
+import getStream from 'get-stream'
 import * as pd from '../../pd'
 import * as utils from '../../utils'
 
@@ -20,6 +21,11 @@ export default class IncidentOpen extends Command {
       description: 'Incident ID\'s to open. Specify multiple times for multiple incidents.',
       multiple: true,
       exclusive: ['me'],
+    }),
+    pipe: flags.boolean({
+      char: 'p',
+      description: 'Read incident ID\'s from stdin.',
+      exclusive: ['me', 'ids'],
     }),
   }
 
@@ -54,10 +60,16 @@ export default class IncidentOpen extends Command {
       } catch (error) {
         this.error('Couldn\'t open browser. Are you running as root?', {exit: 1})
       }
-    } else if (flags.ids) {
+    } else if (flags.ids || flags.pipe) {
       const users = await pd.fetch(token, '/users', {limit: 1})
       const domain = users[0].html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
-      const ids = utils.splitStringArrayOnWhitespace(flags.ids)
+      let ids: string[] = []
+      if (flags.ids) {
+        ids = utils.splitDedupAndFlatten(flags.ids)
+      } else if (flags.pipe) {
+        const str: string = await getStream(process.stdin)
+        ids = utils.splitDedupAndFlatten([str])
+      }
       try {
         for (const incident_id of ids) {
           cli.open(`https://${domain}.pagerduty.com/incidents/${incident_id}`)
@@ -66,7 +78,7 @@ export default class IncidentOpen extends Command {
         this.error('Couldn\'t open browser. Are you running as root?', {exit: 1})
       }
     } else {
-      this.error('You must specify one of: -i, -m', {exit: 1})
+      this.error('You must specify one of: -i, -m, -p', {exit: 1})
     }
   }
 }

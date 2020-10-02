@@ -19,6 +19,11 @@ export default class ServiceEnable extends Command {
       description: 'Select services with the given ID. Specify multiple times for multiple services.',
       multiple: true,
     }),
+    pipe: flags.boolean({
+      char: 'p',
+      description: 'Read service ID\'s from stdin.',
+      exclusive: ['name', 'ids'],
+    }),
   }
 
   async run() {
@@ -29,6 +34,9 @@ export default class ServiceEnable extends Command {
     }
     if (flags.ids) {
       args = [...args, ...flags.ids.map(e => ['-i', e]).flat()]
+    }
+    if (flags.pipe) {
+      args = [...args, '-p']
     }
     await ServiceSet.run(args)
   }

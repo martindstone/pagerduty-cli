@@ -2,6 +2,7 @@ import Command from '../../base'
 import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
+import getStream from 'get-stream'
 import * as pd from '../../pd'
 import * as utils from '../../utils'
 
@@ -29,6 +30,11 @@ export default class UserSet extends Command {
       description: 'Attribute value to set',
       required: true,
     }),
+    pipe: flags.boolean({
+      char: 'p',
+      description: 'Read service ID\'s from stdin.',
+      exclusive: ['email', 'ids'],
+    }),
   }
 
   async run() {
@@ -37,22 +43,33 @@ export default class UserSet extends Command {
     // get a validated token from base class
     const token = this.token as string
 
-    let user_ids_set = new Set()
+    if (!(flags.email || flags.ids || flags.pipe)) {
+      this.error('You must specify one of: -i, -e, -p', {exit: 1})
+    }
+
+    let user_ids: string[] = []
     if (flags.email) {
       cli.action.start('Getting user IDs from PD')
       const users = await pd.fetch(token, '/users', {query: flags.email})
       if (!users || users.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
       }
-      user_ids_set = new Set(users.map((e: {id: string}) => e.id))
+      user_ids = users.map((e: { id: any }) => e.id)
     }
     if (flags.ids) {
-      user_ids_set = new Set([...user_ids_set, ...utils.splitStringArrayOnWhitespace(flags.ids)])
+      user_ids = [...new Set([...user_ids, ...utils.splitDedupAndFlatten(flags.ids)])]
+    }
+    if (flags.pipe) {
+      const str: string = await getStream(process.stdin)
+      user_ids = utils.splitDedupAndFlatten([str])
+    }
+    const invalid_ids = utils.invalidPagerDutyIDs(user_ids)
+    if (invalid_ids && invalid_ids.length > 0) {
+      this.error(`Invalid user ID's: ${invalid_ids.join(', ')}`, {exit: 1})
     }
 
     const key = flags.key
     const value = flags.value.trim().length > 0 ? flags.value : null
-    const user_ids: string[] = [...user_ids_set] as string[]
 
     cli.action.start(`Setting ${chalk.bold.blue(flags.key)} = '${chalk.bold.blue(flags.value)}' on user(s) ${chalk.bold.blue(user_ids.join(', '))}`)
     const requests: any[] = []
@@ -66,7 +83,7 @@ export default class UserSet extends Command {
         data: body,
       })
     }
-    // const rs = await Promise.all(promises)
+
     const rs = await pd.batchedRequest(requests)
     let failed = false
     for (const r of rs) {
