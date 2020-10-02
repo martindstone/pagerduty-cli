@@ -19,7 +19,7 @@ $ npm install -g pagerduty-cli
 $ pd COMMAND
 running command...
 $ pd (-v|--version|version)
-pagerduty-cli/0.0.22 darwin-x64 node-v14.11.0
+pagerduty-cli/0.0.23 darwin-x64 node-v14.11.0
 $ pd --help [COMMAND]
 USAGE
   $ pd COMMAND
@@ -60,7 +60,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.22/src/commands/auth/get.ts)_
+_See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/auth/get.ts)_
 
 ## `pd auth:set`
 
@@ -74,7 +74,7 @@ OPTIONS
   -t, --token=token  A PagerDuty API token
 ```
 
-_See code: [src/commands/auth/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.22/src/commands/auth/set.ts)_
+_See code: [src/commands/auth/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/auth/set.ts)_
 
 ## `pd auth:web`
 
@@ -88,7 +88,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.22/src/commands/auth/web.ts)_
+_See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/auth/web.ts)_
 
 ## `pd help [COMMAND]`
 
@@ -121,7 +121,7 @@ OPTIONS
   -m, --me       Acknowledge all incidents assigned to me
 ```
 
-_See code: [src/commands/incident/ack.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.22/src/commands/incident/ack.ts)_
+_See code: [src/commands/incident/ack.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/incident/ack.ts)_
 
 ## `pd incident:list`
 
@@ -132,50 +132,51 @@ USAGE
   $ pd incident:list
 
 OPTIONS
-  -S, --services=services                         Service names to include. Specify multiple times for multiple
-                                                  services.
+  -S, --services=services                                     Service names to include. Specify multiple times for
+                                                              multiple services.
 
-  -e, --assignees=assignees                       Return only incidents assigned to this PD login email. Specify
-                                                  multiple times for multiple assignees.
+  -e, --assignees=assignees                                   Return only incidents assigned to this PD login email.
+                                                              Specify multiple times for multiple assignees.
 
-  -h, --help                                      show CLI help
+  -h, --help                                                  show CLI help
 
-  -j, --json                                      output full details as JSON
+  -j, --json                                                  output full details as JSON
 
-  -k, --keys=keys                                 Additional fields to display. Specify multiple times for multiple
-                                                  fields.
+  -k, --keys=keys                                             Additional fields to display. Specify multiple times for
+                                                              multiple fields.
 
-  -m, --me                                        Return only incidents assigned to me
+  -m, --me                                                    Return only incidents assigned to me
 
-  -s, --statuses=triggered|acknowledged|resolved  [default: triggered,acknowledged,resolved] Return only incidents with
-                                                  the given statuses. Specify multiple times for multiple statuses.
+  -s, --statuses=open|closed|triggered|acknowledged|resolved  [default: open] Return only incidents with the given
+                                                              statuses. Specify multiple times for multiple statuses.
 
-  -t, --teams=teams                               Team names to include. Specify multiple times for multiple teams.
+  -t, --teams=teams                                           Team names to include. Specify multiple times for multiple
+                                                              teams.
 
-  -u, --urgencies=high|low                        [default: high,low] Urgencies to include.
+  -u, --urgencies=high|low                                    [default: high,low] Urgencies to include.
 
-  -x, --extended                                  show extra columns
+  -x, --extended                                              show extra columns
 
-  --columns=columns                               only show provided columns (comma-separated)
+  --columns=columns                                           only show provided columns (comma-separated)
 
-  --csv                                           output is csv format [alias: --output=csv]
+  --csv                                                       output is csv format [alias: --output=csv]
 
-  --filter=filter                                 filter property by partial string matching, ex: name=foo
+  --filter=filter                                             filter property by partial string matching, ex: name=foo
 
-  --no-header                                     hide table header from output
+  --no-header                                                 hide table header from output
 
-  --no-truncate                                   do not truncate output to fit screen
+  --no-truncate                                               do not truncate output to fit screen
 
-  --output=csv|json|yaml                          output in a more machine friendly format
+  --output=csv|json|yaml                                      output in a more machine friendly format
 
-  --since=since                                   The start of the date range over which you want to search.
+  --since=since                                               The start of the date range over which you want to search.
 
-  --sort=sort                                     property to sort by (prepend '-' for descending)
+  --sort=sort                                                 property to sort by (prepend '-' for descending)
 
-  --until=until                                   The end of the date range over which you want to search.
+  --until=until                                               The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/incident/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.22/src/commands/incident/list.ts)_
+_See code: [src/commands/incident/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/incident/list.ts)_
 
 ## `pd incident:notes`
 
@@ -199,7 +200,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.22/src/commands/incident/notes.ts)_
+_See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/incident/notes.ts)_
 
 ## `pd incident:open`
 
@@ -215,7 +216,7 @@ OPTIONS
   -m, --me       Open all incidents assigned to me
 ```
 
-_See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.22/src/commands/incident/open.ts)_
+_See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/incident/open.ts)_
 
 ## `pd incident:priority`
 
@@ -232,7 +233,7 @@ OPTIONS
   -p, --priority=priority  (required) The priority to set.
 ```
 
-_See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.22/src/commands/incident/priority.ts)_
+_See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/incident/priority.ts)_
 
 ## `pd incident:resolve`
 
@@ -248,7 +249,7 @@ OPTIONS
   -m, --me       Resolve all incidents assigned to me
 ```
 
-_See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.22/src/commands/incident/resolve.ts)_
+_See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/incident/resolve.ts)_
 
 ## `pd service:disable`
 
@@ -264,7 +265,7 @@ OPTIONS
   -n, --name=name  Select services whose names contain the given text
 ```
 
-_See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.22/src/commands/service/disable.ts)_
+_See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/service/disable.ts)_
 
 ## `pd service:enable`
 
@@ -280,7 +281,7 @@ OPTIONS
   -n, --name=name  Select services whose names contain the given text
 ```
 
-_See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.22/src/commands/service/enable.ts)_
+_See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/service/enable.ts)_
 
 ## `pd service:get`
 
@@ -299,7 +300,7 @@ OPTIONS
   -n, --name=name            Select services whose names contain the given text
 ```
 
-_See code: [src/commands/service/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.22/src/commands/service/get.ts)_
+_See code: [src/commands/service/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/service/get.ts)_
 
 ## `pd service:list`
 
@@ -325,7 +326,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/service/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.22/src/commands/service/list.ts)_
+_See code: [src/commands/service/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/service/list.ts)_
 
 ## `pd service:set`
 
@@ -343,7 +344,7 @@ OPTIONS
   -v, --value=value  (required) Attribute value to set
 ```
 
-_See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.22/src/commands/service/set.ts)_
+_See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/service/set.ts)_
 
 ## `pd update [CHANNEL]`
 
@@ -373,7 +374,7 @@ OPTIONS
   -k, --keys=keys            (required) Attribute names to get. specify multiple times for multiple keys.
 ```
 
-_See code: [src/commands/user/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.22/src/commands/user/get.ts)_
+_See code: [src/commands/user/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/user/get.ts)_
 
 ## `pd user:list`
 
@@ -398,7 +399,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.22/src/commands/user/list.ts)_
+_See code: [src/commands/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/user/list.ts)_
 
 ## `pd user:set`
 
@@ -416,5 +417,5 @@ OPTIONS
   -v, --value=value  (required) Attribute value to set
 ```
 
-_See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.22/src/commands/user/set.ts)_
+_See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.23/src/commands/user/set.ts)_
 <!-- commandsstop -->
