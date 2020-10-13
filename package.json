@@ -74,10 +74,10 @@
         "description": "See/manage users"
       },
       "incident": {
-        "description": "See/manage PagerDuty incidents"
+        "description": "See/manage incidents"
       },
       "service": {
-        "description": "See/manage PagerDuty services"
+        "description": "See/manage services"
       }
     },
     "macos": {
