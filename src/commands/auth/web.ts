@@ -75,17 +75,9 @@ export default class AuthWeb extends Command {
         client.getToken(tokenParams).then(accessToken => {
           if (accessToken && accessToken.token && accessToken.token.access_token) {
             const token = accessToken.token.access_token
-            pd.me(token).then(me => {
-              if (me && me.user && me.user.html_url) {
-                const domain = me.user.html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
-                pdconfig.setAuth(token)
-                cli.action.stop(chalk.bold.green('done'))
-                this.log(`You are logged in to ${chalk.bold.blue(domain)} as ${chalk.bold.blue(me.user.email)}`)
-              } else {
-                cli.action.stop(chalk.bold.red('failed - got a token but it wasn\'t valid'))
-                this.error('Invalid token', {exit: 1, suggestions: ['Get a token from the web at https://martindstone.github.io/PDOAuth']})
-              }
-            })
+            cli.action.start(`Checking token ${chalk.bold.blue(token)}`)
+            // sometimes PD gives an error when immediately making a request
+            setTimeout(this.checkToken, 2_000, token, this)
           } else {
             cli.action.stop(chalk.bold.red('failed - response didn\'t contain a token'))
             this.error('Missing token', {exit: 1, suggestions: ['Get a token from the web at https://martindstone.github.io/PDOAuth']})
@@ -120,5 +112,19 @@ export default class AuthWeb extends Command {
         ],
       })
     }
+  }
+
+  checkToken(token: any, self: any) {
+    pd.me(token).then(me => {
+      if (me && me.user && me.user.html_url) {
+        const domain = me.user.html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
+        pdconfig.setAuth(token)
+        cli.action.stop(chalk.bold.green('done'))
+        self.log(`You are logged in to ${chalk.bold.blue(domain)} as ${chalk.bold.blue(me.user.email)}`)
+      } else {
+        cli.action.stop(chalk.bold.red(`failed - got a token (${token}) but it wasn't valid`))
+        self.error('Invalid token', {exit: 1, suggestions: ['Get a token from the web at https://martindstone.github.io/PDOAuth']})
+      }
+    })
   }
 }
