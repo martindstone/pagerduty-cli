@@ -65,7 +65,13 @@ export default class IncidentOpen extends Command {
         this.error('Couldn\'t open browser. Are you running as root?', {exit: 1})
       }
     } else if (flags.ids || flags.pipe) {
-      const users = await pd.fetch(token, '/users', {limit: 1})
+      cli.action.start('Finding your PD domain')
+      const r = await pd.fetch(token, '/users', {limit: 1})
+      if (r.isFailure) {
+        cli.action.stop(chalk.bold.red('failed!'))
+        this.error(`Request to /users failed: ${r.error}`, {exit: 1})
+      }
+      const users = r.getValue()
       const domain = users[0].html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
       let ids: string[] = []
       if (flags.ids) {
