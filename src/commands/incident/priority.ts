@@ -42,16 +42,20 @@ export default class IncidentPriority extends Command {
 
     let incident_ids: string[] = []
     if (flags.me) {
-      const me = await pd.me(token)
-      if (!me) {
-        this.error('You can\'t use --me with a legacy API token.', {
-          exit: 1,
-          suggestions: ['pd auth:set', 'pd auth:web'],
-        })
+      let r = await pd.me(token)
+      if (r.isFailure) {
+        cli.action.stop(chalk.bold.red('failed!'))
+        this.error(`Request to /users/me failed: ${r.error}`, {exit: 1})
       }
+      const me = r.getValue()
       const params = {user_ids: [me.user.id]}
       cli.action.start('Getting incidents from PD')
-      const incidents = await pd.fetch(token, '/incidents', params)
+      r = await pd.fetch(token, '/incidents', params)
+      if (r.isFailure) {
+        cli.action.stop(chalk.bold.red('failed!'))
+        this.error(`Failed to get incidents: ${r.error}`, {exit: 1})
+      }
+      const incidents = r.getValue()
       if (incidents.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
         return
@@ -73,7 +77,12 @@ export default class IncidentPriority extends Command {
     }
 
     cli.action.start('Getting incident priorities from PD')
-    const priorities = await pd.fetch(token, '/priorities')
+    let r = await pd.fetch(token, '/priorities')
+    if (r.isFailure) {
+      cli.action.stop(chalk.bold.red('failed!'))
+      this.error(`Failed to get incident priorities: ${r.error}`, {exit: 1})
+    }
+    const priorities = r.getValue()
     const filtered_priorities: string[] = priorities
     .filter((e: any) => e.name === flags.priority)
     .map((e: any) => e.id)
@@ -106,15 +115,21 @@ export default class IncidentPriority extends Command {
         data: body,
       })
     }
-    const rs = await pd.batchedRequest(requests)
-    let failed = false
-    for (const r of rs) {
+    r = await pd.batchedRequest(requests)
+    if (r.isFailure) {
+      cli.action.stop(chalk.bold.red('failed!'))
+      this.error(`Priority change request failed: ${r.error}`)
+    }
+    const returnedIncidents = r.getValue()
+    const failed = []
+    for (const r of returnedIncidents) {
       if (!(r && r.incident && r.incident.priority && r.incident.priority.name === flags.priority)) {
-        failed = true
+        failed.push(r.incident.id)
       }
     }
-    if (failed) {
+    if (failed.length > 0) {
       cli.action.stop(chalk.bold.red('failed!'))
+      this.error(`Priority change request failed for incidents ${chalk.bold.red(failed.join(', '))}`)
     } else {
       cli.action.stop(chalk.bold.green('done'))
     }

@@ -24,21 +24,33 @@ export default class AuthSet extends Command {
     }
     cli.action.start('Checking token')
     if (pd.isBearerToken(token)) {
-      const me = await pd.me(token)
+      const r = await pd.me(token)
+      if (r.isFailure) {
+        cli.action.stop(chalk.bold.red('failed!'))
+        this.error(`Token authorization failed: ${r.error}`, {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
+      }
+      const me = r.getValue()
       if (me && me.user && me.user.html_url) {
-        // const domain = me.user.html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
+        const domain = me.user.html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
         config.setAuth(token)
         cli.action.stop(chalk.bold.green('done'))
+        this.log(`You are logged in to ${chalk.bold.blue(domain)} as ${chalk.bold.blue(me.user.email)}`)
       } else {
         cli.action.stop(chalk.bold.red('failed!'))
         this.error('Invalid token', {exit: 1, suggestions: ['pd auth:web']})
       }
     } else {
-      const users = await pd.request(token, '/users', 'GET', {limit: 1})
+      const r = await pd.request(token, '/users', 'GET', {limit: 1})
+      if (r.isFailure) {
+        cli.action.stop(chalk.bold.red('failed!'))
+        this.error(`Token authorization failed: ${r.error}`, {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
+      }
+      const users = r.getValue()
       if (users && users.users && users.users.length === 1) {
-        // const domain = users.users[0].html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
+        const domain = users.users[0].html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
         config.setAuth(token)
         cli.action.stop(chalk.bold.green('done'))
+        this.log(`You are logged in to ${chalk.bold.blue(domain)} using a legacy API token`)
       } else {
         cli.action.stop(chalk.bold.red('failed!'))
         this.error('Token authorization failed', {exit: 1, suggestions: ['pd auth:web']})

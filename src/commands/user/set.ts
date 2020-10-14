@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import Command from '../../base'
 import {flags} from '@oclif/command'
 import chalk from 'chalk'
@@ -50,7 +51,12 @@ export default class UserSet extends Command {
     let user_ids: string[] = []
     if (flags.email) {
       cli.action.start('Getting user IDs from PD')
-      const users = await pd.fetch(token, '/users', {query: flags.email})
+      const r = await pd.fetch(token, '/users', {query: flags.email})
+      if (r.isFailure) {
+        cli.action.stop(chalk.bold.red('failed!'))
+        this.error(`Failed to get users: ${r.error}`, {exit: 1})
+      }
+      const users = r.getValue()
       if (!users || users.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
       }
@@ -84,16 +90,21 @@ export default class UserSet extends Command {
       })
     }
 
-    const rs = await pd.batchedRequest(requests)
-    let failed = false
-    for (const r of rs) {
+    const r = await pd.batchedRequest(requests)
+    if (r.isFailure) {
+      cli.action.stop(chalk.bold.red('failed!'))
+      this.error(`User set request failed: ${r.error}`)
+    }
+    const returnedUsers = r.getValue()
+    const failed = []
+    for (const r of returnedUsers) {
       if (!(r && r.user && key in r.user && r.user[key] === value)) {
-        failed = true
+        failed.push(r.incident.id)
       }
     }
-    if (failed) {
+    if (failed.length > 0) {
       cli.action.stop(chalk.bold.red('failed!'))
-      this.error('Some requests failed. Please check your users and try again.')
+      this.error(`Set request failed for users ${chalk.bold.red(failed.join(', '))}`)
     } else {
       cli.action.stop(chalk.bold.green('done'))
     }

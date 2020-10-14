@@ -36,20 +36,26 @@ export default class IncidentNotes extends Command {
           content: flags.note,
         },
       }
-      try {
-        const note = await pd.request(token, `/incidents/${flags.id}/notes`, 'POST', null, body)
-        if (note && note.note && note.note.id) {
-          cli.action.stop(chalk.bold.green('done'))
-        } else {
-          cli.action.stop(chalk.bold.red('failed!'))
-        }
-      } catch (error) {
-        this.error(`Failed to add a note to incident ${flags.id}: ${error}`, {exit: 1})
+      const r = await pd.request(token, `/incidents/${flags.id}/notes`, 'POST', null, body)
+      if (r.isFailure) {
+        cli.action.stop('failed!')
+        this.error(`Failed to add a note to incident ${flags.id}: ${r.error}`, {exit: 1})
+      }
+      const note = r.getValue()
+      if (note && note.note && note.note.id) {
+        cli.action.stop(chalk.bold.green('done'))
+      } else {
+        cli.action.stop(chalk.bold.red('failed!'))
       }
     } else {
       // get notes
       cli.action.start(`Getting notes for incident ${chalk.bold.blue(flags.id)}`)
-      const notes = await pd.fetch(token, `/incidents/${flags.id}/notes`)
+      const r = await pd.fetch(token, `/incidents/${flags.id}/notes`)
+      if (r.isFailure) {
+        cli.action.stop('failed!')
+        this.error(`Failed to get notes for incident ${flags.id}: ${r.error}`, {exit: 1})
+      }
+      const notes = r.getValue()
       if (notes.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
         return

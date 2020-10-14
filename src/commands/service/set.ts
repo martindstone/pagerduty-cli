@@ -50,7 +50,13 @@ export default class ServiceSet extends Command {
     let service_ids: string[] = []
     if (flags.name) {
       cli.action.start('Getting service IDs from PD')
-      const services = await pd.fetch(token, '/services', {query: flags.name})
+      // const services = await pd.fetch(token, '/services', {query: flags.name})
+      const r = await pd.fetch(token, '/services', {query: flags.name})
+      if (r.isFailure) {
+        cli.action.stop(chalk.bold.red('failed!'))
+        this.error(`Failed to get services: ${r.error}`, {exit: 1})
+      }
+      const services = r.getValue()
       if (!services || services.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
       }
@@ -83,24 +89,28 @@ export default class ServiceSet extends Command {
         data: body,
       })
     }
-    // const rs = await Promise.all(promises)
-    const rs = await pd.batchedRequest(requests)
-    let failed = false
-    for (const r of rs) {
+    const r = await pd.batchedRequest(requests)
+    if (r.isFailure) {
+      cli.action.stop(chalk.bold.red('failed!'))
+      this.error(`Service set request failed: ${r.error}`)
+    }
+    const returnedIncidents = r.getValue()
+    const failed = []
+    for (const r of returnedIncidents) {
       if (!(r && r.service && key in r.service && r.service[key] === value)) {
         if (key === 'status' && value === 'active') {
           // special case when setting status = active, it can come back as active, warning or critical
           if (['active', 'warning', 'critical'].indexOf(r.service[key]) === -1) {
-            failed = true
+            failed.push(r.incident.id)
           }
         } else {
-          failed = true
+          failed.push(r.incident.id)
         }
       }
     }
-    if (failed) {
+    if (failed.length > 0) {
       cli.action.stop(chalk.bold.red('failed!'))
-      this.error('Some requests failed. Please check your services and try again.')
+      this.error(`Service set request failed for incidents ${chalk.bold.red(failed.join(', '))}`)
     } else {
       cli.action.stop(chalk.bold.green('done'))
     }

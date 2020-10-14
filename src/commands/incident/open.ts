@@ -36,17 +36,21 @@ export default class IncidentOpen extends Command {
     const token = this.token as string
 
     if (flags.me) {
-      const me = await pd.me(token)
-      if (!me) {
-        this.error('You can\'t use --me with a legacy API token.', {
-          exit: 1,
-          suggestions: ['pd auth:set', 'pd auth:web'],
-        })
+      let r = await pd.me(token)
+      if (r.isFailure) {
+        cli.action.stop(chalk.bold.red('failed!'))
+        this.error(`Request to /users/me failed: ${r.error}`, {exit: 1})
       }
+      const me = r.getValue()
       const domain = me.user.html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
       const params = {user_ids: [me.user.id]}
       cli.action.start('Getting incidents from PD')
-      const incidents = await pd.fetch(token, '/incidents', params)
+      r = await pd.fetch(token, '/incidents', params)
+      if (r.isFailure) {
+        cli.action.stop(chalk.bold.red('failed!'))
+        this.error(`Failed to list incidents: ${r.error}`, {exit: 1})
+      }
+      const incidents = r.getValue()
       if (incidents.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
         return

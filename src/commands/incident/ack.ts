@@ -37,21 +37,26 @@ export default class IncidentAck extends Command {
 
     let incident_ids: string[] = []
     if (flags.me) {
-      const me = await pd.me(token)
-      if (!me) {
-        this.error('You can\'t use --me with a legacy API token.', {
-          exit: 1,
-          suggestions: ['pd auth:set', 'pd auth:web'],
-        })
+      let r = await pd.me(token)
+      if (r.isFailure) {
+        cli.action.stop(chalk.bold.red('failed!'))
+        this.error(`Request to /users/me failed: ${r.error}`, {exit: 1})
       }
+      const me = r.getValue()
+
       const params = {user_ids: [me.user.id]}
       cli.action.start('Getting incidents from PD')
-      const incidents = await pd.fetch(token, '/incidents', params)
+      r = await pd.fetch(token, '/incidents', params)
+      if (r.isFailure) {
+        cli.action.stop(chalk.bold.red('failed!'))
+        this.error(`Request to list incidents failed: ${r.error}`, {exit: 1})
+      }
+      const incidents = r.getValue()
       if (incidents.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
         return
       }
-      cli.action.stop(`got ${incidents.length}`)
+      cli.action.stop(`got ${incidents.length} before filtering`)
       incident_ids = incidents.map((e: { id: any }) => e.id)
     } else if (flags.ids) {
       incident_ids = utils.splitDedupAndFlatten(flags.ids)
@@ -79,15 +84,21 @@ export default class IncidentAck extends Command {
         data: body,
       })
     }
-    const rs = await pd.batchedRequest(requests)
-    let failed = false
-    for (const r of rs) {
+    const r = await pd.batchedRequest(requests)
+    if (r.isFailure) {
+      cli.action.stop(chalk.bold.red('failed!'))
+      this.error(`Acknowledge request failed: ${r.error}`)
+    }
+    const returnedIncidents = r.getValue()
+    const failed = []
+    for (const r of returnedIncidents) {
       if (!(r && r.incident && r.incident.status && r.incident.status === 'acknowledged')) {
-        failed = true
+        failed.push(r.incident.id)
       }
     }
-    if (failed) {
+    if (failed.length > 0) {
       cli.action.stop(chalk.bold.red('failed!'))
+      this.error(`Acknowledge request failed for incidents ${chalk.bold.red(failed.join(', '))}`)
     } else {
       cli.action.stop(chalk.bold.green('done'))
     }

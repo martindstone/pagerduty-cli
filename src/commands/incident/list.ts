@@ -90,13 +90,12 @@ export default class IncidentList extends Command {
     }
 
     if (flags.me) {
-      const me = await pd.me(token)
-      if (!me) {
-        this.error('You can\'t use --me with a legacy API token.', {
-          exit: 1,
-          suggestions: ['pd auth:set', 'pd auth:web'],
-        })
+      const r = await pd.me(token)
+      if (r.isFailure) {
+        cli.action.stop(chalk.bold.red('failed!'))
+        this.error(`Request to /users/me failed: ${r.error}`, {exit: 1})
       }
+      const me = r.getValue()
       params.user_ids = [me.user.id]
     }
 
@@ -106,31 +105,34 @@ export default class IncidentList extends Command {
 
     if (flags.assignees) {
       cli.action.start('Finding users')
-      const promises: any[] = []
-      flags.assignees.forEach(email => {
-        promises.push(pd.fetch(token, '/users', {query: email}))
-      })
-      const users_raw: any[] = await Promise.all(promises)
-      // eslint-disable-next-line prefer-spread
-      const users = users_raw.flat()
-      const user_ids = users.map(e => e.id)
+      let users: any[] = []
+      for (const email of flags.assignees) {
+        // eslint-disable-next-line no-await-in-loop
+        const r = await pd.fetch(token, '/users', {query: email})
+        if (r.isSuccess) {
+          users = [...users, ...r.getValue().map((e: { id: any }) => e.id)]
+        }
+      }
+      const user_ids = [...new Set(users)]
       if (user_ids.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
         this.error('No assignee user IDs found. Please check your search.', {exit: 1})
       }
-      cli.action.stop(`got ${users.length}: ${chalk.bold.blue(user_ids.join(', '))}`)
+      cli.action.stop(`got ${user_ids.length}: ${chalk.bold.blue(user_ids.join(', '))}`)
       params.user_ids = user_ids
     }
 
     if (flags.teams) {
       cli.action.start('Finding teams')
-      const promises: any[] = []
-      flags.teams.forEach(team => {
-        promises.push(pd.fetch(token, '/teams', {query: team}))
-      })
-      const teams_raw = await Promise.all(promises)
-      const teams = teams_raw.flat()
-      const team_ids = teams.map(e => e.id)
+      let teams: any[] = []
+      for (const name of flags.teams) {
+        // eslint-disable-next-line no-await-in-loop
+        const r = await pd.fetch(token, '/teams', {query: name})
+        if (r.isSuccess) {
+          teams = [...teams, ...r.getValue().map((e: { id: any }) => e.id)]
+        }
+      }
+      const team_ids = [...new Set(teams)]
       if (team_ids.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
         this.error('No teams found. Please check your search.', {exit: 1})
@@ -141,13 +143,15 @@ export default class IncidentList extends Command {
 
     if (flags.services) {
       cli.action.start('Finding services')
-      const promises: any[] = []
-      flags.services.forEach(team => {
-        promises.push(pd.fetch(token, '/services', {query: team}))
-      })
-      const services_raw = await Promise.all(promises)
-      const services = services_raw.flat()
-      const service_ids = services.map(e => e.id)
+      let services: any[] = []
+      for (const name of flags.services) {
+        // eslint-disable-next-line no-await-in-loop
+        const r = await pd.fetch(token, '/services', {query: name})
+        if (r.isSuccess) {
+          services = [...services, ...r.getValue().map((e: { id: any }) => e.id)]
+        }
+      }
+      const service_ids = [...new Set(services)]
       if (service_ids.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
         this.error('No services found. Please check your search.', {exit: 1})
@@ -170,13 +174,24 @@ export default class IncidentList extends Command {
     }
 
     cli.action.start('Getting incident priorities from PD')
-    const priorities = await pd.fetch(token, '/priorities')
+    let r = await pd.fetch(token, '/priorities')
+    if (r.isFailure) {
+      cli.action.stop(chalk.bold.red('failed!'))
+      this.error(`Failed to get incident priorities: ${r.error}`, {exit: 1})
+    }
+    const priorities = r.getValue()
     const priorities_map: Record<string, any> = {}
     for (const priority of priorities) {
       priorities_map[priority.id] = priority
     }
+
     cli.action.start('Getting incidents from PD')
-    const incidents = await pd.fetch(token, '/incidents', params)
+    r = await pd.fetch(token, '/incidents', params)
+    if (r.isFailure) {
+      cli.action.stop(chalk.bold.red('failed!'))
+      this.error(`Failed to get incidents: ${r.error}`, {exit: 1})
+    }
+    const incidents = r.getValue()
     if (incidents.length === 0) {
       cli.action.stop(chalk.bold.red('none found'))
       this.exit(0)

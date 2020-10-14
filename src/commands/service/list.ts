@@ -52,13 +52,15 @@ export default class ServiceList extends Command {
 
     if (flags.teams) {
       cli.action.start('Finding teams')
-      const promises: any[] = []
-      flags.teams.forEach(team => {
-        promises.push(pd.fetch(token, '/teams', {query: team}))
-      })
-      const teams_raw = await Promise.all(promises)
-      const teams = teams_raw.flat()
-      const team_ids = teams.map(e => e.id)
+      let teams: any[] = []
+      for (const name of flags.teams) {
+        // eslint-disable-next-line no-await-in-loop
+        const r = await pd.fetch(token, '/teams', {query: name})
+        if (r.isSuccess) {
+          teams = [...teams, ...r.getValue().map((e: { id: any }) => e.id)]
+        }
+      }
+      const team_ids = [...new Set(teams)]
       if (team_ids.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
         this.error('No teams found. Please check your search.', {exit: 1})
@@ -68,7 +70,16 @@ export default class ServiceList extends Command {
     }
 
     cli.action.start('Getting services from PD')
-    const services = await pd.fetch(token, '/services', params)
+    const r = await pd.fetch(token, '/services', params)
+    if (r.isFailure) {
+      cli.action.stop(chalk.bold.red('failed!'))
+      this.error(`Failed to get services: ${r.error}`, {exit: 1})
+    }
+    const services = r.getValue()
+    if (services.length === 0) {
+      cli.action.stop(chalk.bold.red('none found'))
+      this.exit(0)
+    }
     cli.action.stop(`got ${services.length}`)
 
     if (flags.json) {
