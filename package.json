@@ -76,6 +76,9 @@
       "incident": {
         "description": "See/manage incidents"
       },
+      "rest": {
+        "description": "Make raw requests to PagerDuty REST endpoints"
+      },
       "service": {
         "description": "See/manage services"
       }
