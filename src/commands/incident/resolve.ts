@@ -38,19 +38,13 @@ export default class IncidentResolve extends Command {
     let incident_ids: string[] = []
     if (flags.me) {
       let r = await pd.me(token)
-      if (r.isFailure) {
-        cli.action.stop(chalk.bold.red('failed!'))
-        this.error(`Request to /users/me failed: ${r.error}`, {exit: 1})
-      }
+      this.dieIfFailed(r)
       const me = r.getValue()
 
       const params = {user_ids: [me.user.id]}
       cli.action.start('Getting incidents from PD')
       r = await pd.fetch(token, '/incidents', params)
-      if (r.isFailure) {
-        cli.action.stop(chalk.bold.red('failed!'))
-        this.error(`Request to list incidents failed: ${r.error}`, {exit: 1})
-      }
+      this.dieIfFailed(r)
       const incidents = r.getValue()
       if (incidents.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
@@ -85,10 +79,7 @@ export default class IncidentResolve extends Command {
       })
     }
     const r = await pd.batchedRequest(requests)
-    if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
-      this.error(`Resolve request failed: ${r.error}`)
-    }
+    this.dieIfFailed(r)
     const returnedIncidents = r.getValue()
     const failed = []
     for (const r of returnedIncidents) {

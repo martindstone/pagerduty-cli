@@ -9,9 +9,11 @@ export class Result<T> {
 
   public error!: string
 
+  private fullError: any
+
   private _value!: T
 
-  private constructor(isSuccess: boolean, error?: string, value?: T) {
+  private constructor(isSuccess: boolean, error?: any, value?: T) {
     if (isSuccess && error) {
       throw new Error(`InvalidOperation: A result cannot be 
         successful and contain an error`)
@@ -24,7 +26,12 @@ export class Result<T> {
     this.isSuccess = isSuccess
     this.isFailure = !isSuccess
     if (error) {
-      this.error = error
+      if (typeof error === 'string') {
+        this.error = error
+      } else if (error.response && error.response.status && error.response.statusText) {
+        this.error = `${error.response.status} ${error.response.statusText}`
+        this.fullError = error
+      }
     }
 
     if (value) {
@@ -41,11 +48,26 @@ export class Result<T> {
     return this._value
   }
 
+  public getPDErrorMessage(): string {
+    let message = this.error
+    if (this.fullError && this.fullError.response && this.fullError.response.data && this.fullError.response.data.error) {
+      const pdError = this.fullError.response.data.error
+      if (pdError.message) {
+        message += `: ${pdError.message}`
+        if (pdError.errors) {
+          message += `: ${pdError.errors.join(' ')}`
+        }
+        return message
+      }
+    }
+    return message
+  }
+
   public static ok<U>(value?: U): Result<U> {
     return new Result<U>(true, undefined, value)
   }
 
-  public static fail<U>(error: string): Result<U> {
+  public static fail<U>(error: string | object): Result<U> {
     return new Result<U>(false, error)
   }
 
@@ -119,7 +141,7 @@ export async function request(
     r = await axios.request(config)
   } catch (error) {
     if (error.response) {
-      return Result.fail<any>(`${error.response.status} ${error.response.statusText}`)
+      return Result.fail<any>(error)
     }
     return Result.fail<any>('unknown error')
   }

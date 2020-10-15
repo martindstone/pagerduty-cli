@@ -38,24 +38,20 @@ export default class IncidentAck extends Command {
     let incident_ids: string[] = []
     if (flags.me) {
       let r = await pd.me(token)
-      if (r.isFailure) {
-        cli.action.stop(chalk.bold.red('failed!'))
-        this.error(`Request to /users/me failed: ${r.error}`, {exit: 1})
-      }
+      this.dieIfFailed(r, {prefixMessage: 'Request to /users/me failed'})
       const me = r.getValue()
 
       const params = {user_ids: [me.user.id]}
       cli.action.start('Getting incidents from PD')
       r = await pd.fetch(token, '/incidents', params)
-      if (r.isFailure) {
-        cli.action.stop(chalk.bold.red('failed!'))
-        this.error(`Request to list incidents failed: ${r.error}`, {exit: 1})
-      }
+      this.dieIfFailed(r, {prefixMessage: 'Request to list incidents failed'})
+
       const incidents = r.getValue()
       if (incidents.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
         return
       }
+
       cli.action.stop(`got ${incidents.length} before filtering`)
       incident_ids = incidents.map((e: { id: any }) => e.id)
     } else if (flags.ids) {
@@ -85,10 +81,8 @@ export default class IncidentAck extends Command {
       })
     }
     const r = await pd.batchedRequest(requests)
-    if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
-      this.error(`Acknowledge request failed: ${r.error}`)
-    }
+    this.dieIfFailed(r, {prefixMessage: 'Acknowledge request failed'})
+
     const returnedIncidents = r.getValue()
     const failed = []
     for (const r of returnedIncidents) {

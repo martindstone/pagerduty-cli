@@ -52,10 +52,7 @@ export default class ServiceSet extends Command {
       cli.action.start('Getting service IDs from PD')
       // const services = await pd.fetch(token, '/services', {query: flags.name})
       const r = await pd.fetch(token, '/services', {query: flags.name})
-      if (r.isFailure) {
-        cli.action.stop(chalk.bold.red('failed!'))
-        this.error(`Failed to get services: ${r.error}`, {exit: 1})
-      }
+      this.dieIfFailed(r)
       const services = r.getValue()
       if (!services || services.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
@@ -90,10 +87,7 @@ export default class ServiceSet extends Command {
       })
     }
     const r = await pd.batchedRequest(requests)
-    if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
-      this.error(`Service set request failed: ${r.error}`)
-    }
+    this.dieIfFailed(r)
     const returnedIncidents = r.getValue()
     const failed = []
     for (const r of returnedIncidents) {

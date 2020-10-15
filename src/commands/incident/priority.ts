@@ -43,18 +43,14 @@ export default class IncidentPriority extends Command {
     let incident_ids: string[] = []
     if (flags.me) {
       let r = await pd.me(token)
-      if (r.isFailure) {
-        cli.action.stop(chalk.bold.red('failed!'))
-        this.error(`Request to /users/me failed: ${r.error}`, {exit: 1})
-      }
+      this.dieIfFailed(r)
       const me = r.getValue()
+
       const params = {user_ids: [me.user.id]}
+
       cli.action.start('Getting incidents from PD')
       r = await pd.fetch(token, '/incidents', params)
-      if (r.isFailure) {
-        cli.action.stop(chalk.bold.red('failed!'))
-        this.error(`Failed to get incidents: ${r.error}`, {exit: 1})
-      }
+      this.dieIfFailed(r)
       const incidents = r.getValue()
       if (incidents.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
@@ -78,10 +74,7 @@ export default class IncidentPriority extends Command {
 
     cli.action.start('Getting incident priorities from PD')
     let r = await pd.fetch(token, '/priorities')
-    if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
-      this.error(`Failed to get incident priorities: ${r.error}`, {exit: 1})
-    }
+    this.dieIfFailed(r)
     const priorities = r.getValue()
     const filtered_priorities: string[] = priorities
     .filter((e: any) => e.name === flags.priority)
@@ -116,10 +109,7 @@ export default class IncidentPriority extends Command {
       })
     }
     r = await pd.batchedRequest(requests)
-    if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
-      this.error(`Priority change request failed: ${r.error}`)
-    }
+    this.dieIfFailed(r)
     const returnedIncidents = r.getValue()
     const failed = []
     for (const r of returnedIncidents) {

@@ -56,9 +56,8 @@ export default class ServiceList extends Command {
       for (const name of flags.teams) {
         // eslint-disable-next-line no-await-in-loop
         const r = await pd.fetch(token, '/teams', {query: name})
-        if (r.isSuccess) {
-          teams = [...teams, ...r.getValue().map((e: { id: any }) => e.id)]
-        }
+        this.dieIfFailed(r)
+        teams = [...teams, ...r.getValue().map((e: { id: any }) => e.id)]
       }
       const team_ids = [...new Set(teams)]
       if (team_ids.length === 0) {
@@ -71,10 +70,7 @@ export default class ServiceList extends Command {
 
     cli.action.start('Getting services from PD')
     const r = await pd.fetch(token, '/services', params)
-    if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
-      this.error(`Failed to get services: ${r.error}`, {exit: 1})
-    }
+    this.dieIfFailed(r)
     const services = r.getValue()
     if (services.length === 0) {
       cli.action.stop(chalk.bold.red('none found'))

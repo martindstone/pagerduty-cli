@@ -1,7 +1,7 @@
 import Command from '../../base'
 import {flags} from '@oclif/command'
 import cli from 'cli-ux'
-import chalk from 'chalk'
+// import chalk from 'chalk'
 import * as pd from '../../pd'
 import * as utils from '../../utils'
 import dotProp from 'dot-prop'
@@ -49,10 +49,7 @@ export default class UserList extends Command {
 
     cli.action.start('Getting users from PD')
     const r = await pd.fetch(token, '/users', params)
-    if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
-      this.error(`Failed to get users: ${r.error}`, {exit: 1})
-    }
+    this.dieIfFailed(r)
     const users = r.getValue()
     cli.action.stop(`got ${users.length}`)
 

@@ -37,19 +37,13 @@ export default class IncidentOpen extends Command {
 
     if (flags.me) {
       let r = await pd.me(token)
-      if (r.isFailure) {
-        cli.action.stop(chalk.bold.red('failed!'))
-        this.error(`Request to /users/me failed: ${r.error}`, {exit: 1})
-      }
+      this.dieIfFailed(r)
       const me = r.getValue()
       const domain = me.user.html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
       const params = {user_ids: [me.user.id]}
       cli.action.start('Getting incidents from PD')
       r = await pd.fetch(token, '/incidents', params)
-      if (r.isFailure) {
-        cli.action.stop(chalk.bold.red('failed!'))
-        this.error(`Failed to list incidents: ${r.error}`, {exit: 1})
-      }
+      this.dieIfFailed(r)
       const incidents = r.getValue()
       if (incidents.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
@@ -67,10 +61,7 @@ export default class IncidentOpen extends Command {
     } else if (flags.ids || flags.pipe) {
       cli.action.start('Finding your PD domain')
       const r = await pd.fetch(token, '/users', {limit: 1})
-      if (r.isFailure) {
-        cli.action.stop(chalk.bold.red('failed!'))
-        this.error(`Request to /users failed: ${r.error}`, {exit: 1})
-      }
+      this.dieIfFailed(r)
       const users = r.getValue()
       const domain = users[0].html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
       let ids: string[] = []

@@ -6,8 +6,8 @@ import * as pd from '../../pd'
 // import * as utils from '../../utils'
 // import dotProp from 'dot-prop'
 
-export default class RestGet extends Command {
-  static description = 'Make a GET request to PagerDuty'
+export default class RestPost extends Command {
+  static description = 'Make a POST request to PagerDuty'
 
   static flags = {
     ...Command.flags,
@@ -28,10 +28,15 @@ export default class RestGet extends Command {
       multiple: true,
       default: [],
     }),
+    data: flags.string({
+      char: 'd',
+      description: 'JSON data to send',
+      required: true,
+    }),
   }
 
   async run() {
-    const {flags} = this.parse(RestGet)
+    const {flags} = this.parse(RestPost)
 
     // get a validated token from base class
     const token = this.token as string
@@ -68,8 +73,15 @@ export default class RestGet extends Command {
       headers[key] = value
     }
 
+    let data: object
+    try {
+      data = JSON.parse(flags.data)
+    } catch (error) {
+      this.error(`Error parsing request body: ${error.message}`, {exit: 1})
+    }
+
     cli.action.start('Talking to PD')
-    const response = await pd.request(token, flags.endpoint, 'GET', params, undefined, headers)
+    const response = await pd.request(token, flags.endpoint, 'POST', params, data, headers)
 
     this.dieIfFailed(response)
     cli.action.stop(chalk.bold.green('done'))

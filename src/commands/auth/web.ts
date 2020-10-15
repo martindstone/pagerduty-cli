@@ -1,4 +1,5 @@
-import {Command, flags} from '@oclif/command'
+import Command from '../../base'
+import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
@@ -116,10 +117,7 @@ export default class AuthWeb extends Command {
 
   checkToken(token: any, self: any) {
     pd.me(token).then(r => {
-      if (r.isFailure) {
-        cli.action.stop(chalk.bold.red('failed!'))
-        this.error(`Token authorization failed: ${r.error}`, {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
-      }
+      self.dieIfFailed(r, {prefixMessage: 'Token authorization failed', suggestions: ['pd auth:web', 'pd auth:set']})
       const me = r.getValue()
       if (me && me.user && me.user.html_url) {
         const domain = me.user.html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]

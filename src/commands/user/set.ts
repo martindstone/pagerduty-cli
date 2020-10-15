@@ -52,10 +52,7 @@ export default class UserSet extends Command {
     if (flags.email) {
       cli.action.start('Getting user IDs from PD')
       const r = await pd.fetch(token, '/users', {query: flags.email})
-      if (r.isFailure) {
-        cli.action.stop(chalk.bold.red('failed!'))
-        this.error(`Failed to get users: ${r.error}`, {exit: 1})
-      }
+      this.dieIfFailed(r)
       const users = r.getValue()
       if (!users || users.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
@@ -91,10 +88,7 @@ export default class UserSet extends Command {
     }
 
     const r = await pd.batchedRequest(requests)
-    if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
-      this.error(`User set request failed: ${r.error}`)
-    }
+    this.dieIfFailed(r)
     const returnedUsers = r.getValue()
     const failed = []
     for (const r of returnedUsers) {

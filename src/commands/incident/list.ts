@@ -91,10 +91,7 @@ export default class IncidentList extends Command {
 
     if (flags.me) {
       const r = await pd.me(token)
-      if (r.isFailure) {
-        cli.action.stop(chalk.bold.red('failed!'))
-        this.error(`Request to /users/me failed: ${r.error}`, {exit: 1})
-      }
+      this.dieIfFailed(r, {prefixMessage: 'Request to /users/me failed'})
       const me = r.getValue()
       params.user_ids = [me.user.id]
     }
@@ -109,9 +106,8 @@ export default class IncidentList extends Command {
       for (const email of flags.assignees) {
         // eslint-disable-next-line no-await-in-loop
         const r = await pd.fetch(token, '/users', {query: email})
-        if (r.isSuccess) {
-          users = [...users, ...r.getValue().map((e: { id: any }) => e.id)]
-        }
+        this.dieIfFailed(r)
+        users = [...users, ...r.getValue().map((e: { id: any }) => e.id)]
       }
       const user_ids = [...new Set(users)]
       if (user_ids.length === 0) {
@@ -128,9 +124,8 @@ export default class IncidentList extends Command {
       for (const name of flags.teams) {
         // eslint-disable-next-line no-await-in-loop
         const r = await pd.fetch(token, '/teams', {query: name})
-        if (r.isSuccess) {
-          teams = [...teams, ...r.getValue().map((e: { id: any }) => e.id)]
-        }
+        this.dieIfFailed(r)
+        teams = [...teams, ...r.getValue().map((e: { id: any }) => e.id)]
       }
       const team_ids = [...new Set(teams)]
       if (team_ids.length === 0) {
@@ -147,9 +142,8 @@ export default class IncidentList extends Command {
       for (const name of flags.services) {
         // eslint-disable-next-line no-await-in-loop
         const r = await pd.fetch(token, '/services', {query: name})
-        if (r.isSuccess) {
-          services = [...services, ...r.getValue().map((e: { id: any }) => e.id)]
-        }
+        this.dieIfFailed(r)
+        services = [...services, ...r.getValue().map((e: { id: any }) => e.id)]
       }
       const service_ids = [...new Set(services)]
       if (service_ids.length === 0) {
@@ -175,10 +169,7 @@ export default class IncidentList extends Command {
 
     cli.action.start('Getting incident priorities from PD')
     let r = await pd.fetch(token, '/priorities')
-    if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
-      this.error(`Failed to get incident priorities: ${r.error}`, {exit: 1})
-    }
+    this.dieIfFailed(r)
     const priorities = r.getValue()
     const priorities_map: Record<string, any> = {}
     for (const priority of priorities) {
@@ -187,10 +178,7 @@ export default class IncidentList extends Command {
 
     cli.action.start('Getting incidents from PD')
     r = await pd.fetch(token, '/incidents', params)
-    if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
-      this.error(`Failed to get incidents: ${r.error}`, {exit: 1})
-    }
+    this.dieIfFailed(r)
     const incidents = r.getValue()
     if (incidents.length === 0) {
       cli.action.stop(chalk.bold.red('none found'))
