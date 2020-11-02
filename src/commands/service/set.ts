@@ -88,23 +88,23 @@ export default class ServiceSet extends Command {
     }
     const r = await pd.batchedRequest(requests)
     this.dieIfFailed(r)
-    const returnedIncidents = r.getValue()
+    const returnedServices = r.getValue()
     const failed = []
-    for (const r of returnedIncidents) {
-      if (!(r && r.service && key in r.service && r.service[key] === value)) {
+    for (const r of returnedServices) {
+      if (!(r && r.service && key in r.service && r.service[key].toString() === value)) {
         if (key === 'status' && value === 'active') {
           // special case when setting status = active, it can come back as active, warning or critical
           if (['active', 'warning', 'critical'].indexOf(r.service[key]) === -1) {
-            failed.push(r.incident.id)
+            failed.push(r.service.id)
           }
         } else {
-          failed.push(r.incident.id)
+          failed.push(r.service.id)
         }
       }
     }
     if (failed.length > 0) {
       cli.action.stop(chalk.bold.red('failed!'))
-      this.error(`Service set request failed for incidents ${chalk.bold.red(failed.join(', '))}`)
+      this.error(`Service set request failed for services ${chalk.bold.red(failed.join(', '))}`)
     } else {
       cli.action.stop(chalk.bold.green('done'))
     }

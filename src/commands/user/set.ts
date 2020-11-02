@@ -92,8 +92,8 @@ export default class UserSet extends Command {
     const returnedUsers = r.getValue()
     const failed = []
     for (const r of returnedUsers) {
-      if (!(r && r.user && key in r.user && r.user[key] === value)) {
-        failed.push(r.incident.id)
+      if (!(r && r.user && key in r.user && r.user[key].toString() === value)) {
+        failed.push(r.user.id)
       }
     }
     if (failed.length > 0) {
