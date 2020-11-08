@@ -168,16 +168,20 @@ export default class IncidentList extends Command {
     }
 
     cli.action.start('Getting incident priorities from PD')
-    let r = await pd.fetch(token, '/priorities')
-    this.dieIfFailed(r)
-    const priorities = r.getValue()
+    let priorities = await this.getPriorities(token);
+    if (priorities === null) {
+        cli.action.stop('priorities are deactivated');
+        priorities = [];
+    } else {
+        cli.action.stop();
+    }
     const priorities_map: Record<string, any> = {}
     for (const priority of priorities) {
       priorities_map[priority.id] = priority
     }
 
     cli.action.start('Getting incidents from PD')
-    r = await pd.fetch(token, '/incidents', params)
+    let r = await pd.fetch(token, '/incidents', params)
     this.dieIfFailed(r)
     const incidents = r.getValue()
     if (incidents.length === 0) {
@@ -285,5 +289,18 @@ export default class IncidentList extends Command {
     }
 
     cli.table(incidents, columns, options)
+  }
+
+  async getPriorities(token) {
+    let r = await pd.fetch(token, '/priorities')
+    if (r.isFailure) {
+      if (!r.fullError || r.fullError.response.status != 404) {
+        this.dieIfFailed(r)
+      } else {
+        return null;
+      }
+    } else {
+      return r.getValue();
+    }
   }
 }
