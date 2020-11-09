@@ -22,7 +22,8 @@
     "fs-extra": "^9.0.1",
     "get-stream": "^6.0.0",
     "simple-oauth2": "^4.1.0",
-    "tslib": "^1"
+    "tslib": "^1",
+    "parse-duration": "^0.4.4"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
