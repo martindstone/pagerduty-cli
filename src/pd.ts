@@ -26,11 +26,11 @@ export class Result<T> {
     this.isSuccess = isSuccess
     this.isFailure = !isSuccess
     if (error) {
+      this.fullError = error
       if (typeof error === 'string') {
         this.error = error
       } else if (error.response && error.response.status && error.response.statusText) {
         this.error = `${error.response.status} ${error.response.statusText}`
-        this.fullError = error
       }
     }
 
@@ -61,6 +61,10 @@ export class Result<T> {
       }
     }
     return message
+  }
+
+  public getFullError(): any {
+    return this.fullError
   }
 
   public static ok<U>(value?: U): Result<U> {

@@ -33,7 +33,7 @@ export default abstract class extends Command {
       cli.action.stop(chalk.bold.red('failed!'))
       let message = ''
       if (params && params.prefixMessage) {
-        message += params.prefixMessage
+        message += params.prefixMessage + ': '
       }
       message += r.getPDErrorMessage()
       let suggestions: string[] = []

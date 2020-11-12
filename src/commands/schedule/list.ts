@@ -1,12 +1,12 @@
 import Command from '../../base'
 import {flags} from '@oclif/command'
 import cli from 'cli-ux'
-// import chalk from 'chalk'
+import chalk from 'chalk'
 import * as pd from '../../pd'
 import * as utils from '../../utils'
 import dotProp from 'dot-prop'
 
-export default class ServiceList extends Command {
+export default class ScheduleList extends Command {
   static description = 'List PagerDuty Schedules'
 
   static flags = {
@@ -34,7 +34,7 @@ export default class ServiceList extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(ServiceList)
+    const {flags} = this.parse(ScheduleList)
 
     // get a validated token from base class
     const token = this.token as string
@@ -49,7 +49,11 @@ export default class ServiceList extends Command {
     const r = await pd.fetch(token, '/schedules', params)
     this.dieIfFailed(r)
     const schedules = r.getValue()
-    cli.action.stop(`got ${schedules.length}`)
+    if (schedules.length === 0) {
+      cli.action.stop(chalk.bold.red('none found'))
+      this.exit(0)
+    }
+    cli.action.stop(chalk.bold.green(`got ${schedules.length}`))
 
     if (flags.json) {
       this.log(JSON.stringify(schedules, null, 2))
