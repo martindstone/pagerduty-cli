@@ -1,4 +1,4 @@
-import Command from '../base'
+import {Command} from '@oclif/command'
 // import {flags} from '@oclif/command'
 import AuthWeb from './auth/web'
 
