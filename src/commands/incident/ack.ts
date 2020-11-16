@@ -37,12 +37,11 @@ export default class IncidentAck extends Command {
   async run() {
     const {flags} = this.parse(IncidentAck)
 
-
+    let snooze_secs: Number = undefined;
     if (flags.snooze !== undefined) {
-      const originalSnooze = flags.snooze;
-      flags.snooze = parse(flags.snooze, 's') || Number(flags.snooze);
-      if (isNaN(flags.snooze)) {
-        this.error(`Invalid snooze duration: ${originalSnooze}`, {exit: 1});
+      snooze_secs = parse(flags.snooze, 's') || Number(flags.snooze);
+      if (isNaN(snooze_secs)) {
+        this.error(`Invalid snooze duration: ${flags.snooze}`, {exit: 1});
       }
     }
 
@@ -86,8 +85,8 @@ export default class IncidentAck extends Command {
     cli.action.start(`Acknowledging incident(s) ${chalk.bold.blue(incident_ids.join(', '))}`)
     for (const incident_id of incident_ids) {
       const body: Record<string, any> = pd.putBodyForSetAttribute('incident', incident_id, 'status', 'acknowledged')
-      if (flags.snooze !== undefined) {
-        body['incident']['duration'] = flags.snooze;
+      if (snooze_secs !== undefined) {
+        body['incident']['duration'] = snooze_secs;
       }
       requests.push({
         token: token,
