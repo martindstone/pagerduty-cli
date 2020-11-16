@@ -29,7 +29,7 @@ export default class IncidentAck extends Command {
       exclusive: ['me', 'ids'],
     }),
     snooze: flags.string({
-      char: 's',
+      char: 'z',
       description: 'Also snooze selected incidents for the specified amount of time (5m, \'1 hour\', default unit is seconds).',
     }),
   }

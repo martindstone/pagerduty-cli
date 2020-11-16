@@ -124,7 +124,7 @@ OPTIONS
   -i, --ids=ids  Incident ID's to acknowledge. Specify multiple times for multiple incidents.
   -m, --me       Acknowledge all incidents assigned to me
   -p, --pipe     Read incident ID's from stdin.
-  -s, --snooze   Also snooze selected incidents for the specified amount of time
+  -z, --snooze   Also snooze selected incidents for the specified amount of time
                  (5m, '1 hour', default unit is seconds).
 ```
 
