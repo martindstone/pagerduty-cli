@@ -73,21 +73,22 @@ export default class IncidentPriority extends Command {
     }
 
     cli.action.start('Getting incident priorities from PD')
-    let r = await pd.fetch(token, '/priorities')
+    let r = await pd.getPrioritiesMapByName(token)
     this.dieIfFailed(r)
-    const priorities = r.getValue()
-    const filtered_priorities: string[] = priorities
-    .filter((e: any) => e.name === flags.priority)
-    .map((e: any) => e.id)
-    if (filtered_priorities.length === 0) {
+    const priorities_map = r.getValue()
+    if (priorities_map === {}) {
+      cli.action.stop(chalk.bold.red('none found'))
+      this.error('No incident priorities were found. Is the priority feature enabled?', {exit: 1})
+    } else {
+      cli.action.stop(chalk.bold.green('done'))
+    }
+
+    if (!(flags.priority in priorities_map)) {
       cli.action.stop('failed!')
       this.error(`No incident priority matches name ${flags.priority}`, {exit: 1})
     }
-    if (filtered_priorities.length > 1) {
-      cli.action.stop('failed!')
-      this.error(`More than one incident priority matches name ${flags.priority}`, {exit: 1})
-    }
-    const priority_id = filtered_priorities[0]
+
+    const priority_id = priorities_map[flags.priority].id
     const requests: any[] = []
     cli.action.start(`Setting priority ${chalk.bold.blue(`${flags.priority} (${priority_id})`)} on incident(s) ${chalk.bold.blue(incident_ids.join(', '))}`)
     for (const incident_id of incident_ids) {

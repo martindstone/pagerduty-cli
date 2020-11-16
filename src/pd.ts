@@ -9,7 +9,7 @@ export class Result<T> {
 
   public error!: string
 
-  private fullError: any
+  public fullError: any
 
   private _value!: T
 
@@ -227,6 +227,34 @@ export async function me(token: string): Promise<Result<any>> {
   }
   const r = await request(token, '/users/me')
   return r
+}
+
+export async function getPrioritiesMapBy(token: string, attr: string): Promise<Result<any>> {
+  if (!isValidToken(token)) {
+    return Result.fail<any>(`Invalid token '${token}`)
+  }
+  const r = await fetch(token, '/priorities')
+  if (r.isFailure) {
+    if (r.fullError && r.fullError.response.status === 404) {
+      // priorities are disabled - return empty map
+      return Result.ok<any>({})
+    }
+    return r
+  }
+  const priorities = r.getValue()
+  const priorities_map: Record<string, any> = {}
+  for (const priority of priorities) {
+    priorities_map[priority[attr]] = priority
+  }
+  return Result.ok(priorities_map)
+}
+
+export async function getPrioritiesMapByName(token: string): Promise<Result<any>> {
+  return getPrioritiesMapBy(token, 'name')
+}
+
+export async function getPrioritiesMapByID(token: string): Promise<Result<any>> {
+  return getPrioritiesMapBy(token, 'id')
 }
 
 export function putBodyForSetAttributes(
