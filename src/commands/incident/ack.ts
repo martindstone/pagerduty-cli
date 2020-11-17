@@ -5,6 +5,7 @@ import cli from 'cli-ux'
 import getStream from 'get-stream'
 import * as pd from '../../pd'
 import * as utils from '../../utils'
+import parse from 'parse-duration'
 
 export default class IncidentAck extends Command {
   static description = 'Acknowledge PagerDuty Incidents'
@@ -27,10 +28,22 @@ export default class IncidentAck extends Command {
       description: 'Read incident ID\'s from stdin.',
       exclusive: ['me', 'ids'],
     }),
+    snooze: flags.string({
+      char: 'z',
+      description: 'Also snooze selected incidents for the specified amount of time (5m, \'1 hour\', default unit is seconds).',
+    }),
   }
 
   async run() {
     const {flags} = this.parse(IncidentAck)
+
+    let snooze_secs: Number = undefined;
+    if (flags.snooze !== undefined) {
+      snooze_secs = parse(flags.snooze, 's') || Number(flags.snooze);
+      if (isNaN(snooze_secs)) {
+        this.error(`Invalid snooze duration: ${flags.snooze}`, {exit: 1});
+      }
+    }
 
     // get a validated token from base class
     const token = this.token as string
@@ -72,6 +85,9 @@ export default class IncidentAck extends Command {
     cli.action.start(`Acknowledging incident(s) ${chalk.bold.blue(incident_ids.join(', '))}`)
     for (const incident_id of incident_ids) {
       const body: Record<string, any> = pd.putBodyForSetAttribute('incident', incident_id, 'status', 'acknowledged')
+      if (snooze_secs !== undefined) {
+        body['incident']['duration'] = snooze_secs;
+      }
       requests.push({
         token: token,
         endpoint: `/incidents/${incident_id}`,
