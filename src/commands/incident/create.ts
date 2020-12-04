@@ -42,7 +42,6 @@ export default class IncidentCreate extends Command {
       char: 'u',
       description: 'Incident urgency',
       options: ['high', 'low'],
-      default: 'high',
     }),
     priority: flags.string({
       char: 'P',
