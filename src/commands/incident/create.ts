@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import Command from '../../base'
 import {flags} from '@oclif/command'
 import chalk from 'chalk'
@@ -28,6 +29,17 @@ export default class IncidentCreate extends Command {
     escalation_policy_id: flags.string({
       description: 'The ID of the escalation policy to assign the incident to',
       exclusive: ['escalation_policy'],
+    }),
+    user: flags.string({
+      char: 'U',
+      description: 'The email of a user to assign the incident to',
+      exclusive: ['escalation_policy', 'escalation_policy_id'],
+      multiple: true,
+    }),
+    user_id: flags.string({
+      description: 'The ID of a user to assign the incident to',
+      exclusive: ['escalation_policy', 'escalation_policy_id'],
+      multiple: true,
     }),
     title: flags.string({
       char: 't',
@@ -158,6 +170,34 @@ export default class IncidentCreate extends Command {
       incident.incident.escalation_policy = {
         type: 'escalation_policy_reference',
         id: eps[0].id,
+      }
+    }
+
+    if (flags.user) {
+      for (const email of flags.user) {
+        cli.action.start(`Finding user ${chalk.bold.blue(email)}`)
+        // eslint-disable-next-line no-await-in-loop
+        const r = await pd.fetch(this.token, 'users', {query: email})
+        this.dieIfFailed(r)
+        let users = r.getValue()
+        users = users.filter((e: { email: string | undefined }) => {
+          return e.email === email
+        })
+        if (users.length === 0) {
+          cli.action.stop(chalk.bold.red('none found'))
+          this.error(`No user was found for email ${email}`, {exit: 1})
+        }
+        if (!incident.incident.assignments) {
+          incident.incident.assignments = []
+        }
+        for (const user of users) {
+          incident.incident.assignments.push({
+            assignee: {
+              type: 'user_reference',
+              id: user.id,
+            },
+          })
+        }
       }
     }
 
