@@ -5,7 +5,6 @@ import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
 import * as utils from '../../utils'
-import { throws } from 'assert'
 
 export default class IncidentCreate extends Command {
   static description = 'Create a PagerDuty Incident'
@@ -177,7 +176,7 @@ export default class IncidentCreate extends Command {
       for (const email of flags.user) {
         cli.action.start(`Finding user ${chalk.bold.blue(email)}`)
         // eslint-disable-next-line no-await-in-loop
-        const r = await pd.fetch(this.token, 'users', {query: email})
+        const r = await pd.fetch(token, 'users', {query: email})
         this.dieIfFailed(r)
         let users = r.getValue()
         users = users.filter((e: { email: string | undefined }) => {
