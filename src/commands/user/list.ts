@@ -27,7 +27,7 @@ export default class UserList extends Command {
     }),
     pipe: flags.boolean({
       char: 'p',
-      description: 'Print user ID\'s only to stdin, for use with pipes.',
+      description: 'Print user ID\'s only to stdout, for use with pipes.',
       exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
     }),
     ...cli.table.flags(),

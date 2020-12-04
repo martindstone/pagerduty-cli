@@ -66,7 +66,7 @@ export default class IncidentList extends Command {
     }),
     pipe: flags.boolean({
       char: 'p',
-      description: 'Print incident ID\'s only to stdin, for use with pipes.',
+      description: 'Print incident ID\'s only to stdout, for use with pipes.',
       exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
     }),
     ...cli.table.flags(),
