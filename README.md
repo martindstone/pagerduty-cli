@@ -19,7 +19,7 @@ $ npm install -g pagerduty-cli
 $ pd COMMAND
 running command...
 $ pd (-v|--version|version)
-pagerduty-cli/0.0.42 darwin-x64 node-v14.11.0
+pagerduty-cli/0.0.43 darwin-x64 node-v14.11.0
 $ pd --help [COMMAND]
 USAGE
   $ pd COMMAND
@@ -67,7 +67,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/auth/get.ts)_
+_See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/auth/get.ts)_
 
 ## `pd auth:set`
 
@@ -81,7 +81,7 @@ OPTIONS
   -t, --token=token  A PagerDuty API token
 ```
 
-_See code: [src/commands/auth/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/auth/set.ts)_
+_See code: [src/commands/auth/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/auth/set.ts)_
 
 ## `pd auth:web`
 
@@ -95,7 +95,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/auth/web.ts)_
+_See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/auth/web.ts)_
 
 ## `pd help [COMMAND]`
 
@@ -123,6 +123,7 @@ USAGE
   $ pd incident:ack
 
 OPTIONS
+  -F, --from=from      Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
   -h, --help           show CLI help
   -i, --ids=ids        Incident ID's to acknowledge. Specify multiple times for multiple incidents.
   -m, --me             Acknowledge all incidents assigned to me
@@ -132,7 +133,7 @@ OPTIONS
                        seconds).
 ```
 
-_See code: [src/commands/incident/ack.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/incident/ack.ts)_
+_See code: [src/commands/incident/ack.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/incident/ack.ts)_
 
 ## `pd incident:create`
 
@@ -144,30 +145,38 @@ USAGE
 
 OPTIONS
   -E, --escalation_policy=escalation_policy    The name of the escalation policy to assign the incident to
+
+  -F, --from=from                              Login email of a PD user account for the "From:" header. Use only with
+                                               legacy API tokens.
+
   -P, --priority=priority                      Incident priority
+
   -S, --service=service                        The name of the service to create the incident in
+
   -U, --user=user                              The email of a user to assign the incident to
+
   -d, --details=details                        Incident details
+
   -h, --help                                   show CLI help
+
   -k, --key=key                                Incident key
+
   -o, --open                                   Open the new incident in the browser
+
   -p, --pipe                                   Print the incident ID only to stdout, for use with pipes.
+
   -t, --title=title                            (required) Incident title
+
   -u, --urgency=high|low                       Incident urgency
-  -x, --extended                               show extra columns
-  --columns=columns                            only show provided columns (comma-separated)
-  --csv                                        output is csv format [alias: --output=csv]
+
   --escalation_policy_id=escalation_policy_id  The ID of the escalation policy to assign the incident to
-  --filter=filter                              filter property by partial string matching, ex: name=foo
-  --no-header                                  hide table header from output
-  --no-truncate                                do not truncate output to fit screen
-  --output=csv|json|yaml                       output in a more machine friendly format
+
   --service_id=service_id                      The ID of the service to create the incident in
-  --sort=sort                                  property to sort by (prepend '-' for descending)
+
   --user_id=user_id                            The ID of a user to assign the incident to
 ```
 
-_See code: [src/commands/incident/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/incident/create.ts)_
+_See code: [src/commands/incident/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/incident/create.ts)_
 
 ## `pd incident:list`
 
@@ -224,7 +233,7 @@ OPTIONS
   --until=until                                               The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/incident/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/incident/list.ts)_
+_See code: [src/commands/incident/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/incident/list.ts)_
 
 ## `pd incident:notes`
 
@@ -235,6 +244,7 @@ USAGE
   $ pd incident:notes
 
 OPTIONS
+  -F, --from=from         Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
   -h, --help              show CLI help
   -i, --id=id             (required) Incident ID.
   -n, --note=note         Note to add
@@ -248,7 +258,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/incident/notes.ts)_
+_See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/incident/notes.ts)_
 
 ## `pd incident:open`
 
@@ -265,7 +275,7 @@ OPTIONS
   -p, --pipe     Read incident ID's from stdin.
 ```
 
-_See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/incident/open.ts)_
+_See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/incident/open.ts)_
 
 ## `pd incident:priority`
 
@@ -276,6 +286,7 @@ USAGE
   $ pd incident:priority
 
 OPTIONS
+  -F, --from=from          Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
   -h, --help               show CLI help
   -i, --ids=ids            Incident ID's to set priority on. Specify multiple times for multiple incidents.
   -m, --me                 Set priority on all incidents assigned to me
@@ -283,7 +294,7 @@ OPTIONS
   -p, --pipe               Read incident ID's from stdin.
 ```
 
-_See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/incident/priority.ts)_
+_See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/incident/priority.ts)_
 
 ## `pd incident:resolve`
 
@@ -294,13 +305,14 @@ USAGE
   $ pd incident:resolve
 
 OPTIONS
-  -h, --help     show CLI help
-  -i, --ids=ids  Incident ID's to resolve. Specify multiple times for multiple incidents.
-  -m, --me       Resolve all incidents assigned to me
-  -p, --pipe     Read incident ID's from stdin.
+  -F, --from=from  Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
+  -h, --help       show CLI help
+  -i, --ids=ids    Incident ID's to resolve. Specify multiple times for multiple incidents.
+  -m, --me         Resolve all incidents assigned to me
+  -p, --pipe       Read incident ID's from stdin.
 ```
 
-_See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/incident/resolve.ts)_
+_See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/incident/resolve.ts)_
 
 ## `pd login`
 
@@ -311,7 +323,7 @@ USAGE
   $ pd login
 ```
 
-_See code: [src/commands/login.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/login.ts)_
+_See code: [src/commands/login.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/login.ts)_
 
 ## `pd rest:delete`
 
@@ -333,7 +345,7 @@ OPTIONS
                            multiple times for multiple params.
 ```
 
-_See code: [src/commands/rest/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/rest/delete.ts)_
+_See code: [src/commands/rest/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/rest/delete.ts)_
 
 ## `pd rest:fetch`
 
@@ -351,7 +363,7 @@ OPTIONS
                            multiple times for multiple params.
 ```
 
-_See code: [src/commands/rest/fetch.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/rest/fetch.ts)_
+_See code: [src/commands/rest/fetch.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/rest/fetch.ts)_
 
 ## `pd rest:get`
 
@@ -373,7 +385,7 @@ OPTIONS
                            multiple times for multiple params.
 ```
 
-_See code: [src/commands/rest/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/rest/get.ts)_
+_See code: [src/commands/rest/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/rest/get.ts)_
 
 ## `pd rest:post`
 
@@ -397,7 +409,7 @@ OPTIONS
                            multiple times for multiple params.
 ```
 
-_See code: [src/commands/rest/post.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/rest/post.ts)_
+_See code: [src/commands/rest/post.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/rest/post.ts)_
 
 ## `pd rest:put`
 
@@ -421,7 +433,7 @@ OPTIONS
                            multiple times for multiple params.
 ```
 
-_See code: [src/commands/rest/put.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/rest/put.ts)_
+_See code: [src/commands/rest/put.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/rest/put.ts)_
 
 ## `pd schedule:list`
 
@@ -447,7 +459,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/schedule/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/schedule/list.ts)_
+_See code: [src/commands/schedule/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/schedule/list.ts)_
 
 ## `pd schedule:open`
 
@@ -464,7 +476,7 @@ OPTIONS
   -p, --pipe       Read schedule ID's from stdin.
 ```
 
-_See code: [src/commands/schedule/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/schedule/open.ts)_
+_See code: [src/commands/schedule/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/schedule/open.ts)_
 
 ## `pd service:disable`
 
@@ -481,7 +493,7 @@ OPTIONS
   -p, --pipe       Read service ID's from stdin.
 ```
 
-_See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/service/disable.ts)_
+_See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/service/disable.ts)_
 
 ## `pd service:enable`
 
@@ -498,7 +510,7 @@ OPTIONS
   -p, --pipe       Read service ID's from stdin.
 ```
 
-_See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/service/enable.ts)_
+_See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/service/enable.ts)_
 
 ## `pd service:list`
 
@@ -525,7 +537,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/service/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/service/list.ts)_
+_See code: [src/commands/service/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/service/list.ts)_
 
 ## `pd service:set`
 
@@ -544,7 +556,7 @@ OPTIONS
   -v, --value=value  (required) Attribute value to set
 ```
 
-_See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/service/set.ts)_
+_See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/service/set.ts)_
 
 ## `pd update [CHANNEL]`
 
@@ -581,7 +593,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/user/list.ts)_
+_See code: [src/commands/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/user/list.ts)_
 
 ## `pd user:set`
 
@@ -600,5 +612,5 @@ OPTIONS
   -v, --value=value  (required) Attribute value to set
 ```
 
-_See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.42/src/commands/user/set.ts)_
+_See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.43/src/commands/user/set.ts)_
 <!-- commandsstop -->
