@@ -27,12 +27,8 @@ export async function promptForAuth(): Promise<string> {
   return cli.prompt('Enter a PD API key')
 }
 
-export function getAuth(): string | null {
+export function getAuth(): string {
   const configFilePath = path.join(globalAny.config.configDir, 'config.json')
-  try {
-    const userConfig = fs.readJsonSync(configFilePath)
-    return userConfig.token
-  } catch (error) {
-    return null
-  }
+  const userConfig = fs.readJsonSync(configFilePath)
+  return userConfig.token
 }

@@ -9,21 +9,42 @@ export default abstract class extends Command {
     help: flags.help({char: 'h'}),
   }
 
-  protected token: string | null = null
+  protected token!: string
+
+  private _me: any = null
+
+  async me(die = true): Promise<any> {
+    if (this._me === null) {
+      try {
+        const r = await pd.me(this.token)
+        if (r.isFailure) {
+          throw new Error(`Request to /users/me failed: ${r.getPDErrorMessage()}`)
+        }
+        this._me = r.getValue()
+      } catch (error) {
+        if (die) {
+          this.error(`${error.message}. Are you using a legacy API token?`, {suggestions: ['pd login', 'pd auth:set'], exit: 1})
+        }
+        this._me = false
+      }
+    }
+    return this._me
+  }
 
   async init() {
     // do some initialization
-    this.token = config.getAuth()
-    if (!this.token) {
+    try {
+      this.token = config.getAuth()
+    } catch (error) {
       this.error('No token found', {
         exit: 1,
-        suggestions: ['pd auth:web', 'pd auth:set'],
+        suggestions: ['pd login', 'pd auth:set'],
       })
     }
     if (!pd.isValidToken(this.token)) {
       this.error(`Token '${this.token}' is not valid`, {
         exit: 1,
-        suggestions: ['pd auth:web', 'pd auth:set'],
+        suggestions: ['pd login', 'pd auth:set'],
       })
     }
   }

@@ -27,6 +27,10 @@ export default class IncidentPriority extends Command {
       description: 'The name of the priority to set.',
       required: true,
     }),
+    from: flags.string({
+      char: 'F',
+      description: 'Login email of a PD user account for the "From:" header. Use only with legacy API tokens.',
+    }),
     pipe: flags.boolean({
       char: 'p',
       description: 'Read incident ID\'s from stdin.',
@@ -38,18 +42,20 @@ export default class IncidentPriority extends Command {
     const {flags} = this.parse(IncidentPriority)
 
     // get a validated token from base class
-    const token = this.token as string
+    const token = this.token
+    const headers: Record<string, string> = {}
+    if (flags.from) {
+      headers.From = flags.from
+    }
 
     let incident_ids: string[] = []
     if (flags.me) {
-      let r = await pd.me(token)
-      this.dieIfFailed(r)
-      const me = r.getValue()
+      const me = await this.me()
 
       const params = {user_ids: [me.user.id]}
 
       cli.action.start('Getting incidents from PD')
-      r = await pd.fetch(token, '/incidents', params)
+      const r = await pd.fetch(token, '/incidents', params)
       this.dieIfFailed(r)
       const incidents = r.getValue()
       if (incidents.length === 0) {
@@ -107,6 +113,7 @@ export default class IncidentPriority extends Command {
         method: 'PUT',
         params: {},
         data: body,
+        headers: headers,
       })
     }
     r = await pd.batchedRequest(requests)

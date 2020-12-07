@@ -76,7 +76,7 @@ export default class IncidentList extends Command {
     const {flags} = this.parse(IncidentList)
 
     // get a validated token from base class
-    const token = this.token as string
+    const token = this.token
 
     const statuses = [...new Set(flags.statuses)]
     if (statuses.indexOf('open') >= 0) {
@@ -90,9 +90,7 @@ export default class IncidentList extends Command {
     }
 
     if (flags.me) {
-      const r = await pd.me(token)
-      this.dieIfFailed(r, {prefixMessage: 'Request to /users/me failed'})
-      const me = r.getValue()
+      const me = await this.me()
       params.user_ids = [me.user.id]
     }
 

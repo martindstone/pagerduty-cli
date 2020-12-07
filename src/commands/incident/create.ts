@@ -62,6 +62,10 @@ export default class IncidentCreate extends Command {
       char: 'k',
       description: 'Incident key',
     }),
+    from: flags.string({
+      char: 'F',
+      description: 'Login email of a PD user account for the "From:" header. Use only with legacy API tokens.',
+    }),
     open: flags.boolean({
       char: 'o',
       description: 'Open the new incident in the browser',
@@ -71,14 +75,14 @@ export default class IncidentCreate extends Command {
       description: 'Print the incident ID only to stdout, for use with pipes.',
       exclusive: ['open'],
     }),
-    ...cli.table.flags(),
   }
 
   async run() {
     const {flags} = this.parse(IncidentCreate)
 
     // get a validated token from base class
-    const token = this.token as string
+    const token = this.token
+    const headers: Record<string, string> = {}
 
     let incident: any = {
       incident: {
@@ -103,6 +107,10 @@ export default class IncidentCreate extends Command {
 
     if (flags.urgency) {
       incident.incident.urgency = flags.urgency
+    }
+
+    if (flags.from) {
+      headers.From = flags.from
     }
 
     if (flags.priority) {
@@ -201,7 +209,7 @@ export default class IncidentCreate extends Command {
     }
 
     cli.action.start('Creating PagerDuty incident')
-    const r = await pd.request(token, 'incidents', 'POST', null, incident)
+    const r = await pd.request(token, 'incidents', 'POST', null, incident, headers)
     this.dieIfFailed(r, {prefixMessage: 'Incident create request failed'})
     incident = r.getValue()
     cli.action.stop(chalk.bold.green('done'))

@@ -161,7 +161,8 @@ export async function batchedRequest(requests: any[], batchSize = 25): Promise<R
       r.endpoint,
       r.method,
       r.params,
-      r.data
+      r.data,
+      r.headers
     ))
     if (promises.length >= batchSize) {
       // eslint-disable-next-line no-await-in-loop
@@ -219,12 +220,6 @@ export async function fetch(
 }
 
 export async function me(token: string): Promise<Result<any>> {
-  if (!isValidToken(token)) {
-    return Result.fail<any>(`Invalid token '${token}`)
-  }
-  if (!isBearerToken(token)) {
-    return Result.fail<any>('Legacy API tokens aren\'t supported for this operation')
-  }
   const r = await request(token, '/users/me')
   return r
 }

@@ -36,13 +36,11 @@ export default class IncidentOpen extends Command {
     const token = this.token as string
 
     if (flags.me) {
-      let r = await pd.me(token)
-      this.dieIfFailed(r)
-      const me = r.getValue()
+      const me = await this.me()
       const domain = me.user.html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
       const params = {user_ids: [me.user.id]}
       cli.action.start('Getting incidents from PD')
-      r = await pd.fetch(token, '/incidents', params)
+      const r = await pd.fetch(token, '/incidents', params)
       this.dieIfFailed(r)
       const incidents = r.getValue()
       if (incidents.length === 0) {

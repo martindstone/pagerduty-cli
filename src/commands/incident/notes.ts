@@ -19,6 +19,10 @@ export default class IncidentNotes extends Command {
       description: 'Note to add',
       exclusive: [...Object.keys(cli.table.flags())],
     }),
+    from: flags.string({
+      char: 'F',
+      description: 'Login email of a PD user account for the "From:" header. Use only with legacy API tokens.',
+    }),
     ...cli.table.flags(),
   }
 
@@ -27,6 +31,10 @@ export default class IncidentNotes extends Command {
 
     // get a validated token from base class
     const token = this.token as string
+    const headers: Record<string, string> = {}
+    if (flags.from) {
+      headers.From = flags.from
+    }
 
     if (flags.note) {
       // add a note
@@ -36,7 +44,7 @@ export default class IncidentNotes extends Command {
           content: flags.note,
         },
       }
-      const r = await pd.request(token, `/incidents/${flags.id}/notes`, 'POST', null, body)
+      const r = await pd.request(token, `/incidents/${flags.id}/notes`, 'POST', null, body, headers)
       this.dieIfFailed(r)
       const note = r.getValue()
       if (note && note.note && note.note.id) {
