@@ -82,6 +82,12 @@
       },
       "service": {
         "description": "See/manage services"
+      },
+      "ep": {
+        "description": "See/manage escalation policies"
+      },
+      "schedule": {
+        "description": "See/manage schedules"
       }
     },
     "macos": {
