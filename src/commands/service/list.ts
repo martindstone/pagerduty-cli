@@ -104,10 +104,10 @@ export default class ServiceList extends Command {
         header: 'Name',
       },
       ep: {
-        header: 'Escalation Policy',
+        header: 'Escalation policy name',
         get: (row: {escalation_policy: {summary: string}}) => row.escalation_policy.summary,
       },
-      teams: {
+      team_names: {
         get: (row: {teams: any[]}) => {
           if (row.teams && row.teams.length > 0) {
             return row.teams.map(e => e.summary).join(', ')
