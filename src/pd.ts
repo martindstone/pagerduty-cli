@@ -185,36 +185,39 @@ export async function batchedRequest(requests: any[], batchSize = 25): Promise<R
 export async function fetch(
   token: string,
   endpoint: string,
-  params: object | null = {}
-): Promise<Result<any>> {
+  params = {}): Promise<Result<any>> {
+  const limit = 25
   const endpoint_identifier = endpoint.split('/').pop() as string
-  const limit = 100
   const commonParams = {
     total: true,
     limit: limit,
   }
   let getParams = Object.assign({}, commonParams, params)
-  const r = await request(token, endpoint, 'get', getParams)
+  let r = await request(token, endpoint, 'get', getParams)
   if (r.isFailure) {
     return r
   }
   const firstPage = r.getValue()
   let fetchedData = firstPage[endpoint_identifier]
-
   if (firstPage.more) {
-    const promises: any[] = []
+    const requests: any[] = []
     for (let offset = limit; offset < firstPage.total; offset += limit) {
       getParams = Object.assign({}, getParams, {offset: offset})
-      promises.push(request(token, endpoint, 'get', getParams))
+      requests.push({
+        token: token,
+        endpoint: endpoint,
+        method: 'get',
+        params: getParams,
+      })
     }
-    const rs: Result<any>[] = await Promise.all(promises)
-    rs.forEach(r => {
-      if (r.isFailure) {
-        return r
-      }
-      const page = r.getValue()
+    r = await batchedRequest(requests)
+    if (r.isFailure) {
+      return r
+    }
+    const pages = r.getValue()
+    for (const page of pages) {
       fetchedData = [...fetchedData, ...page[endpoint_identifier]]
-    })
+    }
   }
   return Result.ok<any>(fetchedData)
 }
