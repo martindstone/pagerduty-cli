@@ -64,4 +64,9 @@ export default abstract class extends Command {
       this.error(message, {exit: 1, suggestions: suggestions})
     }
   }
+
+  protected getValueOrDie(r: pd.Result<any>, params?: { prefixMessage?: string; suggestions?: string[] }) {
+    this.dieIfFailed(r, params)
+    return r.getValue()
+  }
 }

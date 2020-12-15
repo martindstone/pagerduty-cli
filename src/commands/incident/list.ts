@@ -167,8 +167,7 @@ export default class IncidentList extends Command {
 
     cli.action.start('Getting incident priorities from PD')
     let r = await pd.getPrioritiesMapByID(token)
-    this.dieIfFailed(r)
-    const priorities_map = r.getValue()
+    const priorities_map = this.getValueOrDie(r)
     if (priorities_map === {}) {
       cli.action.stop(chalk.bold.red('none found'))
     } else {
