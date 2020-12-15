@@ -1,10 +1,10 @@
 {
   "name": "pagerduty-cli",
   "description": "PagerDuty Command Line Interface",
-  "version": "0.0.44",
+  "version": "0.0.45",
   "author": "Martin Stone @martindstone",
   "bin": {
-    "pd": "./bin/run"
+    "pd": "bin/run"
   },
   "bugs": "https://github.com/martindstone/pagerduty-cli/issues",
   "dependencies": {
