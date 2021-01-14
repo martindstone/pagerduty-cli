@@ -5,7 +5,7 @@ import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
 import * as utils from '../../utils'
-import dotProp from 'dot-prop'
+import jp from 'jsonpath'
 import * as chrono from 'chrono-node'
 
 export default class IncidentList extends Command {
@@ -68,6 +68,11 @@ export default class IncidentList extends Command {
       char: 'p',
       description: 'Print incident ID\'s only to stdout, for use with pipes.',
       exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
+    }),
+    delimiter: flags.string({
+      char: 'd',
+      description: 'Delimiter for fields that have more than one value',
+      default: '\n',
     }),
     ...cli.table.flags(),
   }
@@ -217,7 +222,7 @@ export default class IncidentList extends Command {
             }
             return row.priority.summary
           }
-          return '--'
+          return ''
         },
       },
       urgency: {
@@ -239,17 +244,17 @@ export default class IncidentList extends Command {
       assigned_to: {
         get: (row: {assignments: any[]}) => {
           if (row.assignments && row.assignments.length > 0) {
-            return row.assignments.map(e => e.assignee.summary).join(', ')
+            return row.assignments.map(e => e.assignee.summary).join(flags.delimiter)
           }
-          return '--'
+          return ''
         },
       },
       teams: {
         get: (row: {teams: any[]}) => {
           if (row.teams && row.teams.length > 0) {
-            return row.teams.map(e => e.summary).join(', ')
+            return row.teams.map(e => e.summary).join(flags.delimiter)
           }
-          return '--'
+          return ''
         },
       },
       html_url: {
@@ -262,7 +267,7 @@ export default class IncidentList extends Command {
       for (const key of flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(dotProp.get(row, key)),
+          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
         }
       }
     }

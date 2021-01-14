@@ -7,7 +7,7 @@ import getStream from 'get-stream'
 import * as pd from '../../pd'
 import * as utils from '../../utils'
 import * as chrono from 'chrono-node'
-import dotProp from 'dot-prop'
+import jp from 'jsonpath'
 
 export default class UserLog extends Command {
   static description = 'Show PagerDuty User Log Entries'
@@ -48,6 +48,11 @@ export default class UserLog extends Command {
       char: 'p',
       description: 'Read user IDs from stdin, for use with pipes.',
       exclusive: ['email', 'ids'],
+    }),
+    delimiter: flags.string({
+      char: 'd',
+      description: 'Delimiter for fields that have more than one value',
+      default: '\n',
     }),
     ...cli.table.flags(),
   }
@@ -141,7 +146,7 @@ export default class UserLog extends Command {
       for (const key of flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(dotProp.get(row, key)),
+          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
         }
       }
     }

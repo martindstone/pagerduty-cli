@@ -4,7 +4,7 @@ import cli from 'cli-ux'
 import chalk from 'chalk'
 import * as pd from '../../pd'
 import * as utils from '../../utils'
-import dotProp from 'dot-prop'
+import jp from 'jsonpath'
 
 export default class ScheduleList extends Command {
   static description = 'List PagerDuty Schedules'
@@ -29,6 +29,11 @@ export default class ScheduleList extends Command {
       char: 'p',
       description: 'Print schedule ID\'s only to stdout, for use with pipes.',
       exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
+    }),
+    delimiter: flags.string({
+      char: 'd',
+      description: 'Delimiter for fields that have more than one value',
+      default: '\n',
     }),
     ...cli.table.flags(),
   }
@@ -68,13 +73,13 @@ export default class ScheduleList extends Command {
         header: 'Name',
       },
       users: {
-        get: (row: { users: any[] }) => row.users.map((e: any) => e.summary).join('\n'),
+        get: (row: { users: any[] }) => row.users.map((e: any) => e.summary).join(flags.delimiter),
       },
       escalation_policies: {
-        get: (row: { escalation_policies: any[] }) => row.escalation_policies.map((e: any) => e.summary).join('\n'),
+        get: (row: { escalation_policies: any[] }) => row.escalation_policies.map((e: any) => e.summary).join(flags.delimiter),
       },
       team_names: {
-        get: (row: { teams: any[] }) => row.teams.map((e: any) => e.summary).join('\n'),
+        get: (row: { teams: any[] }) => row.teams.map((e: any) => e.summary).join(flags.delimiter),
         extended: true,
       },
     }
@@ -83,7 +88,7 @@ export default class ScheduleList extends Command {
       for (const key of flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(dotProp.get(row, key)),
+          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
         }
       }
     }

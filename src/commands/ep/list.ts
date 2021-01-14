@@ -4,7 +4,7 @@ import cli from 'cli-ux'
 import chalk from 'chalk'
 import * as pd from '../../pd'
 import * as utils from '../../utils'
-import dotProp from 'dot-prop'
+import jp from 'jsonpath'
 
 export default class EpList extends Command {
   static description = 'List PagerDuty Escalation Policies'
@@ -29,6 +29,11 @@ export default class EpList extends Command {
       char: 'p',
       description: 'Print escalation policy ID\'s only to stdout, for use with pipes.',
       exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
+    }),
+    delimiter: flags.string({
+      char: 'd',
+      description: 'Delimiter for fields that have more than one value',
+      default: '\n',
     }),
     ...cli.table.flags(),
   }
@@ -71,11 +76,11 @@ export default class EpList extends Command {
         get: (row: { escalation_rules: any[] }) => row.escalation_rules.length,
       },
       service_names: {
-        get: (row: { services: any[] }) => row.services.map((e: any) => e.summary).join('\n'),
+        get: (row: { services: any[] }) => row.services.map((e: any) => e.summary).join(flags.delimiter),
         extended: true,
       },
       team_names: {
-        get: (row: { teams: any[] }) => row.teams.map((e: any) => e.summary).join('\n'),
+        get: (row: { teams: any[] }) => row.teams.map((e: any) => e.summary).join(flags.delimiter),
         extended: true,
       },
       '# Loops': {
@@ -87,7 +92,7 @@ export default class EpList extends Command {
       for (const key of flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(dotProp.get(row, key)),
+          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
         }
       }
     }

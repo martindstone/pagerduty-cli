@@ -3,8 +3,6 @@ import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
-// import * as utils from '../../utils'
-// import dotProp from 'dot-prop'
 
 export default class RestPost extends Command {
   static description = 'Make a POST request to PagerDuty'

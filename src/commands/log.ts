@@ -6,7 +6,7 @@ import chalk from 'chalk'
 import * as pd from '../pd'
 import * as utils from '../utils'
 import * as chrono from 'chrono-node'
-import dotProp from 'dot-prop'
+import jp from 'jsonpath'
 
 export default class Log extends Command {
   static description = 'Show PagerDuty Domain Log Entries'
@@ -33,6 +33,11 @@ export default class Log extends Command {
       char: 'j',
       description: 'output full details as JSON',
       exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
+    }),
+    delimiter: flags.string({
+      char: 'd',
+      description: 'Delimiter for fields that have more than one value',
+      default: '\n',
     }),
     ...cli.table.flags(),
   }
@@ -92,7 +97,7 @@ export default class Log extends Command {
       for (const key of flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(dotProp.get(row, key)),
+          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
         }
       }
     }

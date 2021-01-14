@@ -4,7 +4,7 @@ import cli from 'cli-ux'
 // import chalk from 'chalk'
 import * as pd from '../../pd'
 import * as utils from '../../utils'
-import dotProp from 'dot-prop'
+import jp from 'jsonpath'
 
 export default class UserList extends Command {
   static description = 'List PagerDuty Users'
@@ -29,6 +29,11 @@ export default class UserList extends Command {
       char: 'p',
       description: 'Print user ID\'s only to stdout, for use with pipes.',
       exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
+    }),
+    delimiter: flags.string({
+      char: 'd',
+      description: 'Delimiter for fields that have more than one value',
+      default: '\n',
     }),
     ...cli.table.flags(),
   }
@@ -80,13 +85,13 @@ export default class UserList extends Command {
         extended: true,
       },
       contact_emails: {
-        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'email_contact_method').map((e: any) => e.address).join('\n'),
+        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'email_contact_method').map((e: any) => e.address).join(flags.delimiter),
       },
       contact_phones: {
-        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'phone_contact_method').map((e: any) => e.address).join('\n'),
+        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'phone_contact_method').map((e: any) => e.address).join(flags.delimiter),
       },
       contact_sms: {
-        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'sms_contact_method').map((e: any) => e.address).join('\n'),
+        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'sms_contact_method').map((e: any) => e.address).join(flags.delimiter),
       },
     }
 
@@ -94,7 +99,7 @@ export default class UserList extends Command {
       for (const key of flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(dotProp.get(row, key)),
+          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
         }
       }
     }
