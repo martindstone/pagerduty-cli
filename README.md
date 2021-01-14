@@ -426,7 +426,7 @@ OPTIONS
 
   -h, --help               show CLI help
 
-  -p, --params=params      [default: ] Parameters to add, for example, `query=martin` or `include[]=teams. Specify
+  -p, --params=params      [default: ] Parameters to add, for example, `query=martin` or `include[]=teams`. Specify
                            multiple times for multiple params.
 ```
 

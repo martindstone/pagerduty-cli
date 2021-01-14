@@ -18,7 +18,7 @@ export default class RestGet extends Command {
     }),
     params: flags.string({
       char: 'p',
-      description: 'Parameters to add, for example, `query=martin` or `include[]=teams. Specify multiple times for multiple params.',
+      description: 'Parameters to add, for example, `query=martin` or `include[]=teams`. Specify multiple times for multiple params.',
       multiple: true,
       default: [],
     }),
