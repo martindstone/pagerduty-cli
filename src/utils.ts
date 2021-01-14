@@ -3,7 +3,7 @@ import dotProp from 'dot-prop'
 export function formatField(field: any): string {
   switch (typeof field) {
   case 'undefined':
-    return '(undefined)'
+    return ''
   case 'number':
   case 'bigint':
   case 'boolean':
@@ -14,16 +14,16 @@ export function formatField(field: any): string {
     if (field) {
       return JSON.stringify(field)
     }
-    return '(null)'
+    return ''
   }
-  return '(undefined)'
+  return ''
 }
 
 export function formatRow(pdObject: object, pathPrefix: string, fields: string[], delimiter = '|') {
   return fields.map(e => formatField(dotProp.get(pdObject, `${pathPrefix}.${e}`))).join(delimiter)
 }
 
-export function splitDedupAndFlatten(arr: any[]) {
+export function splitDedupAndFlatten(arr: any[]): string[] {
   if (!arr) {
     return []
   }
