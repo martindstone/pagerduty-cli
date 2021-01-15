@@ -13,19 +13,12 @@ PagerDuty Command Line Interface
 * [Commands](#commands)
 <!-- tocstop -->
 # Usage
-<!-- usage -->
 ```sh-session
-$ npm install -g pagerduty-cli
-$ pd COMMAND
-running command...
-$ pd (-v|--version|version)
-pagerduty-cli/0.0.47 darwin-x64 node-v15.4.0
-$ pd --help [COMMAND]
-USAGE
-  $ pd COMMAND
+$ sh -c "$(curl -sL http://www.pdtl.ink/pdcli)"
+$ pd help
+$ pd login
 ...
 ```
-<!-- usagestop -->
 # Commands
 <!-- commands -->
 * [`pd auth:get`](#pd-authget)
