@@ -15,7 +15,7 @@ export default class RestPut extends Command {
       required: true,
     }),
     params: flags.string({
-      char: 'p',
+      char: 'P',
       description: 'Parameters to add, for example, `query=martin` or `include[]=teams. Specify multiple times for multiple params.',
       multiple: true,
       default: [],
