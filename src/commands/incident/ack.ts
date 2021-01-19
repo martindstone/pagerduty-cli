@@ -10,6 +10,8 @@ import parse from 'parse-duration'
 export default class IncidentAck extends Command {
   static description = 'Acknowledge PagerDuty Incidents'
 
+  static aliases = ['incident:acknowledge']
+
   static flags = {
     ...Command.flags,
     me: flags.boolean({
