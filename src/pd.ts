@@ -200,6 +200,7 @@ export async function fetch(
   const firstPage = r.getValue()
   let fetchedData = firstPage[endpoint_identifier]
   if (firstPage.more) {
+    // classic pagination
     const requests: any[] = []
     for (let offset = limit; offset < firstPage.total; offset += limit) {
       getParams = Object.assign({}, getParams, {offset: offset})
@@ -217,6 +218,20 @@ export async function fetch(
     const pages = r.getValue()
     for (const page of pages) {
       fetchedData = [...fetchedData, ...page[endpoint_identifier]]
+    }
+  } else if (firstPage.next_cursor) {
+    // cursor-based pagination
+    let next_cursor = firstPage.next_cursor
+    while (next_cursor) {
+      getParams = Object.assign({}, getParams, {cursor: next_cursor})
+      // eslint-disable-next-line no-await-in-loop
+      r = await request(token, endpoint, 'get', getParams)
+      if (r.isFailure) {
+        return r
+      }
+      const page = r.getValue()
+      fetchedData = [...fetchedData, ...page[endpoint_identifier]]
+      next_cursor = page.next_cursor
     }
   }
   return Result.ok<any>(fetchedData)
