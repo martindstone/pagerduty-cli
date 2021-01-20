@@ -182,16 +182,23 @@ export async function batchedRequest(requests: any[], batchSize = 25): Promise<R
   return Result.ok<any>(results)
 }
 
+function endpointIdentifier(endpoint: string): string {
+  if (endpoint.match(/users\/P.*\/sessions/)) {
+    return 'user_sessions'
+  }
+  return endpoint.split('/').pop() as string
+}
 export async function fetch(
   token: string,
   endpoint: string,
   params = {}): Promise<Result<any>> {
   const limit = 25
-  const endpoint_identifier = endpoint.split('/').pop() as string
+  const endpoint_identifier = endpointIdentifier(endpoint)
   const commonParams = {
     total: true,
     limit: limit,
   }
+
   let getParams = Object.assign({}, commonParams, params)
   let r = await request(token, endpoint, 'get', getParams)
   if (r.isFailure) {
