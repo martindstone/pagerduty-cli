@@ -22,7 +22,12 @@ export default class UserContactList extends Command {
     id: flags.string({
       char: 'i',
       description: 'Show contacts for the user with this ID.',
-      required: true,
+      exclusive: ['email'],
+    }),
+    email: flags.string({
+      char: 'e',
+      description: 'Show contacts for the user with this login email.',
+      exclusive: ['id'],
     }),
     keys: flags.string({
       char: 'k',
@@ -53,8 +58,22 @@ export default class UserContactList extends Command {
     // get a validated token from base class
     const token = this.token as string
 
-    cli.action.start(`Getting contact methods for user ${chalk.bold.blue(flags.id)}`)
-    const r = await pd.fetch(token, `/users/${flags.id}/contact_methods`)
+    let userID
+    if (flags.id) {
+      userID = flags.id
+    } else if (flags.email) {
+      cli.action.start(`Finding PD user ${chalk.bold.blue(flags.email)}`)
+      userID = await pd.userIDForEmail(token, flags.email)
+      if (!userID) {
+        cli.action.stop(chalk.bold.red('failed!'))
+        this.error(`No user was found for the email "${flags.email}"`, {exit: 1})
+      }
+    } else {
+      this.error('You must specify one of: -i, -e', {exit: 1})
+    }
+
+    cli.action.start(`Getting contact methods for user ${chalk.bold.blue(userID)}`)
+    const r = await pd.fetch(token, `/users/${userID}/contact_methods`)
     this.dieIfFailed(r)
     const contact_methods = r.getValue()
     cli.action.stop(chalk.bold.green(`got ${contact_methods.length}`))

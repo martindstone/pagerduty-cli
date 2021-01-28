@@ -77,6 +77,9 @@
       "user": {
         "description": "See/manage users"
       },
+      "user:contact": {
+        "description": "Manage user contact methods"
+      },
       "incident": {
         "description": "See/manage incidents"
       },

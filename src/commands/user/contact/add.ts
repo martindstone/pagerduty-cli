@@ -14,7 +14,12 @@ export default class UserContactAdd extends Command {
     id: flags.string({
       char: 'i',
       description: 'Add contact to the user with this ID.',
-      required: true,
+      exclusive: ['email'],
+    }),
+    email: flags.string({
+      char: 'e',
+      description: 'Add contact to the user with this login email.',
+      exclusive: ['id'],
     }),
     label: flags.string({
       char: 'l',
@@ -40,6 +45,20 @@ export default class UserContactAdd extends Command {
     // get a validated token from base class
     const token = this.token as string
 
+    let userID
+    if (flags.id) {
+      userID = flags.id
+    } else if (flags.email) {
+      cli.action.start(`Finding PD user ${chalk.bold.blue(flags.email)}`)
+      userID = await pd.userIDForEmail(token, flags.email)
+      if (!userID) {
+        cli.action.stop(chalk.bold.red('failed!'))
+        this.error(`No user was found for the email "${flags.email}"`, {exit: 1})
+      }
+    } else {
+      this.error('You must specify one of: -i, -e', {exit: 1})
+    }
+
     const body: any = {
       contact_method: {
         type: `${flags.type}_contact_method`,
@@ -55,8 +74,8 @@ export default class UserContactAdd extends Command {
       body.contact_method.address = flags.address
     }
 
-    cli.action.start(`Adding ${chalk.bold.blue(flags.type)} contact method for user ${chalk.bold.blue(flags.id)}`)
-    const r = await pd.request(token, `/users/${flags.id}/contact_methods`, 'POST', {}, body)
+    cli.action.start(`Adding ${chalk.bold.blue(flags.type)} contact method for user ${chalk.bold.blue(userID)}`)
+    const r = await pd.request(token, `/users/${userID}/contact_methods`, 'POST', {}, body)
     this.dieIfFailed(r)
     const contact_method = r.getValue()
     cli.action.stop(`${chalk.bold.green('created contact method')} ${chalk.bold.blue(contact_method.contact_method.id)}`)

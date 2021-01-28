@@ -253,6 +253,38 @@ export async function me(token: string): Promise<Result<any>> {
   return r
 }
 
+export async function userIDForEmail(token: string, email: string): Promise<string | null> {
+  const r = await request(token, 'users', 'GET', {query: email})
+  if (r.isFailure) {
+    return null
+  }
+  try {
+    const users = r.getValue().users
+    if (users.length === 1) {
+      return users[0].id
+    }
+    return null
+  } catch (error) {
+    return null
+  }
+}
+
+export async function userIDsForEmails(token: string, emails: string[]): Promise<string[]> {
+  let fetchedUsers: any[] = []
+  for (const email of emails) {
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      const r = await fetch(token, 'users', {query: email})
+      if (r.isSuccess) {
+        fetchedUsers = [...fetchedUsers, ...r.getValue()]
+      }
+    } catch (error) {
+    }
+  }
+  const fetchedUserIDs = fetchedUsers.map(x => x.id)
+  return [...new Set(fetchedUserIDs)]
+}
+
 export async function getPrioritiesMapBy(token: string, attr: string): Promise<Result<any>> {
   if (!isValidToken(token)) {
     return Result.fail<any>(`Invalid token '${token}`)
