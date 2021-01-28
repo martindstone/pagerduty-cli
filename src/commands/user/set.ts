@@ -12,9 +12,10 @@ export default class UserSet extends Command {
 
   static flags = {
     ...Command.flags,
-    email: flags.string({
+    emails: flags.string({
       char: 'e',
-      description: 'Select users whose emails contain the given text',
+      description: 'Select users whose emails contain the given text. Specify multiple times for multiple emails.',
+      multiple: true,
     }),
     ids: flags.string({
       char: 'i',
@@ -44,20 +45,14 @@ export default class UserSet extends Command {
     // get a validated token from base class
     const token = this.token as string
 
-    if (!(flags.email || flags.ids || flags.pipe)) {
+    if (!(flags.emails || flags.ids || flags.pipe)) {
       this.error('You must specify one of: -i, -e, -p', {exit: 1})
     }
 
     let user_ids: string[] = []
-    if (flags.email) {
+    if (flags.emails) {
       cli.action.start('Getting user IDs from PD')
-      const r = await pd.fetch(token, '/users', {query: flags.email})
-      this.dieIfFailed(r)
-      const users = r.getValue()
-      if (!users || users.length === 0) {
-        cli.action.stop(chalk.bold.red('none found'))
-      }
-      user_ids = users.map((e: { id: any }) => e.id)
+      user_ids = await pd.userIDsForEmails(token, flags.emails)
     }
     if (flags.ids) {
       user_ids = [...new Set([...user_ids, ...utils.splitDedupAndFlatten(flags.ids)])]
@@ -65,6 +60,9 @@ export default class UserSet extends Command {
     if (flags.pipe) {
       const str: string = await getStream(process.stdin)
       user_ids = utils.splitDedupAndFlatten([str])
+    }
+    if (user_ids.length === 0) {
+      this.error('No user ID\'s were found. Please try a different search.', {exit: 1})
     }
     const invalid_ids = utils.invalidPagerDutyIDs(user_ids)
     if (invalid_ids && invalid_ids.length > 0) {
