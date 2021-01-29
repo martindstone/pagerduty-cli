@@ -92,11 +92,7 @@ export function isBearerToken(token: string): boolean {
 
 export function isLegacyToken(token: string): boolean {
   // eslint-disable-next-line no-useless-escape
-  if (token && token.match(/^[0-9a-zA-Z_\-]{20}$/)) {
-    return true
-  }
-  // eslint-disable-next-line no-useless-escape
-  if (token && token.match(/^[0-9a-zA-Z_\-]{26}$/)) {
+  if (token && token.match(/^[0-9a-zA-Z_\-\+\/=]{20}$/)) {
     return true
   }
   return false
