@@ -285,6 +285,38 @@ export async function userIDsForEmails(token: string, emails: string[]): Promise
   return [...new Set(fetchedUserIDs)]
 }
 
+export async function scheduleIDForName(token: string, name: string): Promise<string | null> {
+  const r = await request(token, 'schedules', 'GET', {query: name})
+  if (r.isFailure) {
+    return null
+  }
+  try {
+    const schedules = r.getValue().schedules
+    if (schedules.length === 1) {
+      return schedules[0].id
+    }
+    return null
+  } catch (error) {
+    return null
+  }
+}
+
+export async function epIDForName(token: string, name: string): Promise<string | null> {
+  const r = await request(token, 'escalation_policies', 'GET', {query: name})
+  if (r.isFailure) {
+    return null
+  }
+  try {
+    const escalation_policies = r.getValue().escalation_policies
+    if (escalation_policies.length === 1) {
+      return escalation_policies[0].id
+    }
+    return null
+  } catch (error) {
+    return null
+  }
+}
+
 export async function getPrioritiesMapBy(token: string, attr: string): Promise<Result<any>> {
   if (!isValidToken(token)) {
     return Result.fail<any>(`Invalid token '${token}`)
