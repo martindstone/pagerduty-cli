@@ -52,7 +52,7 @@ export default class ScheduleOncall extends Command {
     let scheduleID
     if (flags.id) {
       if (utils.invalidPagerDutyIDs([flags.id]).length > 0) {
-        this.error(`${chalk.bold.blue(flags.id)} is not a valid PagerDuty schedule ID`)
+        this.error(`${chalk.bold.blue(flags.id)} is not a valid PagerDuty schedule ID`, {exit: 1})
       }
       scheduleID = flags.id
     } else if (flags.name) {
