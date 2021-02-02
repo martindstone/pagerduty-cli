@@ -94,6 +94,9 @@
       },
       "schedule": {
         "description": "See/manage schedules"
+      },
+      "schedule:override": {
+        "description": "Manage schedule overrides"
       }
     },
     "macos": {
