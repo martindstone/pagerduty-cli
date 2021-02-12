@@ -1,6 +1,7 @@
 import axios, {Method} from 'axios'
 
 const BASE_URL = 'https://api.pagerduty.com'
+const globalAny: any = global
 
 export class Result<T> {
   public isSuccess: boolean
@@ -128,6 +129,8 @@ export async function request(
     Accept: 'application/vnd.pagerduty+json;version=2',
     Authorization: authHeaderForToken(token),
     'Content-Type': 'application/json',
+    'User-Agent': `pagerduty-cli/${globalAny.config.version}`,
+    'X-PagerDuty-Client': `pagerduty-cli ${globalAny.config.version}`,
   }
   if (headers) {
     h = {...h, ...headers}
