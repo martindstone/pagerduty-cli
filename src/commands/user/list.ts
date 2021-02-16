@@ -59,8 +59,7 @@ export default class UserList extends Command {
     cli.action.stop(`got ${users.length}`)
 
     if (flags.json) {
-      this.log(JSON.stringify(users, null, 2))
-      this.exit(0)
+      await utils.printJsonAndExit(users)
     }
 
     const columns: Record<string, object> = {

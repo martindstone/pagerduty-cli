@@ -104,8 +104,7 @@ export default class ScheduleOverrideList extends Command {
     cli.action.stop(chalk.bold.green(`got ${overrides.length}`))
 
     if (flags.json) {
-      this.log(JSON.stringify(overrides, null, 2))
-      this.exit(0)
+      await utils.printJsonAndExit(overrides)
     }
 
     const columns: Record<string, object> = {

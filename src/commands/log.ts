@@ -75,8 +75,7 @@ export default class Log extends Command {
       this.exit(0)
     }
     if (flags.json) {
-      this.log(JSON.stringify(log_entries, null, 2))
-      this.exit(0)
+      await utils.printJsonAndExit(log_entries)
     }
 
     const columns: Record<string, object> = {

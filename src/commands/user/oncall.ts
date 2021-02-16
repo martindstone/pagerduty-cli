@@ -111,8 +111,7 @@ export default class UserOncall extends Command {
     cli.action.stop(chalk.bold.green('done'))
 
     if (flags.json) {
-      this.log(JSON.stringify(oncalls, null, 2))
-      this.exit(0)
+      await utils.printJsonAndExit(oncalls)
     }
 
     const columns: Record<string, object> = {

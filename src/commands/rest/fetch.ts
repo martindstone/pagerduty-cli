@@ -1,3 +1,5 @@
+/* eslint-disable no-process-exit */
+/* eslint-disable unicorn/no-process-exit */
 import Command from '../../base'
 import {flags} from '@oclif/command'
 import chalk from 'chalk'
@@ -81,8 +83,7 @@ export default class RestFetch extends Command {
     cli.action.stop(chalk.bold.green('done'))
 
     if (!flags.table) {
-      this.log(JSON.stringify(data, null, 2))
-      this.exit(0)
+      await utils.printJsonAndExit(data)
     }
 
     const columns: Record<string, object> = {

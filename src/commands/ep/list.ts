@@ -61,8 +61,7 @@ export default class EpList extends Command {
     cli.action.stop(chalk.bold.green(`got ${eps.length}`))
 
     if (flags.json) {
-      this.log(JSON.stringify(eps, null, 2))
-      this.exit(0)
+      await utils.printJsonAndExit(eps)
     }
 
     const columns: Record<string, object> = {

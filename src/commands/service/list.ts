@@ -84,8 +84,7 @@ export default class ServiceList extends Command {
     cli.action.stop(`got ${services.length}`)
 
     if (flags.json) {
-      this.log(JSON.stringify(services, null, 2))
-      this.exit(0)
+      await utils.printJsonAndExit(services)
     }
 
     const columns: Record<string, object> = {

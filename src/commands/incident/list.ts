@@ -188,9 +188,9 @@ export default class IncidentList extends Command {
       this.exit(0)
     }
     cli.action.stop(`got ${incidents.length}`)
+
     if (flags.json) {
-      this.log(JSON.stringify(incidents, null, 2))
-      this.exit(0)
+      await utils.printJsonAndExit(incidents)
     }
 
     const columns: Record<string, object> = {

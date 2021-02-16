@@ -79,8 +79,7 @@ export default class UserContactList extends Command {
     cli.action.stop(chalk.bold.green(`got ${contact_methods.length}`))
 
     if (flags.json) {
-      this.log(JSON.stringify(contact_methods, null, 2))
-      this.exit(0)
+      await utils.printJsonAndExit(contact_methods)
     }
 
     const columns: Record<string, object> = {

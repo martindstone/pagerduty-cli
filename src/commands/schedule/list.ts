@@ -61,8 +61,7 @@ export default class ScheduleList extends Command {
     cli.action.stop(chalk.bold.green(`got ${schedules.length}`))
 
     if (flags.json) {
-      this.log(JSON.stringify(schedules, null, 2))
-      this.exit(0)
+      await utils.printJsonAndExit(schedules)
     }
 
     const columns: Record<string, object> = {

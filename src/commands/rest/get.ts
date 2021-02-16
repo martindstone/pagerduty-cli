@@ -3,6 +3,7 @@ import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
 import * as pd from '../../pd'
+import * as utils from '../../utils'
 
 export default class RestGet extends Command {
   static description = 'Make a GET request to PagerDuty'
@@ -71,6 +72,6 @@ export default class RestGet extends Command {
 
     this.dieIfFailed(response)
     cli.action.stop(chalk.bold.green('done'))
-    this.log(JSON.stringify(response.getValue(), null, 2))
+    await utils.printJsonAndExit(response.getValue())
   }
 }
