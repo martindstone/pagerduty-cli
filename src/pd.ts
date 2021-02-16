@@ -258,7 +258,7 @@ export async function userIDForEmail(token: string, email: string): Promise<stri
     return null
   }
   try {
-    const users = r.getValue().users
+    const users = r.getValue().users.filter((x: any) => x.email === email)
     if (users.length === 1) {
       return users[0].id
     }
@@ -290,7 +290,7 @@ export async function scheduleIDForName(token: string, name: string): Promise<st
     return null
   }
   try {
-    const schedules = r.getValue().schedules
+    const schedules = r.getValue().schedules.filter((x: any) => x.summary === name)
     if (schedules.length === 1) {
       return schedules[0].id
     }
@@ -306,7 +306,7 @@ export async function epIDForName(token: string, name: string): Promise<string |
     return null
   }
   try {
-    const escalation_policies = r.getValue().escalation_policies
+    const escalation_policies = r.getValue().escalation_policies.filter((x: any) => x.summary === name)
     if (escalation_policies.length === 1) {
       return escalation_policies[0].id
     }
