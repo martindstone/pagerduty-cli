@@ -24,6 +24,12 @@ export default class RestFetch extends Command {
       multiple: true,
       default: [],
     }),
+    headers: flags.string({
+      char: 'H',
+      description: 'Headers to add, for example, `From=martin@pagerduty.com`. Specify multiple times for multiple headers.',
+      multiple: true,
+      default: [],
+    }),
     table: flags.boolean({
       char: 't',
       description: 'Output in table format instead of JSON',
@@ -75,8 +81,20 @@ export default class RestFetch extends Command {
       }
     }
 
+    const headers: Record<string, any> = {}
+
+    for (const header of flags.headers) {
+      const m = header.match(/([^=]+)=(.+)/)
+      if (!m || m.length !== 3) {
+        this.error(`Invalid header '${header}' - headers should be formatted as 'key=value'`, {exit: 1})
+      }
+      const key = m[1].trim()
+      const value = m[2].trim()
+      headers[key] = value
+    }
+
     cli.action.start('Talking to PD')
-    const response = await pd.fetch(token, flags.endpoint, params)
+    const response = await pd.fetch(token, flags.endpoint, params, headers)
 
     this.dieIfFailed(response)
     const data = response.getValue()

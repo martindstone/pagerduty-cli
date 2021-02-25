@@ -194,7 +194,8 @@ function endpointIdentifier(endpoint: string): string {
 export async function fetch(
   token: string,
   endpoint: string,
-  params = {}): Promise<Result<any>> {
+  params = {},
+  headers = {}): Promise<Result<any>> {
   const limit = 25
   const endpoint_identifier = endpointIdentifier(endpoint)
   const commonParams = {
@@ -203,7 +204,7 @@ export async function fetch(
   }
 
   let getParams = Object.assign({}, commonParams, params)
-  let r = await request(token, endpoint, 'get', getParams)
+  let r = await request(token, endpoint, 'get', getParams, undefined, headers)
   if (r.isFailure) {
     return r
   }
@@ -219,6 +220,7 @@ export async function fetch(
         endpoint: endpoint,
         method: 'get',
         params: getParams,
+        headers: headers,
       })
     }
     r = await batchedRequest(requests)
@@ -235,7 +237,7 @@ export async function fetch(
     while (next_cursor) {
       getParams = Object.assign({}, getParams, {cursor: next_cursor})
       // eslint-disable-next-line no-await-in-loop
-      r = await request(token, endpoint, 'get', getParams)
+      r = await request(token, endpoint, 'get', getParams, undefined, headers)
       if (r.isFailure) {
         return r
       }
