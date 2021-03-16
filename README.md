@@ -18,57 +18,51 @@ PagerDuty Command Line Interface
 
 # Commands
 <!-- commands -->
-- [pagerduty-cli](#pagerduty-cli)
-- [Usage](#usage)
-  - [See the User Guide!](#see-the-user-guide)
-- [Commands](#commands)
-  - [`pd auth:get`](#pd-authget)
-  - [`pd auth:set`](#pd-authset)
-  - [`pd auth:web`](#pd-authweb)
-  - [`pd autocomplete [SHELL]`](#pd-autocomplete-shell)
-  - [`pd commands`](#pd-commands)
-  - [`pd ep:list`](#pd-eplist)
-  - [`pd ep:oncall`](#pd-eponcall)
-  - [`pd ep:open`](#pd-epopen)
-  - [`pd help [COMMAND]`](#pd-help-command)
-  - [`pd incident:ack`](#pd-incidentack)
-  - [`pd incident:analytics`](#pd-incidentanalytics)
-  - [`pd incident:assign`](#pd-incidentassign)
-  - [`pd incident:create`](#pd-incidentcreate)
-  - [`pd incident:list`](#pd-incidentlist)
-  - [`pd incident:log`](#pd-incidentlog)
-  - [`pd incident:notes`](#pd-incidentnotes)
-  - [`pd incident:open`](#pd-incidentopen)
-  - [`pd incident:priority`](#pd-incidentpriority)
-  - [`pd incident:resolve`](#pd-incidentresolve)
-  - [`pd incident:tst`](#pd-incidenttst)
-  - [`pd log`](#pd-log)
-  - [`pd login`](#pd-login)
-  - [`pd rest:delete`](#pd-restdelete)
-  - [`pd rest:fetch`](#pd-restfetch)
-  - [`pd rest:get`](#pd-restget)
-  - [`pd rest:post`](#pd-restpost)
-  - [`pd rest:put`](#pd-restput)
-  - [`pd schedule:list`](#pd-schedulelist)
-  - [`pd schedule:oncall`](#pd-scheduleoncall)
-  - [`pd schedule:open`](#pd-scheduleopen)
-  - [`pd schedule:override:add`](#pd-scheduleoverrideadd)
-  - [`pd schedule:override:list`](#pd-scheduleoverridelist)
-  - [`pd service:disable`](#pd-servicedisable)
-  - [`pd service:enable`](#pd-serviceenable)
-  - [`pd service:list`](#pd-servicelist)
-  - [`pd service:set`](#pd-serviceset)
-  - [`pd tst`](#pd-tst)
-  - [`pd update [CHANNEL]`](#pd-update-channel)
-  - [`pd user:contact:add`](#pd-usercontactadd)
-  - [`pd user:contact:list`](#pd-usercontactlist)
-  - [`pd user:contact:set`](#pd-usercontactset)
-  - [`pd user:list`](#pd-userlist)
-  - [`pd user:log`](#pd-userlog)
-  - [`pd user:oncall`](#pd-useroncall)
-  - [`pd user:session:list`](#pd-usersessionlist)
-  - [`pd user:set`](#pd-userset)
-  - [`pd util:timestamp [DATE]`](#pd-utiltimestamp-date)
+* [`pd auth:get`](#pd-authget)
+* [`pd auth:set`](#pd-authset)
+* [`pd auth:web`](#pd-authweb)
+* [`pd autocomplete [SHELL]`](#pd-autocomplete-shell)
+* [`pd commands`](#pd-commands)
+* [`pd ep:list`](#pd-eplist)
+* [`pd ep:oncall`](#pd-eponcall)
+* [`pd ep:open`](#pd-epopen)
+* [`pd help [COMMAND]`](#pd-help-command)
+* [`pd incident:ack`](#pd-incidentack)
+* [`pd incident:analytics`](#pd-incidentanalytics)
+* [`pd incident:assign`](#pd-incidentassign)
+* [`pd incident:create`](#pd-incidentcreate)
+* [`pd incident:list`](#pd-incidentlist)
+* [`pd incident:log`](#pd-incidentlog)
+* [`pd incident:notes`](#pd-incidentnotes)
+* [`pd incident:open`](#pd-incidentopen)
+* [`pd incident:priority`](#pd-incidentpriority)
+* [`pd incident:resolve`](#pd-incidentresolve)
+* [`pd log`](#pd-log)
+* [`pd login`](#pd-login)
+* [`pd rest:delete`](#pd-restdelete)
+* [`pd rest:fetch`](#pd-restfetch)
+* [`pd rest:get`](#pd-restget)
+* [`pd rest:post`](#pd-restpost)
+* [`pd rest:put`](#pd-restput)
+* [`pd schedule:list`](#pd-schedulelist)
+* [`pd schedule:oncall`](#pd-scheduleoncall)
+* [`pd schedule:open`](#pd-scheduleopen)
+* [`pd schedule:override:add`](#pd-scheduleoverrideadd)
+* [`pd schedule:override:list`](#pd-scheduleoverridelist)
+* [`pd service:disable`](#pd-servicedisable)
+* [`pd service:enable`](#pd-serviceenable)
+* [`pd service:list`](#pd-servicelist)
+* [`pd service:set`](#pd-serviceset)
+* [`pd update [CHANNEL]`](#pd-update-channel)
+* [`pd user:contact:add`](#pd-usercontactadd)
+* [`pd user:contact:list`](#pd-usercontactlist)
+* [`pd user:contact:set`](#pd-usercontactset)
+* [`pd user:list`](#pd-userlist)
+* [`pd user:log`](#pd-userlog)
+* [`pd user:oncall`](#pd-useroncall)
+* [`pd user:session:list`](#pd-usersessionlist)
+* [`pd user:set`](#pd-userset)
+* [`pd util:timestamp [DATE]`](#pd-utiltimestamp-date)
 
 ## `pd auth:get`
 
@@ -82,7 +76,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/auth/get.ts)_
+_See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/auth/get.ts)_
 
 ## `pd auth:set`
 
@@ -96,7 +90,7 @@ OPTIONS
   -t, --token=token  A PagerDuty API token
 ```
 
-_See code: [src/commands/auth/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/auth/set.ts)_
+_See code: [src/commands/auth/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/auth/set.ts)_
 
 ## `pd auth:web`
 
@@ -110,7 +104,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/auth/web.ts)_
+_See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/auth/web.ts)_
 
 ## `pd autocomplete [SHELL]`
 
@@ -198,7 +192,7 @@ OPTIONS
   --sort=sort                property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/ep/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/ep/list.ts)_
+_See code: [src/commands/ep/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/ep/list.ts)_
 
 ## `pd ep:oncall`
 
@@ -226,7 +220,7 @@ OPTIONS
   --until=until           The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/ep/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/ep/oncall.ts)_
+_See code: [src/commands/ep/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/ep/oncall.ts)_
 
 ## `pd ep:open`
 
@@ -243,7 +237,7 @@ OPTIONS
   -p, --pipe       Read escalation policy ID's from stdin.
 ```
 
-_See code: [src/commands/ep/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/ep/open.ts)_
+_See code: [src/commands/ep/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/ep/open.ts)_
 
 ## `pd help [COMMAND]`
 
@@ -284,7 +278,7 @@ ALIASES
   $ pd incident:acknowledge
 ```
 
-_See code: [src/commands/incident/ack.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/incident/ack.ts)_
+_See code: [src/commands/incident/ack.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/incident/ack.ts)_
 
 ## `pd incident:analytics`
 
@@ -313,7 +307,7 @@ ALIASES
   $ pd incident:acknowledge
 ```
 
-_See code: [src/commands/incident/analytics.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/incident/analytics.ts)_
+_See code: [src/commands/incident/analytics.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/incident/analytics.ts)_
 
 ## `pd incident:assign`
 
@@ -350,7 +344,7 @@ ALIASES
   $ pd incident:reassign
 ```
 
-_See code: [src/commands/incident/assign.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/incident/assign.ts)_
+_See code: [src/commands/incident/assign.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/incident/assign.ts)_
 
 ## `pd incident:create`
 
@@ -393,7 +387,7 @@ OPTIONS
   --user_id=user_id                            The ID of a user to assign the incident to
 ```
 
-_See code: [src/commands/incident/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/incident/create.ts)_
+_See code: [src/commands/incident/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/incident/create.ts)_
 
 ## `pd incident:list`
 
@@ -453,7 +447,7 @@ OPTIONS
   --until=until                                               The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/incident/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/incident/list.ts)_
+_See code: [src/commands/incident/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/incident/list.ts)_
 
 ## `pd incident:log`
 
@@ -496,7 +490,7 @@ OPTIONS
   --sort=sort                property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/incident/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/incident/log.ts)_
+_See code: [src/commands/incident/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/incident/log.ts)_
 
 ## `pd incident:notes`
 
@@ -521,7 +515,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/incident/notes.ts)_
+_See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/incident/notes.ts)_
 
 ## `pd incident:open`
 
@@ -538,7 +532,7 @@ OPTIONS
   -p, --pipe     Read incident ID's from stdin.
 ```
 
-_See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/incident/open.ts)_
+_See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/incident/open.ts)_
 
 ## `pd incident:priority`
 
@@ -557,7 +551,7 @@ OPTIONS
   -p, --pipe               Read incident ID's from stdin.
 ```
 
-_See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/incident/priority.ts)_
+_See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/incident/priority.ts)_
 
 ## `pd incident:resolve`
 
@@ -575,33 +569,7 @@ OPTIONS
   -p, --pipe       Read incident ID's from stdin.
 ```
 
-_See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/incident/resolve.ts)_
-
-## `pd incident:tst`
-
-List PagerDuty Incidents
-
-```
-USAGE
-  $ pd incident:tst
-
-OPTIONS
-  -h, --help              show CLI help
-  -j, --json              output full details as JSON
-  -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
-  -x, --extended          show extra columns
-  --columns=columns       only show provided columns (comma-separated)
-  --csv                   output is csv format [alias: --output=csv]
-  --filter=filter         filter property by partial string matching, ex: name=foo
-  --no-header             hide table header from output
-  --no-truncate           do not truncate output to fit screen
-  --output=csv|json|yaml  output in a more machine friendly format
-  --since=since           The start of the date range over which you want to search.
-  --sort=sort             property to sort by (prepend '-' for descending)
-  --until=until           The end of the date range over which you want to search.
-```
-
-_See code: [src/commands/incident/tst.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/incident/tst.ts)_
+_See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/incident/resolve.ts)_
 
 ## `pd log`
 
@@ -644,7 +612,7 @@ OPTIONS
   --until=until              The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/log.ts)_
+_See code: [src/commands/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/log.ts)_
 
 ## `pd login`
 
@@ -655,7 +623,7 @@ USAGE
   $ pd login
 ```
 
-_See code: [src/commands/login.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/login.ts)_
+_See code: [src/commands/login.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/login.ts)_
 
 ## `pd rest:delete`
 
@@ -677,7 +645,7 @@ OPTIONS
   -h, --help               show CLI help
 ```
 
-_See code: [src/commands/rest/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/rest/delete.ts)_
+_See code: [src/commands/rest/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/rest/delete.ts)_
 
 ## `pd rest:fetch`
 
@@ -725,7 +693,7 @@ OPTIONS
   --sort=sort                property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/rest/fetch.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/rest/fetch.ts)_
+_See code: [src/commands/rest/fetch.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/rest/fetch.ts)_
 
 ## `pd rest:get`
 
@@ -747,7 +715,7 @@ OPTIONS
   -h, --help               show CLI help
 ```
 
-_See code: [src/commands/rest/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/rest/get.ts)_
+_See code: [src/commands/rest/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/rest/get.ts)_
 
 ## `pd rest:post`
 
@@ -771,7 +739,7 @@ OPTIONS
   -h, --help               show CLI help
 ```
 
-_See code: [src/commands/rest/post.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/rest/post.ts)_
+_See code: [src/commands/rest/post.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/rest/post.ts)_
 
 ## `pd rest:put`
 
@@ -795,7 +763,7 @@ OPTIONS
   -h, --help               show CLI help
 ```
 
-_See code: [src/commands/rest/put.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/rest/put.ts)_
+_See code: [src/commands/rest/put.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/rest/put.ts)_
 
 ## `pd schedule:list`
 
@@ -836,7 +804,7 @@ OPTIONS
   --sort=sort                property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/schedule/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/schedule/list.ts)_
+_See code: [src/commands/schedule/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/schedule/list.ts)_
 
 ## `pd schedule:oncall`
 
@@ -864,7 +832,7 @@ OPTIONS
   --until=until           The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/schedule/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/schedule/oncall.ts)_
+_See code: [src/commands/schedule/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/schedule/oncall.ts)_
 
 ## `pd schedule:open`
 
@@ -881,7 +849,7 @@ OPTIONS
   -p, --pipe       Read schedule ID's from stdin.
 ```
 
-_See code: [src/commands/schedule/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/schedule/open.ts)_
+_See code: [src/commands/schedule/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/schedule/open.ts)_
 
 ## `pd schedule:override:add`
 
@@ -901,7 +869,7 @@ OPTIONS
   --start=start                [default: now] The start time for the override.
 ```
 
-_See code: [src/commands/schedule/override/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/schedule/override/add.ts)_
+_See code: [src/commands/schedule/override/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/schedule/override/add.ts)_
 
 ## `pd schedule:override:list`
 
@@ -948,7 +916,7 @@ OPTIONS
   --until=until              [default: in 30 days] The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/schedule/override/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/schedule/override/list.ts)_
+_See code: [src/commands/schedule/override/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/schedule/override/list.ts)_
 
 ## `pd service:disable`
 
@@ -965,7 +933,7 @@ OPTIONS
   -p, --pipe       Read service ID's from stdin.
 ```
 
-_See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/service/disable.ts)_
+_See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/service/disable.ts)_
 
 ## `pd service:enable`
 
@@ -982,7 +950,7 @@ OPTIONS
   -p, --pipe       Read service ID's from stdin.
 ```
 
-_See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/service/enable.ts)_
+_See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/service/enable.ts)_
 
 ## `pd service:list`
 
@@ -1025,7 +993,7 @@ OPTIONS
   --sort=sort                property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/service/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/service/list.ts)_
+_See code: [src/commands/service/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/service/list.ts)_
 
 ## `pd service:set`
 
@@ -1044,29 +1012,7 @@ OPTIONS
   -v, --value=value  (required) Attribute value to set
 ```
 
-_See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/service/set.ts)_
-
-## `pd tst`
-
-Show PagerDuty Domain Tst Entries
-
-```
-USAGE
-  $ pd tst
-
-OPTIONS
-  -h, --help              show CLI help
-  -x, --extended          show extra columns
-  --columns=columns       only show provided columns (comma-separated)
-  --csv                   output is csv format [alias: --output=csv]
-  --filter=filter         filter property by partial string matching, ex: name=foo
-  --no-header             hide table header from output
-  --no-truncate           do not truncate output to fit screen
-  --output=csv|json|yaml  output in a more machine friendly format
-  --sort=sort             property to sort by (prepend '-' for descending)
-```
-
-_See code: [src/commands/tst.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/tst.ts)_
+_See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/service/set.ts)_
 
 ## `pd update [CHANNEL]`
 
@@ -1096,7 +1042,7 @@ OPTIONS
   -l, --label=label           (required) The contact method label.
 ```
 
-_See code: [src/commands/user/contact/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/user/contact/add.ts)_
+_See code: [src/commands/user/contact/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/user/contact/add.ts)_
 
 ## `pd user:contact:list`
 
@@ -1139,7 +1085,7 @@ OPTIONS
   --sort=sort                property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/user/contact/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/user/contact/list.ts)_
+_See code: [src/commands/user/contact/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/user/contact/list.ts)_
 
 ## `pd user:contact:set`
 
@@ -1158,7 +1104,7 @@ OPTIONS
   -l, --label=label            The contact method label to set.
 ```
 
-_See code: [src/commands/user/contact/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/user/contact/set.ts)_
+_See code: [src/commands/user/contact/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/user/contact/set.ts)_
 
 ## `pd user:list`
 
@@ -1199,7 +1145,7 @@ OPTIONS
   --sort=sort                property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/user/list.ts)_
+_See code: [src/commands/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/user/list.ts)_
 
 ## `pd user:log`
 
@@ -1248,7 +1194,7 @@ OPTIONS
   --until=until              The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/user/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/user/log.ts)_
+_See code: [src/commands/user/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/user/log.ts)_
 
 ## `pd user:oncall`
 
@@ -1278,7 +1224,7 @@ OPTIONS
   --until=until           The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/user/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/user/oncall.ts)_
+_See code: [src/commands/user/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/user/oncall.ts)_
 
 ## `pd user:session:list`
 
@@ -1308,7 +1254,7 @@ OPTIONS
   --until=until           The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/user/session/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/user/session/list.ts)_
+_See code: [src/commands/user/session/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/user/session/list.ts)_
 
 ## `pd user:set`
 
@@ -1327,7 +1273,7 @@ OPTIONS
   -v, --value=value    (required) Attribute value to set
 ```
 
-_See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/user/set.ts)_
+_See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/user/set.ts)_
 
 ## `pd util:timestamp [DATE]`
 
@@ -1344,5 +1290,5 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src/commands/util/timestamp.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/util/timestamp.ts)_
+_See code: [src/commands/util/timestamp.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.61/src/commands/util/timestamp.ts)_
 <!-- commandsstop -->
