@@ -4,7 +4,6 @@ import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
 import getStream from 'get-stream'
-import * as pd from '../../pd'
 import * as utils from '../../utils'
 
 export default class ServiceSet extends Command {
@@ -41,28 +40,20 @@ export default class ServiceSet extends Command {
   async run() {
     const {flags} = this.parse(ServiceSet)
 
-    // get a validated token from base class
-    const token = this.token as string
-
     if (!(flags.name || flags.ids || flags.pipe)) {
       this.error('You must specify one of: -i, -n, -p', {exit: 1})
     }
     let service_ids: string[] = []
     if (flags.name) {
       cli.action.start('Getting service IDs from PD')
-      // const services = await pd.fetch(token, '/services', {query: flags.name})
-      const r = await pd.fetch(token, '/services', {query: flags.name})
-      this.dieIfFailed(r)
-      const services = r.getValue()
+      const services = await this.pd.fetch('services', {params: {query: flags.name}})
       if (!services || services.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
       }
       service_ids = services.map((e: { id: any }) => e.id)
-    }
-    if (flags.ids) {
-      service_ids = [...new Set([...service_ids, ...utils.splitDedupAndFlatten(flags.ids)])]
-    }
-    if (flags.pipe) {
+    } else if (flags.ids) {
+      service_ids = utils.splitDedupAndFlatten(flags.ids)
+    } else if (flags.pipe) {
       const str: string = await getStream(process.stdin)
       service_ids = utils.splitDedupAndFlatten([str])
     }
@@ -74,39 +65,34 @@ export default class ServiceSet extends Command {
     const key = flags.key
     const value = flags.value.trim().length > 0 ? flags.value : null
 
-    cli.action.start(`Setting ${chalk.bold.blue(flags.key)} = '${chalk.bold.blue(flags.value)}' on service(s) ${chalk.bold.blue(service_ids.join(', '))}`)
     const requests: any[] = []
     for (const service_id of service_ids) {
-      const body: Record<string, any> = pd.putBodyForSetAttribute('service', service_id, key, value)
+      const body: Record<string, any> = utils.putBodyForSetAttribute('service', service_id, key, value)
       requests.push({
-        token: token,
         endpoint: `/services/${service_id}`,
         method: 'PUT',
         params: {},
         data: body,
       })
     }
-    const r = await pd.batchedRequest(requests)
-    this.dieIfFailed(r)
-    const returnedServices = r.getValue()
-    const failed = []
-    for (const r of returnedServices) {
-      if (!(r && r.service && key in r.service && r.service[key].toString() === value)) {
+    const r = await this.pd.batchedRequestWithSpinner(requests, {
+      activityDescription: `Setting ${chalk.bold.blue(flags.key)} = '${chalk.bold.blue(flags.value)}' on ${service_ids.length} services`,
+    })
+    for (const failure of r.getFailedIndices()) {
+      // eslint-disable-next-line no-console
+      console.error(`${chalk.bold.red('Failed to set service ')}${chalk.bold.blue(requests[failure].data.service.id)}: ${r.results[failure].getFormattedError()}`)
+    }
+    for (const s of r.getDatas()) {
+      if (s.service[key] !== value) {
         if (key === 'status' && value === 'active') {
           // special case when setting status = active, it can come back as active, warning or critical
-          if (['active', 'warning', 'critical'].indexOf(r.service[key]) === -1) {
-            failed.push(r.service.id)
+          if (['active', 'warning', 'critical'].indexOf(s.service[key]) > -1) {
+            continue
           }
-        } else {
-          failed.push(r.service.id)
         }
+        // eslint-disable-next-line no-console
+        console.error(`${chalk.bold.red('Failed to set value on service ')}${chalk.bold.blue(s.service.id)}`)
       }
-    }
-    if (failed.length > 0) {
-      cli.action.stop(chalk.bold.red('failed!'))
-      this.error(`Service set request failed for services ${chalk.bold.red(failed.join(', '))}`)
-    } else {
-      cli.action.stop(chalk.bold.green('done'))
     }
   }
 }

@@ -2,8 +2,6 @@
 import Command from '../base'
 import {flags} from '@oclif/command'
 import cli from 'cli-ux'
-import chalk from 'chalk'
-import * as pd from '../pd'
 import * as utils from '../utils'
 import * as chrono from 'chrono-node'
 import jp from 'jsonpath'
@@ -45,9 +43,6 @@ export default class Log extends Command {
   async run() {
     const {flags} = this.parse(Log)
 
-    // get a validated token from base class
-    const token = this.token as string
-
     const params: Record<string, any> = {
       is_overview: flags.overview,
     }
@@ -65,11 +60,10 @@ export default class Log extends Command {
       }
     }
 
-    cli.action.start('Getting log entries')
-    const r = await pd.fetch(token, '/log_entries', params)
-    this.dieIfFailed(r)
-    const log_entries = r.getValue()
-    cli.action.stop(chalk.bold.green(`got ${log_entries.length}`))
+    const log_entries = await this.pd.fetchWithSpinner('log_entries', {
+      params: params,
+      activityDescription: 'Getting log entries',
+    })
 
     if (log_entries.length === 0) {
       this.exit(0)

@@ -3,7 +3,6 @@ import Command from '../../base'
 import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
-import * as pd from '../../pd'
 import * as utils from '../../utils'
 
 export default class IncidentCreate extends Command {
@@ -80,11 +79,9 @@ export default class IncidentCreate extends Command {
   async run() {
     const {flags} = this.parse(IncidentCreate)
 
-    // get a validated token from base class
-    const token = this.token
     const headers: Record<string, string> = {}
 
-    let incident: any = {
+    const incident: any = {
       incident: {
         type: 'incident',
         title: flags.title,
@@ -115,9 +112,7 @@ export default class IncidentCreate extends Command {
 
     if (flags.priority) {
       cli.action.start('Getting incident priorities from PD')
-      const r = await pd.getPrioritiesMapByName(token)
-      this.dieIfFailed(r)
-      const priorities_map = r.getValue()
+      const priorities_map = await this.pd.getPrioritiesMapByName()
       if (priorities_map === {}) {
         cli.action.stop(chalk.bold.red('none found'))
       }
@@ -139,9 +134,7 @@ export default class IncidentCreate extends Command {
       incident.incident.service.id = flags.service_id
     } else if (flags.service) {
       cli.action.start('Finding service in PD')
-      const r = await pd.fetch(token, '/services', {query: flags.service})
-      this.dieIfFailed(r)
-      let services = r.getValue()
+      let services = await this.pd.fetch('services', {params: {query: flags.service}})
       services = services.filter((e: { name: string | undefined }) => {
         return e.name === flags.service
       })
@@ -164,15 +157,12 @@ export default class IncidentCreate extends Command {
       }
     } else if (flags.escalation_policy) {
       cli.action.start('Finding escalation policy in PD')
-      const r = await pd.fetch(token, '/escalation_policies', {query: flags.escalation_policy})
-      this.dieIfFailed(r)
-      let eps = r.getValue()
+      let eps = await this.pd.fetch('escalation_policies', {params: {query: flags.escalation_policy}})
       eps = eps.filter((e: { name: string | undefined }) => {
         return e.name === flags.escalation_policy
       })
       if (eps.length === 0) {
         this.error(`No escalation policy was found with the name ${chalk.bold.blue(flags.escalation_policy)}`, {exit: 1})
-        this.exit(0)
       }
       incident.incident.escalation_policy = {
         type: 'escalation_policy_reference',
@@ -184,47 +174,49 @@ export default class IncidentCreate extends Command {
       for (const email of flags.user) {
         cli.action.start(`Finding user ${chalk.bold.blue(email)}`)
         // eslint-disable-next-line no-await-in-loop
-        const r = await pd.fetch(token, 'users', {query: email})
-        this.dieIfFailed(r)
-        let users = r.getValue()
-        users = users.filter((e: { email: string | undefined }) => {
-          return e.email === email
-        })
-        if (users.length === 0) {
-          cli.action.stop(chalk.bold.red('none found'))
+        const user: any = await this.pd.userIDForEmail(email)
+        if (!user) {
+          cli.action.stop(chalk.bold.red('failed!'))
           this.error(`No user was found for email ${email}`, {exit: 1})
         }
         if (!incident.incident.assignments) {
           incident.incident.assignments = []
         }
-        for (const user of users) {
-          incident.incident.assignments.push({
-            assignee: {
-              type: 'user_reference',
-              id: user.id,
-            },
-          })
-        }
+        incident.incident.assignments.push({
+          assignee: {
+            type: 'user_reference',
+            id: user,
+          },
+        })
       }
     }
 
     cli.action.start('Creating PagerDuty incident')
-    const r = await pd.request(token, 'incidents', 'POST', null, incident, headers)
-    this.dieIfFailed(r, {prefixMessage: 'Incident create request failed'})
-    incident = r.getValue()
+    // const r = await pd.request(token, 'incidents', 'POST', null, incident, headers)
+    const r = await this.pd.request({
+      endpoint: 'incidents',
+      method: 'POST',
+      data: incident,
+      headers: headers,
+    })
+    if (r.isFailure) {
+      this.error(`Failed to create incident: ${r.getFormattedError()}`, {exit: 1})
+    }
     cli.action.stop(chalk.bold.green('done'))
+    const returned_incident = r.getData()
+
     if (flags.pipe) {
-      this.log(incident.incident.id)
+      this.log(returned_incident.incident.id)
     } else if (flags.open) {
-      cli.action.start(`Opening ${chalk.bold.blue(incident.incident.html_url)} in the browser`)
+      cli.action.start(`Opening ${chalk.bold.blue(returned_incident.incident.html_url)} in the browser`)
       try {
-        cli.open(incident.incident.html_url)
+        cli.open(returned_incident.incident.html_url)
       } catch (error) {
         this.error('Couldn\'t open your browser. Are you running as root?', {exit: 1})
       }
       cli.action.stop(chalk.bold.green('done'))
     } else {
-      this.log(`Your new incident is at ${chalk.bold.blue(incident.incident.html_url)}`)
+      this.log(`Your new incident is at ${chalk.bold.blue(returned_incident.incident.html_url)}`)
     }
   }
 }

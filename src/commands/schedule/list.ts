@@ -1,8 +1,6 @@
 import Command from '../../base'
 import {flags} from '@oclif/command'
 import cli from 'cli-ux'
-import chalk from 'chalk'
-import * as pd from '../../pd'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
 
@@ -41,24 +39,19 @@ export default class ScheduleList extends Command {
   async run() {
     const {flags} = this.parse(ScheduleList)
 
-    // get a validated token from base class
-    const token = this.token as string
-
     const params: Record<string, any> = {}
 
     if (flags.name) {
       params.query = flags.name
     }
 
-    cli.action.start('Getting schedules from PD')
-    const r = await pd.fetch(token, '/schedules', params)
-    this.dieIfFailed(r)
-    const schedules = r.getValue()
+    const schedules = await this.pd.fetchWithSpinner('schedules', {
+      params: params,
+      activityDescription: 'Getting schedules from PD',
+    })
     if (schedules.length === 0) {
-      cli.action.stop(chalk.bold.red('none found'))
-      this.exit(0)
+      this.error('No schedules found.', {exit: 1})
     }
-    cli.action.stop(chalk.bold.green(`got ${schedules.length}`))
 
     if (flags.json) {
       await utils.printJsonAndExit(schedules)

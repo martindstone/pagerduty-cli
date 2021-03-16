@@ -2,7 +2,6 @@ import Command from '../../../base'
 import {flags} from '@oclif/command'
 import cli from 'cli-ux'
 import chalk from 'chalk'
-import * as pd from '../../../pd'
 import * as utils from '../../../utils'
 import * as chrono from 'chrono-node'
 import jp from 'jsonpath'
@@ -56,9 +55,6 @@ export default class ScheduleOverrideList extends Command {
   async run() {
     const {flags} = this.parse(ScheduleOverrideList)
 
-    // get a validated token from base class
-    const token = this.token as string
-
     let scheduleID
     if (flags.id) {
       if (utils.invalidPagerDutyIDs([flags.id]).length > 0) {
@@ -67,7 +63,7 @@ export default class ScheduleOverrideList extends Command {
       scheduleID = flags.id
     } else if (flags.name) {
       cli.action.start(`Finding PD schedule ${chalk.bold.blue(flags.name)}`)
-      scheduleID = await pd.scheduleIDForName(token, flags.name)
+      scheduleID = await this.pd.scheduleIDForName(flags.name)
       if (!scheduleID) {
         cli.action.stop(chalk.bold.red('failed!'))
         this.error(`No schedule was found with the name "${flags.name}"`, {exit: 1})
@@ -93,15 +89,13 @@ export default class ScheduleOverrideList extends Command {
       }
     }
 
-    cli.action.start(`Getting overrides for schedule ${chalk.bold.blue(scheduleID)}`)
-    const r = await pd.fetch(token, `/schedules/${scheduleID}/overrides`, params)
-    this.dieIfFailed(r)
-    const overrides = r.getValue()
+    const overrides = await this.pd.fetchWithSpinner(`schedules/${scheduleID}/overrides`, {
+      params: params,
+      activityDescription: `Getting overrides for schedule ${chalk.bold.blue(scheduleID)}`,
+    })
     if (overrides.length === 0) {
-      cli.action.stop(chalk.bold.red('none found'))
-      this.exit(0)
+      this.error('No overrides found.', {exit: 1})
     }
-    cli.action.stop(chalk.bold.green(`got ${overrides.length}`))
 
     if (flags.json) {
       await utils.printJsonAndExit(overrides)

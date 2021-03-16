@@ -33,16 +33,42 @@ export function splitDedupAndFlatten(arr: any[]): string[] {
 }
 
 export function invalidPagerDutyIDs(arr: string[]) {
-  return arr.filter(e => !e.match(/^P[\w]{6}/))
+  return arr.filter(e => !e.match(/^P[\w]{6}$/))
 }
 
 export async function printJsonAndExit(data: any) {
   process.stdout.on('drain', () => {
     process.exit(0)
   })
-  if (process.stdout.write(JSON.stringify(data, null, 2))) {
+  if (process.stdout.write(JSON.stringify(data, null, 2) + '\n')) {
     process.exit(0)
   }
   await cli.wait(10000)
   console.error('Timed out waiting for pipe', {exit: 1})
+}
+
+export function putBodyForSetAttributes(
+  pdObjectType: string,
+  pdObjectId: string,
+  attributes: { key: string; value: string | null }[],
+) {
+  const body: Record<string, any> = {
+    [pdObjectType]: {
+      id: pdObjectId,
+      type: `${pdObjectType}_reference`,
+    },
+  }
+  for (const attribute of attributes) {
+    body[pdObjectType][attribute.key] = (attribute.value && attribute.value.trim().length > 0) ? attribute.value : null
+  }
+  return body
+}
+
+export function putBodyForSetAttribute(
+  pdObjectType: string,
+  pdObjectId: string,
+  pdAttributeName: string,
+  pdAttributeValue: string | null
+) {
+  return putBodyForSetAttributes(pdObjectType, pdObjectId, [{key: pdAttributeName, value: pdAttributeValue}])
 }

@@ -2,9 +2,7 @@
 /* eslint-disable unicorn/no-process-exit */
 import Command from '../../base'
 import {flags} from '@oclif/command'
-import chalk from 'chalk'
 import cli from 'cli-ux'
-import * as pd from '../../pd'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
 
@@ -58,8 +56,6 @@ export default class RestFetch extends Command {
     if (flags.pipe) {
       flags.table = true
     }
-    // get a validated token from base class
-    const token = this.token as string
 
     const params: Record<string, any> = {}
 
@@ -94,11 +90,10 @@ export default class RestFetch extends Command {
     }
 
     cli.action.start('Talking to PD')
-    const response = await pd.fetch(token, flags.endpoint, params, headers)
-
-    this.dieIfFailed(response)
-    const data = response.getValue()
-    cli.action.stop(chalk.bold.green('done'))
+    const data = await this.pd.fetchWithSpinner(flags.endpoint, {
+      params: params,
+      headers: headers,
+    })
 
     if (!flags.table) {
       await utils.printJsonAndExit(data)

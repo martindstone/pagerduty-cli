@@ -4,7 +4,6 @@ import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
 import getStream from 'get-stream'
-import * as pd from '../../pd'
 import * as utils from '../../utils'
 
 export default class IncidentAssign extends Command {
@@ -60,8 +59,6 @@ export default class IncidentAssign extends Command {
   async run() {
     const {flags} = this.parse(IncidentAssign)
 
-    // get a validated token from base class
-    const token = this.token
     const headers: Record<string, string> = {}
     if (flags.from) {
       headers.From = flags.from
@@ -69,20 +66,15 @@ export default class IncidentAssign extends Command {
 
     let incident_ids: string[] = []
     if (flags.me) {
-      const me = await this.me()
-
+      const me = await this.me(true)
       const params = {user_ids: [me.user.id]}
       cli.action.start('Getting incidents from PD')
-      const r = await pd.fetch(token, '/incidents', params)
-      this.dieIfFailed(r, {prefixMessage: 'Request to list incidents failed'})
+      const incidents = await this.pd.fetch('incidents', {params: params})
 
-      const incidents = r.getValue()
       if (incidents.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
-        return
+        this.exit(1)
       }
-
-      cli.action.stop(`got ${incidents.length} before filtering`)
       incident_ids = incidents.map((e: { id: any }) => e.id)
     } else if (flags.ids) {
       incident_ids = utils.splitDedupAndFlatten(flags.ids)
@@ -124,7 +116,7 @@ export default class IncidentAssign extends Command {
       for (const user_email of flags.assign_to_user_emails) {
         cli.action.start(`Finding user ID for ${chalk.bold.blue(user_email)}`)
         // eslint-disable-next-line no-await-in-loop
-        const user_id = await pd.userIDForEmail(token, user_email)
+        const user_id = await this.pd.userIDForEmail(user_email)
         if (!user_id) {
           this.error(`No user or multiple users found for email ${user_email}`, {exit: 1})
         }
@@ -154,7 +146,7 @@ export default class IncidentAssign extends Command {
 
     if (flags.assign_to_ep_name) {
       cli.action.start(`Finding EP ID for ${chalk.bold.blue(flags.assign_to_ep_name)}`)
-      const ep_id = await pd.epIDForName(token, flags.assign_to_ep_name)
+      const ep_id = await this.pd.epIDForName(flags.assign_to_ep_name)
       if (!ep_id) {
         this.error(`No EP or multiple EPs found for name ${flags.assign_to_ep_name}`, {exit: 1})
       }
@@ -169,10 +161,9 @@ export default class IncidentAssign extends Command {
     }
 
     const requests: any[] = []
-    cli.action.start(`Assigning incident(s) ${chalk.bold.blue(incident_ids.join(', '))}`)
+    // cli.action.start(`Assigning incident(s) ${chalk.bold.blue(incident_ids.join(', '))}`)
     for (const incident_id of incident_ids) {
       requests.push({
-        token: token,
         endpoint: `/incidents/${incident_id}`,
         method: 'PUT',
         params: {},
@@ -180,8 +171,10 @@ export default class IncidentAssign extends Command {
         headers: headers,
       })
     }
-    const r = await pd.batchedRequest(requests)
-    this.dieIfFailed(r, {prefixMessage: 'Assign request failed'})
-    cli.action.stop(chalk.bold.green('done'))
+    const r = await this.pd.batchedRequestWithSpinner(requests, {activityDescription: `Assigning ${incident_ids.length} incidents`})
+    for (const failure of r.getFailedIndices()) {
+      // eslint-disable-next-line no-console
+      console.error(`${chalk.bold.red('Failed to assign incident ')}${chalk.bold.blue(requests[failure].data.incident.id)}: ${r.results[failure].getFormattedError()}`)
+    }
   }
 }

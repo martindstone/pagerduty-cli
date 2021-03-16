@@ -2,8 +2,6 @@ import Command from '../../../base'
 import {flags} from '@oclif/command'
 import cli from 'cli-ux'
 import chalk from 'chalk'
-import * as pd from '../../../pd'
-// import * as utils from '../../../utils'
 import parsePhoneNumber from 'libphonenumber-js'
 
 export default class UserContactSet extends Command {
@@ -39,15 +37,12 @@ export default class UserContactSet extends Command {
   async run() {
     const {flags} = this.parse(UserContactSet)
 
-    // get a validated token from base class
-    const token = this.token as string
-
     let userID
     if (flags.id) {
       userID = flags.id
     } else if (flags.email) {
       cli.action.start(`Finding PD user ${chalk.bold.blue(flags.email)}`)
-      userID = await pd.userIDForEmail(token, flags.email)
+      userID = await this.pd.userIDForEmail(flags.email)
       if (!userID) {
         cli.action.stop(chalk.bold.red('failed!'))
         this.error(`No user was found for the email "${flags.email}"`, {exit: 1})
@@ -57,9 +52,17 @@ export default class UserContactSet extends Command {
     }
 
     cli.action.start(`Finding contact ${chalk.bold.blue(flags.contact_id)}`)
-    let r = await pd.request(token, `users/${userID}/contact_methods/${flags.contact_id}`, 'GET')
-    this.dieIfFailed(r)
-    const body: any = r.getValue()
+    let r = await this.pd.request({
+      endpoint: `users/${userID}/contact_methods/${flags.contact_id}`,
+      method: 'GET',
+    })
+
+    if (r.isFailure) {
+      cli.action.stop(chalk.bold.red('failed!'))
+      this.error(`Request failed: ${r.getFormattedError}`, {exit: 1})
+    }
+
+    const body: any = r.getData()
 
     if (flags.address) {
       if (body.contact_method.type === 'sms' || body.contact_method.type === 'phone') {
@@ -77,8 +80,16 @@ export default class UserContactSet extends Command {
     }
 
     cli.action.start(`Updating contact method ${flags.contact_id} for user ${chalk.bold.blue(userID)}`)
-    r = await pd.request(token, `/users/${userID}/contact_methods/${flags.contact_id}`, 'PUT', {}, body)
-    this.dieIfFailed(r)
-    cli.action.stop(chalk.bold.green('done'))
+    r = await this.pd.request({
+      endpoint: `users/${userID}/contact_methods/${flags.contact_id}`,
+      method: 'PUT',
+      data: body,
+    })
+    if (r.isFailure) {
+      cli.action.stop(chalk.bold.red('failed!'))
+      this.error(`Request failed: ${r.getFormattedError()}`, {exit: 1})
+    }
+    const contact_method = r.getData()
+    cli.action.stop(`${chalk.bold.green('updated contact method')} ${chalk.bold.blue(contact_method.contact_method.id)}`)
   }
 }

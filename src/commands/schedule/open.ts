@@ -3,7 +3,6 @@ import {flags} from '@oclif/command'
 import cli from 'cli-ux'
 import chalk from 'chalk'
 import getStream from 'get-stream'
-import * as pd from '../../pd'
 import * as utils from '../../utils'
 
 export default class ScheduleOpen extends Command {
@@ -32,18 +31,13 @@ export default class ScheduleOpen extends Command {
   async run() {
     const {flags} = this.parse(ScheduleOpen)
 
-    // get a validated token from base class
-    const token = this.token as string
-
     const params: Record<string, any> = {}
 
     let schedule_ids = []
     if (flags.name) {
       params.query = flags.name
       cli.action.start('Finding schedules in PD')
-      const r = await pd.fetch(token, '/schedules', params)
-      this.dieIfFailed(r)
-      const schedules = r.getValue()
+      const schedules = await this.pd.fetch('schedules', {params: params})
       if (schedules.length === 0) {
         cli.action.stop(chalk.bold.red('no schedules found matching ') + chalk.bold.blue(flags.name))
         this.exit(0)
@@ -67,19 +61,18 @@ export default class ScheduleOpen extends Command {
       cli.action.stop(chalk.bold.red('no schedules specified'))
       this.exit(0)
     }
-    cli.action.start('Finding domain in PD')
-    const r = await pd.me(token)
-    this.dieIfFailed(r)
-    cli.action.stop(chalk.bold.green('done'))
-    const me = r.getValue()
-    const domain = me.user.html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
+    cli.action.start('Finding your PD domain')
+    const domain = await this.pd.domain()
 
+    cli.action.start('Opening your browser')
     try {
       for (const schedule_id of schedule_ids) {
         cli.open(`https://${domain}.pagerduty.com/schedules/${schedule_id}`)
       }
     } catch (error) {
+      cli.action.stop(chalk.bold.red('failed!'))
       this.error('Couldn\'t open browser. Are you running as root?', {exit: 1})
     }
+    cli.action.stop(chalk.bold.green('done'))
   }
 }

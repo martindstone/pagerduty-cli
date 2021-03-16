@@ -2,7 +2,6 @@ import Command from '../../base'
 import {flags} from '@oclif/command'
 import cli from 'cli-ux'
 import chalk from 'chalk'
-import * as pd from '../../pd'
 import * as utils from '../../utils'
 import * as chrono from 'chrono-node'
 import jp from 'jsonpath'
@@ -44,20 +43,17 @@ export default class EpOncall extends Command {
   async run() {
     const {flags} = this.parse(EpOncall)
 
-    // get a validated token from base class
-    const token = this.token as string
-
     const params: Record<string, any> = {}
 
     let EPID
     if (flags.id) {
       if (utils.invalidPagerDutyIDs([flags.id]).length > 0) {
-        this.error(`${chalk.bold.blue(flags.id)} is not a valid PagerDuty escalation policy ID`)
+        this.error(`${chalk.bold.blue(flags.id)} is not a valid PagerDuty escalation policy ID`, {exit: 1})
       }
       EPID = flags.id
     } else if (flags.name) {
       cli.action.start(`Finding PD escalation policy ${chalk.bold.blue(flags.name)}`)
-      EPID = await pd.epIDForName(token, flags.name)
+      EPID = await this.pd.epIDForName(flags.name)
       if (!EPID) {
         cli.action.stop(chalk.bold.red('failed!'))
         this.error(`No EP was found with the name "${flags.name}"`, {exit: 1})
@@ -81,16 +77,16 @@ export default class EpOncall extends Command {
       }
     }
 
-    cli.action.start(`Getting oncalls for EP ${chalk.bold.blue(EPID)}`)
-    const r = await pd.fetch(token, 'oncalls', params)
-    this.dieIfFailed(r)
-    const oncalls = r.getValue()
+    const oncalls = await this.pd.fetchWithSpinner('oncalls', {
+      params: params,
+      activityDescription: `Getting oncalls for EP ${chalk.bold.blue(EPID)}`,
+    })
 
     if (oncalls.length === 0) {
-      cli.action.stop(chalk.bold.red('none found'))
+      // eslint-disable-next-line no-console
+      console.error(chalk.bold.red('no oncalls found'))
       this.exit(0)
     }
-    cli.action.stop(chalk.bold.green('done'))
 
     if (flags.json) {
       await utils.printJsonAndExit(oncalls)

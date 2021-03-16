@@ -3,7 +3,6 @@ import {flags} from '@oclif/command'
 import cli from 'cli-ux'
 import chalk from 'chalk'
 import getStream from 'get-stream'
-import * as pd from '../../pd'
 import * as utils from '../../utils'
 
 export default class EpOpen extends Command {
@@ -32,9 +31,6 @@ export default class EpOpen extends Command {
   async run() {
     const {flags} = this.parse(EpOpen)
 
-    // get a validated token from base class
-    const token = this.token
-
     const params: Record<string, any> = {}
 
     if (!([flags.name, flags.ids, flags.pipe].some(Boolean))) {
@@ -43,13 +39,12 @@ export default class EpOpen extends Command {
     let ep_ids: string[] = []
     if (flags.name) {
       params.query = flags.name
-      cli.action.start('Finding escalation policies in PD')
-      const r = await pd.fetch(token, '/escalation_policies', params)
-      this.dieIfFailed(r)
-      const eps = r.getValue()
+      const eps = await this.pd.fetchWithSpinner('escalation_policies', {
+        params: params,
+        activityDescription: 'Finding escalation policies in PD',
+      })
       if (eps.length === 0) {
-        cli.action.stop(chalk.bold.red('no escalation policies found matching ') + chalk.bold.blue(flags.name))
-        this.exit(0)
+        this.error(`No escalation policies found matching ${chalk.bold.blue(flags.name)}`, {exit: 1})
       }
       ep_ids = [...ep_ids, ...eps.map((ep: {id: string}) => ep.id)]
     }
@@ -69,14 +64,11 @@ export default class EpOpen extends Command {
     if (ep_ids.length === 0) {
       this.error('No escalation policies specified', {exit: 1})
     }
-    cli.action.start('Finding domain in PD')
-    const r = await pd.fetch(token, 'users', {limit: 1})
-    this.dieIfFailed(r)
-    cli.action.stop(chalk.bold.green('done'))
-    const users = r.getValue()
-    const domain = users[0].html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
 
-    cli.action.start(`Opening browser for escalation policies ${chalk.bold.blue(ep_ids.join(', '))}`)
+    cli.action.start('Finding your PD domain')
+    const domain = await this.pd.domain()
+
+    cli.action.start(`Opening ${ep_ids.length} escalation policies in the browser`)
     try {
       for (const ep_id of ep_ids) {
         cli.open(`https://${domain}.pagerduty.com/escalation_policies/${ep_id}`)

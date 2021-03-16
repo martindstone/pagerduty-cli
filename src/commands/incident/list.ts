@@ -1,9 +1,9 @@
+/* eslint-disable no-await-in-loop */
 /* eslint-disable complexity */
 import Command from '../../base'
 import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
-import * as pd from '../../pd'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
 import * as chrono from 'chrono-node'
@@ -80,9 +80,6 @@ export default class IncidentList extends Command {
   async run() {
     const {flags} = this.parse(IncidentList)
 
-    // get a validated token from base class
-    const token = this.token
-
     const statuses = [...new Set(flags.statuses)]
     if (statuses.indexOf('open') >= 0) {
       statuses.splice(statuses.indexOf('open'), 1, 'triggered', 'acknowledged')
@@ -108,16 +105,14 @@ export default class IncidentList extends Command {
       let users: any[] = []
       for (const email of flags.assignees) {
         // eslint-disable-next-line no-await-in-loop
-        const r = await pd.fetch(token, '/users', {query: email})
-        this.dieIfFailed(r)
-        users = [...users, ...r.getValue().map((e: { id: any }) => e.id)]
+        const r = await this.pd.fetch('users', {params: {query: email}})
+        users = [...users, ...r.map((e: { id: any }) => e.id)]
       }
       const user_ids = [...new Set(users)]
       if (user_ids.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
         this.error('No assignee user IDs found. Please check your search.', {exit: 1})
       }
-      cli.action.stop(`got ${user_ids.length}: ${chalk.bold.blue(user_ids.join(', '))}`)
       params.user_ids = user_ids
     }
 
@@ -126,16 +121,14 @@ export default class IncidentList extends Command {
       let teams: any[] = []
       for (const name of flags.teams) {
         // eslint-disable-next-line no-await-in-loop
-        const r = await pd.fetch(token, '/teams', {query: name})
-        this.dieIfFailed(r)
-        teams = [...teams, ...r.getValue().map((e: { id: any }) => e.id)]
+        const r = await this.pd.fetch('teams', {params: {query: name}})
+        teams = [...teams, ...r.map((e: { id: any }) => e.id)]
       }
       const team_ids = [...new Set(teams)]
       if (team_ids.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
         this.error('No teams found. Please check your search.', {exit: 1})
       }
-      cli.action.stop(`got ${teams.length}: ${chalk.bold.blue(team_ids.join(', '))}`)
       params.team_ids = team_ids
     }
 
@@ -144,16 +137,14 @@ export default class IncidentList extends Command {
       let services: any[] = []
       for (const name of flags.services) {
         // eslint-disable-next-line no-await-in-loop
-        const r = await pd.fetch(token, '/services', {query: name})
-        this.dieIfFailed(r)
-        services = [...services, ...r.getValue().map((e: { id: any }) => e.id)]
+        const r = await this.pd.fetch('services', {params: {query: name}})
+        services = [...services, ...r.map((e: { id: any }) => e.id)]
       }
       const service_ids = [...new Set(services)]
       if (service_ids.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
         this.error('No services found. Please check your search.', {exit: 1})
       }
-      cli.action.stop(`got ${services.length}: ${chalk.bold.blue(service_ids.join(', '))}`)
       params.service_ids = service_ids
     }
 
@@ -171,23 +162,19 @@ export default class IncidentList extends Command {
     }
 
     cli.action.start('Getting incident priorities from PD')
-    let r = await pd.getPrioritiesMapByID(token)
-    const priorities_map = this.getValueOrDie(r)
+    const priorities_map = await this.pd.getPrioritiesMapByID()
     if (priorities_map === {}) {
       cli.action.stop(chalk.bold.red('none found'))
-    } else {
-      cli.action.stop(chalk.bold.green('done'))
     }
 
-    cli.action.start('Getting incidents from PD')
-    r = await pd.fetch(token, '/incidents', params)
-    this.dieIfFailed(r)
-    const incidents = r.getValue()
+    const incidents = await this.pd.fetchWithSpinner('incidents', {
+      params: params,
+      activityDescription: 'Getting incidents',
+    })
+
     if (incidents.length === 0) {
-      cli.action.stop(chalk.bold.red('none found'))
-      this.exit(0)
+      this.error('No incidents found', {exit: 0})
     }
-    cli.action.stop(`got ${incidents.length}`)
 
     if (flags.json) {
       await utils.printJsonAndExit(incidents)

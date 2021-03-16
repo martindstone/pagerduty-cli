@@ -1,7 +1,7 @@
 import {Command, flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
-import * as pd from '../../pd'
+import {PD} from '../../pd'
 import * as pdconfig from '../../config'
 import * as http from 'http'
 
@@ -87,6 +87,33 @@ export default class AuthWeb extends Command {
           this.error('Grant request error', {exit: 1, suggestions: ['Get a token from the web at https://martindstone.github.io/PDOAuth']})
         })
 
+        res.statusCode = 200
+        res.end('\n\n  ok you can close the browser window now')
+
+        server.close()
+        setTimeout(() => {
+          for (const socket of Object.values(sockets)) {
+            socket.destroy()
+          }
+        }, 500)
+      } else if (urlParts.searchParams.has('error_description')) {
+        cli.action.stop(chalk.bold.red('failed'))
+        // eslint-disable-next-line no-console
+        console.error(urlParts.searchParams.get('error_description'))
+        res.statusCode = 200
+        res.end('\n\n  ok you can close the browser window now')
+        server.close()
+        setTimeout(() => {
+          for (const socket of Object.values(sockets)) {
+            socket.destroy()
+          }
+        }, 500)
+      } else {
+        cli.action.stop(chalk.bold.red('failed'))
+        // eslint-disable-next-line no-console
+        console.error('Authentication failed')
+        res.statusCode = 200
+        res.end('\n\n  ok you can close the browser window now')
         server.close()
         setTimeout(() => {
           for (const socket of Object.values(sockets)) {
@@ -94,9 +121,6 @@ export default class AuthWeb extends Command {
           }
         }, 500)
       }
-
-      res.statusCode = 200
-      res.end('\n\n  ok you can close the browser window now')
     })
 
     try {
@@ -115,21 +139,17 @@ export default class AuthWeb extends Command {
   }
 
   checkToken(token: any, self: any) {
-    pd.me(token).then(r => {
-      if (r.isFailure) {
-        cli.action.stop('failed!')
-        self.error(`${r.getPDErrorMessage()}`, {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
-      }
-      const me = r.getValue()
-      if (me && me.user && me.user.html_url) {
-        const domain = me.user.html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
-        pdconfig.setAuth(token)
-        cli.action.stop(chalk.bold.green('done'))
-        self.log(`You are logged in to ${chalk.bold.blue(domain)} as ${chalk.bold.blue(me.user.email)}`)
-      } else {
+    const pd = new PD(token)
+    pd.me().then(me => {
+      if (!(me && me.user && me.user.html_url)) {
         cli.action.stop(chalk.bold.red(`failed - got a token (${token}) but it wasn't valid`))
         self.error('Invalid token', {exit: 1, suggestions: ['Get a token from the web at https://martindstone.github.io/PDOAuth']})
       }
+      pdconfig.setAuth(token)
+      pd.domain().then(domain => {
+        cli.action.stop(chalk.bold.green('done'))
+        self.log(`You are logged in to ${chalk.bold.blue(domain)} as ${chalk.bold.blue(me.user.email)}`)
+      })
     })
   }
 }

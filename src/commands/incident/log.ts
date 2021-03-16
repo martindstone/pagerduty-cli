@@ -4,7 +4,6 @@ import {flags} from '@oclif/command'
 import cli from 'cli-ux'
 import chalk from 'chalk'
 import getStream from 'get-stream'
-import * as pd from '../../pd'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
 
@@ -49,9 +48,6 @@ export default class IncidentLog extends Command {
   async run() {
     const {flags} = this.parse(IncidentLog)
 
-    // get a validated token from base class
-    const token = this.token as string
-
     if (!flags.ids && !flags.pipe) {
       this.error('You must specify at least one of: -i, -p', {exit: 1})
     }
@@ -59,7 +55,6 @@ export default class IncidentLog extends Command {
       is_overview: flags.overview,
     }
 
-    let r: pd.Result<any>
     let incident_ids: string[] = []
 
     if (flags.ids) {
@@ -81,10 +76,12 @@ export default class IncidentLog extends Command {
     for (const incident_id of incident_ids) {
       cli.action.start(`Getting log entries for incident ${chalk.bold.blue(incident_id)}`)
       // eslint-disable-next-line no-await-in-loop
-      r = await pd.fetch(token, `/incidents/${incident_id}/log_entries`, params)
-      this.dieIfFailed(r)
-      cli.action.stop(chalk.bold.green(`got ${r.getValue().length}`))
-      log_entries = [...log_entries, ...r.getValue()]
+      const r = await this.pd.fetchWithSpinner(`incidents/${incident_id}/log_entries`,
+        {
+          params: params,
+          activityDescription: `Getting log entries for incident ${chalk.bold.blue(incident_id)}`,
+        })
+      log_entries = [...log_entries, ...r]
     }
 
     if (log_entries.length === 0) {

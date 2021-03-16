@@ -2,8 +2,6 @@ import Command from '../../../base'
 import {flags} from '@oclif/command'
 import cli from 'cli-ux'
 import chalk from 'chalk'
-import * as pd from '../../../pd'
-// import * as utils from '../../../utils'
 import parsePhoneNumber from 'libphonenumber-js'
 
 export default class UserContactAdd extends Command {
@@ -42,15 +40,12 @@ export default class UserContactAdd extends Command {
   async run() {
     const {flags} = this.parse(UserContactAdd)
 
-    // get a validated token from base class
-    const token = this.token as string
-
     let userID
     if (flags.id) {
       userID = flags.id
     } else if (flags.email) {
       cli.action.start(`Finding PD user ${chalk.bold.blue(flags.email)}`)
-      userID = await pd.userIDForEmail(token, flags.email)
+      userID = await this.pd.userIDForEmail(flags.email)
       if (!userID) {
         cli.action.stop(chalk.bold.red('failed!'))
         this.error(`No user was found for the email "${flags.email}"`, {exit: 1})
@@ -75,9 +70,16 @@ export default class UserContactAdd extends Command {
     }
 
     cli.action.start(`Adding ${chalk.bold.blue(flags.type)} contact method for user ${chalk.bold.blue(userID)}`)
-    const r = await pd.request(token, `/users/${userID}/contact_methods`, 'POST', {}, body)
-    this.dieIfFailed(r)
-    const contact_method = r.getValue()
+    const r = await this.pd.request({
+      endpoint: `users/${userID}/contact_methods`,
+      method: 'POST',
+      data: body,
+    })
+    if (r.isFailure) {
+      cli.action.stop(chalk.bold.red('failed!'))
+      this.error(`Request failed: ${r.getFormattedError}`, {exit: 1})
+    }
+    const contact_method = r.getData()
     cli.action.stop(`${chalk.bold.green('created contact method')} ${chalk.bold.blue(contact_method.contact_method.id)}`)
   }
 }

@@ -2,7 +2,6 @@ import Command from '../../base'
 import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
-import * as pd from '../../pd'
 import * as utils from '../../utils'
 
 export default class RestDelete extends Command {
@@ -31,9 +30,6 @@ export default class RestDelete extends Command {
 
   async run() {
     const {flags} = this.parse(RestDelete)
-
-    // get a validated token from base class
-    const token = this.token as string
 
     const params: Record<string, any> = {}
 
@@ -68,9 +64,17 @@ export default class RestDelete extends Command {
     }
 
     cli.action.start('Talking to PD')
-    const response = await pd.request(token, flags.endpoint, 'DELETE', params, undefined, headers)
+    const response = await this.pd.request({
+      endpoint: flags.endpoint,
+      method: 'DELETE',
+      params: params,
+      headers: headers,
+    })
 
-    this.dieIfFailed(response)
+    if (response.isFailure) {
+      cli.action.stop(chalk.bold.red('failed!'))
+      this.error(`Request failed: ${response.getFormattedError}`)
+    }
     cli.action.stop(chalk.bold.green('done'))
     await utils.printJsonAndExit(response.getValue())
   }

@@ -3,7 +3,6 @@ import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
 import getStream from 'get-stream'
-import * as pd from '../../pd'
 import * as utils from '../../utils'
 
 export default class IncidentPriority extends Command {
@@ -41,8 +40,6 @@ export default class IncidentPriority extends Command {
   async run() {
     const {flags} = this.parse(IncidentPriority)
 
-    // get a validated token from base class
-    const token = this.token
     const headers: Record<string, string> = {}
     if (flags.from) {
       headers.From = flags.from
@@ -50,14 +47,12 @@ export default class IncidentPriority extends Command {
 
     let incident_ids: string[] = []
     if (flags.me) {
-      const me = await this.me()
+      const me = await this.me(true)
 
       const params = {user_ids: [me.user.id]}
 
       cli.action.start('Getting incidents from PD')
-      const r = await pd.fetch(token, '/incidents', params)
-      this.dieIfFailed(r)
-      const incidents = r.getValue()
+      const incidents = await this.pd.fetch('incidents', {params: params})
       if (incidents.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
         return
@@ -79,14 +74,10 @@ export default class IncidentPriority extends Command {
     }
 
     cli.action.start('Getting incident priorities from PD')
-    let r = await pd.getPrioritiesMapByName(token)
-    this.dieIfFailed(r)
-    const priorities_map = r.getValue()
+    const priorities_map = await this.pd.getPrioritiesMapByName()
     if (priorities_map === {}) {
       cli.action.stop(chalk.bold.red('none found'))
       this.error('No incident priorities were found. Is the priority feature enabled?', {exit: 1})
-    } else {
-      cli.action.stop(chalk.bold.green('done'))
     }
 
     if (!(flags.priority in priorities_map)) {
@@ -108,28 +99,19 @@ export default class IncidentPriority extends Command {
         },
       }
       requests.push({
-        token: token,
-        endpoint: `/incidents/${incident_id}`,
+        endpoint: `incidents/${incident_id}`,
         method: 'PUT',
         params: {},
         data: body,
         headers: headers,
       })
     }
-    r = await pd.batchedRequest(requests)
-    this.dieIfFailed(r)
-    const returnedIncidents = r.getValue()
-    const failed = []
-    for (const r of returnedIncidents) {
-      if (!(r && r.incident && r.incident.priority && r.incident.priority.name === flags.priority)) {
-        failed.push(r.incident.id)
-      }
-    }
-    if (failed.length > 0) {
-      cli.action.stop(chalk.bold.red('failed!'))
-      this.error(`Priority change request failed for incidents ${chalk.bold.red(failed.join(', '))}`)
-    } else {
-      cli.action.stop(chalk.bold.green('done'))
+    const r = await this.pd.batchedRequestWithSpinner(requests, {
+      activityDescription: `Setting priority ${chalk.bold.blue(`${flags.priority} (${priority_id})`)} on ${incident_ids.length} incident(s)`,
+    })
+    for (const failure of r.getFailedIndices()) {
+      // eslint-disable-next-line no-console
+      console.error(`${chalk.bold.red('Failed to set priority on incident ')}${chalk.bold.blue(requests[failure].data.incident.id)}: ${r.results[failure].getFormattedError()}`)
     }
   }
 }

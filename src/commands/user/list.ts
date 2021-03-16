@@ -1,8 +1,6 @@
 import Command from '../../base'
 import {flags} from '@oclif/command'
 import cli from 'cli-ux'
-// import chalk from 'chalk'
-import * as pd from '../../pd'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
 
@@ -41,9 +39,6 @@ export default class UserList extends Command {
   async run() {
     const {flags} = this.parse(UserList)
 
-    // get a validated token from base class
-    const token = this.token as string
-
     const params: Record<string, any> = {
       include: ['contact_methods', 'notification_rules', 'teams'],
     }
@@ -52,11 +47,10 @@ export default class UserList extends Command {
       params.query = flags.email
     }
 
-    cli.action.start('Getting users from PD')
-    const r = await pd.fetch(token, '/users', params)
-    this.dieIfFailed(r)
-    const users = r.getValue()
-    cli.action.stop(`got ${users.length}`)
+    const users = await this.pd.fetchWithSpinner('users', {
+      params: params,
+      activityDescription: 'Getting users from PD',
+    })
 
     if (flags.json) {
       await utils.printJsonAndExit(users)

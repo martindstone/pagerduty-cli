@@ -1,8 +1,5 @@
 import Command from '../../base'
 import {flags} from '@oclif/command'
-// import chalk from 'chalk'
-// import cli from 'cli-ux'
-// import * as pd from '../../pd'
 import ServiceSet from './set'
 
 export default class ServiceDisable extends Command {

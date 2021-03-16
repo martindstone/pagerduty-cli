@@ -1,5 +1,4 @@
 import {Command} from '@oclif/command'
-// import {flags} from '@oclif/command'
 import AuthWeb from './auth/web'
 
 export default class Login extends Command {

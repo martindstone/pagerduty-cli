@@ -1,8 +1,6 @@
 import Command, {flags} from '@oclif/command'
-import {cli} from 'cli-ux'
-import chalk from 'chalk'
 import * as config from './config'
-import * as pd from './pd'
+import {PD} from './pd'
 
 export default abstract class extends Command {
   static flags = {
@@ -11,24 +9,14 @@ export default abstract class extends Command {
 
   protected token!: string
 
-  private _me: any = null
+  protected pd!: PD
 
-  async me(die = true): Promise<any> {
-    if (this._me === null) {
-      try {
-        const r = await pd.me(this.token)
-        if (r.isFailure) {
-          throw new Error(`Request to /users/me failed: ${r.getPDErrorMessage()}`)
-        }
-        this._me = r.getValue()
-      } catch (error) {
-        if (die) {
-          this.error(`${error.message}. Are you using a legacy API token?`, {suggestions: ['pd login', 'pd auth:set'], exit: 1})
-        }
-        this._me = false
-      }
+  async me(die = false): Promise<any> {
+    const me = await this.pd.me()
+    if (die && !me) {
+      this.error('Request to /users/me failed. Are you using a legacy API token?', {exit: 1})
     }
-    return this._me
+    return me
   }
 
   async init() {
@@ -41,32 +29,12 @@ export default abstract class extends Command {
         suggestions: ['pd login', 'pd auth:set'],
       })
     }
-    if (!pd.isValidToken(this.token)) {
+    if (!PD.isValidToken(this.token)) {
       this.error(`Token '${this.token}' is not valid`, {
         exit: 1,
         suggestions: ['pd login', 'pd auth:set'],
       })
     }
-  }
-
-  protected dieIfFailed(r: pd.Result<any>, params?: { prefixMessage?: string; suggestions?: string[] }) {
-    if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
-      let message = ''
-      if (params && params.prefixMessage) {
-        message += params.prefixMessage + ': '
-      }
-      message += r.getPDErrorMessage()
-      let suggestions: string[] = []
-      if (params && params.suggestions) {
-        suggestions = params.suggestions
-      }
-      this.error(message, {exit: 1, suggestions: suggestions})
-    }
-  }
-
-  protected getValueOrDie(r: pd.Result<any>, params?: { prefixMessage?: string; suggestions?: string[] }) {
-    this.dieIfFailed(r, params)
-    return r.getValue()
+    this.pd = new PD(this.token)
   }
 }

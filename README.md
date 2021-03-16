@@ -13,58 +13,62 @@ PagerDuty Command Line Interface
 * [Commands](#commands)
 <!-- tocstop -->
 # Usage
-```sh-session
-$ sh -c "$(curl -sL http://www.pdtl.ink/pdcli)"
-$ pd help
-$ pd login
-...
-```
+
+## See the [User Guide](https://github.com/martindstone/pagerduty-cli/wiki/PagerDuty-CLI-User-Guide)!
+
 # Commands
 <!-- commands -->
-* [`pd auth:get`](#pd-authget)
-* [`pd auth:set`](#pd-authset)
-* [`pd auth:web`](#pd-authweb)
-* [`pd autocomplete [SHELL]`](#pd-autocomplete-shell)
-* [`pd commands`](#pd-commands)
-* [`pd ep:list`](#pd-eplist)
-* [`pd ep:oncall`](#pd-eponcall)
-* [`pd ep:open`](#pd-epopen)
-* [`pd help [COMMAND]`](#pd-help-command)
-* [`pd incident:ack`](#pd-incidentack)
-* [`pd incident:analytics`](#pd-incidentanalytics)
-* [`pd incident:assign`](#pd-incidentassign)
-* [`pd incident:create`](#pd-incidentcreate)
-* [`pd incident:list`](#pd-incidentlist)
-* [`pd incident:log`](#pd-incidentlog)
-* [`pd incident:notes`](#pd-incidentnotes)
-* [`pd incident:open`](#pd-incidentopen)
-* [`pd incident:priority`](#pd-incidentpriority)
-* [`pd incident:resolve`](#pd-incidentresolve)
-* [`pd log`](#pd-log)
-* [`pd login`](#pd-login)
-* [`pd rest:delete`](#pd-restdelete)
-* [`pd rest:fetch`](#pd-restfetch)
-* [`pd rest:get`](#pd-restget)
-* [`pd rest:post`](#pd-restpost)
-* [`pd rest:put`](#pd-restput)
-* [`pd schedule:list`](#pd-schedulelist)
-* [`pd schedule:oncall`](#pd-scheduleoncall)
-* [`pd schedule:open`](#pd-scheduleopen)
-* [`pd schedule:override:add`](#pd-scheduleoverrideadd)
-* [`pd schedule:override:list`](#pd-scheduleoverridelist)
-* [`pd service:disable`](#pd-servicedisable)
-* [`pd service:enable`](#pd-serviceenable)
-* [`pd service:list`](#pd-servicelist)
-* [`pd service:set`](#pd-serviceset)
-* [`pd update [CHANNEL]`](#pd-update-channel)
-* [`pd user:contact:add`](#pd-usercontactadd)
-* [`pd user:contact:list`](#pd-usercontactlist)
-* [`pd user:contact:set`](#pd-usercontactset)
-* [`pd user:list`](#pd-userlist)
-* [`pd user:log`](#pd-userlog)
-* [`pd user:oncall`](#pd-useroncall)
-* [`pd user:session:list`](#pd-usersessionlist)
-* [`pd user:set`](#pd-userset)
+- [pagerduty-cli](#pagerduty-cli)
+- [Usage](#usage)
+  - [See the User Guide!](#see-the-user-guide)
+- [Commands](#commands)
+  - [`pd auth:get`](#pd-authget)
+  - [`pd auth:set`](#pd-authset)
+  - [`pd auth:web`](#pd-authweb)
+  - [`pd autocomplete [SHELL]`](#pd-autocomplete-shell)
+  - [`pd commands`](#pd-commands)
+  - [`pd ep:list`](#pd-eplist)
+  - [`pd ep:oncall`](#pd-eponcall)
+  - [`pd ep:open`](#pd-epopen)
+  - [`pd help [COMMAND]`](#pd-help-command)
+  - [`pd incident:ack`](#pd-incidentack)
+  - [`pd incident:analytics`](#pd-incidentanalytics)
+  - [`pd incident:assign`](#pd-incidentassign)
+  - [`pd incident:create`](#pd-incidentcreate)
+  - [`pd incident:list`](#pd-incidentlist)
+  - [`pd incident:log`](#pd-incidentlog)
+  - [`pd incident:notes`](#pd-incidentnotes)
+  - [`pd incident:open`](#pd-incidentopen)
+  - [`pd incident:priority`](#pd-incidentpriority)
+  - [`pd incident:resolve`](#pd-incidentresolve)
+  - [`pd incident:tst`](#pd-incidenttst)
+  - [`pd log`](#pd-log)
+  - [`pd login`](#pd-login)
+  - [`pd rest:delete`](#pd-restdelete)
+  - [`pd rest:fetch`](#pd-restfetch)
+  - [`pd rest:get`](#pd-restget)
+  - [`pd rest:post`](#pd-restpost)
+  - [`pd rest:put`](#pd-restput)
+  - [`pd schedule:list`](#pd-schedulelist)
+  - [`pd schedule:oncall`](#pd-scheduleoncall)
+  - [`pd schedule:open`](#pd-scheduleopen)
+  - [`pd schedule:override:add`](#pd-scheduleoverrideadd)
+  - [`pd schedule:override:list`](#pd-scheduleoverridelist)
+  - [`pd service:disable`](#pd-servicedisable)
+  - [`pd service:enable`](#pd-serviceenable)
+  - [`pd service:list`](#pd-servicelist)
+  - [`pd service:set`](#pd-serviceset)
+  - [`pd tst`](#pd-tst)
+  - [`pd update [CHANNEL]`](#pd-update-channel)
+  - [`pd user:contact:add`](#pd-usercontactadd)
+  - [`pd user:contact:list`](#pd-usercontactlist)
+  - [`pd user:contact:set`](#pd-usercontactset)
+  - [`pd user:list`](#pd-userlist)
+  - [`pd user:log`](#pd-userlog)
+  - [`pd user:oncall`](#pd-useroncall)
+  - [`pd user:session:list`](#pd-usersessionlist)
+  - [`pd user:set`](#pd-userset)
+  - [`pd util:timestamp [DATE]`](#pd-utiltimestamp-date)
 
 ## `pd auth:get`
 
@@ -573,6 +577,32 @@ OPTIONS
 
 _See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/incident/resolve.ts)_
 
+## `pd incident:tst`
+
+List PagerDuty Incidents
+
+```
+USAGE
+  $ pd incident:tst
+
+OPTIONS
+  -h, --help              show CLI help
+  -j, --json              output full details as JSON
+  -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
+  -x, --extended          show extra columns
+  --columns=columns       only show provided columns (comma-separated)
+  --csv                   output is csv format [alias: --output=csv]
+  --filter=filter         filter property by partial string matching, ex: name=foo
+  --no-header             hide table header from output
+  --no-truncate           do not truncate output to fit screen
+  --output=csv|json|yaml  output in a more machine friendly format
+  --since=since           The start of the date range over which you want to search.
+  --sort=sort             property to sort by (prepend '-' for descending)
+  --until=until           The end of the date range over which you want to search.
+```
+
+_See code: [src/commands/incident/tst.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/incident/tst.ts)_
+
 ## `pd log`
 
 Show PagerDuty Domain Log Entries
@@ -1016,6 +1046,28 @@ OPTIONS
 
 _See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/service/set.ts)_
 
+## `pd tst`
+
+Show PagerDuty Domain Tst Entries
+
+```
+USAGE
+  $ pd tst
+
+OPTIONS
+  -h, --help              show CLI help
+  -x, --extended          show extra columns
+  --columns=columns       only show provided columns (comma-separated)
+  --csv                   output is csv format [alias: --output=csv]
+  --filter=filter         filter property by partial string matching, ex: name=foo
+  --no-header             hide table header from output
+  --no-truncate           do not truncate output to fit screen
+  --output=csv|json|yaml  output in a more machine friendly format
+  --sort=sort             property to sort by (prepend '-' for descending)
+```
+
+_See code: [src/commands/tst.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/tst.ts)_
+
 ## `pd update [CHANNEL]`
 
 update the pd CLI
@@ -1276,4 +1328,21 @@ OPTIONS
 ```
 
 _See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/user/set.ts)_
+
+## `pd util:timestamp [DATE]`
+
+Make ISO8601 timestamps
+
+```
+USAGE
+  $ pd util:timestamp [DATE]
+
+ARGUMENTS
+  DATE  A human-style date/time, like "4pm 1/1/2021" or "Dec 2 1pm", etc. Default: now
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+_See code: [src/commands/util/timestamp.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.60/src/commands/util/timestamp.ts)_
 <!-- commandsstop -->

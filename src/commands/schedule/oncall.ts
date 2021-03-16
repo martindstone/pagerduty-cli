@@ -2,7 +2,6 @@ import Command from '../../base'
 import {flags} from '@oclif/command'
 import cli from 'cli-ux'
 import chalk from 'chalk'
-import * as pd from '../../pd'
 import * as utils from '../../utils'
 import * as chrono from 'chrono-node'
 import jp from 'jsonpath'
@@ -44,9 +43,6 @@ export default class ScheduleOncall extends Command {
   async run() {
     const {flags} = this.parse(ScheduleOncall)
 
-    // get a validated token from base class
-    const token = this.token as string
-
     const params: Record<string, any> = {}
 
     let scheduleID
@@ -57,10 +53,10 @@ export default class ScheduleOncall extends Command {
       scheduleID = flags.id
     } else if (flags.name) {
       cli.action.start(`Finding PD schedule ${chalk.bold.blue(flags.name)}`)
-      scheduleID = await pd.scheduleIDForName(token, flags.name)
+      scheduleID = await this.pd.scheduleIDForName(flags.name)
       if (!scheduleID) {
         cli.action.stop(chalk.bold.red('failed!'))
-        this.error(`No schedule was found with the name "${flags.name}"`, {exit: 1})
+        this.error(`No schedule or multiple schedules found with the name "${flags.name}"`, {exit: 1})
       }
     } else {
       this.error('You must specify one of: -i, -n', {exit: 1})
@@ -81,16 +77,14 @@ export default class ScheduleOncall extends Command {
       }
     }
 
-    cli.action.start(`Getting oncalls for schedule ${chalk.bold.blue(scheduleID)}`)
-    const r = await pd.fetch(token, 'oncalls', params)
-    this.dieIfFailed(r)
-    const oncalls = r.getValue()
+    const oncalls = await this.pd.fetchWithSpinner('oncalls', {
+      params: params,
+      activityDescription: `Getting oncalls for schedule ${chalk.bold.blue(scheduleID)}`,
+    })
 
     if (oncalls.length === 0) {
-      cli.action.stop(chalk.bold.red('none found'))
-      this.exit(0)
+      this.error('No oncalls found.', {exit: 1})
     }
-    cli.action.stop(chalk.bold.green('done'))
 
     if (flags.json) {
       await utils.printJsonAndExit(oncalls)

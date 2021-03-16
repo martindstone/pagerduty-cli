@@ -2,7 +2,6 @@ import Command from '../../base'
 import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
-import * as pd from '../../pd'
 
 export default class IncidentNotes extends Command {
   static description = 'See or add notes on PagerDuty Incidents'
@@ -29,8 +28,6 @@ export default class IncidentNotes extends Command {
   async run() {
     const {flags} = this.parse(IncidentNotes)
 
-    // get a validated token from base class
-    const token = this.token as string
     const headers: Record<string, string> = {}
     if (flags.from) {
       headers.From = flags.from
@@ -44,9 +41,14 @@ export default class IncidentNotes extends Command {
           content: flags.note,
         },
       }
-      const r = await pd.request(token, `/incidents/${flags.id}/notes`, 'POST', null, body, headers)
-      this.dieIfFailed(r)
-      const note = r.getValue()
+      const r = await this.pd.request({
+        endpoint: `incidents/${flags.id}/notes`,
+        method: 'POST',
+        data: body,
+        headers: headers,
+      })
+      if (r.isFailure) this.error(`Failed to add note: ${r.getFormattedError()}`)
+      const note = r.getData()
       if (note && note.note && note.note.id) {
         cli.action.stop(chalk.bold.green('done'))
       } else {
@@ -55,14 +57,13 @@ export default class IncidentNotes extends Command {
     } else {
       // get notes
       cli.action.start(`Getting notes for incident ${chalk.bold.blue(flags.id)}`)
-      const r = await pd.fetch(token, `/incidents/${flags.id}/notes`)
-      this.dieIfFailed(r)
-      const notes = r.getValue()
+      const notes = await this.pd.fetchWithSpinner(`incidents/${flags.id}/notes`, {
+        activityDescription: `Getting notes for incident ${chalk.bold.blue(flags.id)}`,
+      })
       if (notes.length === 0) {
-        cli.action.stop(chalk.bold.red('none found'))
-        return
+        this.error('No notes found', {exit: 1})
       }
-      cli.action.stop(`got ${notes.length}`)
+
       const columns: Record<string, object> = {
         id: {
           header: 'ID',

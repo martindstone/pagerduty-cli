@@ -2,7 +2,6 @@ import Command from '../../../base'
 import {flags} from '@oclif/command'
 import cli from 'cli-ux'
 import chalk from 'chalk'
-import * as pd from '../../../pd'
 import * as utils from '../../../utils'
 import * as chrono from 'chrono-node'
 
@@ -44,9 +43,6 @@ export default class ScheduleOverrideAdd extends Command {
   async run() {
     const {flags} = this.parse(ScheduleOverrideAdd)
 
-    // get a validated token from base class
-    const token = this.token as string
-
     let scheduleID
     if (flags.id) {
       if (utils.invalidPagerDutyIDs([flags.id]).length > 0) {
@@ -55,7 +51,7 @@ export default class ScheduleOverrideAdd extends Command {
       scheduleID = flags.id
     } else if (flags.name) {
       cli.action.start(`Finding PD schedule ${chalk.bold.blue(flags.name)}`)
-      scheduleID = await pd.scheduleIDForName(token, flags.name)
+      scheduleID = await this.pd.scheduleIDForName(flags.name)
       if (!scheduleID) {
         cli.action.stop(chalk.bold.red('failed!'))
         this.error(`No schedule was found with the name "${flags.name}"`, {exit: 1})
@@ -72,7 +68,7 @@ export default class ScheduleOverrideAdd extends Command {
       userID = flags.user_id
     } else if (flags.user_email) {
       cli.action.start(`Finding PD user ${chalk.bold.blue(flags.user_email)}`)
-      userID = await pd.userIDForEmail(token, flags.user_email)
+      userID = await this.pd.userIDForEmail(flags.user_email)
       if (!userID) {
         cli.action.stop(chalk.bold.red('failed!'))
         this.error(`No user was found for the email "${flags.user_email}"`, {exit: 1})
@@ -93,10 +89,16 @@ export default class ScheduleOverrideAdd extends Command {
     }
 
     cli.action.start(`Adding an override to schedule ${chalk.bold.blue(scheduleID)}`)
-    const r = await pd.request(token, `schedules/${scheduleID}/overrides`, 'POST', {}, body)
-    // const r = await pd.fetch(token, `/schedules/${scheduleID}/overrides`, params)
-    this.dieIfFailed(r)
-    const override = r.getValue()
+    const r = await this.pd.request({
+      endpoint: `schedules/${scheduleID}/overrides`,
+      method: 'POST',
+      data: body,
+    })
+    if (r.isFailure) {
+      cli.action.stop(chalk.bold.red('failed!'))
+      this.error(`Request failed: ${r.getFormattedError()}`, {exit: 1})
+    }
+    const override = r.getData()
     if (override && override.override && override.override.id) {
       cli.action.stop(chalk.bold.green('done'))
       this.exit(0)

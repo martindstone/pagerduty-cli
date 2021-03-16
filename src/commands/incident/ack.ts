@@ -1,11 +1,12 @@
 import Command from '../../base'
 import {flags} from '@oclif/command'
 import chalk from 'chalk'
-import cli from 'cli-ux'
+// import cli from 'cli-ux'
 import getStream from 'get-stream'
-import * as pd from '../../pd'
+// import * as pd from '../../pd'
 import * as utils from '../../utils'
 import parse from 'parse-duration'
+import log from 'ololog'
 
 export default class IncidentAck extends Command {
   static description = 'Acknowledge PagerDuty Incidents'
@@ -46,13 +47,11 @@ export default class IncidentAck extends Command {
     let snooze_secs = NaN
     if (flags.snooze) {
       snooze_secs = parse(flags.snooze, 's') || Number(flags.snooze)
-      if (isNaN(snooze_secs)) {
+      if (isNaN(snooze_secs) || snooze_secs < 60) {
         this.error(`Invalid snooze duration: ${flags.snooze}`, {exit: 1})
       }
     }
 
-    // get a validated token from base class
-    const token = this.token
     const headers: Record<string, string> = {}
     if (flags.from) {
       headers.From = flags.from
@@ -60,20 +59,15 @@ export default class IncidentAck extends Command {
 
     let incident_ids: string[] = []
     if (flags.me) {
-      const me = await this.me()
+      const me = await this.pd.me()
 
       const params = {user_ids: [me.user.id]}
-      cli.action.start('Getting incidents from PD')
-      const r = await pd.fetch(token, '/incidents', params)
-      this.dieIfFailed(r, {prefixMessage: 'Request to list incidents failed'})
-
-      const incidents = r.getValue()
+      const incidents = await this.pd.fetchWithSpinner('incidents', {params: params, activityDescription: 'Getting incidents from PD'})
       if (incidents.length === 0) {
-        cli.action.stop(chalk.bold.red('none found'))
-        return
+        // eslint-disable-next-line no-console
+        log.error.red(chalk.bold.red('No incidents to acknowledge'))
+        this.exit(0)
       }
-
-      cli.action.stop(`got ${incidents.length} before filtering`)
       incident_ids = incidents.map((e: { id: any }) => e.id)
     } else if (flags.ids) {
       incident_ids = utils.splitDedupAndFlatten(flags.ids)
@@ -90,14 +84,12 @@ export default class IncidentAck extends Command {
     }
 
     const requests: any[] = []
-    cli.action.start(`Acknowledging incident(s) ${chalk.bold.blue(incident_ids.join(', '))}`)
     for (const incident_id of incident_ids) {
-      const body: Record<string, any> = pd.putBodyForSetAttribute('incident', incident_id, 'status', 'acknowledged')
+      const body: Record<string, any> = utils.putBodyForSetAttribute('incident', incident_id, 'status', 'acknowledged')
       if (!isNaN(snooze_secs)) {
         body.incident.duration = snooze_secs
       }
       requests.push({
-        token: token,
         endpoint: `/incidents/${incident_id}`,
         method: 'PUT',
         params: {},
@@ -105,21 +97,11 @@ export default class IncidentAck extends Command {
         headers: headers,
       })
     }
-    const r = await pd.batchedRequest(requests)
-    this.dieIfFailed(r, {prefixMessage: 'Acknowledge request failed'})
 
-    const returnedIncidents = r.getValue()
-    const failed = []
-    for (const r of returnedIncidents) {
-      if (!(r && r.incident && r.incident.status && r.incident.status === 'acknowledged')) {
-        failed.push(r.incident.id)
-      }
-    }
-    if (failed.length > 0) {
-      cli.action.stop(chalk.bold.red('failed!'))
-      this.error(`Acknowledge request failed for incidents ${chalk.bold.red(failed.join(', '))}`)
-    } else {
-      cli.action.stop(chalk.bold.green('done'))
+    const r = await this.pd.batchedRequestWithSpinner(requests, {activityDescription: `Acknowledging ${requests.length} incidents`})
+    for (const failure of r.getFailedIndices()) {
+      // eslint-disable-next-line no-console
+      console.error(`${chalk.bold.red('Failed to acknowledge incident ')}${chalk.bold.blue(requests[failure].data.incident.id)}: ${r.results[failure].getFormattedError()}`)
     }
   }
 }

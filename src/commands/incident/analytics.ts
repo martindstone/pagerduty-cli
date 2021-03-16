@@ -1,11 +1,8 @@
 import Command from '../../base'
 import {flags} from '@oclif/command'
-import chalk from 'chalk'
 import cli from 'cli-ux'
 import getStream from 'get-stream'
-import * as pd from '../../pd'
 import * as utils from '../../utils'
-import cliProgress from 'cli-progress'
 import jp from 'jsonpath'
 
 export default class IncidentAnalytics extends Command {
@@ -43,7 +40,7 @@ export default class IncidentAnalytics extends Command {
     const {flags} = this.parse(IncidentAnalytics)
 
     // get a validated token from base class
-    const token = this.token
+    // const token = this.token
 
     let incident_ids: string[] = []
     if (flags.ids) {
@@ -60,36 +57,16 @@ export default class IncidentAnalytics extends Command {
       this.error(`Invalid incident ID's: ${invalid_ids.join(', ')}`, {exit: 1})
     }
 
-    let analytics: any[] = []
-    const progressFormat = 'Getting incident analytics: {bar} {value}/{total} ({failed} failed) {errors}'
-    const progress = new cliProgress.SingleBar({
-      format: progressFormat,
-    }, cliProgress.Presets.shades_classic)
-    let failed = 0
-    progress.start(incident_ids.length, 0, {errors: '', failed: failed})
-    for (const [index, incident_id] of incident_ids.entries()) {
-      // eslint-disable-next-line no-await-in-loop
-      let r = await pd.request(token, `analytics/raw/incidents/${incident_id}`, 'GET', null, undefined, {'X-EARLY-ACCESS': 'analytics-v2'})
-      if (r.isFailure) {
-        if (r.fullError?.response?.status === 429) {
-          while (r.isFailure && r.fullError?.response?.status === 429) {
-            progress.update({errors: chalk.bold.red('rate limited! waiting...')})
-            // eslint-disable-next-line no-await-in-loop
-            await cli.wait(10000)
-            // eslint-disable-next-line no-await-in-loop
-            r = await pd.request(token, `analytics/raw/incidents/${incident_id}`, 'GET', null, undefined, {'X-EARLY-ACCESS': 'analytics-v2'})
-          }
-          progress.update(index, {errors: ''})
-        } else {
-          failed++
-          progress.update({errors: chalk.bold.red(`error '${r.error}' for incident ${incident_id}`), failed: failed})
-          continue
-        }
+    const requests = incident_ids.map(incident_id => {
+      return {
+        endpoint: `analytics/raw/incidents/${incident_id}`,
+        headers: {'X-EARLY-ACCESS': 'analytics-v2'},
       }
-      analytics = [...analytics, r.getValue()]
-      progress.update(index + 1, {errors: ''})
-    }
-    progress.stop()
+    })
+
+    const br = await this.pd.batchedRequestWithSpinner(requests, {activityDescription: 'Getting incident analytics'})
+
+    const analytics = br.getDatas()
     if (flags.json) {
       await utils.printJsonAndExit(analytics)
     }

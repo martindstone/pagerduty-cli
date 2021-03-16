@@ -4,7 +4,6 @@ import {flags} from '@oclif/command'
 import cli from 'cli-ux'
 import chalk from 'chalk'
 import getStream from 'get-stream'
-import * as pd from '../../pd'
 import * as utils from '../../utils'
 import * as chrono from 'chrono-node'
 import jp from 'jsonpath'
@@ -60,9 +59,6 @@ export default class UserLog extends Command {
   async run() {
     const {flags} = this.parse(UserLog)
 
-    // get a validated token from base class
-    const token = this.token as string
-
     if (!flags.email && !flags.ids && !flags.pipe) {
       this.error('You must specify at least one of: -e, -i', {exit: 1})
     }
@@ -83,13 +79,13 @@ export default class UserLog extends Command {
       }
     }
 
-    let r: pd.Result<any>
     let user_ids: string[] = []
     if (flags.email) {
       cli.action.start('Getting user IDs from PD')
-      r = await pd.fetch(token, '/users', {query: flags.email})
-      this.dieIfFailed(r)
-      const users = r.getValue()
+      const users = await this.pd.fetchWithSpinner('users', {
+        params: {query: flags.email},
+        activityDescription: 'Getting user IDs from PD',
+      })
       if (!users || users.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
       }
@@ -114,10 +110,11 @@ export default class UserLog extends Command {
     for (const user_id of user_ids) {
       cli.action.start(`Getting log entries for user ${chalk.bold.blue(user_id)}`)
       // eslint-disable-next-line no-await-in-loop
-      r = await pd.fetch(token, `/users/${user_id}/log_entries`, params)
-      this.dieIfFailed(r)
-      cli.action.stop(chalk.bold.green(`got ${r.getValue().length}`))
-      log_entries = [...log_entries, ...r.getValue()]
+      const r = await this.pd.fetchWithSpinner(`users/${user_id}/log_entries`, {
+        params: params,
+        activityDescription: `Getting log entries for user ${chalk.bold.blue(user_id)}`,
+      })
+      log_entries = [...log_entries, ...r]
     }
 
     if (log_entries.length === 0) {

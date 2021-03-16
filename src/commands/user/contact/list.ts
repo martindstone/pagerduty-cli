@@ -2,7 +2,6 @@ import Command from '../../../base'
 import {flags} from '@oclif/command'
 import cli from 'cli-ux'
 import chalk from 'chalk'
-import * as pd from '../../../pd'
 import * as utils from '../../../utils'
 import jp from 'jsonpath'
 import parsePhoneNumber from 'libphonenumber-js'
@@ -55,15 +54,12 @@ export default class UserContactList extends Command {
   async run() {
     const {flags} = this.parse(UserContactList)
 
-    // get a validated token from base class
-    const token = this.token as string
-
     let userID
     if (flags.id) {
       userID = flags.id
     } else if (flags.email) {
       cli.action.start(`Finding PD user ${chalk.bold.blue(flags.email)}`)
-      userID = await pd.userIDForEmail(token, flags.email)
+      userID = await this.pd.userIDForEmail(flags.email)
       if (!userID) {
         cli.action.stop(chalk.bold.red('failed!'))
         this.error(`No user was found for the email "${flags.email}"`, {exit: 1})
@@ -72,11 +68,9 @@ export default class UserContactList extends Command {
       this.error('You must specify one of: -i, -e', {exit: 1})
     }
 
-    cli.action.start(`Getting contact methods for user ${chalk.bold.blue(userID)}`)
-    const r = await pd.fetch(token, `/users/${userID}/contact_methods`)
-    this.dieIfFailed(r)
-    const contact_methods = r.getValue()
-    cli.action.stop(chalk.bold.green(`got ${contact_methods.length}`))
+    const contact_methods = await this.pd.fetchWithSpinner(`users/${userID}/contact_methods`, {
+      activityDescription: `Getting contact methods for user ${chalk.bold.blue(userID)}`,
+    })
 
     if (flags.json) {
       await utils.printJsonAndExit(contact_methods)

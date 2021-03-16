@@ -2,7 +2,6 @@ import Command from '../../base'
 import {flags} from '@oclif/command'
 import cli from 'cli-ux'
 import chalk from 'chalk'
-import * as pd from '../../pd'
 import * as utils from '../../utils'
 import * as chrono from 'chrono-node'
 import jp from 'jsonpath'
@@ -54,9 +53,6 @@ export default class UserOncall extends Command {
   async run() {
     const {flags} = this.parse(UserOncall)
 
-    // get a validated token from base class
-    const token = this.token as string
-
     const params: Record<string, any> = {}
 
     let userID
@@ -67,14 +63,14 @@ export default class UserOncall extends Command {
       userID = flags.id
     } else if (flags.email) {
       cli.action.start(`Finding PD user ${chalk.bold.blue(flags.email)}`)
-      userID = await pd.userIDForEmail(token, flags.email)
+      userID = await this.pd.userIDForEmail(flags.email)
       if (!userID) {
         cli.action.stop(chalk.bold.red('failed!'))
         this.error(`No user was found for the email "${flags.email}"`, {exit: 1})
       }
     } else if (flags.me) {
       cli.action.start('Finding your PD user ID')
-      const me = await this.me()
+      const me = await this.me(true)
       userID = me.user.id
     } else {
       this.error('You must specify one of: -i, -e, -m', {exit: 1})
@@ -95,10 +91,10 @@ export default class UserOncall extends Command {
       }
     }
 
-    cli.action.start(`Getting oncalls for user ${chalk.bold.blue(userID)}`)
-    const r = await pd.fetch(token, 'oncalls', params)
-    this.dieIfFailed(r)
-    let oncalls = r.getValue()
+    let oncalls = await this.pd.fetchWithSpinner('oncalls', {
+      params: params,
+      activityDescription: `Getting oncalls for user ${chalk.bold.blue(userID)}`,
+    })
 
     if (!flags.always) {
       oncalls = oncalls.filter((x: any) => x.start && x.end)

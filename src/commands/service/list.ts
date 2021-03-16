@@ -2,7 +2,6 @@ import Command from '../../base'
 import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
-import * as pd from '../../pd'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
 
@@ -46,9 +45,6 @@ export default class ServiceList extends Command {
   async run() {
     const {flags} = this.parse(ServiceList)
 
-    // get a validated token from base class
-    const token = this.token as string
-
     const params: Record<string, any> = {}
 
     if (flags.name) {
@@ -60,28 +56,24 @@ export default class ServiceList extends Command {
       let teams: any[] = []
       for (const name of flags.teams) {
         // eslint-disable-next-line no-await-in-loop
-        const r = await pd.fetch(token, '/teams', {query: name})
-        this.dieIfFailed(r)
-        teams = [...teams, ...r.getValue().map((e: { id: any }) => e.id)]
+        const r = await this.pd.fetch('teams', {params: {query: name}})
+        teams = [...teams, ...r]
       }
-      const team_ids = [...new Set(teams)]
+      const team_ids = [...new Set(teams.map(x => x.id))]
       if (team_ids.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
         this.error('No teams found. Please check your search.', {exit: 1})
       }
-      cli.action.stop(`got ${teams.length}: ${chalk.bold.blue(team_ids.join(', '))}`)
       params.team_ids = team_ids
     }
 
-    cli.action.start('Getting services from PD')
-    const r = await pd.fetch(token, '/services', params)
-    this.dieIfFailed(r)
-    const services = r.getValue()
+    const services = await this.pd.fetchWithSpinner('services', {
+      params: params,
+      activityDescription: 'Getting services from PD',
+    })
     if (services.length === 0) {
-      cli.action.stop(chalk.bold.red('none found'))
-      this.exit(0)
+      this.error('No services found. Please check your search.', {exit: 1})
     }
-    cli.action.stop(`got ${services.length}`)
 
     if (flags.json) {
       await utils.printJsonAndExit(services)

@@ -2,7 +2,6 @@ import Command from '../../../base'
 import {flags} from '@oclif/command'
 import cli from 'cli-ux'
 import chalk from 'chalk'
-import * as pd from '../../../pd'
 import * as utils from '../../../utils'
 import jp from 'jsonpath'
 import * as chrono from 'chrono-node'
@@ -53,15 +52,12 @@ export default class UserSessionList extends Command {
   async run() {
     const {flags} = this.parse(UserSessionList)
 
-    // get a validated token from base class
-    const token = this.token as string
-
     let userID
     if (flags.id) {
       userID = flags.id
     } else if (flags.email) {
       cli.action.start(`Finding PD user ${chalk.bold.blue(flags.email)}`)
-      userID = await pd.userIDForEmail(token, flags.email)
+      userID = await this.pd.userIDForEmail(flags.email)
       if (!userID) {
         cli.action.stop(chalk.bold.red('failed!'))
         this.error(`No user was found for the email "${flags.email}"`, {exit: 1})
@@ -70,10 +66,9 @@ export default class UserSessionList extends Command {
       this.error('You must specify one of: -i, -e', {exit: 1})
     }
 
-    cli.action.start(`Getting sessions for user ${chalk.bold.blue(userID)}`)
-    const r = await pd.fetch(token, `/users/${userID}/sessions`)
-    this.dieIfFailed(r)
-    let sessions = r.getValue()
+    let sessions = await this.pd.fetchWithSpinner(`users/${userID}/sessions`, {
+      activityDescription: `Getting sessions for user ${chalk.bold.blue(userID)}`,
+    })
 
     if (flags.since) {
       const since = chrono.parseDate(flags.since)

@@ -2,7 +2,6 @@ import Command from '../../base'
 import {flags} from '@oclif/command'
 import cli from 'cli-ux'
 import chalk from 'chalk'
-import * as pd from '../../pd'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
 
@@ -41,19 +40,17 @@ export default class EpList extends Command {
   async run() {
     const {flags} = this.parse(EpList)
 
-    // get a validated token from base class
-    const token = this.token
-
     const params: Record<string, any> = {}
 
     if (flags.name) {
       params.query = flags.name
     }
 
-    cli.action.start('Getting escalation policies from PD')
-    const r = await pd.fetch(token, '/escalation_policies', params)
-    this.dieIfFailed(r)
-    const eps = r.getValue()
+    const eps = await this.pd.fetchWithSpinner('escalation_policies', {
+      params: params,
+      activityDescription: 'Getting escalation policies from PD',
+    })
+
     if (eps.length === 0) {
       cli.action.stop(chalk.bold.red('none found'))
       this.exit(0)
