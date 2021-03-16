@@ -6,9 +6,7 @@ import * as utils from '../../utils'
 import jp from 'jsonpath'
 
 export default class IncidentAnalytics extends Command {
-  static description = 'Acknowledge PagerDuty Incidents'
-
-  static aliases = ['incident:acknowledge']
+  static description = 'Get Incident analytics'
 
   static flags = {
     ...Command.flags,
@@ -38,9 +36,6 @@ export default class IncidentAnalytics extends Command {
 
   async run() {
     const {flags} = this.parse(IncidentAnalytics)
-
-    // get a validated token from base class
-    // const token = this.token
 
     let incident_ids: string[] = []
     if (flags.ids) {
