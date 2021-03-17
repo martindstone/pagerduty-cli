@@ -251,10 +251,10 @@ export class PD {
       log.error.bright.red(p.failureMessage)
     }
     if (updateStatusText) {
-      const successText = chalk.bold.green(`${this.progressState.succeeded}/${this.progressState.total} 👍`)
-      const failureText = chalk.bold.red(`${this.progressState.failed}/${this.progressState.total} 👎`)
+      const totalText = this.progressState.total < 0 ? '?' : this.progressState.total
+      const successText = chalk.bold.green(`${this.progressState.succeeded}/${totalText} 👍`)
+      const failureText = chalk.bold.red(`${this.progressState.failed}/${totalText} 👎`)
       let statusText = `${successText}, ${failureText}`
-      // let statusText = `${this.progressState.succeeded}/${this.progressState.total} 👍, ${this.progressState.failed}/${this.progressState.total} 👎`
       if (this.progressState.waiting) statusText += chalk.bold.red(' Rate limited! Waiting')
       cli.action.start(this.progressState.format + ' ' + statusText)
     }
@@ -357,6 +357,7 @@ export class PD {
       }
     } else if (firstPage.next_cursor) {
       // cursor-based pagination
+      if (p.callback) p.callback({total: -1})
       let next_cursor = firstPage.next_cursor
       while (next_cursor) {
         getParams = Object.assign({}, getParams, {cursor: next_cursor})
@@ -367,6 +368,7 @@ export class PD {
           params: getParams,
           headers: p.headers,
         })
+        if (p.callback) p.callback({success: true})
         const page = r.getData()
         fetchedData = [...fetchedData, ...page[endpoint_identifier]]
         next_cursor = page.next_cursor
