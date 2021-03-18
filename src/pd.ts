@@ -38,6 +38,7 @@ export class PD {
     failed: 0,
     total: 0,
     format: '',
+    stopSpinnerWhenDone: true,
   }
 
   public static isBearerToken(token: string): boolean {
@@ -259,7 +260,7 @@ export class PD {
       cli.action.start(this.progressState.format + ' ' + statusText)
     }
     if (p.done) {
-      cli.action.stop(chalk.bold.green('done'))
+      if (this.progressState.stopSpinnerWhenDone) cli.action.stop(chalk.bold.green('done'))
       this.progressState.started = false
     }
   }
@@ -268,10 +269,13 @@ export class PD {
     p?: {
       batchSize?: number;
       activityDescription?: string;
+      stopSpinnerWhenDone?: boolean;
     }): Promise<PD.BatchResult> {
     const batchSize = p?.batchSize || 10
     const activityDescription = p?.activityDescription || 'Talking to PD'
+    const stopSpinnerWhenDone = !(p?.stopSpinnerWhenDone === false)
 
+    this.progressState.stopSpinnerWhenDone = stopSpinnerWhenDone
     this.progressState.format = activityDescription
     const res = this.batchedRequest(requests,
       {
@@ -385,9 +389,12 @@ export class PD {
     params?: object;
     headers?: object;
     activityDescription?: string;
+    stopSpinnerWhenDone?: boolean;
   } = {
     activityDescription: 'Fetching',
+    stopSpinnerWhenDone: true,
   }): Promise<any[]> {
+    this.progressState.stopSpinnerWhenDone = !(p?.stopSpinnerWhenDone === false)
     this.progressState.format = p.activityDescription ? p.activityDescription : 'Fetching'
     return this.fetch(endpoint, {params: p.params, headers: p.headers, callback: this.spinnerCallback})
   }
