@@ -192,6 +192,9 @@ export default class IncidentList extends Command {
         activityDescription: `Getting notes for ${notes_requests.length} incidents`,
       })
       const noteses = rr.getDatas()
+      if (noteses.length !== incidents.length) {
+        this.error('Error getting incident notes', {exit: 1})
+      }
       for (const [i, notes] of noteses.entries()) {
         incidents[i].notes = notes.notes
       }
