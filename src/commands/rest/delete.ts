@@ -73,9 +73,9 @@ export default class RestDelete extends Command {
 
     if (response.isFailure) {
       cli.action.stop(chalk.bold.red('failed!'))
-      this.error(`Request failed: ${response.getFormattedError}`)
+      this.error(`Request failed: ${response.getFormattedError()}`)
     }
     cli.action.stop(chalk.bold.green('done'))
-    await utils.printJsonAndExit(response.getValue())
+    await utils.printJsonAndExit(response.getData())
   }
 }
