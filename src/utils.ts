@@ -37,6 +37,9 @@ export function invalidPagerDutyIDs(arr: string[]) {
 }
 
 export async function printJsonAndExit(data: any) {
+  if (!data) {
+    process.exit(0)
+  }
   process.stdout.on('drain', () => {
     process.exit(0)
   })
