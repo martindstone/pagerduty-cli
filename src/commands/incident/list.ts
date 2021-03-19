@@ -7,6 +7,7 @@ import cli from 'cli-ux'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
 import * as chrono from 'chrono-node'
+import {PD} from '../../pd'
 
 export default class IncidentList extends Command {
   static description = 'List PagerDuty Incidents'
@@ -58,6 +59,9 @@ export default class IncidentList extends Command {
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
       multiple: true,
+    }),
+    notes: flags.boolean({
+      description: 'Also show incident notes (Uses a lot more HTTPS requests!)',
     }),
     json: flags.boolean({
       char: 'j',
@@ -176,6 +180,23 @@ export default class IncidentList extends Command {
       this.error('No incidents found', {exit: 0})
     }
 
+    if (flags.notes) {
+      const notes_requests: PD.Request[] = []
+      for (const incident of incidents) {
+        notes_requests.push({
+          endpoint: `incidents/${incident.id}/notes`,
+          method: 'GET',
+        })
+      }
+      const rr = await this.pd.batchedRequestWithSpinner(notes_requests, {
+        activityDescription: `Getting notes for ${notes_requests.length} incidents`,
+      })
+      const noteses = rr.getDatas()
+      for (const [i, notes] of noteses.entries()) {
+        incidents[i].notes = notes.notes
+      }
+    }
+
     if (flags.json) {
       await utils.printJsonAndExit(incidents)
     }
@@ -248,6 +269,20 @@ export default class IncidentList extends Command {
         header: 'URL',
         extended: true,
       },
+    }
+
+    if (flags.notes) {
+      columns.notes = {
+        header: 'Notes',
+        get: (row: any) => {
+          const notesArr = row.notes
+          const notesTextArr = notesArr.map((x: any) => {
+            const friendlyDate = (new Date(x.created_at)).toLocaleString()
+            return `${friendlyDate} - ${x.user.summary}: ${x.content}`
+          })
+          return notesTextArr.join('\n')
+        },
+      }
     }
 
     if (flags.keys) {
