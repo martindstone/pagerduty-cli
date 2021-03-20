@@ -106,6 +106,9 @@
       "ep:target": {
         "description": "Manage escalation policy targets"
       },
+      "ep:level": {
+        "description": "Manage escalation policy levels"
+      },
       "schedule": {
         "description": "See/manage schedules"
       },
