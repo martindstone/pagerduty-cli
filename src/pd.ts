@@ -465,6 +465,14 @@ export class PD {
     return this.objectIDsForNames('users', emails)
   }
 
+  public async teamIDForName(name: string): Promise<string | null> {
+    return this.objectIDForName('teams', name)
+  }
+
+  public async teamIDsForNames(names: string[]): Promise<string[]> {
+    return this.objectIDsForNames('teams', names)
+  }
+
   private async getPrioritiesMapBy(attr: string): Promise<any> {
     const priorities = await this.fetch('priorities')
     const priorities_map: Record<string, any> = {}

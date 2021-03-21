@@ -114,6 +114,18 @@
       },
       "schedule:override": {
         "description": "Manage schedule overrides"
+      },
+      "team": {
+        "description": "See/Manage teams"
+      },
+      "team:ep": {
+        "description": "Manage team escalation policies"
+      },
+      "team:user": {
+        "description": "Manage team members"
+      },
+      "util": {
+        "description": "Utility commands"
       }
     },
     "macos": {
