@@ -5,7 +5,7 @@ import chalk from 'chalk'
 import * as utils from '../../utils'
 
 export default class EpCopy extends Command {
-  static description = 'Open PagerDuty Escalation policies in the browser'
+  static description = 'Make a copy of a PagerDuty Escalation Policy'
 
   static flags = {
     ...Command.flags,
