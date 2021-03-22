@@ -106,7 +106,6 @@ export default class ScheduleShow extends Command {
       },
       restrictions: {
         get: (row: any) => {
-          // console.log(JSON.stringify(row.restrictions, null, 2))
           if (!row.restrictions) return
           return utils.formatField(row.restrictions.map((x: any) => utils.scheduleRestrictionString(x)), '\n')
         },
@@ -138,7 +137,7 @@ export default class ScheduleShow extends Command {
       },
     }
 
-    if (schedule.overrides_subschedule.length > 0) {
+    if (schedule.overrides_subschedule.rendered_schedule_entries.length > 0) {
       this.log('')
       this.log(chalk.bold.cyan('Overrides:'))
       cli.table(schedule.overrides_subschedule.rendered_schedule_entries, columns, options)
