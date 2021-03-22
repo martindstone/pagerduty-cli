@@ -37,7 +37,7 @@ export default class EpCopy extends Command {
     const {flags} = this.parse(EpCopy)
 
     if (!([flags.name, flags.id].some(Boolean))) {
-      this.error('You must specify one of: -i, -n, -p', {exit: 1})
+      this.error('You must specify one of: -i, -n', {exit: 1})
     }
 
     let ep_id

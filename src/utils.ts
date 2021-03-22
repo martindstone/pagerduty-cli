@@ -32,10 +32,10 @@ export function scheduleRotationSecondsToHuman(given_seconds: number) {
   const minutes = Math.floor((given_seconds - (days * 3600 * 24) - (hours * 3600)) / 60)
   const seconds = given_seconds - (days * 3600 * 24) - (hours * 3600) - (minutes * 60)
 
-  if (weeks) return `${weeks} week${weeks > 1 ? 's' : ''}`
-  if (days) return `${days} day${days > 1 ? 's' : ''}`
-  if (hours) return `${hours} hour${hours > 1 ? 's' : ''}`
-  return `${days ? days + 'd ' : ''} ${hours ? hours + 'h ' : ''} ${minutes ? minutes + 'm ' : ''} ${seconds ? seconds + 's' : ''}`
+  if (weeks && !days && !hours) return `${weeks} week${weeks > 1 ? 's' : ''}`
+  if (!weeks && days && !hours) return `${days} day${days > 1 ? 's' : ''}`
+  if (!weeks && !days && hours) return `${hours} hour${hours > 1 ? 's' : ''}`
+  return `${days ? days + 'd' : ''} ${hours ? hours + 'h' : ''} ${minutes ? minutes + 'm' : ''} ${seconds ? seconds + 's' : ''}`
 }
 
 export function scheduleRotationTypeString(given_seconds: number) {

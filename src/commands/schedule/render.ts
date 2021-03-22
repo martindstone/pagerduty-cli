@@ -4,21 +4,20 @@ import cli from 'cli-ux'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 import * as chrono from 'chrono-node'
-import jp from 'jsonpath'
 
-export default class ScheduleShow extends Command {
-  static description = 'Show a PagerDuty Schedule'
+export default class ScheduleRender extends Command {
+  static description = 'Render a PagerDuty Schedule'
 
   static flags = {
     ...Command.flags,
     id: flags.string({
       char: 'i',
-      description: 'Show the schedule with this ID.',
+      description: 'Render the schedule with this ID.',
       exclusive: ['email', 'me'],
     }),
     name: flags.string({
       char: 'n',
-      description: 'Show the schedule with this name.',
+      description: 'Render the schedule with this name.',
       exclusive: ['id'],
     }),
     since: flags.string({
@@ -27,10 +26,11 @@ export default class ScheduleShow extends Command {
     until: flags.string({
       description: 'The end of the date range over which you want to search.',
     }),
+    ...cli.table.flags(),
   }
 
   async run() {
-    const {flags} = this.parse(ScheduleShow)
+    const {flags} = this.parse(ScheduleRender)
 
     const params: Record<string, any> = {}
 
@@ -73,54 +73,12 @@ export default class ScheduleShow extends Command {
     cli.action.stop(chalk.bold.green('done'))
     const schedule = r.getData().schedule
 
-    const coverage_int = schedule.final_schedule.rendered_coverage_percentage
-    let coverage_str = coverage_int ? `${coverage_int}%` : '0%'
-    if (coverage_int > 95) {
-      coverage_str = chalk.bold.green(coverage_str)
-    } else if (coverage_int > 60) {
-      coverage_str = chalk.bold.keyword('orange')(coverage_str)
-    } else {
-      coverage_str = chalk.bold.red(coverage_str)
-    }
-
-    this.log('')
-    this.log(chalk.bold(`Schedule name:     ${schedule.summary}`))
-    this.log(chalk.bold(`Time zone:         ${schedule.time_zone}`))
-    this.log(`${chalk.bold('Schedule coverage:')} ${coverage_str}\n`)
-
     const options = {
       printLine: this.log,
       ...flags, // parsed flags
     }
 
-    this.log(chalk.bold.cyan('Schedule Layers:'))
-    let columns: Record<string, object> = {
-      start: {
-        get: (row: any) => row.start ? (new Date(row.start)).toLocaleString() : '',
-      },
-      end: {
-        get: (row: any) => row.end ? (new Date(row.end)).toLocaleString() : '',
-      },
-      rotation_type: {
-        get: (row: any) => utils.scheduleRotationTypeString(row.rotation_turn_length_seconds),
-      },
-      restrictions: {
-        get: (row: any) => {
-          // console.log(JSON.stringify(row.restrictions, null, 2))
-          if (!row.restrictions) return
-          return utils.formatField(row.restrictions.map((x: any) => utils.scheduleRestrictionString(x)), '\n')
-        },
-      },
-      user_ids: {
-        get: (row: any) => utils.formatField(jp.query(row, 'users[*].user.id'), '\n'),
-      },
-      user_names: {
-        get: (row: any) => utils.formatField(jp.query(row, 'users[*].user.summary'), '\n'),
-      },
-    }
-    cli.table(schedule.schedule_layers, columns, options)
-
-    columns = {
+    const columns: Record<string, object> = {
       start: {
         get: (row: any) => row.start ? (new Date(row.start)).toLocaleString() : '',
       },
@@ -138,14 +96,6 @@ export default class ScheduleShow extends Command {
       },
     }
 
-    if (schedule.overrides_subschedule.length > 0) {
-      this.log('')
-      this.log(chalk.bold.cyan('Overrides:'))
-      cli.table(schedule.overrides_subschedule.rendered_schedule_entries, columns, options)
-    }
-
-    this.log('')
-    this.log(chalk.bold.cyan('Final Schedule:'))
     cli.table(schedule.final_schedule.rendered_schedule_entries, columns, options)
   }
 }
