@@ -333,8 +333,8 @@ export class PD {
     const firstPage = r.getData()
     let fetchedData = firstPage[endpoint_identifier]
 
-    if (firstPage.more) {
-      // classic pagination
+    if (firstPage.more && firstPage.total) {
+      // classic pagination in parallel
       if (p.callback) {
         p.callback({
           total: Math.ceil(firstPage.total / limit),
@@ -377,10 +377,30 @@ export class PD {
         fetchedData = [...fetchedData, ...page[endpoint_identifier]]
         next_cursor = page.next_cursor
       }
+      if (p.callback) p.callback({done: true})
+    } else if (firstPage.more) {
+      // classic pagination with missing 'total'
+      if (p.callback) p.callback({total: -1})
+      let more = firstPage.more
+      let offset = 0
+      while (more) {
+        offset += limit
+        getParams = Object.assign({}, getParams, {offset: offset})
+        // eslint-disable-next-line no-await-in-loop
+        r = await this.request({
+          endpoint: endpoint,
+          method: 'get',
+          params: getParams,
+          headers: p.headers,
+        })
+        if (p.callback) p.callback({success: true})
+        const page = r.getData()
+        fetchedData = [...fetchedData, ...page[endpoint_identifier]]
+        more = page.more
+      }
+      if (p.callback) p.callback({done: true})
     } else if (p.callback) {
-      p.callback({
-        done: true,
-      })
+      p.callback({done: true})
     }
     return fetchedData
   }
