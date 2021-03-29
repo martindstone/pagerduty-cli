@@ -95,7 +95,7 @@ export default class TeamCreate extends Command {
       }
       cli.action.stop(chalk.bold.green('done'))
     } else {
-      this.log(`Your new escalation policy is at ${chalk.bold.blue(returned_team.team.html_url)}`)
+      this.log(`Your new team is at ${chalk.bold.blue(returned_team.team.html_url)}`)
     }
   }
 }
