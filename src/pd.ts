@@ -1,9 +1,11 @@
+/* eslint-disable no-console */
 /* eslint-disable complexity */
 /* eslint-disable max-depth */
 /* eslint-disable no-await-in-loop */
 import axios, {Method} from 'axios'
 import cli from 'cli-ux'
 import chalk from 'chalk'
+import util from 'util'
 
 let prevLine: string
 let prevLineCounter = 1
@@ -26,6 +28,8 @@ const globalAny: any = global
 
 export class PD {
   private token: string
+
+  private debug: boolean
 
   private _me: any
 
@@ -75,11 +79,43 @@ export class PD {
     throw new Error(`Invalid token ${token}`)
   }
 
-  constructor(token: string) {
+  constructor(token: string, debug = false) {
     if (PD.isValidToken(token)) {
       this.token = token
+      this.debug = debug
     } else {
       throw new Error(`${token} is not a valid PD token`)
+    }
+
+    if (debug) {
+      axios.interceptors.request.use(config => {
+        // perform a task before the request is sent
+        console.error(chalk.bold.blue('[DEBUG] Request:'), util.inspect(config, false, null, true))
+        return config
+      }, error => {
+        // handle the error
+        console.error(chalk.bold.red('[DEBUG] Request error:'), util.inspect(error, false, null, true))
+        return Promise.reject(error)
+      })
+
+      axios.interceptors.response.use(response => {
+        // do something with the response data
+        console.error(chalk.bold.green('[DEBUG] OK Response:'))
+        console.error(chalk.bold.green('[DEBUG] Response Status:'), response.status)
+        console.error(chalk.bold.green('[DEBUG] Response Data:'), util.inspect(response.data, false, null, true))
+        return response
+      }, error => {
+        // handle the response error
+        if (error.response) {
+          console.error(chalk.bold.red('[DEBUG] Error in response:'))
+          console.error(chalk.bold.red('[DEBUG] Response Status:'), error.response.status)
+          console.error(chalk.bold.red('[DEBUG] Response Data:'), util.inspect(error.response.data, false, null, true))
+          console.error(chalk.bold.red('[DEBUG] Response Headers:'), error.response.headers)
+        } else {
+          console.log('[DEBUG] Unknown response error:', error.message)
+        }
+        return Promise.reject(error)
+      })
     }
   }
 

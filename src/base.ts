@@ -1,10 +1,12 @@
 import Command, {flags} from '@oclif/command'
+import {Input} from '@oclif/parser'
 import * as config from './config'
 import {PD} from './pd'
 
-export default abstract class extends Command {
+export default abstract class Base extends Command {
   static flags = {
     help: flags.help({char: 'h'}),
+    debug: flags.boolean({}),
   }
 
   protected token!: string
@@ -20,6 +22,8 @@ export default abstract class extends Command {
   }
 
   async init() {
+    const {flags} = this.parse(this.constructor as Input<any>)
+
     // do some initialization
     try {
       this.token = config.getAuth()
@@ -35,6 +39,6 @@ export default abstract class extends Command {
         suggestions: ['pd login', 'pd auth:set'],
       })
     }
-    this.pd = new PD(this.token)
+    this.pd = new PD(this.token, flags.debug)
   }
 }
