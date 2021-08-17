@@ -18,6 +18,8 @@ PagerDuty Command Line Interface
 
 # Commands
 <!-- commands -->
+* [`pd analytics:incident`](#pd-analyticsincident)
+* [`pd analytics:incident:raw`](#pd-analyticsincidentraw)
 * [`pd auth:get`](#pd-authget)
 * [`pd auth:set`](#pd-authset)
 * [`pd auth:web`](#pd-authweb)
@@ -85,6 +87,107 @@ PagerDuty Command Line Interface
 * [`pd user:set`](#pd-userset)
 * [`pd util:timestamp [DATE]`](#pd-utiltimestamp-date)
 
+## `pd analytics:incident`
+
+Get PagerDuty Incident Analytics
+
+```
+USAGE
+  $ pd analytics:incident
+
+OPTIONS
+  -M, --major                          Include only major incidents
+  -S, --services=services              Service names to include. Specify multiple times for multiple services.
+
+  -d, --delimiter=delimiter            [default:
+                                       ] Delimiter for fields that have more than one value
+
+  -g, --aggregate_unit=day|week|month  The time unit to aggregate metrics by. If no value is provided, the metrics will
+                                       be aggregated for the entire period.
+
+  -h, --help                           show CLI help
+
+  -j, --json                           output full details as JSON
+
+  -k, --keys=keys                      Additional fields to display. Specify multiple times for multiple fields.
+
+  -t, --teams=teams                    Team names to include. Specify multiple times for multiple teams.
+
+  -u, --urgencies=high|low             [default: high,low] Urgencies to include.
+
+  -x, --extended                       show extra columns
+
+  --columns=columns                    only show provided columns (comma-separated)
+
+  --csv                                output is csv format [alias: --output=csv]
+
+  --debug
+
+  --filter=filter                      filter property by partial string matching, ex: name=foo
+
+  --no-header                          hide table header from output
+
+  --no-truncate                        do not truncate output to fit screen
+
+  --output=csv|json|yaml               output in a more machine friendly format
+
+  --since=since                        [default: 7 days ago] The start of the date range over which you want to search.
+
+  --sort=sort                          property to sort by (prepend '-' for descending)
+
+  --until=until                        [default: now] The end of the date range over which you want to search.
+```
+
+_See code: [src/commands/analytics/incident/index.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/analytics/incident/index.ts)_
+
+## `pd analytics:incident:raw`
+
+Get PagerDuty Raw Incident Analytics
+
+```
+USAGE
+  $ pd analytics:incident:raw
+
+OPTIONS
+  -M, --major                Include only major incidents
+  -S, --services=services    Service names to include. Specify multiple times for multiple services.
+
+  -d, --delimiter=delimiter  [default:
+                             ] Delimiter for fields that have more than one value
+
+  -h, --help                 show CLI help
+
+  -j, --json                 output full details as JSON
+
+  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
+
+  -t, --teams=teams          Team names to include. Specify multiple times for multiple teams.
+
+  -x, --extended             show extra columns
+
+  --columns=columns          only show provided columns (comma-separated)
+
+  --csv                      output is csv format [alias: --output=csv]
+
+  --debug
+
+  --filter=filter            filter property by partial string matching, ex: name=foo
+
+  --no-header                hide table header from output
+
+  --no-truncate              do not truncate output to fit screen
+
+  --output=csv|json|yaml     output in a more machine friendly format
+
+  --since=since              The start of the date range over which you want to search.
+
+  --sort=sort                property to sort by (prepend '-' for descending)
+
+  --until=until              The end of the date range over which you want to search.
+```
+
+_See code: [src/commands/analytics/incident/raw.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/analytics/incident/raw.ts)_
+
 ## `pd auth:get`
 
 Get PagerDuty Auth token
@@ -98,7 +201,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/auth/get.ts)_
+_See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/auth/get.ts)_
 
 ## `pd auth:set`
 
@@ -112,7 +215,7 @@ OPTIONS
   -t, --token=token  A PagerDuty API token
 ```
 
-_See code: [src/commands/auth/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/auth/set.ts)_
+_See code: [src/commands/auth/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/auth/set.ts)_
 
 ## `pd auth:web`
 
@@ -126,7 +229,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/auth/web.ts)_
+_See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/auth/web.ts)_
 
 ## `pd autocomplete [SHELL]`
 
@@ -193,7 +296,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/ep/copy.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/ep/copy.ts)_
+_See code: [src/commands/ep/copy.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/ep/copy.ts)_
 
 ## `pd ep:create`
 
@@ -231,7 +334,7 @@ OPTIONS
   --description=description            The description of the escalation policy
 ```
 
-_See code: [src/commands/ep/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/ep/create.ts)_
+_See code: [src/commands/ep/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/ep/create.ts)_
 
 ## `pd ep:level:add`
 
@@ -269,7 +372,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/ep/level/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/ep/level/add.ts)_
+_See code: [src/commands/ep/level/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/ep/level/add.ts)_
 
 ## `pd ep:level:remove`
 
@@ -293,7 +396,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/ep/level/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/ep/level/remove.ts)_
+_See code: [src/commands/ep/level/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/ep/level/remove.ts)_
 
 ## `pd ep:list`
 
@@ -336,7 +439,7 @@ OPTIONS
   --sort=sort                property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/ep/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/ep/list.ts)_
+_See code: [src/commands/ep/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/ep/list.ts)_
 
 ## `pd ep:oncall`
 
@@ -365,7 +468,7 @@ OPTIONS
   --until=until           The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/ep/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/ep/oncall.ts)_
+_See code: [src/commands/ep/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/ep/oncall.ts)_
 
 ## `pd ep:open`
 
@@ -383,7 +486,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/ep/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/ep/open.ts)_
+_See code: [src/commands/ep/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/ep/open.ts)_
 
 ## `pd ep:target:add`
 
@@ -416,7 +519,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/ep/target/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/ep/target/add.ts)_
+_See code: [src/commands/ep/target/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/ep/target/add.ts)_
 
 ## `pd ep:target:remove`
 
@@ -451,7 +554,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/ep/target/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/ep/target/remove.ts)_
+_See code: [src/commands/ep/target/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/ep/target/remove.ts)_
 
 ## `pd help [COMMAND]`
 
@@ -494,7 +597,7 @@ ALIASES
   $ pd incident:acknowledge
 ```
 
-_See code: [src/commands/incident/ack.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/incident/ack.ts)_
+_See code: [src/commands/incident/ack.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/incident/ack.ts)_
 
 ## `pd incident:alerts`
 
@@ -539,7 +642,7 @@ OPTIONS
   --sort=sort                property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/incident/alerts.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/incident/alerts.ts)_
+_See code: [src/commands/incident/alerts.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/incident/alerts.ts)_
 
 ## `pd incident:analytics`
 
@@ -566,7 +669,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/incident/analytics.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/incident/analytics.ts)_
+_See code: [src/commands/incident/analytics.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/incident/analytics.ts)_
 
 ## `pd incident:assign`
 
@@ -605,7 +708,7 @@ ALIASES
   $ pd incident:reassign
 ```
 
-_See code: [src/commands/incident/assign.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/incident/assign.ts)_
+_See code: [src/commands/incident/assign.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/incident/assign.ts)_
 
 ## `pd incident:create`
 
@@ -650,7 +753,7 @@ OPTIONS
   --user_id=user_id                            The ID of a user to assign the incident to
 ```
 
-_See code: [src/commands/incident/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/incident/create.ts)_
+_See code: [src/commands/incident/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/incident/create.ts)_
 
 ## `pd incident:list`
 
@@ -714,7 +817,7 @@ OPTIONS
   --until=until                                               The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/incident/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/incident/list.ts)_
+_See code: [src/commands/incident/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/incident/list.ts)_
 
 ## `pd incident:log`
 
@@ -759,7 +862,7 @@ OPTIONS
   --sort=sort                property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/incident/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/incident/log.ts)_
+_See code: [src/commands/incident/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/incident/log.ts)_
 
 ## `pd incident:notes`
 
@@ -785,7 +888,7 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/incident/notes.ts)_
+_See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/incident/notes.ts)_
 
 ## `pd incident:open`
 
@@ -803,7 +906,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/incident/open.ts)_
+_See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/incident/open.ts)_
 
 ## `pd incident:priority`
 
@@ -823,7 +926,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/incident/priority.ts)_
+_See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/incident/priority.ts)_
 
 ## `pd incident:resolve`
 
@@ -842,7 +945,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/incident/resolve.ts)_
+_See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/incident/resolve.ts)_
 
 ## `pd log`
 
@@ -887,7 +990,7 @@ OPTIONS
   --until=until              The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/log.ts)_
+_See code: [src/commands/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/log.ts)_
 
 ## `pd login`
 
@@ -898,7 +1001,7 @@ USAGE
   $ pd login
 ```
 
-_See code: [src/commands/login.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/login.ts)_
+_See code: [src/commands/login.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/login.ts)_
 
 ## `pd rest:delete`
 
@@ -922,7 +1025,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/rest/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/rest/delete.ts)_
+_See code: [src/commands/rest/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/rest/delete.ts)_
 
 ## `pd rest:fetch`
 
@@ -972,7 +1075,7 @@ OPTIONS
   --sort=sort                property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/rest/fetch.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/rest/fetch.ts)_
+_See code: [src/commands/rest/fetch.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/rest/fetch.ts)_
 
 ## `pd rest:get`
 
@@ -996,7 +1099,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/rest/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/rest/get.ts)_
+_See code: [src/commands/rest/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/rest/get.ts)_
 
 ## `pd rest:post`
 
@@ -1022,7 +1125,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/rest/post.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/rest/post.ts)_
+_See code: [src/commands/rest/post.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/rest/post.ts)_
 
 ## `pd rest:put`
 
@@ -1048,7 +1151,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/rest/put.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/rest/put.ts)_
+_See code: [src/commands/rest/put.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/rest/put.ts)_
 
 ## `pd schedule:copy`
 
@@ -1068,7 +1171,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/schedule/copy.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/schedule/copy.ts)_
+_See code: [src/commands/schedule/copy.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/schedule/copy.ts)_
 
 ## `pd schedule:list`
 
@@ -1111,7 +1214,7 @@ OPTIONS
   --sort=sort                property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/schedule/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/schedule/list.ts)_
+_See code: [src/commands/schedule/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/schedule/list.ts)_
 
 ## `pd schedule:oncall`
 
@@ -1140,7 +1243,7 @@ OPTIONS
   --until=until           The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/schedule/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/schedule/oncall.ts)_
+_See code: [src/commands/schedule/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/schedule/oncall.ts)_
 
 ## `pd schedule:open`
 
@@ -1158,7 +1261,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/schedule/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/schedule/open.ts)_
+_See code: [src/commands/schedule/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/schedule/open.ts)_
 
 ## `pd schedule:override:add`
 
@@ -1179,7 +1282,7 @@ OPTIONS
   --start=start                [default: now] The start time for the override.
 ```
 
-_See code: [src/commands/schedule/override/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/schedule/override/add.ts)_
+_See code: [src/commands/schedule/override/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/schedule/override/add.ts)_
 
 ## `pd schedule:override:list`
 
@@ -1228,7 +1331,7 @@ OPTIONS
   --until=until              [default: in 30 days] The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/schedule/override/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/schedule/override/list.ts)_
+_See code: [src/commands/schedule/override/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/schedule/override/list.ts)_
 
 ## `pd schedule:render`
 
@@ -1255,7 +1358,7 @@ OPTIONS
   --until=until           The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/schedule/render.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/schedule/render.ts)_
+_See code: [src/commands/schedule/render.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/schedule/render.ts)_
 
 ## `pd schedule:show`
 
@@ -1274,7 +1377,7 @@ OPTIONS
   --until=until    The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/schedule/show.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/schedule/show.ts)_
+_See code: [src/commands/schedule/show.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/schedule/show.ts)_
 
 ## `pd service:create`
 
@@ -1338,7 +1441,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/service/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/service/create.ts)_
+_See code: [src/commands/service/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/service/create.ts)_
 
 ## `pd service:disable`
 
@@ -1356,7 +1459,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/service/disable.ts)_
+_See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/service/disable.ts)_
 
 ## `pd service:enable`
 
@@ -1374,7 +1477,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/service/enable.ts)_
+_See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/service/enable.ts)_
 
 ## `pd service:list`
 
@@ -1419,7 +1522,7 @@ OPTIONS
   --sort=sort                property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/service/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/service/list.ts)_
+_See code: [src/commands/service/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/service/list.ts)_
 
 ## `pd service:set`
 
@@ -1439,7 +1542,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/service/set.ts)_
+_See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/service/set.ts)_
 
 ## `pd team:create`
 
@@ -1460,7 +1563,7 @@ OPTIONS
   --description=description      The description of the team
 ```
 
-_See code: [src/commands/team/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/team/create.ts)_
+_See code: [src/commands/team/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/team/create.ts)_
 
 ## `pd team:ep:add`
 
@@ -1486,7 +1589,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/team/ep/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/team/ep/add.ts)_
+_See code: [src/commands/team/ep/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/team/ep/add.ts)_
 
 ## `pd team:ep:remove`
 
@@ -1512,7 +1615,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/team/ep/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/team/ep/remove.ts)_
+_See code: [src/commands/team/ep/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/team/ep/remove.ts)_
 
 ## `pd team:list`
 
@@ -1555,7 +1658,7 @@ OPTIONS
   --sort=sort                property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/team/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/team/list.ts)_
+_See code: [src/commands/team/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/team/list.ts)_
 
 ## `pd team:open`
 
@@ -1573,7 +1676,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/team/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/team/open.ts)_
+_See code: [src/commands/team/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/team/open.ts)_
 
 ## `pd team:user:add`
 
@@ -1593,7 +1696,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/team/user/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/team/user/add.ts)_
+_See code: [src/commands/team/user/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/team/user/add.ts)_
 
 ## `pd team:user:list`
 
@@ -1638,7 +1741,7 @@ OPTIONS
   --sort=sort                property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/team/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/team/user/list.ts)_
+_See code: [src/commands/team/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/team/user/list.ts)_
 
 ## `pd team:user:remove`
 
@@ -1657,7 +1760,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/team/user/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/team/user/remove.ts)_
+_See code: [src/commands/team/user/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/team/user/remove.ts)_
 
 ## `pd update [CHANNEL]`
 
@@ -1688,7 +1791,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/user/contact/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/user/contact/add.ts)_
+_See code: [src/commands/user/contact/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/user/contact/add.ts)_
 
 ## `pd user:contact:list`
 
@@ -1733,7 +1836,7 @@ OPTIONS
   --sort=sort                property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/user/contact/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/user/contact/list.ts)_
+_See code: [src/commands/user/contact/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/user/contact/list.ts)_
 
 ## `pd user:contact:set`
 
@@ -1753,7 +1856,7 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/user/contact/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/user/contact/set.ts)_
+_See code: [src/commands/user/contact/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/user/contact/set.ts)_
 
 ## `pd user:create`
 
@@ -1806,7 +1909,7 @@ OPTIONS
       Show the user's password when creating
 ```
 
-_See code: [src/commands/user/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/user/create.ts)_
+_See code: [src/commands/user/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/user/create.ts)_
 
 ## `pd user:list`
 
@@ -1817,39 +1920,41 @@ USAGE
   $ pd user:list
 
 OPTIONS
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
+  -E, --exact_email=exact_email  Select the user whose login email is this exact text
 
-  -e, --email=email          Select users whose login email addresses contain the given text
+  -d, --delimiter=delimiter      [default:
+                                 ] Delimiter for fields that have more than one value
 
-  -h, --help                 show CLI help
+  -e, --email=email              Select users whose login email addresses contain the given text
 
-  -j, --json                 output full details as JSON
+  -h, --help                     show CLI help
 
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
+  -j, --json                     output full details as JSON
 
-  -p, --pipe                 Print user ID's only to stdout, for use with pipes.
+  -k, --keys=keys                Additional fields to display. Specify multiple times for multiple fields.
 
-  -x, --extended             show extra columns
+  -p, --pipe                     Print user ID's only to stdout, for use with pipes.
 
-  --columns=columns          only show provided columns (comma-separated)
+  -x, --extended                 show extra columns
 
-  --csv                      output is csv format [alias: --output=csv]
+  --columns=columns              only show provided columns (comma-separated)
+
+  --csv                          output is csv format [alias: --output=csv]
 
   --debug
 
-  --filter=filter            filter property by partial string matching, ex: name=foo
+  --filter=filter                filter property by partial string matching, ex: name=foo
 
-  --no-header                hide table header from output
+  --no-header                    hide table header from output
 
-  --no-truncate              do not truncate output to fit screen
+  --no-truncate                  do not truncate output to fit screen
 
-  --output=csv|json|yaml     output in a more machine friendly format
+  --output=csv|json|yaml         output in a more machine friendly format
 
-  --sort=sort                property to sort by (prepend '-' for descending)
+  --sort=sort                    property to sort by (prepend '-' for descending)
 ```
 
-_See code: [src/commands/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/user/list.ts)_
+_See code: [src/commands/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/user/list.ts)_
 
 ## `pd user:log`
 
@@ -1860,47 +1965,48 @@ USAGE
   $ pd user:log
 
 OPTIONS
-  -O, --overview             Get only `overview` log entries
+  -E, --exact_email=exact_email  Select the user whose login email is this exact text
+  -O, --overview                 Get only `overview` log entries
 
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
+  -d, --delimiter=delimiter      [default:
+                                 ] Delimiter for fields that have more than one value
 
-  -e, --email=email          Select users whose login email addresses contain the given text
+  -e, --email=email              Select users whose login email addresses contain the given text
 
-  -h, --help                 show CLI help
+  -h, --help                     show CLI help
 
-  -i, --ids=ids              Select users with the given ID. Specify multiple times for multiple users.
+  -i, --ids=ids                  Select users with the given ID. Specify multiple times for multiple users.
 
-  -j, --json                 output full details as JSON
+  -j, --json                     output full details as JSON
 
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
+  -k, --keys=keys                Additional fields to display. Specify multiple times for multiple fields.
 
-  -p, --pipe                 Read user IDs from stdin, for use with pipes.
+  -p, --pipe                     Read user IDs from stdin, for use with pipes.
 
-  -x, --extended             show extra columns
+  -x, --extended                 show extra columns
 
-  --columns=columns          only show provided columns (comma-separated)
+  --columns=columns              only show provided columns (comma-separated)
 
-  --csv                      output is csv format [alias: --output=csv]
+  --csv                          output is csv format [alias: --output=csv]
 
   --debug
 
-  --filter=filter            filter property by partial string matching, ex: name=foo
+  --filter=filter                filter property by partial string matching, ex: name=foo
 
-  --no-header                hide table header from output
+  --no-header                    hide table header from output
 
-  --no-truncate              do not truncate output to fit screen
+  --no-truncate                  do not truncate output to fit screen
 
-  --output=csv|json|yaml     output in a more machine friendly format
+  --output=csv|json|yaml         output in a more machine friendly format
 
-  --since=since              [default: 30 days ago] The start of the date range over which you want to search.
+  --since=since                  [default: 30 days ago] The start of the date range over which you want to search.
 
-  --sort=sort                property to sort by (prepend '-' for descending)
+  --sort=sort                    property to sort by (prepend '-' for descending)
 
-  --until=until              The end of the date range over which you want to search.
+  --until=until                  The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/user/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/user/log.ts)_
+_See code: [src/commands/user/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/user/log.ts)_
 
 ## `pd user:oncall`
 
@@ -1931,7 +2037,7 @@ OPTIONS
   --until=until           The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/user/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/user/oncall.ts)_
+_See code: [src/commands/user/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/user/oncall.ts)_
 
 ## `pd user:replace`
 
@@ -1952,7 +2058,7 @@ OPTIONS
   --force                      Extreme danger mode: do not prompt before updating
 ```
 
-_See code: [src/commands/user/replace.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/user/replace.ts)_
+_See code: [src/commands/user/replace.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/user/replace.ts)_
 
 ## `pd user:session:list`
 
@@ -1983,7 +2089,7 @@ OPTIONS
   --until=until           The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/user/session/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/user/session/list.ts)_
+_See code: [src/commands/user/session/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/user/session/list.ts)_
 
 ## `pd user:set`
 
@@ -1994,16 +2100,26 @@ USAGE
   $ pd user:set
 
 OPTIONS
-  -e, --emails=emails  Select users whose emails contain the given text. Specify multiple times for multiple emails.
-  -h, --help           show CLI help
-  -i, --ids=ids        Select users with the given ID. Specify multiple times for multiple users.
-  -k, --key=key        (required) Attribute key to set
-  -p, --pipe           Read user ID's from stdin.
-  -v, --value=value    (required) Attribute value to set
+  -E, --exact_emails=exact_emails  Select a user whose login email is this exact text.  Specify multiple times for
+                                   multiple emails.
+
+  -e, --emails=emails              Select users whose emails contain the given text. Specify multiple times for multiple
+                                   emails.
+
+  -h, --help                       show CLI help
+
+  -i, --ids=ids                    Select users with the given ID. Specify multiple times for multiple users.
+
+  -k, --key=key                    (required) Attribute key to set
+
+  -p, --pipe                       Read user ID's from stdin.
+
+  -v, --value=value                (required) Attribute value to set
+
   --debug
 ```
 
-_See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/user/set.ts)_
+_See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/user/set.ts)_
 
 ## `pd util:timestamp [DATE]`
 
@@ -2021,5 +2137,5 @@ OPTIONS
   --debug
 ```
 
-_See code: [src/commands/util/timestamp.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.70/src/commands/util/timestamp.ts)_
+_See code: [src/commands/util/timestamp.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.71/src/commands/util/timestamp.ts)_
 <!-- commandsstop -->
