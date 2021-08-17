@@ -222,11 +222,5 @@ export default class AnalyticsIncident extends Command {
     this.log('')
     this.log(chalk.bold.blue('Total values:'))
     cli.table(analytics, totalColumns, options)
-
-    // this.log('\n' + chalk.bold.blue('Legend:'))
-    // for (const a of abbreviations) {
-    //   const long = a.long.charAt(0).toUpperCase() + a.long.split('_').join(' ').slice(1)
-    //   this.log(`${chalk.bold(a.short.padStart(6, ' ') + ':')} ${long}`)
-    // }
   }
 }
