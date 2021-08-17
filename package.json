@@ -18,7 +18,7 @@
     "@types/fs-extra": "^9.0.1",
     "@types/jsonpath": "^0.2.0",
     "@types/simple-oauth2": "^4.1.0",
-    "axios": "^0.20.0",
+    "axios": "^0.21.0",
     "chrono-node": "^2.1.8",
     "cli-ux": "^5.5.0",
     "csv-parse": "^4.15.3",
