@@ -12,6 +12,12 @@ export default class UserList extends Command {
     email: flags.string({
       char: 'e',
       description: 'Select users whose login email addresses contain the given text',
+      exclusive: ['exact_email'],
+    }),
+    exact_email: flags.string({
+      char: 'E',
+      description: 'Select the user whose login email is this exact text',
+      exclusive: ['email'],
     }),
     keys: flags.string({
       char: 'k',
@@ -43,15 +49,22 @@ export default class UserList extends Command {
       include: ['contact_methods', 'notification_rules', 'teams'],
     }
 
-    if (flags.email) {
-      params.query = flags.email
+    if (flags.email || flags.exact_email) {
+      params.query = flags.email || flags.exact_email
     }
 
-    const users = await this.pd.fetchWithSpinner('users', {
+    let users = await this.pd.fetchWithSpinner('users', {
       params: params,
       activityDescription: 'Getting users from PD',
     })
 
+    if (flags.exact_email) {
+      users = users.filter((user: any) => user.email === flags.exact_email)
+    }
+
+    if (users.length === 0) {
+      this.error('No users found.', {exit: 1})
+    }
     if (flags.json) {
       await utils.printJsonAndExit(users)
     }

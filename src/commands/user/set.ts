@@ -16,6 +16,11 @@ export default class UserSet extends Command {
       description: 'Select users whose emails contain the given text. Specify multiple times for multiple emails.',
       multiple: true,
     }),
+    exact_emails: flags.string({
+      char: 'E',
+      description: 'Select a user whose login email is this exact text.  Specify multiple times for multiple emails.',
+      multiple: true,
+    }),
     ids: flags.string({
       char: 'i',
       description: 'Select users with the given ID. Specify multiple times for multiple users.',
@@ -41,14 +46,22 @@ export default class UserSet extends Command {
   async run() {
     const {flags} = this.parse(UserSet)
 
-    if (!(flags.emails || flags.ids || flags.pipe)) {
-      this.error('You must specify one of: -i, -e, -p', {exit: 1})
+    if (!(flags.emails || flags.exact_emails || flags.ids || flags.pipe)) {
+      this.error('You must specify at least one of: -i, -e, -E, -p', {exit: 1})
     }
 
     let user_ids: string[] = []
     if (flags.emails) {
       cli.action.start('Getting user IDs from PD')
       user_ids = await this.pd.userIDsForEmails(flags.emails)
+    }
+    if (flags.exact_emails) {
+      cli.action.start('Getting user IDs from PD')
+      for (const email of flags.exact_emails) {
+        // eslint-disable-next-line no-await-in-loop
+        const user_id = await this.pd.userIDForEmail(email)
+        if (user_id) user_ids = [...new Set([...user_ids, user_id])]
+      }
     }
     if (flags.ids) {
       user_ids = [...new Set([...user_ids, ...utils.splitDedupAndFlatten(flags.ids)])]

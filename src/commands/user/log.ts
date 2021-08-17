@@ -16,6 +16,12 @@ export default class UserLog extends Command {
     email: flags.string({
       char: 'e',
       description: 'Select users whose login email addresses contain the given text',
+      exclusive: ['exact_email'],
+    }),
+    exact_email: flags.string({
+      char: 'E',
+      description: 'Select the user whose login email is this exact text',
+      exclusive: ['email'],
     }),
     ids: flags.string({
       char: 'i',
@@ -59,8 +65,8 @@ export default class UserLog extends Command {
   async run() {
     const {flags} = this.parse(UserLog)
 
-    if (!flags.email && !flags.ids && !flags.pipe) {
-      this.error('You must specify at least one of: -e, -i', {exit: 1})
+    if (!flags.email && !flags.exact_email && !flags.ids && !flags.pipe) {
+      this.error('You must specify at least one of: -e, -E, -i, -p', {exit: 1})
     }
     const params: Record<string, any> = {
       is_overview: flags.overview,
@@ -80,12 +86,15 @@ export default class UserLog extends Command {
     }
 
     let user_ids: string[] = []
-    if (flags.email) {
+    if (flags.email || flags.exact_email) {
       cli.action.start('Getting user IDs from PD')
-      const users = await this.pd.fetchWithSpinner('users', {
-        params: {query: flags.email},
+      let users = await this.pd.fetchWithSpinner('users', {
+        params: {query: flags.email || flags.exact_email},
         activityDescription: 'Getting user IDs from PD',
       })
+      if (flags.exact_email) {
+        users = users.filter((user: any) => user.email === flags.exact_email)
+      }
       if (!users || users.length === 0) {
         cli.action.stop(chalk.bold.red('none found'))
       }
