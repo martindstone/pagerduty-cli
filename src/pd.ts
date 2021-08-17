@@ -333,8 +333,12 @@ export class PD {
   public async fetch(endpoint: string, p: {
     params?: object;
     headers?: object;
+    method?: Method;
+    data?: object;
     callback?: PD.Callback;
-  } = {}) {
+  } = {
+    method: 'get',
+  }) {
     if (p.callback) p.callback({start: true, total: 1})
 
     const endpoint_identifier = PD.endpointIdentifier(endpoint)
@@ -344,12 +348,19 @@ export class PD {
       limit: limit,
     }
 
-    let getParams = Object.assign({}, commonParams, p.params)
+    let getParams
+    if (!p.method || p.method?.toLowerCase() === 'get') {
+      getParams = Object.assign({}, commonParams, p.params)
+    } else {
+      getParams = Object.assign({}, p.params)
+    }
+
     let r = await this.request({
       endpoint: endpoint,
-      method: 'get',
+      method: p.method,
       params: getParams,
       headers: p.headers,
+      data: p.data,
     })
     if (r.isFailure) {
       if (p.callback) {
@@ -367,9 +378,14 @@ export class PD {
       })
     }
     const firstPage = r.getData()
-    let fetchedData = firstPage[endpoint_identifier]
+    let fetchedData
+    if (endpoint_identifier in firstPage) {
+      fetchedData = firstPage[endpoint_identifier]
+    } else if ('data' in firstPage) {
+      fetchedData = firstPage.data
+    }
 
-    if (firstPage.more && firstPage.total) {
+    if (firstPage.more && firstPage.total && !(firstPage.last)) {
       // classic pagination in parallel
       if (p.callback) {
         p.callback({
@@ -381,9 +397,10 @@ export class PD {
         getParams = Object.assign({}, getParams, {offset: offset})
         requests.push({
           endpoint: endpoint,
-          method: 'get',
+          method: p.method,
           params: getParams,
           headers: p.headers,
+          data: p.data,
         })
       }
       const br = await this.batchedRequest(requests,
@@ -404,14 +421,38 @@ export class PD {
         // eslint-disable-next-line no-await-in-loop
         r = await this.request({
           endpoint: endpoint,
-          method: 'get',
+          method: p.method,
           params: getParams,
           headers: p.headers,
+          data: p.data,
         })
         if (p.callback) p.callback({success: true})
         const page = r.getData()
         fetchedData = [...fetchedData, ...page[endpoint_identifier]]
         next_cursor = page.next_cursor
+      }
+      if (p.callback) p.callback({done: true})
+    } else if (firstPage.last && firstPage.more) {
+      // cursor-based pagination with different cursor fields, as used by /analytics endpoints
+      if (p.callback) p.callback({total: -1})
+      let last = firstPage.last
+      let more = true
+      while (last && more) {
+        const data = Object.assign({}, p.data, {starting_after: last})
+        // getParams = Object.assign({}, getParams, {cursor: next_cursor})
+        // eslint-disable-next-line no-await-in-loop
+        r = await this.request({
+          endpoint: endpoint,
+          method: p.method,
+          params: getParams,
+          headers: p.headers,
+          data: data,
+        })
+        if (p.callback) p.callback({success: true})
+        const page = r.getData()
+        fetchedData = [...fetchedData, ...page.data]
+        last = page.last
+        more = Boolean(page.more)
       }
       if (p.callback) p.callback({done: true})
     } else if (firstPage.more) {
@@ -425,9 +466,10 @@ export class PD {
         // eslint-disable-next-line no-await-in-loop
         r = await this.request({
           endpoint: endpoint,
-          method: 'get',
+          method: p.method,
           params: getParams,
           headers: p.headers,
+          data: p.data,
         })
         if (p.callback) p.callback({success: true})
         const page = r.getData()
@@ -444,15 +486,18 @@ export class PD {
   public async fetchWithSpinner(endpoint: string, p: {
     params?: object;
     headers?: object;
+    method?: Method;
+    data?: object;
     activityDescription?: string;
     stopSpinnerWhenDone?: boolean;
   } = {
+    method: 'get',
     activityDescription: 'Fetching',
     stopSpinnerWhenDone: true,
   }): Promise<any[]> {
     this.progressState.stopSpinnerWhenDone = !(p?.stopSpinnerWhenDone === false)
     this.progressState.format = p.activityDescription ? p.activityDescription : 'Fetching'
-    return this.fetch(endpoint, {params: p.params, headers: p.headers, callback: this.spinnerCallback})
+    return this.fetch(endpoint, {params: p.params, headers: p.headers, method: p.method, data: p.data, callback: this.spinnerCallback})
   }
 
   private async objectIDForName(endpoint: string, name: string, attrToCompare = 'summary'): Promise<string | null> {
