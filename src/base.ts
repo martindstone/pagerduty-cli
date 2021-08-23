@@ -2,6 +2,7 @@ import Command, {flags} from '@oclif/command'
 import {Input} from '@oclif/parser'
 import * as config from './config'
 import {PD} from './pd'
+import chalk from 'chalk'
 
 export default abstract class Base extends Command {
   static flags = {
@@ -40,5 +41,8 @@ export default abstract class Base extends Command {
       })
     }
     this.pd = new PD(this.token, flags.debug)
+    if (flags.output) {
+      chalk.level = 0
+    }
   }
 }
