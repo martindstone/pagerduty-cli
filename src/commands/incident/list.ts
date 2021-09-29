@@ -101,7 +101,7 @@ export default class IncidentList extends Command {
     }
 
     if (flags.me) {
-      const me = await this.me()
+      const me = await this.me(true)
       params.user_ids = [me.user.id]
     }
 
