@@ -49,6 +49,9 @@ export class PD {
     if (token && token.match(/^[0-9a-fA-F]{64}$/)) {
       return true
     }
+    if (token && token.match(/^pd[\w]+\+[0-9a-fA-F-]+$/)) {
+      return true
+    }
     return false
   }
 
