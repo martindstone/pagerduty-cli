@@ -95,6 +95,11 @@ export default class IncidentList extends Command {
       statuses: [...new Set(statuses)],
     }
 
+    if ((flags.me || flags.assignees) && statuses.length === 1 && statuses[0] === 'resolved') {
+      // looking for assignees on resolved incidents, which will never return anything
+      this.error('You are looking for resolved incidents with assignees. PagerDuty incidents that are resolved are not considered to have any assigneed, so this will never return any incidents.', {exit: 1})
+    }
+
     if (flags.me) {
       const me = await this.me()
       params.user_ids = [me.user.id]
