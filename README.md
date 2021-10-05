@@ -20,8 +20,11 @@ PagerDuty Command Line Interface
 <!-- commands -->
 * [`pd analytics:incident`](#pd-analyticsincident)
 * [`pd analytics:incident:raw`](#pd-analyticsincidentraw)
+* [`pd auth:delete`](#pd-authdelete)
 * [`pd auth:get`](#pd-authget)
+* [`pd auth:list`](#pd-authlist)
 * [`pd auth:set`](#pd-authset)
+* [`pd auth:use ALIAS`](#pd-authuse-alias)
 * [`pd auth:web`](#pd-authweb)
 * [`pd autocomplete [SHELL]`](#pd-autocomplete-shell)
 * [`pd commands`](#pd-commands)
@@ -48,7 +51,6 @@ PagerDuty Command Line Interface
 * [`pd incident:priority`](#pd-incidentpriority)
 * [`pd incident:resolve`](#pd-incidentresolve)
 * [`pd log`](#pd-log)
-* [`pd login`](#pd-login)
 * [`pd rest:delete`](#pd-restdelete)
 * [`pd rest:fetch`](#pd-restfetch)
 * [`pd rest:get`](#pd-restget)
@@ -116,13 +118,15 @@ OPTIONS
 
   -u, --urgencies=high|low             [default: high,low] Urgencies to include.
 
+  -u, --useauth=useauth                Use the saved REST API token with this alias
+
   -x, --extended                       show extra columns
 
   --columns=columns                    only show provided columns (comma-separated)
 
   --csv                                output is csv format [alias: --output=csv]
 
-  --debug
+  --debug                              Print REST API call debug logs
 
   --filter=filter                      filter property by partial string matching, ex: name=foo
 
@@ -164,13 +168,15 @@ OPTIONS
 
   -t, --teams=teams          Team names to include. Specify multiple times for multiple teams.
 
+  -u, --useauth=useauth      Use the saved REST API token with this alias
+
   -x, --extended             show extra columns
 
   --columns=columns          only show provided columns (comma-separated)
 
   --csv                      output is csv format [alias: --output=csv]
 
-  --debug
+  --debug                    Print REST API call debug logs
 
   --filter=filter            filter property by partial string matching, ex: name=foo
 
@@ -189,6 +195,23 @@ OPTIONS
 
 _See code: [src/commands/analytics/incident/raw.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/analytics/incident/raw.ts)_
 
+## `pd auth:delete`
+
+Set PagerDuty Auth token
+
+```
+USAGE
+  $ pd auth:delete
+
+OPTIONS
+  -a, --alias=alias      (required) The alias of the PD token to delete
+  -h, --help             show CLI help
+  -u, --useauth=useauth  Use the saved REST API token with this alias
+  --debug                Print REST API call debug logs
+```
+
+_See code: [src/commands/auth/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/auth/delete.ts)_
+
 ## `pd auth:get`
 
 Get PagerDuty Auth token
@@ -199,10 +222,25 @@ USAGE
 
 OPTIONS
   -h, --help  show CLI help
-  --debug
+  --debug     Print REST API call debug logs
 ```
 
 _See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/auth/get.ts)_
+
+## `pd auth:list`
+
+List authenticated PagerDuty domains
+
+```
+USAGE
+  $ pd auth:list
+
+OPTIONS
+  -h, --help  show CLI help
+  --debug     Print REST API call debug logs
+```
+
+_See code: [src/commands/auth/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/auth/list.ts)_
 
 ## `pd auth:set`
 
@@ -213,10 +251,33 @@ USAGE
   $ pd auth:set
 
 OPTIONS
-  -t, --token=token  A PagerDuty API token
+  -a, --alias=alias      The alias to use for this token. Defaults to the name of the PD subdomain
+  -d, --[no-]default     Use this token as the default for all PD commands
+  -h, --help             show CLI help
+  -t, --token=token      A PagerDuty API token
+  -u, --useauth=useauth  Use the saved REST API token with this alias
+  --debug                Print REST API call debug logs
 ```
 
 _See code: [src/commands/auth/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/auth/set.ts)_
+
+## `pd auth:use ALIAS`
+
+Choose a saved authenticated PagerDuty domain
+
+```
+USAGE
+  $ pd auth:use ALIAS
+
+ARGUMENTS
+  ALIAS  The PagerDuty domain alias to use (see pd auth:list)
+
+OPTIONS
+  -h, --help  show CLI help
+  --debug     Print REST API call debug logs
+```
+
+_See code: [src/commands/auth/use.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/auth/use.ts)_
 
 ## `pd auth:web`
 
@@ -227,7 +288,13 @@ USAGE
   $ pd auth:web
 
 OPTIONS
-  -h, --help  show CLI help
+  -a, --alias=alias   The alias to use for this token. Defaults to the name of the PD subdomain
+  -d, --[no-]default  Use this token as the default for all PD commands
+  -h, --help          show CLI help
+  --debug             Print REST API call debug logs
+
+ALIASES
+  $ pd login
 ```
 
 _See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/auth/web.ts)_
@@ -294,7 +361,8 @@ OPTIONS
   -n, --name=name                The name of the escalation policy to copy.
   -o, --open                     Open the new escalation policy in the browser
   -p, --pipe                     Print the new escalation policy ID only to stdout, for use with pipes.
-  --debug
+  -u, --useauth=useauth          Use the saved REST API token with this alias
+  --debug                        Print REST API call debug logs
 ```
 
 _See code: [src/commands/ep/copy.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/ep/copy.ts)_
@@ -328,9 +396,11 @@ OPTIONS
 
   -s, --schedule_ids=schedule_ids      Add a target schedule with this ID. Specify multiple times for multiple targets.
 
+  -u, --useauth=useauth                Use the saved REST API token with this alias
+
   -u, --user_ids=user_ids              Add a target user with this ID. Specify multiple times for multiple targets.
 
-  --debug
+  --debug                              Print REST API call debug logs
 
   --description=description            The description of the escalation policy
 ```
@@ -368,9 +438,11 @@ OPTIONS
 
   -s, --schedule_ids=schedule_ids      Add a target schedule with this ID. Specify multiple times for multiple targets.
 
+  -u, --useauth=useauth                Use the saved REST API token with this alias
+
   -u, --user_ids=user_ids              Add a target user with this ID. Specify multiple times for multiple targets.
 
-  --debug
+  --debug                              Print REST API call debug logs
 ```
 
 _See code: [src/commands/ep/level/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/ep/level/add.ts)_
@@ -384,17 +456,19 @@ USAGE
   $ pd ep:level:remove
 
 OPTIONS
-  -h, --help         show CLI help
-  -i, --ids=ids      The IDs of escalation policies to update.
+  -h, --help             show CLI help
+  -i, --ids=ids          The IDs of escalation policies to update.
 
-  -l, --level=level  (required) Escalation policy level to remove (the lowest level is 1; any existing levels above the
-                     deleted level will be moved down.
+  -l, --level=level      (required) Escalation policy level to remove (the lowest level is 1; any existing levels above
+                         the deleted level will be moved down.
 
-  -n, --name=name    Update escalation policies whose names match this string.
+  -n, --name=name        Update escalation policies whose names match this string.
 
-  -p, --pipe         Read escalation policy ID's from stdin.
+  -p, --pipe             Read escalation policy ID's from stdin.
 
-  --debug
+  -u, --useauth=useauth  Use the saved REST API token with this alias
+
+  --debug                Print REST API call debug logs
 ```
 
 _See code: [src/commands/ep/level/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/ep/level/remove.ts)_
@@ -421,13 +495,15 @@ OPTIONS
 
   -p, --pipe                 Print escalation policy ID's only to stdout, for use with pipes.
 
+  -u, --useauth=useauth      Use the saved REST API token with this alias
+
   -x, --extended             show extra columns
 
   --columns=columns          only show provided columns (comma-separated)
 
   --csv                      output is csv format [alias: --output=csv]
 
-  --debug
+  --debug                    Print REST API call debug logs
 
   --filter=filter            filter property by partial string matching, ex: name=foo
 
@@ -456,10 +532,11 @@ OPTIONS
   -j, --json              output full details as JSON
   -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
   -n, --name=name         Show oncalls for the EP with this name.
+  -u, --useauth=useauth   Use the saved REST API token with this alias
   -x, --extended          show extra columns
   --columns=columns       only show provided columns (comma-separated)
   --csv                   output is csv format [alias: --output=csv]
-  --debug
+  --debug                 Print REST API call debug logs
   --filter=filter         filter property by partial string matching, ex: name=foo
   --no-header             hide table header from output
   --no-truncate           do not truncate output to fit screen
@@ -480,11 +557,12 @@ USAGE
   $ pd ep:open
 
 OPTIONS
-  -h, --help       show CLI help
-  -i, --ids=ids    The IDs of escalation policies to open.
-  -n, --name=name  Open escalation policies whose names match this string.
-  -p, --pipe       Read escalation policy ID's from stdin.
-  --debug
+  -h, --help             show CLI help
+  -i, --ids=ids          The IDs of escalation policies to open.
+  -n, --name=name        Open escalation policies whose names match this string.
+  -p, --pipe             Read escalation policy ID's from stdin.
+  -u, --useauth=useauth  Use the saved REST API token with this alias
+  --debug                Print REST API call debug logs
 ```
 
 _See code: [src/commands/ep/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/ep/open.ts)_
@@ -515,9 +593,11 @@ OPTIONS
 
   -s, --schedule_ids=schedule_ids      Add a target schedule with this ID. Specify multiple times for multiple targets.
 
+  -u, --useauth=useauth                Use the saved REST API token with this alias
+
   -u, --user_ids=user_ids              Add a target user with this ID. Specify multiple times for multiple targets.
 
-  --debug
+  --debug                              Print REST API call debug logs
 ```
 
 _See code: [src/commands/ep/target/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/ep/target/add.ts)_
@@ -550,9 +630,11 @@ OPTIONS
   -s, --schedule_ids=schedule_ids      Remove a target schedule with this ID. Specify multiple times for multiple
                                        targets.
 
+  -u, --useauth=useauth                Use the saved REST API token with this alias
+
   -u, --user_ids=user_ids              Remove a target user with this ID. Specify multiple times for multiple targets.
 
-  --debug
+  --debug                              Print REST API call debug logs
 ```
 
 _See code: [src/commands/ep/target/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/ep/target/remove.ts)_
@@ -583,16 +665,17 @@ USAGE
   $ pd incident:ack
 
 OPTIONS
-  -F, --from=from      Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
-  -h, --help           show CLI help
-  -i, --ids=ids        Incident ID's to acknowledge. Specify multiple times for multiple incidents.
-  -m, --me             Acknowledge all incidents assigned to me
-  -p, --pipe           Read incident ID's from stdin.
+  -F, --from=from        Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
+  -h, --help             show CLI help
+  -i, --ids=ids          Incident ID's to acknowledge. Specify multiple times for multiple incidents.
+  -m, --me               Acknowledge all incidents assigned to me
+  -p, --pipe             Read incident ID's from stdin.
+  -u, --useauth=useauth  Use the saved REST API token with this alias
 
-  -z, --snooze=snooze  Also snooze selected incidents for the specified amount of time (5m, '1 hour', default unit is
-                       seconds).
+  -z, --snooze=snooze    Also snooze selected incidents for the specified amount of time (5m, '1 hour', default unit is
+                         seconds).
 
-  --debug
+  --debug                Print REST API call debug logs
 
 ALIASES
   $ pd incident:acknowledge
@@ -624,13 +707,15 @@ OPTIONS
 
   -p, --pipe                 Read incident ID's from stdin.
 
+  -u, --useauth=useauth      Use the saved REST API token with this alias
+
   -x, --extended             show extra columns
 
   --columns=columns          only show provided columns (comma-separated)
 
   --csv                      output is csv format [alias: --output=csv]
 
-  --debug
+  --debug                    Print REST API call debug logs
 
   --filter=filter            filter property by partial string matching, ex: name=foo
 
@@ -659,10 +744,11 @@ OPTIONS
   -j, --json              output full details as JSON
   -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
   -p, --pipe              Read incident ID's from stdin.
+  -u, --useauth=useauth   Use the saved REST API token with this alias
   -x, --extended          show extra columns
   --columns=columns       only show provided columns (comma-separated)
   --csv                   output is csv format [alias: --output=csv]
-  --debug
+  --debug                 Print REST API call debug logs
   --filter=filter         filter property by partial string matching, ex: name=foo
   --no-header             hide table header from output
   --no-truncate           do not truncate output to fit screen
@@ -703,7 +789,9 @@ OPTIONS
   -u, --assign_to_user_ids=assign_to_user_ids        User ID's to assign incidents to. Specify multiple times for
                                                      multiple assignees.
 
-  --debug
+  -u, --useauth=useauth                              Use the saved REST API token with this alias
+
+  --debug                                            Print REST API call debug logs
 
 ALIASES
   $ pd incident:reassign
@@ -745,7 +833,9 @@ OPTIONS
 
   -u, --urgency=high|low                       Incident urgency
 
-  --debug
+  -u, --useauth=useauth                        Use the saved REST API token with this alias
+
+  --debug                                      Print REST API call debug logs
 
   --escalation_policy_id=escalation_policy_id  The ID of the escalation policy to assign the incident to
 
@@ -793,13 +883,15 @@ OPTIONS
 
   -u, --urgencies=high|low                                    [default: high,low] Urgencies to include.
 
+  -u, --useauth=useauth                                       Use the saved REST API token with this alias
+
   -x, --extended                                              show extra columns
 
   --columns=columns                                           only show provided columns (comma-separated)
 
   --csv                                                       output is csv format [alias: --output=csv]
 
-  --debug
+  --debug                                                     Print REST API call debug logs
 
   --filter=filter                                             filter property by partial string matching, ex: name=foo
 
@@ -844,13 +936,15 @@ OPTIONS
 
   -p, --pipe                 Read incident IDs from stdin, for use with pipes.
 
+  -u, --useauth=useauth      Use the saved REST API token with this alias
+
   -x, --extended             show extra columns
 
   --columns=columns          only show provided columns (comma-separated)
 
   --csv                      output is csv format [alias: --output=csv]
 
-  --debug
+  --debug                    Print REST API call debug logs
 
   --filter=filter            filter property by partial string matching, ex: name=foo
 
@@ -886,7 +980,9 @@ OPTIONS
   -p, --pipe                 Read incident IDs from stdin, for use with pipes. If -I is not given, the first incident ID
                              from the pipe will be the parent incident.
 
-  --debug
+  -u, --useauth=useauth      Use the saved REST API token with this alias
+
+  --debug                    Print REST API call debug logs
 ```
 
 _See code: [src/commands/incident/merge.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/incident/merge.ts)_
@@ -904,10 +1000,11 @@ OPTIONS
   -h, --help              show CLI help
   -i, --id=id             (required) Incident ID.
   -n, --note=note         Note to add
+  -u, --useauth=useauth   Use the saved REST API token with this alias
   -x, --extended          show extra columns
   --columns=columns       only show provided columns (comma-separated)
   --csv                   output is csv format [alias: --output=csv]
-  --debug
+  --debug                 Print REST API call debug logs
   --filter=filter         filter property by partial string matching, ex: name=foo
   --no-header             hide table header from output
   --no-truncate           do not truncate output to fit screen
@@ -926,11 +1023,12 @@ USAGE
   $ pd incident:open
 
 OPTIONS
-  -h, --help     show CLI help
-  -i, --ids=ids  Incident ID's to open. Specify multiple times for multiple incidents.
-  -m, --me       Open all incidents assigned to me
-  -p, --pipe     Read incident ID's from stdin.
-  --debug
+  -h, --help             show CLI help
+  -i, --ids=ids          Incident ID's to open. Specify multiple times for multiple incidents.
+  -m, --me               Open all incidents assigned to me
+  -p, --pipe             Read incident ID's from stdin.
+  -u, --useauth=useauth  Use the saved REST API token with this alias
+  --debug                Print REST API call debug logs
 ```
 
 _See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/incident/open.ts)_
@@ -950,7 +1048,8 @@ OPTIONS
   -m, --me                 Set priority on all incidents assigned to me
   -n, --priority=priority  (required) The name of the priority to set.
   -p, --pipe               Read incident ID's from stdin.
-  --debug
+  -u, --useauth=useauth    Use the saved REST API token with this alias
+  --debug                  Print REST API call debug logs
 ```
 
 _See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/incident/priority.ts)_
@@ -964,12 +1063,13 @@ USAGE
   $ pd incident:resolve
 
 OPTIONS
-  -F, --from=from  Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
-  -h, --help       show CLI help
-  -i, --ids=ids    Incident ID's to resolve. Specify multiple times for multiple incidents.
-  -m, --me         Resolve all incidents assigned to me
-  -p, --pipe       Read incident ID's from stdin.
-  --debug
+  -F, --from=from        Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
+  -h, --help             show CLI help
+  -i, --ids=ids          Incident ID's to resolve. Specify multiple times for multiple incidents.
+  -m, --me               Resolve all incidents assigned to me
+  -p, --pipe             Read incident ID's from stdin.
+  -u, --useauth=useauth  Use the saved REST API token with this alias
+  --debug                Print REST API call debug logs
 ```
 
 _See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/incident/resolve.ts)_
@@ -994,13 +1094,15 @@ OPTIONS
 
   -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
 
+  -u, --useauth=useauth      Use the saved REST API token with this alias
+
   -x, --extended             show extra columns
 
   --columns=columns          only show provided columns (comma-separated)
 
   --csv                      output is csv format [alias: --output=csv]
 
-  --debug
+  --debug                    Print REST API call debug logs
 
   --filter=filter            filter property by partial string matching, ex: name=foo
 
@@ -1018,17 +1120,6 @@ OPTIONS
 ```
 
 _See code: [src/commands/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/log.ts)_
-
-## `pd login`
-
-Authenticate with PagerDuty in the browser
-
-```
-USAGE
-  $ pd login
-```
-
-_See code: [src/commands/login.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/login.ts)_
 
 ## `pd rest:delete`
 
@@ -1049,7 +1140,9 @@ OPTIONS
 
   -h, --help               show CLI help
 
-  --debug
+  -u, --useauth=useauth    Use the saved REST API token with this alias
+
+  --debug                  Print REST API call debug logs
 ```
 
 _See code: [src/commands/rest/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/rest/delete.ts)_
@@ -1083,13 +1176,15 @@ OPTIONS
 
   -t, --table                Output in table format instead of JSON
 
+  -u, --useauth=useauth      Use the saved REST API token with this alias
+
   -x, --extended             show extra columns
 
   --columns=columns          only show provided columns (comma-separated)
 
   --csv                      output is csv format [alias: --output=csv]
 
-  --debug
+  --debug                    Print REST API call debug logs
 
   --filter=filter            filter property by partial string matching, ex: name=foo
 
@@ -1123,7 +1218,9 @@ OPTIONS
 
   -h, --help               show CLI help
 
-  --debug
+  -u, --useauth=useauth    Use the saved REST API token with this alias
+
+  --debug                  Print REST API call debug logs
 ```
 
 _See code: [src/commands/rest/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/rest/get.ts)_
@@ -1149,7 +1246,9 @@ OPTIONS
 
   -h, --help               show CLI help
 
-  --debug
+  -u, --useauth=useauth    Use the saved REST API token with this alias
+
+  --debug                  Print REST API call debug logs
 ```
 
 _See code: [src/commands/rest/post.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/rest/post.ts)_
@@ -1175,7 +1274,9 @@ OPTIONS
 
   -h, --help               show CLI help
 
-  --debug
+  -u, --useauth=useauth    Use the saved REST API token with this alias
+
+  --debug                  Print REST API call debug logs
 ```
 
 _See code: [src/commands/rest/put.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/rest/put.ts)_
@@ -1195,7 +1296,8 @@ OPTIONS
   -n, --name=name                The name of the schedule to copy.
   -o, --open                     Open the new schedule in the browser
   -p, --pipe                     Print the new schedule ID only to stdout, for use with pipes.
-  --debug
+  -u, --useauth=useauth          Use the saved REST API token with this alias
+  --debug                        Print REST API call debug logs
 ```
 
 _See code: [src/commands/schedule/copy.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/schedule/copy.ts)_
@@ -1222,13 +1324,15 @@ OPTIONS
 
   -p, --pipe                 Print schedule ID's only to stdout, for use with pipes.
 
+  -u, --useauth=useauth      Use the saved REST API token with this alias
+
   -x, --extended             show extra columns
 
   --columns=columns          only show provided columns (comma-separated)
 
   --csv                      output is csv format [alias: --output=csv]
 
-  --debug
+  --debug                    Print REST API call debug logs
 
   --filter=filter            filter property by partial string matching, ex: name=foo
 
@@ -1257,10 +1361,11 @@ OPTIONS
   -j, --json              output full details as JSON
   -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
   -n, --name=name         Show oncalls for the schedule with this name.
+  -u, --useauth=useauth   Use the saved REST API token with this alias
   -x, --extended          show extra columns
   --columns=columns       only show provided columns (comma-separated)
   --csv                   output is csv format [alias: --output=csv]
-  --debug
+  --debug                 Print REST API call debug logs
   --filter=filter         filter property by partial string matching, ex: name=foo
   --no-header             hide table header from output
   --no-truncate           do not truncate output to fit screen
@@ -1281,11 +1386,12 @@ USAGE
   $ pd schedule:open
 
 OPTIONS
-  -h, --help       show CLI help
-  -i, --ids=ids    The IDs of schedules to open.
-  -n, --name=name  Open schedules matching this string.
-  -p, --pipe       Read schedule ID's from stdin.
-  --debug
+  -h, --help             show CLI help
+  -i, --ids=ids          The IDs of schedules to open.
+  -n, --name=name        Open schedules matching this string.
+  -p, --pipe             Read schedule ID's from stdin.
+  -u, --useauth=useauth  Use the saved REST API token with this alias
+  --debug                Print REST API call debug logs
 ```
 
 _See code: [src/commands/schedule/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/schedule/open.ts)_
@@ -1303,8 +1409,9 @@ OPTIONS
   -h, --help                   show CLI help
   -i, --id=id                  Add an override to the schedule with this ID.
   -n, --name=name              Add an override to the schedule with this name.
+  -u, --useauth=useauth        Use the saved REST API token with this alias
   -u, --user_id=user_id        The ID of the PagerDuty user for the override
-  --debug
+  --debug                      Print REST API call debug logs
   --end=end                    [default: in 1 day] The end time for the override.
   --start=start                [default: now] The start time for the override.
 ```
@@ -1335,13 +1442,15 @@ OPTIONS
 
   -p, --pipe                 Print override ID's only to stdout, for use with pipes.
 
+  -u, --useauth=useauth      Use the saved REST API token with this alias
+
   -x, --extended             show extra columns
 
   --columns=columns          only show provided columns (comma-separated)
 
   --csv                      output is csv format [alias: --output=csv]
 
-  --debug
+  --debug                    Print REST API call debug logs
 
   --filter=filter            filter property by partial string matching, ex: name=foo
 
@@ -1372,10 +1481,11 @@ OPTIONS
   -h, --help              show CLI help
   -i, --id=id             Render the schedule with this ID.
   -n, --name=name         Render the schedule with this name.
+  -u, --useauth=useauth   Use the saved REST API token with this alias
   -x, --extended          show extra columns
   --columns=columns       only show provided columns (comma-separated)
   --csv                   output is csv format [alias: --output=csv]
-  --debug
+  --debug                 Print REST API call debug logs
   --filter=filter         filter property by partial string matching, ex: name=foo
   --no-header             hide table header from output
   --no-truncate           do not truncate output to fit screen
@@ -1396,12 +1506,13 @@ USAGE
   $ pd schedule:show
 
 OPTIONS
-  -h, --help       show CLI help
-  -i, --id=id      Show the schedule with this ID.
-  -n, --name=name  Show the schedule with this name.
-  --debug
-  --since=since    The start of the date range over which you want to search.
-  --until=until    The end of the date range over which you want to search.
+  -h, --help             show CLI help
+  -i, --id=id            Show the schedule with this ID.
+  -n, --name=name        Show the schedule with this name.
+  -u, --useauth=useauth  Use the saved REST API token with this alias
+  --debug                Print REST API call debug logs
+  --since=since          The start of the date range over which you want to search.
+  --until=until          The end of the date range over which you want to search.
 ```
 
 _See code: [src/commands/schedule/show.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/schedule/show.ts)_
@@ -1439,6 +1550,8 @@ OPTIONS
 
   -u, --urgency=high|low|use_support_hours|severity_based  The urgency of incidents in the service
 
+  -u, --useauth=useauth                                    Use the saved REST API token with this alias
+
   --Gc=any|all                                             Do content-based alert grouping. Specify the fields to look
                                                            at with --Gf and choose 'any' or 'all' fields.
 
@@ -1465,7 +1578,7 @@ OPTIONS
 
   --create_alerts                                          Turn on alert support in the service (default: true)
 
-  --debug
+  --debug                                                  Print REST API call debug logs
 ```
 
 _See code: [src/commands/service/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/service/create.ts)_
@@ -1479,11 +1592,12 @@ USAGE
   $ pd service:disable
 
 OPTIONS
-  -h, --help       show CLI help
-  -i, --ids=ids    Select services with the given ID. Specify multiple times for multiple services.
-  -n, --name=name  Select services whose names contain the given text
-  -p, --pipe       Read service ID's from stdin.
-  --debug
+  -h, --help             show CLI help
+  -i, --ids=ids          Select services with the given ID. Specify multiple times for multiple services.
+  -n, --name=name        Select services whose names contain the given text
+  -p, --pipe             Read service ID's from stdin.
+  -u, --useauth=useauth  Use the saved REST API token with this alias
+  --debug                Print REST API call debug logs
 ```
 
 _See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/service/disable.ts)_
@@ -1497,11 +1611,12 @@ USAGE
   $ pd service:enable
 
 OPTIONS
-  -h, --help       show CLI help
-  -i, --ids=ids    Select services with the given ID. Specify multiple times for multiple services.
-  -n, --name=name  Select services whose names contain the given text
-  -p, --pipe       Read service ID's from stdin.
-  --debug
+  -h, --help             show CLI help
+  -i, --ids=ids          Select services with the given ID. Specify multiple times for multiple services.
+  -n, --name=name        Select services whose names contain the given text
+  -p, --pipe             Read service ID's from stdin.
+  -u, --useauth=useauth  Use the saved REST API token with this alias
+  --debug                Print REST API call debug logs
 ```
 
 _See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/service/enable.ts)_
@@ -1530,13 +1645,15 @@ OPTIONS
 
   -t, --teams=teams          Team names to include. Specify multiple times for multiple teams.
 
+  -u, --useauth=useauth      Use the saved REST API token with this alias
+
   -x, --extended             show extra columns
 
   --columns=columns          only show provided columns (comma-separated)
 
   --csv                      output is csv format [alias: --output=csv]
 
-  --debug
+  --debug                    Print REST API call debug logs
 
   --filter=filter            filter property by partial string matching, ex: name=foo
 
@@ -1560,13 +1677,14 @@ USAGE
   $ pd service:set
 
 OPTIONS
-  -h, --help         show CLI help
-  -i, --ids=ids      Select services with the given ID. Specify multiple times for multiple services.
-  -k, --key=key      (required) Attribute key to set
-  -n, --name=name    Select services whose names contain the given text
-  -p, --pipe         Read service ID's from stdin.
-  -v, --value=value  (required) Attribute value to set
-  --debug
+  -h, --help             show CLI help
+  -i, --ids=ids          Select services with the given ID. Specify multiple times for multiple services.
+  -k, --key=key          (required) Attribute key to set
+  -n, --name=name        Select services whose names contain the given text
+  -p, --pipe             Read service ID's from stdin.
+  -u, --useauth=useauth  Use the saved REST API token with this alias
+  -v, --value=value      (required) Attribute value to set
+  --debug                Print REST API call debug logs
 ```
 
 _See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/service/set.ts)_
@@ -1586,7 +1704,8 @@ OPTIONS
   -n, --name=name                (required) The name of the team to add.
   -o, --open                     Open the new team in the browser
   -p, --pipe                     Print the team ID only to stdout, for use with pipes.
-  --debug
+  -u, --useauth=useauth          Use the saved REST API token with this alias
+  --debug                        Print REST API call debug logs
   --description=description      The description of the team
 ```
 
@@ -1613,7 +1732,9 @@ OPTIONS
 
   -n, --name=name          Select teams whose names contain the given text
 
-  --debug
+  -u, --useauth=useauth    Use the saved REST API token with this alias
+
+  --debug                  Print REST API call debug logs
 ```
 
 _See code: [src/commands/team/ep/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/team/ep/add.ts)_
@@ -1639,7 +1760,9 @@ OPTIONS
 
   -n, --name=name          Select teams whose names contain the given text
 
-  --debug
+  -u, --useauth=useauth    Use the saved REST API token with this alias
+
+  --debug                  Print REST API call debug logs
 ```
 
 _See code: [src/commands/team/ep/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/team/ep/remove.ts)_
@@ -1666,13 +1789,15 @@ OPTIONS
 
   -p, --pipe                 Print user ID's only to stdout, for use with pipes.
 
+  -u, --useauth=useauth      Use the saved REST API token with this alias
+
   -x, --extended             show extra columns
 
   --columns=columns          only show provided columns (comma-separated)
 
   --csv                      output is csv format [alias: --output=csv]
 
-  --debug
+  --debug                    Print REST API call debug logs
 
   --filter=filter            filter property by partial string matching, ex: name=foo
 
@@ -1696,11 +1821,12 @@ USAGE
   $ pd team:open
 
 OPTIONS
-  -h, --help       show CLI help
-  -i, --ids=ids    The IDs of teams to open.
-  -n, --name=name  Open teams matching this string.
-  -p, --pipe       Read team ID's from stdin.
-  --debug
+  -h, --help             show CLI help
+  -i, --ids=ids          The IDs of teams to open.
+  -n, --name=name        Open teams matching this string.
+  -p, --pipe             Read team ID's from stdin.
+  -u, --useauth=useauth  Use the saved REST API token with this alias
+  --debug                Print REST API call debug logs
 ```
 
 _See code: [src/commands/team/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/team/open.ts)_
@@ -1719,8 +1845,9 @@ OPTIONS
   -i, --ids=ids                          The IDs of teams to add members to.
   -n, --name=name                        Select teams whose names contain the given text
   -r, --role=manager|responder|observer  [default: manager] The role of the user(s) on the team(s)
+  -u, --useauth=useauth                  Use the saved REST API token with this alias
   -u, --user_ids=user_ids                Add a user with this ID. Specify multiple times for multiple users.
-  --debug
+  --debug                                Print REST API call debug logs
 ```
 
 _See code: [src/commands/team/user/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/team/user/add.ts)_
@@ -1749,13 +1876,15 @@ OPTIONS
 
   -p, --pipe                 Print user ID's only to stdout, for use with pipes.
 
+  -u, --useauth=useauth      Use the saved REST API token with this alias
+
   -x, --extended             show extra columns
 
   --columns=columns          only show provided columns (comma-separated)
 
   --csv                      output is csv format [alias: --output=csv]
 
-  --debug
+  --debug                    Print REST API call debug logs
 
   --filter=filter            filter property by partial string matching, ex: name=foo
 
@@ -1783,8 +1912,9 @@ OPTIONS
   -h, --help                     show CLI help
   -i, --ids=ids                  The IDs of teams to remove members from.
   -n, --name=name                Select teams whose names contain the given text
+  -u, --useauth=useauth          Use the saved REST API token with this alias
   -u, --user_ids=user_ids        Remove a user with this ID. Specify multiple times for multiple users.
-  --debug
+  --debug                        Print REST API call debug logs
 ```
 
 _See code: [src/commands/team/user/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/team/user/remove.ts)_
@@ -1818,7 +1948,8 @@ OPTIONS
   -h, --help                  show CLI help
   -i, --id=id                 Add contact to the user with this ID.
   -l, --label=label           (required) The contact method label.
-  --debug
+  -u, --useauth=useauth       Use the saved REST API token with this alias
+  --debug                     Print REST API call debug logs
 ```
 
 _See code: [src/commands/user/contact/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/user/contact/add.ts)_
@@ -1847,13 +1978,15 @@ OPTIONS
 
   -p, --pipe                 Print contact ID's only to stdout, for use with pipes.
 
+  -u, --useauth=useauth      Use the saved REST API token with this alias
+
   -x, --extended             show extra columns
 
   --columns=columns          only show provided columns (comma-separated)
 
   --csv                      output is csv format [alias: --output=csv]
 
-  --debug
+  --debug                    Print REST API call debug logs
 
   --filter=filter            filter property by partial string matching, ex: name=foo
 
@@ -1883,7 +2016,8 @@ OPTIONS
   -h, --help                   show CLI help
   -i, --id=id                  Update a contact for the user with this ID.
   -l, --label=label            The contact method label to set.
-  --debug
+  -u, --useauth=useauth        Use the saved REST API token with this alias
+  --debug                      Print REST API call debug logs
 ```
 
 _See code: [src/commands/user/contact/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/user/contact/set.ts)_
@@ -1927,6 +2061,9 @@ OPTIONS
   -t, --title=title
       The user's job title
 
+  -u, --useauth=useauth
+      Use the saved REST API token with this alias
+
   -w, --password=password
       The user's password - if not specified, a random password will be generated
 
@@ -1934,6 +2071,7 @@ OPTIONS
       [default: UTC] The user's time zone
 
   --debug
+      Print REST API call debug logs
 
   --show_password
       Show the user's password when creating
@@ -1965,13 +2103,15 @@ OPTIONS
 
   -p, --pipe                     Print user ID's only to stdout, for use with pipes.
 
+  -u, --useauth=useauth          Use the saved REST API token with this alias
+
   -x, --extended                 show extra columns
 
   --columns=columns              only show provided columns (comma-separated)
 
   --csv                          output is csv format [alias: --output=csv]
 
-  --debug
+  --debug                        Print REST API call debug logs
 
   --filter=filter                filter property by partial string matching, ex: name=foo
 
@@ -2013,13 +2153,15 @@ OPTIONS
 
   -p, --pipe                     Read user IDs from stdin, for use with pipes.
 
+  -u, --useauth=useauth          Use the saved REST API token with this alias
+
   -x, --extended                 show extra columns
 
   --columns=columns              only show provided columns (comma-separated)
 
   --csv                          output is csv format [alias: --output=csv]
 
-  --debug
+  --debug                        Print REST API call debug logs
 
   --filter=filter                filter property by partial string matching, ex: name=foo
 
@@ -2054,10 +2196,11 @@ OPTIONS
   -j, --json              output full details as JSON
   -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
   -m, --me                Show my oncalls.
+  -u, --useauth=useauth   Use the saved REST API token with this alias
   -x, --extended          show extra columns
   --columns=columns       only show provided columns (comma-separated)
   --csv                   output is csv format [alias: --output=csv]
-  --debug
+  --debug                 Print REST API call debug logs
   --filter=filter         filter property by partial string matching, ex: name=foo
   --no-header             hide table header from output
   --no-truncate           do not truncate output to fit screen
@@ -2083,8 +2226,9 @@ OPTIONS
   -h, --help                   show CLI help
   -i, --ids=ids                Replace users with the given IDs. Specify multiple times for multiple users.
   -p, --pipe                   Read user ID's from stdin.
+  -u, --useauth=useauth        Use the saved REST API token with this alias
   -u, --user_id=user_id        The ID of the replacement user.
-  --debug
+  --debug                      Print REST API call debug logs
   --force                      Extreme danger mode: do not prompt before updating
 ```
 
@@ -2106,10 +2250,11 @@ OPTIONS
   -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
   -p, --pipe              Print session ID's only to stdout, for use with pipes.
   -q, --query=query       Query the API output
+  -u, --useauth=useauth   Use the saved REST API token with this alias
   -x, --extended          show extra columns
   --columns=columns       only show provided columns (comma-separated)
   --csv                   output is csv format [alias: --output=csv]
-  --debug
+  --debug                 Print REST API call debug logs
   --filter=filter         filter property by partial string matching, ex: name=foo
   --no-header             hide table header from output
   --no-truncate           do not truncate output to fit screen
@@ -2144,9 +2289,11 @@ OPTIONS
 
   -p, --pipe                       Read user ID's from stdin.
 
+  -u, --useauth=useauth            Use the saved REST API token with this alias
+
   -v, --value=value                (required) Attribute value to set
 
-  --debug
+  --debug                          Print REST API call debug logs
 ```
 
 _See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/user/set.ts)_
@@ -2163,8 +2310,9 @@ ARGUMENTS
   DATE  A human-style date/time, like "4pm 1/1/2021" or "Dec 2 1pm", etc. Default: now
 
 OPTIONS
-  -h, --help  show CLI help
-  --debug
+  -h, --help             show CLI help
+  -u, --useauth=useauth  Use the saved REST API token with this alias
+  --debug                Print REST API call debug logs
 ```
 
 _See code: [src/commands/util/timestamp.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/util/timestamp.ts)_

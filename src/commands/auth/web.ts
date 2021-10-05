@@ -1,21 +1,34 @@
-import {Command, flags} from '@oclif/command'
+import Command from '../../authbase'
+import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
-import {PD} from '../../pd'
-import * as pdconfig from '../../config'
+// import {PD} from '../../pd'
+import {Config} from '../../config'
 import * as http from 'http'
 
-import {AuthorizationCode, AuthorizationTokenConfig} from 'simple-oauth2'
+import {AccessToken, AuthorizationCode, AuthorizationTokenConfig} from 'simple-oauth2'
 
 export default class AuthWeb extends Command {
   static description = 'Authenticate with PagerDuty in the browser'
 
+  static aliases = ['login']
+
   static flags = {
-    help: flags.help({char: 'h'}),
+    ...Command.flags,
+    alias: flags.string({
+      char: 'a',
+      description: 'The alias to use for this token. Defaults to the name of the PD subdomain',
+    }),
+    default: flags.boolean({
+      char: 'd',
+      description: 'Use this token as the default for all PD commands',
+      default: true,
+      allowNo: true,
+    }),
   }
 
   async run() {
-    // const {flags} = this.parse(AuthWeb)
+    const {flags} = this.parse(this.ctor)
 
     const config = {
       client: {
@@ -24,6 +37,8 @@ export default class AuthWeb extends Command {
       },
       auth: {
         tokenHost: 'https://app.pagerduty.com',
+        // authorizePath: '/global/oauth/authorize',
+        // tokenPath: '/global/oauth/token',
       },
     }
     const client = new AuthorizationCode(config)
@@ -77,7 +92,7 @@ export default class AuthWeb extends Command {
             const token = accessToken.token.access_token
             cli.action.start(`Checking token ${chalk.bold.blue(token)}`)
             // sometimes PD gives an error when immediately making a request
-            setTimeout(this.checkToken, 2_000, token, this)
+            setTimeout(this.checkToken, 2_000, accessToken, this, flags)
           } else {
             cli.action.stop(chalk.bold.red('failed - response didn\'t contain a token'))
             this.error('Missing token', {exit: 1, suggestions: ['Get a token from the web at https://martindstone.github.io/PDOAuth']})
@@ -138,18 +153,22 @@ export default class AuthWeb extends Command {
     }
   }
 
-  checkToken(token: any, self: any) {
-    const pd = new PD(token)
-    pd.me().then(me => {
-      if (!(me && me.user && me.user.html_url)) {
-        cli.action.stop(chalk.bold.red(`failed - got a token (${token}) but it wasn't valid`))
-        self.error('Invalid token', {exit: 1, suggestions: ['Get a token from the web at https://martindstone.github.io/PDOAuth']})
+  checkToken(body: AccessToken, self: any, flags?: any) {
+    Config.configForTokenResponseBody(body, flags?.alias).then(configSubdomain => {
+      // console.log(configSubdomain)
+      const config = new Config()
+      const verb = config.has(configSubdomain.alias) ? 'updated' : 'added'
+      config.put(configSubdomain, flags?.default)
+      config.save()
+      cli.action.stop(chalk.bold.green('done'))
+      if (flags.default) {
+        self.log(`${chalk.bold(`Domain ${verb} -`)} you are logged in to ${chalk.bold.blue(config.getCurrentSubdomain())} as ${chalk.bold.blue(config.get()?.user.email)}`)
+      } else {
+        self.log(`${chalk.bold(`Domain ${verb}, default unchanged -`)} you are still logged in to ${chalk.bold.blue(config.getCurrentSubdomain())} as ${chalk.bold.blue(config.get()?.user.email)}`)
       }
-      pdconfig.setAuth(token)
-      pd.domain().then(domain => {
-        cli.action.stop(chalk.bold.green('done'))
-        self.log(`You are logged in to ${chalk.bold.blue(domain)} as ${chalk.bold.blue(me.user.email)}`)
-      })
+    }).catch(error => {
+      // console.log(error)
+      cli.action.stop(chalk.bold.red(`failed: ${error.message}`))
     })
   }
 }

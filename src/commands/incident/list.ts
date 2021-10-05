@@ -82,7 +82,7 @@ export default class IncidentList extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(IncidentList)
+    const {flags} = this.parse(this.ctor)
 
     const statuses = [...new Set(flags.statuses)]
     if (statuses.indexOf('open') >= 0) {
@@ -302,7 +302,7 @@ export default class IncidentList extends Command {
       }
     }
 
-    const options = {
+    const options: any = {
       printLine: this.log,
       ...flags, // parsed flags
     }

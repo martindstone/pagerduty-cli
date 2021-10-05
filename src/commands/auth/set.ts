@@ -1,15 +1,29 @@
-import {Command, flags} from '@oclif/command'
+import Command from '../../base'
+import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
-import {PD} from '../../pd'
-import * as config from '../../config'
+// import {PD} from '../../pd'
+import {Config} from '../../config'
 
 export default class AuthSet extends Command {
   static description = 'Set PagerDuty Auth token'
 
   static flags = {
     ...Command.flags,
-    token: flags.string({char: 't', description: 'A PagerDuty API token'}),
+    token: flags.string({
+      char: 't',
+      description: 'A PagerDuty API token',
+    }),
+    alias: flags.string({
+      char: 'a',
+      description: 'The alias to use for this token. Defaults to the name of the PD subdomain',
+    }),
+    default: flags.boolean({
+      char: 'd',
+      description: 'Use this token as the default for all PD commands',
+      default: true,
+      allowNo: true,
+    }),
   }
 
   async run() {
@@ -17,35 +31,24 @@ export default class AuthSet extends Command {
 
     let token = flags.token
     if (!token) {
-      token = await config.promptForAuth()
+      token = await cli.prompt('Enter a PagerDuty API token')
     }
-    if (!PD.isValidToken(token)) {
-      this.error('Invalid token', {exit: 1})
-    }
-    const pd = new PD(token)
+    token = token || ''
 
-    cli.action.start('Checking token')
-
-    const domain = await pd.domain()
-
-    if (!domain) {
-      cli.action.stop(chalk.bold.red('failed!'))
-      this.error('Token authorization failed', {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
-    }
-
-    if (PD.isBearerToken(token)) {
-      const me = await pd.me()
-      if (me && me.user.id) {
-        cli.action.stop(chalk.bold.green('done'))
-        this.log(`You are logged in to ${chalk.bold.blue(domain)} as ${chalk.bold.blue(me.user.email)}`)
-      } else {
-        cli.action.stop(chalk.bold.red('failed!'))
-        this.error('Token authorization failed', {exit: 1, suggestions: ['pd auth:web', 'pd auth:set']})
-      }
-    } else {
+    try {
+      cli.action.start('Checking token')
+      const config = new Config()
+      const subdomain = await Config.configForToken(token, flags.alias)
+      config.put(subdomain, flags.default)
+      config.save()
       cli.action.stop(chalk.bold.green('done'))
-      this.log(`You are logged in to ${chalk.bold.blue(domain)} using a legacy API token`)
+      this.log(`You are logged in to ${chalk.bold.blue(config.getCurrentSubdomain())} as ${chalk.bold.blue(config.getCurrentUserEmail() || 'nobody')}`)
+    } catch (error) {
+      cli.action.stop(chalk.bold.red('failed!'))
+      if (error instanceof Error) {
+        this.error(error.message, {exit: 1})
+      }
+      this.error(error as string, {exit: 1})
     }
-    config.setAuth(token)
   }
 }

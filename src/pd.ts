@@ -45,14 +45,22 @@ export class PD {
     stopSpinnerWhenDone: true,
   }
 
-  public static isBearerToken(token: string): boolean {
+  public static isOldBearerToken(token: string): boolean {
     if (token && token.match(/^[0-9a-fA-F]{64}$/)) {
       return true
     }
+    return false
+  }
+
+  public static isNewBearerToken(token: string): boolean {
     if (token && token.match(/^pd[\w]+\+[0-9a-fA-F-]+$/)) {
       return true
     }
     return false
+  }
+
+  public static isBearerToken(token: string): boolean {
+    return this.isOldBearerToken(token) || this.isNewBearerToken(token)
   }
 
   public static isLegacyToken(token: string): boolean {
@@ -164,29 +172,33 @@ export class PD {
 
   public async me(): Promise<any> {
     if (this._me) return this._me
-    if (!PD.isBearerToken(this.token)) {
-      return null
-    }
     const r = await this.request({
       endpoint: 'users/me',
       method: 'GET',
     })
-    this._me = r.getData()
-    return this._me
+    if (r.isSuccess) {
+      this._me = r.getData()
+      return this._me
+    }
+    return null
   }
 
   public async domain(): Promise<string> {
     if (this._domain) {
       return this._domain
     }
-    const me = await this.me()
-    if (me) {
-      this._domain = me.user.html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
-    } else {
-      const users = await this.fetch('users', {params: {limit: 1}})
-      this._domain = users[0].html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
+    try {
+      const me = await this.me()
+      if (me) {
+        this._domain = me.user.html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
+      } else {
+        const users = await this.fetch('users', {params: {limit: 1}})
+        this._domain = users[0].html_url.match(/https:\/\/(.*)\.pagerduty.com\/.*/)[1]
+      }
+      return this._domain as string
+    } catch (error) {
+      return ''
     }
-    return this._domain as string
   }
 
   public async batchedRequest(requests: PD.Request[],
