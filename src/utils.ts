@@ -85,7 +85,7 @@ export function splitDedupAndFlatten(arr: any[]): string[] {
 }
 
 export function invalidPagerDutyIDs(arr: string[]) {
-  return arr.filter(e => !e.match(/^P[\w]{6}$/))
+  return arr.filter(e => !e.match(/^[P|Q][\w]{6,13}$/))
 }
 
 export async function printJsonAndExit(data: any) {
