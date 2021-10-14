@@ -342,6 +342,9 @@ export class PD {
     if (endpoint.match(/users\/P.*\/sessions/)) {
       return 'user_sessions'
     }
+    if (endpoint.match(/(\/)?event_orchestrations/)) {
+      return 'orchestrations'
+    }
     return endpoint.split('/').pop() as string
   }
 
