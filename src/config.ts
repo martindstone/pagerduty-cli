@@ -86,7 +86,6 @@ export class Config {
   }
 
   public static async configForTokenResponseBody(body: AccessToken, alias?: string): Promise<ConfigSubdomain> {
-    // console.log(body)
     if (!PD.isBearerToken(body.token.access_token)) {
       throw new Error(`Invalid token ${body.token.access_token}`)
     }

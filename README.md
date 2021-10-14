@@ -20,11 +20,11 @@ PagerDuty Command Line Interface
 <!-- commands -->
 * [`pd analytics:incident`](#pd-analyticsincident)
 * [`pd analytics:incident:raw`](#pd-analyticsincidentraw)
+* [`pd auth:add`](#pd-authadd)
 * [`pd auth:delete`](#pd-authdelete)
 * [`pd auth:get`](#pd-authget)
 * [`pd auth:list`](#pd-authlist)
-* [`pd auth:set`](#pd-authset)
-* [`pd auth:use ALIAS`](#pd-authuse-alias)
+* [`pd auth:use`](#pd-authuse)
 * [`pd auth:web`](#pd-authweb)
 * [`pd autocomplete [SHELL]`](#pd-autocomplete-shell)
 * [`pd commands`](#pd-commands)
@@ -195,26 +195,46 @@ OPTIONS
 
 _See code: [src/commands/analytics/incident/raw.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/analytics/incident/raw.ts)_
 
+## `pd auth:add`
+
+Add an authenticated PagerDuty domain
+
+```
+USAGE
+  $ pd auth:add
+
+OPTIONS
+  -a, --alias=alias   The alias to use for this token. Defaults to the name of the PD subdomain
+  -d, --[no-]default  Use this token as the default for all PD commands
+  -h, --help          show CLI help
+  -t, --token=token   A PagerDuty API token
+  --debug             Print REST API call debug logs
+
+ALIASES
+  $ pd auth:set
+```
+
+_See code: [src/commands/auth/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/auth/add.ts)_
+
 ## `pd auth:delete`
 
-Set PagerDuty Auth token
+Delete a PagerDuty domain authentication
 
 ```
 USAGE
   $ pd auth:delete
 
 OPTIONS
-  -a, --alias=alias      (required) The alias of the PD token to delete
-  -h, --help             show CLI help
-  -u, --useauth=useauth  Use the saved REST API token with this alias
-  --debug                Print REST API call debug logs
+  -a, --alias=alias  (required) The alias of the PD domain authentication to delete
+  -h, --help         show CLI help
+  --debug            Print REST API call debug logs
 ```
 
 _See code: [src/commands/auth/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/auth/delete.ts)_
 
 ## `pd auth:get`
 
-Get PagerDuty Auth token
+Get the current authenticated PagerDuty domain
 
 ```
 USAGE
@@ -242,39 +262,18 @@ OPTIONS
 
 _See code: [src/commands/auth/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/auth/list.ts)_
 
-## `pd auth:set`
+## `pd auth:use`
 
-Set PagerDuty Auth token
-
-```
-USAGE
-  $ pd auth:set
-
-OPTIONS
-  -a, --alias=alias      The alias to use for this token. Defaults to the name of the PD subdomain
-  -d, --[no-]default     Use this token as the default for all PD commands
-  -h, --help             show CLI help
-  -t, --token=token      A PagerDuty API token
-  -u, --useauth=useauth  Use the saved REST API token with this alias
-  --debug                Print REST API call debug logs
-```
-
-_See code: [src/commands/auth/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/auth/set.ts)_
-
-## `pd auth:use ALIAS`
-
-Choose a saved authenticated PagerDuty domain
+Choose a saved authenticated PagerDuty domain to use with all pd commands
 
 ```
 USAGE
-  $ pd auth:use ALIAS
-
-ARGUMENTS
-  ALIAS  The PagerDuty domain alias to use (see pd auth:list)
+  $ pd auth:use
 
 OPTIONS
-  -h, --help  show CLI help
-  --debug     Print REST API call debug logs
+  -a, --alias=alias  (required) The alias of the PD domain to use
+  -h, --help         show CLI help
+  --debug            Print REST API call debug logs
 ```
 
 _See code: [src/commands/auth/use.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.72/src/commands/auth/use.ts)_

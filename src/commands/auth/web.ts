@@ -155,19 +155,16 @@ export default class AuthWeb extends Command {
 
   checkToken(body: AccessToken, self: any, flags?: any) {
     Config.configForTokenResponseBody(body, flags?.alias).then(configSubdomain => {
-      // console.log(configSubdomain)
-      const config = new Config()
-      const verb = config.has(configSubdomain.alias) ? 'updated' : 'added'
-      config.put(configSubdomain, flags?.default)
-      config.save()
+      const verb = self._config.has(configSubdomain.alias) ? 'updated' : 'added'
+      self._config.put(configSubdomain, flags?.default)
+      self._config.save()
       cli.action.stop(chalk.bold.green('done'))
       if (flags.default) {
-        self.log(`${chalk.bold(`Domain ${verb} -`)} you are logged in to ${chalk.bold.blue(config.getCurrentSubdomain())} as ${chalk.bold.blue(config.get()?.user.email)}`)
+        self.log(`${chalk.bold(`Domain ${verb} -`)} you are logged in to ${chalk.bold.blue(self._config.getCurrentSubdomain())} as ${chalk.bold.blue(self._config.get()?.user.email)}`)
       } else {
-        self.log(`${chalk.bold(`Domain ${verb}, default unchanged -`)} you are still logged in to ${chalk.bold.blue(config.getCurrentSubdomain())} as ${chalk.bold.blue(config.get()?.user.email)}`)
+        self.log(`${chalk.bold(`Domain ${verb}, default unchanged -`)} you are logged in to ${chalk.bold.blue(self._config.getCurrentSubdomain())} as ${chalk.bold.blue(self._config.get()?.user.email)} (alias: ${chalk.bold.blue(self._config.defaultAlias())})`)
       }
     }).catch(error => {
-      // console.log(error)
       cli.action.stop(chalk.bold.red(`failed: ${error.message}`))
     })
   }

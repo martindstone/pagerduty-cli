@@ -1,12 +1,13 @@
-import Command from '../../base'
+import Command from '../../authbase'
 import {flags} from '@oclif/command'
 import chalk from 'chalk'
 import cli from 'cli-ux'
-// import {PD} from '../../pd'
 import {Config} from '../../config'
 
-export default class AuthSet extends Command {
-  static description = 'Set PagerDuty Auth token'
+export default class AuthAdd extends Command {
+  static description = 'Add an authenticated PagerDuty domain'
+
+  static aliases = ['auth:set']
 
   static flags = {
     ...Command.flags,
@@ -27,7 +28,7 @@ export default class AuthSet extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(AuthSet)
+    const {flags} = this.parse(AuthAdd)
 
     let token = flags.token
     if (!token) {
@@ -37,12 +38,12 @@ export default class AuthSet extends Command {
 
     try {
       cli.action.start('Checking token')
-      const config = new Config()
+      // const config = new Config()
       const subdomain = await Config.configForToken(token, flags.alias)
-      config.put(subdomain, flags.default)
-      config.save()
+      this._config.put(subdomain, flags.default)
+      this._config.save()
       cli.action.stop(chalk.bold.green('done'))
-      this.log(`You are logged in to ${chalk.bold.blue(config.getCurrentSubdomain())} as ${chalk.bold.blue(config.getCurrentUserEmail() || 'nobody')}`)
+      this.log(`You are logged in to ${chalk.bold.blue(this._config.getCurrentSubdomain())} as ${chalk.bold.blue(this._config.getCurrentUserEmail() || 'nobody')} (alias: ${chalk.bold.blue(this._config.defaultAlias())})`)
     } catch (error) {
       cli.action.stop(chalk.bold.red('failed!'))
       if (error instanceof Error) {

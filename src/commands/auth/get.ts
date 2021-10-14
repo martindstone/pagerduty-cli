@@ -5,7 +5,7 @@ import cli from 'cli-ux'
 // import {PD} from '../../pd'
 
 export default class AuthGet extends Command {
-  static description = 'Get PagerDuty Auth token'
+  static description = 'Get the current authenticated PagerDuty domain'
 
   static flags = {
     ...Command.flags,
@@ -24,10 +24,10 @@ export default class AuthGet extends Command {
     const me = await this.me()
     if (me && me.user.id) {
       cli.action.stop(chalk.bold.green('done'))
-      this.log(`You are logged in to ${chalk.bold.blue(domain)} as ${chalk.bold.blue(me.user.email)}`)
+      this.log(`You are logged in to ${chalk.bold.blue(domain)} as ${chalk.bold.blue(me.user.email)} (alias: ${chalk.bold.blue(this._config.defaultAlias())})`)
     } else {
       cli.action.stop(chalk.bold.green('done'))
-      this.log(`You are logged in to ${chalk.bold.blue(domain)} using a legacy API token`)
+      this.log(`You are logged in to ${chalk.bold.blue(domain)} using a legacy API token (alias: ${chalk.bold.blue(this._config.defaultAlias())})`)
     }
   }
 }
