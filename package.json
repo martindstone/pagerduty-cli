@@ -37,7 +37,7 @@
     "@oclif/test": "^1.2.8",
     "@types/chai": "^4",
     "@types/mocha": "^5",
-    "@types/node": "^14.11.1",
+    "@types/node": "^16",
     "aws-sdk": "^2.757.0",
     "chai": "^4",
     "eslint": "^5.13",
@@ -50,7 +50,7 @@
     "typescript": "^3.3"
   },
   "engines": {
-    "node": ">=14.0.0",
+    "node": ">=16.0.0",
     "npm": ">=6.0.0"
   },
   "files": [
