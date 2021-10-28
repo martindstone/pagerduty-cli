@@ -8,7 +8,7 @@ export default abstract class Base extends AuthBase {
   static flags = {
     ...AuthBase.flags,
     useauth: flags.string({
-      char: 'u',
+      char: 'b',
       description: 'Use the saved REST API token with this alias',
     }),
   }
