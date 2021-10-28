@@ -143,6 +143,7 @@ export class Config {
 
   public save(): boolean {
     try {
+      fs.ensureFileSync(this._configFilePath)
       fs.writeJsonSync(this._configFilePath, this._config)
     } catch (error) {
       return false
