@@ -282,7 +282,7 @@ export default class ServiceCreate extends Command {
       await cli.wait(1000)
       cli.action.start(`Opening ${chalk.bold.blue(returned_service.service.html_url)} in the browser`)
       try {
-        cli.open(returned_service.service.html_url)
+        await cli.open(returned_service.service.html_url)
       } catch (error) {
         this.error('Couldn\'t open your browser. Are you running as root?', {exit: 1})
       }

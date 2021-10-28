@@ -64,10 +64,14 @@ export default class TeamOpen extends Command {
     cli.action.start('Finding your PD domain')
     const domain = await this.pd.domain()
 
+    this.log('Team URLs:')
+    const urlstrings: string[] = team_ids.map(x => chalk.bold.blue(`https://${domain}.pagerduty.com/teams/${x}`))
+    this.log(urlstrings.join('\n') + '\n')
+
     cli.action.start('Opening your browser')
     try {
       for (const team_id of team_ids) {
-        cli.open(`https://${domain}.pagerduty.com/teams/${team_id}`)
+        await cli.open(`https://${domain}.pagerduty.com/teams/${team_id}`)
       }
     } catch (error) {
       cli.action.stop(chalk.bold.red('failed!'))

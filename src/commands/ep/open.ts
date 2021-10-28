@@ -68,10 +68,14 @@ export default class EpOpen extends Command {
     cli.action.start('Finding your PD domain')
     const domain = await this.pd.domain()
 
+    this.log('Escalation Policy URLs:')
+    const urlstrings: string[] = ep_ids.map(x => chalk.bold.blue(`https://${domain}.pagerduty.com/escalation_policies/${x}`))
+    this.log(urlstrings.join('\n') + '\n')
+
     cli.action.start(`Opening ${ep_ids.length} escalation policies in the browser`)
     try {
       for (const ep_id of ep_ids) {
-        cli.open(`https://${domain}.pagerduty.com/escalation_policies/${ep_id}`)
+        await cli.open(`https://${domain}.pagerduty.com/escalation_policies/${ep_id}`)
       }
     } catch (error) {
       cli.action.stop(chalk.bold.red('failed'))

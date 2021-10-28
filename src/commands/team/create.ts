@@ -89,8 +89,9 @@ export default class TeamCreate extends Command {
     } else if (flags.open) {
       cli.action.start(`Opening ${chalk.bold.blue(returned_team.team.html_url)} in the browser`)
       try {
-        cli.open(returned_team.team.html_url)
+        await cli.open(returned_team.team.html_url)
       } catch (error) {
+        cli.action.stop(chalk.bold.red('failed!'))
         this.error('Couldn\'t open your browser. Are you running as root?', {exit: 1})
       }
       cli.action.stop(chalk.bold.green('done'))

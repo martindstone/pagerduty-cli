@@ -64,10 +64,14 @@ export default class ScheduleOpen extends Command {
     cli.action.start('Finding your PD domain')
     const domain = await this.pd.domain()
 
+    this.log('Schedule URLs:')
+    const urlstrings: string[] = schedule_ids.map(x => chalk.bold.blue(`https://${domain}.pagerduty.com/schedules/${x}`))
+    this.log(urlstrings.join('\n') + '\n')
+
     cli.action.start('Opening your browser')
     try {
       for (const schedule_id of schedule_ids) {
-        cli.open(`https://${domain}.pagerduty.com/schedules/${schedule_id}`)
+        await cli.open(`https://${domain}.pagerduty.com/schedules/${schedule_id}`)
       }
     } catch (error) {
       cli.action.stop(chalk.bold.red('failed!'))

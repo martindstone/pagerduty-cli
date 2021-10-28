@@ -55,14 +55,21 @@ export default class IncidentOpen extends Command {
     cli.action.start('Finding your PD domain')
     const domain = await this.pd.domain()
 
+    this.log('Incident URLs:')
+    const urlstrings: string[] = incident_ids.map(x => chalk.bold.blue(`https://${domain}.pagerduty.com/incidents/${x}`))
+    this.log(urlstrings.join('\n') + '\n')
+
     cli.action.start(`Opening ${incident_ids.length} incidents in the browser`)
+
     try {
       for (const incident_id of incident_ids) {
-        cli.open(`https://${domain}.pagerduty.com/incidents/${incident_id}`)
+        await cli.open(`https://${domain}.pagerduty.com/incidents/${incident_id}`)
       }
     } catch (error) {
+      cli.action.stop(chalk.bold.red('failed!'))
       this.error('Couldn\'t open your browser. Are you running as root?', {exit: 1})
     }
+
     cli.action.stop(chalk.bold.green('done'))
   }
 }
