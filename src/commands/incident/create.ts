@@ -92,9 +92,16 @@ export default class IncidentCreate extends Command {
     }
 
     if (flags.details) {
+      const details = flags.details.replace(/\\[nt]/g, x => {
+        switch (x) {
+          case "\\n": return "\n"
+          case "\\t": return "\t"
+          default: return x
+        }
+      })
       incident.incident.body = {
         type: 'incident_body',
-        details: flags.details,
+        details,
       }
     }
 
