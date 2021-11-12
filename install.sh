@@ -1,6 +1,9 @@
 #!/bin/bash
 {
     set -e
+
+    echoerr() { echo "$@" 1>&2; }
+
     printf "WARNING: This installation will overwrite /usr/local/lib/pd and /usr/local/bin/pd. Continue? (y/N) "
     read yn
     if [ "$yn" != 'y' ] && [ "$yn" != 'Y' ]; then
