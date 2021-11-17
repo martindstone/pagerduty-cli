@@ -22,6 +22,7 @@ export default abstract class Base extends AuthBase {
 
     this._config = new Config()
     if (flags.token) {
+      this._config.initEmpty()
       const domainConfig = await Config.configForToken(flags.token)
       this._config.put(domainConfig, true)
       this.token = flags.token
