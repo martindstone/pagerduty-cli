@@ -68,6 +68,7 @@ PagerDuty Command Line Interface
 * [`pd service:disable`](#pd-servicedisable)
 * [`pd service:enable`](#pd-serviceenable)
 * [`pd service:list`](#pd-servicelist)
+* [`pd service:open`](#pd-serviceopen)
 * [`pd service:set`](#pd-serviceset)
 * [`pd team:create`](#pd-teamcreate)
 * [`pd team:ep:add`](#pd-teamepadd)
@@ -139,10 +140,12 @@ OPTIONS
 
   --sort=sort                          property to sort by (prepend '-' for descending)
 
+  --token=token                        Ignore the saved configuration and use this token
+
   --until=until                        [default: now] The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/analytics/incident/index.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/analytics/incident/index.ts)_
+_See code: [src/commands/analytics/incident/index.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/analytics/incident/index.ts)_
 
 ## `pd analytics:incident:raw`
 
@@ -188,10 +191,12 @@ OPTIONS
 
   --sort=sort                property to sort by (prepend '-' for descending)
 
+  --token=token              Ignore the saved configuration and use this token
+
   --until=until              The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/analytics/incident/raw.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/analytics/incident/raw.ts)_
+_See code: [src/commands/analytics/incident/raw.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/analytics/incident/raw.ts)_
 
 ## `pd auth:add`
 
@@ -212,7 +217,7 @@ ALIASES
   $ pd auth:set
 ```
 
-_See code: [src/commands/auth/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/auth/add.ts)_
+_See code: [src/commands/auth/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/auth/add.ts)_
 
 ## `pd auth:delete`
 
@@ -228,7 +233,7 @@ OPTIONS
   --debug            Print REST API call debug logs
 ```
 
-_See code: [src/commands/auth/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/auth/delete.ts)_
+_See code: [src/commands/auth/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/auth/delete.ts)_
 
 ## `pd auth:get`
 
@@ -243,7 +248,7 @@ OPTIONS
   --debug     Print REST API call debug logs
 ```
 
-_See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/auth/get.ts)_
+_See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/auth/get.ts)_
 
 ## `pd auth:list`
 
@@ -258,7 +263,7 @@ OPTIONS
   --debug     Print REST API call debug logs
 ```
 
-_See code: [src/commands/auth/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/auth/list.ts)_
+_See code: [src/commands/auth/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/auth/list.ts)_
 
 ## `pd auth:use`
 
@@ -274,7 +279,7 @@ OPTIONS
   --debug            Print REST API call debug logs
 ```
 
-_See code: [src/commands/auth/use.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/auth/use.ts)_
+_See code: [src/commands/auth/use.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/auth/use.ts)_
 
 ## `pd auth:web`
 
@@ -294,7 +299,7 @@ ALIASES
   $ pd login
 ```
 
-_See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/auth/web.ts)_
+_See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/auth/web.ts)_
 
 ## `pd autocomplete [SHELL]`
 
@@ -360,9 +365,10 @@ OPTIONS
   -o, --open                     Open the new escalation policy in the browser
   -p, --pipe                     Print the new escalation policy ID only to stdout, for use with pipes.
   --debug                        Print REST API call debug logs
+  --token=token                  Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/ep/copy.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/ep/copy.ts)_
+_See code: [src/commands/ep/copy.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/ep/copy.ts)_
 
 ## `pd ep:create`
 
@@ -400,9 +406,11 @@ OPTIONS
   --debug                              Print REST API call debug logs
 
   --description=description            The description of the escalation policy
+
+  --token=token                        Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/ep/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/ep/create.ts)_
+_See code: [src/commands/ep/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/ep/create.ts)_
 
 ## `pd ep:level:add`
 
@@ -440,9 +448,11 @@ OPTIONS
   -u, --user_ids=user_ids              Add a target user with this ID. Specify multiple times for multiple targets.
 
   --debug                              Print REST API call debug logs
+
+  --token=token                        Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/ep/level/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/ep/level/add.ts)_
+_See code: [src/commands/ep/level/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/ep/level/add.ts)_
 
 ## `pd ep:level:remove`
 
@@ -465,9 +475,11 @@ OPTIONS
   -p, --pipe             Read escalation policy ID's from stdin.
 
   --debug                Print REST API call debug logs
+
+  --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/ep/level/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/ep/level/remove.ts)_
+_See code: [src/commands/ep/level/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/ep/level/remove.ts)_
 
 ## `pd ep:list`
 
@@ -510,9 +522,11 @@ OPTIONS
   --output=csv|json|yaml     output in a more machine friendly format
 
   --sort=sort                property to sort by (prepend '-' for descending)
+
+  --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/ep/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/ep/list.ts)_
+_See code: [src/commands/ep/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/ep/list.ts)_
 
 ## `pd ep:oncall`
 
@@ -539,10 +553,11 @@ OPTIONS
   --output=csv|json|yaml  output in a more machine friendly format
   --since=since           The start of the date range over which you want to search.
   --sort=sort             property to sort by (prepend '-' for descending)
+  --token=token           Ignore the saved configuration and use this token
   --until=until           The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/ep/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/ep/oncall.ts)_
+_See code: [src/commands/ep/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/ep/oncall.ts)_
 
 ## `pd ep:open`
 
@@ -559,9 +574,10 @@ OPTIONS
   -n, --name=name        Open escalation policies whose names match this string.
   -p, --pipe             Read escalation policy ID's from stdin.
   --debug                Print REST API call debug logs
+  --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/ep/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/ep/open.ts)_
+_See code: [src/commands/ep/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/ep/open.ts)_
 
 ## `pd ep:target:add`
 
@@ -594,9 +610,11 @@ OPTIONS
   -u, --user_ids=user_ids              Add a target user with this ID. Specify multiple times for multiple targets.
 
   --debug                              Print REST API call debug logs
+
+  --token=token                        Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/ep/target/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/ep/target/add.ts)_
+_See code: [src/commands/ep/target/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/ep/target/add.ts)_
 
 ## `pd ep:target:remove`
 
@@ -631,9 +649,11 @@ OPTIONS
   -u, --user_ids=user_ids              Remove a target user with this ID. Specify multiple times for multiple targets.
 
   --debug                              Print REST API call debug logs
+
+  --token=token                        Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/ep/target/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/ep/target/remove.ts)_
+_See code: [src/commands/ep/target/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/ep/target/remove.ts)_
 
 ## `pd help [COMMAND]`
 
@@ -673,11 +693,13 @@ OPTIONS
 
   --debug                Print REST API call debug logs
 
+  --token=token          Ignore the saved configuration and use this token
+
 ALIASES
   $ pd incident:acknowledge
 ```
 
-_See code: [src/commands/incident/ack.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/incident/ack.ts)_
+_See code: [src/commands/incident/ack.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/incident/ack.ts)_
 
 ## `pd incident:alerts`
 
@@ -722,9 +744,11 @@ OPTIONS
   --output=csv|json|yaml     output in a more machine friendly format
 
   --sort=sort                property to sort by (prepend '-' for descending)
+
+  --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/incident/alerts.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/incident/alerts.ts)_
+_See code: [src/commands/incident/alerts.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/incident/alerts.ts)_
 
 ## `pd incident:analytics`
 
@@ -750,9 +774,10 @@ OPTIONS
   --no-truncate           do not truncate output to fit screen
   --output=csv|json|yaml  output in a more machine friendly format
   --sort=sort             property to sort by (prepend '-' for descending)
+  --token=token           Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/incident/analytics.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/incident/analytics.ts)_
+_See code: [src/commands/incident/analytics.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/incident/analytics.ts)_
 
 ## `pd incident:assign`
 
@@ -789,11 +814,13 @@ OPTIONS
 
   --debug                                            Print REST API call debug logs
 
+  --token=token                                      Ignore the saved configuration and use this token
+
 ALIASES
   $ pd incident:reassign
 ```
 
-_See code: [src/commands/incident/assign.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/incident/assign.ts)_
+_See code: [src/commands/incident/assign.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/incident/assign.ts)_
 
 ## `pd incident:create`
 
@@ -837,10 +864,12 @@ OPTIONS
 
   --service_id=service_id                      The ID of the service to create the incident in
 
+  --token=token                                Ignore the saved configuration and use this token
+
   --user_id=user_id                            The ID of a user to assign the incident to
 ```
 
-_See code: [src/commands/incident/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/incident/create.ts)_
+_See code: [src/commands/incident/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/incident/create.ts)_
 
 ## `pd incident:list`
 
@@ -903,10 +932,12 @@ OPTIONS
 
   --sort=sort                                                 property to sort by (prepend '-' for descending)
 
+  --token=token                                               Ignore the saved configuration and use this token
+
   --until=until                                               The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/incident/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/incident/list.ts)_
+_See code: [src/commands/incident/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/incident/list.ts)_
 
 ## `pd incident:log`
 
@@ -950,9 +981,11 @@ OPTIONS
   --output=csv|json|yaml     output in a more machine friendly format
 
   --sort=sort                property to sort by (prepend '-' for descending)
+
+  --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/incident/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/incident/log.ts)_
+_See code: [src/commands/incident/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/incident/log.ts)_
 
 ## `pd incident:merge`
 
@@ -977,9 +1010,11 @@ OPTIONS
                              from the pipe will be the parent incident.
 
   --debug                    Print REST API call debug logs
+
+  --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/incident/merge.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/incident/merge.ts)_
+_See code: [src/commands/incident/merge.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/incident/merge.ts)_
 
 ## `pd incident:notes`
 
@@ -1004,9 +1039,10 @@ OPTIONS
   --no-truncate           do not truncate output to fit screen
   --output=csv|json|yaml  output in a more machine friendly format
   --sort=sort             property to sort by (prepend '-' for descending)
+  --token=token           Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/incident/notes.ts)_
+_See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/incident/notes.ts)_
 
 ## `pd incident:open`
 
@@ -1023,9 +1059,10 @@ OPTIONS
   -m, --me               Open all incidents assigned to me
   -p, --pipe             Read incident ID's from stdin.
   --debug                Print REST API call debug logs
+  --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/incident/open.ts)_
+_See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/incident/open.ts)_
 
 ## `pd incident:priority`
 
@@ -1044,9 +1081,10 @@ OPTIONS
   -n, --priority=priority  (required) The name of the priority to set.
   -p, --pipe               Read incident ID's from stdin.
   --debug                  Print REST API call debug logs
+  --token=token            Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/incident/priority.ts)_
+_See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/incident/priority.ts)_
 
 ## `pd incident:resolve`
 
@@ -1064,9 +1102,10 @@ OPTIONS
   -m, --me               Resolve all incidents assigned to me
   -p, --pipe             Read incident ID's from stdin.
   --debug                Print REST API call debug logs
+  --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/incident/resolve.ts)_
+_See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/incident/resolve.ts)_
 
 ## `pd log`
 
@@ -1109,10 +1148,12 @@ OPTIONS
 
   --sort=sort                property to sort by (prepend '-' for descending)
 
+  --token=token              Ignore the saved configuration and use this token
+
   --until=until              The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/log.ts)_
+_See code: [src/commands/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/log.ts)_
 
 ## `pd rest:delete`
 
@@ -1136,9 +1177,11 @@ OPTIONS
   -h, --help               show CLI help
 
   --debug                  Print REST API call debug logs
+
+  --token=token            Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/rest/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/rest/delete.ts)_
+_See code: [src/commands/rest/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/rest/delete.ts)_
 
 ## `pd rest:fetch`
 
@@ -1188,9 +1231,11 @@ OPTIONS
   --output=csv|json|yaml     output in a more machine friendly format
 
   --sort=sort                property to sort by (prepend '-' for descending)
+
+  --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/rest/fetch.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/rest/fetch.ts)_
+_See code: [src/commands/rest/fetch.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/rest/fetch.ts)_
 
 ## `pd rest:get`
 
@@ -1214,9 +1259,11 @@ OPTIONS
   -h, --help               show CLI help
 
   --debug                  Print REST API call debug logs
+
+  --token=token            Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/rest/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/rest/get.ts)_
+_See code: [src/commands/rest/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/rest/get.ts)_
 
 ## `pd rest:post`
 
@@ -1242,9 +1289,11 @@ OPTIONS
   -h, --help               show CLI help
 
   --debug                  Print REST API call debug logs
+
+  --token=token            Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/rest/post.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/rest/post.ts)_
+_See code: [src/commands/rest/post.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/rest/post.ts)_
 
 ## `pd rest:put`
 
@@ -1270,9 +1319,11 @@ OPTIONS
   -h, --help               show CLI help
 
   --debug                  Print REST API call debug logs
+
+  --token=token            Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/rest/put.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/rest/put.ts)_
+_See code: [src/commands/rest/put.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/rest/put.ts)_
 
 ## `pd schedule:copy`
 
@@ -1291,9 +1342,10 @@ OPTIONS
   -o, --open                     Open the new schedule in the browser
   -p, --pipe                     Print the new schedule ID only to stdout, for use with pipes.
   --debug                        Print REST API call debug logs
+  --token=token                  Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/schedule/copy.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/schedule/copy.ts)_
+_See code: [src/commands/schedule/copy.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/schedule/copy.ts)_
 
 ## `pd schedule:list`
 
@@ -1336,9 +1388,11 @@ OPTIONS
   --output=csv|json|yaml     output in a more machine friendly format
 
   --sort=sort                property to sort by (prepend '-' for descending)
+
+  --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/schedule/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/schedule/list.ts)_
+_See code: [src/commands/schedule/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/schedule/list.ts)_
 
 ## `pd schedule:oncall`
 
@@ -1365,10 +1419,11 @@ OPTIONS
   --output=csv|json|yaml  output in a more machine friendly format
   --since=since           The start of the date range over which you want to search.
   --sort=sort             property to sort by (prepend '-' for descending)
+  --token=token           Ignore the saved configuration and use this token
   --until=until           The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/schedule/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/schedule/oncall.ts)_
+_See code: [src/commands/schedule/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/schedule/oncall.ts)_
 
 ## `pd schedule:open`
 
@@ -1385,9 +1440,10 @@ OPTIONS
   -n, --name=name        Open schedules matching this string.
   -p, --pipe             Read schedule ID's from stdin.
   --debug                Print REST API call debug logs
+  --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/schedule/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/schedule/open.ts)_
+_See code: [src/commands/schedule/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/schedule/open.ts)_
 
 ## `pd schedule:override:add`
 
@@ -1407,9 +1463,10 @@ OPTIONS
   --debug                      Print REST API call debug logs
   --end=end                    [default: in 1 day] The end time for the override.
   --start=start                [default: now] The start time for the override.
+  --token=token                Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/schedule/override/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/schedule/override/add.ts)_
+_See code: [src/commands/schedule/override/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/schedule/override/add.ts)_
 
 ## `pd schedule:override:list`
 
@@ -1457,10 +1514,12 @@ OPTIONS
 
   --sort=sort                property to sort by (prepend '-' for descending)
 
+  --token=token              Ignore the saved configuration and use this token
+
   --until=until              [default: in 30 days] The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/schedule/override/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/schedule/override/list.ts)_
+_See code: [src/commands/schedule/override/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/schedule/override/list.ts)_
 
 ## `pd schedule:render`
 
@@ -1485,10 +1544,11 @@ OPTIONS
   --output=csv|json|yaml  output in a more machine friendly format
   --since=since           The start of the date range over which you want to search.
   --sort=sort             property to sort by (prepend '-' for descending)
+  --token=token           Ignore the saved configuration and use this token
   --until=until           The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/schedule/render.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/schedule/render.ts)_
+_See code: [src/commands/schedule/render.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/schedule/render.ts)_
 
 ## `pd schedule:show`
 
@@ -1505,10 +1565,11 @@ OPTIONS
   -n, --name=name        Show the schedule with this name.
   --debug                Print REST API call debug logs
   --since=since          The start of the date range over which you want to search.
+  --token=token          Ignore the saved configuration and use this token
   --until=until          The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/schedule/show.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/schedule/show.ts)_
+_See code: [src/commands/schedule/show.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/schedule/show.ts)_
 
 ## `pd service:create`
 
@@ -1572,9 +1633,11 @@ OPTIONS
   --create_alerts                                          Turn on alert support in the service (default: true)
 
   --debug                                                  Print REST API call debug logs
+
+  --token=token                                            Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/service/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/service/create.ts)_
+_See code: [src/commands/service/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/service/create.ts)_
 
 ## `pd service:disable`
 
@@ -1591,9 +1654,10 @@ OPTIONS
   -n, --name=name        Select services whose names contain the given text
   -p, --pipe             Read service ID's from stdin.
   --debug                Print REST API call debug logs
+  --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/service/disable.ts)_
+_See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/service/disable.ts)_
 
 ## `pd service:enable`
 
@@ -1610,9 +1674,10 @@ OPTIONS
   -n, --name=name        Select services whose names contain the given text
   -p, --pipe             Read service ID's from stdin.
   --debug                Print REST API call debug logs
+  --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/service/enable.ts)_
+_See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/service/enable.ts)_
 
 ## `pd service:list`
 
@@ -1657,9 +1722,31 @@ OPTIONS
   --output=csv|json|yaml     output in a more machine friendly format
 
   --sort=sort                property to sort by (prepend '-' for descending)
+
+  --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/service/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/service/list.ts)_
+_See code: [src/commands/service/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/service/list.ts)_
+
+## `pd service:open`
+
+Open PagerDuty Services in the browser
+
+```
+USAGE
+  $ pd service:open
+
+OPTIONS
+  -b, --useauth=useauth  Use the saved REST API token with this alias
+  -h, --help             show CLI help
+  -i, --ids=ids          The IDs of services to open.
+  -n, --name=name        Open services matching this string.
+  -p, --pipe             Read service ID's from stdin.
+  --debug                Print REST API call debug logs
+  --token=token          Ignore the saved configuration and use this token
+```
+
+_See code: [src/commands/service/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/service/open.ts)_
 
 ## `pd service:set`
 
@@ -1678,9 +1765,10 @@ OPTIONS
   -p, --pipe             Read service ID's from stdin.
   -v, --value=value      (required) Attribute value to set
   --debug                Print REST API call debug logs
+  --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/service/set.ts)_
+_See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/service/set.ts)_
 
 ## `pd team:create`
 
@@ -1700,9 +1788,10 @@ OPTIONS
   -p, --pipe                     Print the team ID only to stdout, for use with pipes.
   --debug                        Print REST API call debug logs
   --description=description      The description of the team
+  --token=token                  Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/team/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/team/create.ts)_
+_See code: [src/commands/team/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/team/create.ts)_
 
 ## `pd team:ep:add`
 
@@ -1728,9 +1817,11 @@ OPTIONS
   -n, --name=name          Select teams whose names contain the given text
 
   --debug                  Print REST API call debug logs
+
+  --token=token            Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/team/ep/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/team/ep/add.ts)_
+_See code: [src/commands/team/ep/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/team/ep/add.ts)_
 
 ## `pd team:ep:remove`
 
@@ -1756,9 +1847,11 @@ OPTIONS
   -n, --name=name          Select teams whose names contain the given text
 
   --debug                  Print REST API call debug logs
+
+  --token=token            Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/team/ep/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/team/ep/remove.ts)_
+_See code: [src/commands/team/ep/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/team/ep/remove.ts)_
 
 ## `pd team:list`
 
@@ -1801,9 +1894,11 @@ OPTIONS
   --output=csv|json|yaml     output in a more machine friendly format
 
   --sort=sort                property to sort by (prepend '-' for descending)
+
+  --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/team/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/team/list.ts)_
+_See code: [src/commands/team/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/team/list.ts)_
 
 ## `pd team:open`
 
@@ -1820,9 +1915,10 @@ OPTIONS
   -n, --name=name        Open teams matching this string.
   -p, --pipe             Read team ID's from stdin.
   --debug                Print REST API call debug logs
+  --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/team/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/team/open.ts)_
+_See code: [src/commands/team/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/team/open.ts)_
 
 ## `pd team:user:add`
 
@@ -1841,9 +1937,10 @@ OPTIONS
   -r, --role=manager|responder|observer  [default: manager] The role of the user(s) on the team(s)
   -u, --user_ids=user_ids                Add a user with this ID. Specify multiple times for multiple users.
   --debug                                Print REST API call debug logs
+  --token=token                          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/team/user/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/team/user/add.ts)_
+_See code: [src/commands/team/user/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/team/user/add.ts)_
 
 ## `pd team:user:list`
 
@@ -1888,9 +1985,11 @@ OPTIONS
   --output=csv|json|yaml     output in a more machine friendly format
 
   --sort=sort                property to sort by (prepend '-' for descending)
+
+  --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/team/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/team/user/list.ts)_
+_See code: [src/commands/team/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/team/user/list.ts)_
 
 ## `pd team:user:remove`
 
@@ -1908,9 +2007,10 @@ OPTIONS
   -n, --name=name                Select teams whose names contain the given text
   -u, --user_ids=user_ids        Remove a user with this ID. Specify multiple times for multiple users.
   --debug                        Print REST API call debug logs
+  --token=token                  Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/team/user/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/team/user/remove.ts)_
+_See code: [src/commands/team/user/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/team/user/remove.ts)_
 
 ## `pd update [CHANNEL]`
 
@@ -1943,9 +2043,10 @@ OPTIONS
   -i, --id=id                 Add contact to the user with this ID.
   -l, --label=label           (required) The contact method label.
   --debug                     Print REST API call debug logs
+  --token=token               Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/user/contact/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/user/contact/add.ts)_
+_See code: [src/commands/user/contact/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/user/contact/add.ts)_
 
 ## `pd user:contact:list`
 
@@ -1990,9 +2091,11 @@ OPTIONS
   --output=csv|json|yaml     output in a more machine friendly format
 
   --sort=sort                property to sort by (prepend '-' for descending)
+
+  --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/user/contact/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/user/contact/list.ts)_
+_See code: [src/commands/user/contact/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/user/contact/list.ts)_
 
 ## `pd user:contact:set`
 
@@ -2011,9 +2114,10 @@ OPTIONS
   -i, --id=id                  Update a contact for the user with this ID.
   -l, --label=label            The contact method label to set.
   --debug                      Print REST API call debug logs
+  --token=token                Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/user/contact/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/user/contact/set.ts)_
+_See code: [src/commands/user/contact/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/user/contact/set.ts)_
 
 ## `pd user:create`
 
@@ -2068,9 +2172,12 @@ OPTIONS
 
   --show_password
       Show the user's password when creating
+
+  --token=token
+      Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/user/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/user/create.ts)_
+_See code: [src/commands/user/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/user/create.ts)_
 
 ## `pd user:list`
 
@@ -2114,9 +2221,11 @@ OPTIONS
   --output=csv|json|yaml         output in a more machine friendly format
 
   --sort=sort                    property to sort by (prepend '-' for descending)
+
+  --token=token                  Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/user/list.ts)_
+_See code: [src/commands/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/user/list.ts)_
 
 ## `pd user:log`
 
@@ -2166,10 +2275,12 @@ OPTIONS
 
   --sort=sort                    property to sort by (prepend '-' for descending)
 
+  --token=token                  Ignore the saved configuration and use this token
+
   --until=until                  The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/user/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/user/log.ts)_
+_See code: [src/commands/user/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/user/log.ts)_
 
 ## `pd user:oncall`
 
@@ -2198,10 +2309,11 @@ OPTIONS
   --output=csv|json|yaml  output in a more machine friendly format
   --since=since           The start of the date range over which you want to search.
   --sort=sort             property to sort by (prepend '-' for descending)
+  --token=token           Ignore the saved configuration and use this token
   --until=until           The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/user/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/user/oncall.ts)_
+_See code: [src/commands/user/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/user/oncall.ts)_
 
 ## `pd user:replace`
 
@@ -2221,9 +2333,10 @@ OPTIONS
   -u, --user_id=user_id        The ID of the replacement user.
   --debug                      Print REST API call debug logs
   --force                      Extreme danger mode: do not prompt before updating
+  --token=token                Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/user/replace.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/user/replace.ts)_
+_See code: [src/commands/user/replace.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/user/replace.ts)_
 
 ## `pd user:session:list`
 
@@ -2252,10 +2365,11 @@ OPTIONS
   --output=csv|json|yaml  output in a more machine friendly format
   --since=since           The start of the date range over which you want to search.
   --sort=sort             property to sort by (prepend '-' for descending)
+  --token=token           Ignore the saved configuration and use this token
   --until=until           The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/user/session/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/user/session/list.ts)_
+_See code: [src/commands/user/session/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/user/session/list.ts)_
 
 ## `pd user:set`
 
@@ -2285,9 +2399,11 @@ OPTIONS
   -v, --value=value                (required) Attribute value to set
 
   --debug                          Print REST API call debug logs
+
+  --token=token                    Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/user/set.ts)_
+_See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/user/set.ts)_
 
 ## `pd util:timestamp [DATE]`
 
@@ -2304,7 +2420,8 @@ OPTIONS
   -b, --useauth=useauth  Use the saved REST API token with this alias
   -h, --help             show CLI help
   --debug                Print REST API call debug logs
+  --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/util/timestamp.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.77/src/commands/util/timestamp.ts)_
+_See code: [src/commands/util/timestamp.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.78/src/commands/util/timestamp.ts)_
 <!-- commandsstop -->
