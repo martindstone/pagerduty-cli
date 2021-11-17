@@ -19,7 +19,7 @@ export default class AuthUse extends Command {
     const {flags} = this.parse(AuthUse)
     const config = new Config()
     if (config.setDefaultAlias(flags.alias)) {
-      this.log(`You are logged in to ${chalk.bold.blue(config.getCurrentSubdomain())} as ${chalk.bold.blue(config.get()?.user?.email || 'nobody')} (alias: ${chalk.bold.blue(this._config.defaultAlias())})`)
+      this.log(`You are logged in to ${chalk.bold.blue(config.getCurrentSubdomain())} as ${chalk.bold.blue(config.get()?.user?.email || 'nobody')} (alias: ${chalk.bold.blue(config.defaultAlias())})`)
     } else {
       this.error('No such alias', {suggestions: ['pd auth:list'], exit: 1})
     }
