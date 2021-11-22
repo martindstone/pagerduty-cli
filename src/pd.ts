@@ -53,10 +53,9 @@ export class PD {
   }
 
   public static isNewBearerToken(token: string): boolean {
-    if (token && token.match(/^pd[\w]+\+[0-9a-fA-F-]+$/)) {
-      return true
-    }
-    return false
+    // disable oauth token validation for now, because the format has changed yet again
+    // TODO: figure out a better way to do this
+    return !(this.isLegacyToken(token) || this.isOldBearerToken(token))
   }
 
   public static isBearerToken(token: string): boolean {
