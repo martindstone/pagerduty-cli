@@ -35,6 +35,10 @@ export default class ServiceDisable extends Command {
     if (flags.pipe) {
       args = [...args, '-p']
     }
+    if (flags.useauth) {
+      args = [...args, '-b', flags.useauth]
+    }
+
     await ServiceSet.run(args)
   }
 }
