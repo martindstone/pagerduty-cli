@@ -53,7 +53,7 @@ export default class UserReplace extends Command {
     if (flags.force) {
       let countdown = 5
       while (countdown > -1) {
-        cli.action.start(`Warning: user:replace running in ${chalk.bold.red('extreme danger mode')}, starting in ${chalk.bold(String(countdown))}`)
+        cli.action.start(`Warning: user:replace running in ${chalk.bold.red('extreme danger mode')}, hit Ctrl-C to abort, starting in ${chalk.bold(String(countdown))}`)
         // eslint-disable-next-line no-await-in-loop
         await cli.wait(1000)
         countdown--
