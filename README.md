@@ -83,6 +83,7 @@ PagerDuty Command Line Interface
 * [`pd user:contact:list`](#pd-usercontactlist)
 * [`pd user:contact:set`](#pd-usercontactset)
 * [`pd user:create`](#pd-usercreate)
+* [`pd user:delete`](#pd-userdelete)
 * [`pd user:list`](#pd-userlist)
 * [`pd user:log`](#pd-userlog)
 * [`pd user:oncall`](#pd-useroncall)
@@ -145,7 +146,7 @@ OPTIONS
   --until=until                        [default: now] The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/analytics/incident/index.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/analytics/incident/index.ts)_
+_See code: [src/commands/analytics/incident/index.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/analytics/incident/index.ts)_
 
 ## `pd analytics:incident:raw`
 
@@ -196,7 +197,7 @@ OPTIONS
   --until=until              The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/analytics/incident/raw.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/analytics/incident/raw.ts)_
+_See code: [src/commands/analytics/incident/raw.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/analytics/incident/raw.ts)_
 
 ## `pd auth:add`
 
@@ -217,7 +218,7 @@ ALIASES
   $ pd auth:set
 ```
 
-_See code: [src/commands/auth/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/auth/add.ts)_
+_See code: [src/commands/auth/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/auth/add.ts)_
 
 ## `pd auth:delete`
 
@@ -233,7 +234,7 @@ OPTIONS
   --debug            Print REST API call debug logs
 ```
 
-_See code: [src/commands/auth/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/auth/delete.ts)_
+_See code: [src/commands/auth/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/auth/delete.ts)_
 
 ## `pd auth:get`
 
@@ -248,7 +249,7 @@ OPTIONS
   --debug     Print REST API call debug logs
 ```
 
-_See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/auth/get.ts)_
+_See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/auth/get.ts)_
 
 ## `pd auth:list`
 
@@ -263,7 +264,7 @@ OPTIONS
   --debug     Print REST API call debug logs
 ```
 
-_See code: [src/commands/auth/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/auth/list.ts)_
+_See code: [src/commands/auth/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/auth/list.ts)_
 
 ## `pd auth:use`
 
@@ -279,7 +280,7 @@ OPTIONS
   --debug            Print REST API call debug logs
 ```
 
-_See code: [src/commands/auth/use.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/auth/use.ts)_
+_See code: [src/commands/auth/use.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/auth/use.ts)_
 
 ## `pd auth:web`
 
@@ -299,7 +300,7 @@ ALIASES
   $ pd login
 ```
 
-_See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/auth/web.ts)_
+_See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/auth/web.ts)_
 
 ## `pd autocomplete [SHELL]`
 
@@ -368,7 +369,7 @@ OPTIONS
   --token=token                  Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/ep/copy.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/ep/copy.ts)_
+_See code: [src/commands/ep/copy.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/ep/copy.ts)_
 
 ## `pd ep:create`
 
@@ -410,7 +411,7 @@ OPTIONS
   --token=token                        Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/ep/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/ep/create.ts)_
+_See code: [src/commands/ep/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/ep/create.ts)_
 
 ## `pd ep:level:add`
 
@@ -452,7 +453,7 @@ OPTIONS
   --token=token                        Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/ep/level/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/ep/level/add.ts)_
+_See code: [src/commands/ep/level/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/ep/level/add.ts)_
 
 ## `pd ep:level:remove`
 
@@ -479,7 +480,7 @@ OPTIONS
   --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/ep/level/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/ep/level/remove.ts)_
+_See code: [src/commands/ep/level/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/ep/level/remove.ts)_
 
 ## `pd ep:list`
 
@@ -526,7 +527,7 @@ OPTIONS
   --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/ep/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/ep/list.ts)_
+_See code: [src/commands/ep/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/ep/list.ts)_
 
 ## `pd ep:oncall`
 
@@ -557,7 +558,7 @@ OPTIONS
   --until=until           The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/ep/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/ep/oncall.ts)_
+_See code: [src/commands/ep/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/ep/oncall.ts)_
 
 ## `pd ep:open`
 
@@ -577,7 +578,7 @@ OPTIONS
   --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/ep/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/ep/open.ts)_
+_See code: [src/commands/ep/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/ep/open.ts)_
 
 ## `pd ep:target:add`
 
@@ -614,7 +615,7 @@ OPTIONS
   --token=token                        Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/ep/target/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/ep/target/add.ts)_
+_See code: [src/commands/ep/target/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/ep/target/add.ts)_
 
 ## `pd ep:target:remove`
 
@@ -653,7 +654,7 @@ OPTIONS
   --token=token                        Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/ep/target/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/ep/target/remove.ts)_
+_See code: [src/commands/ep/target/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/ep/target/remove.ts)_
 
 ## `pd help [COMMAND]`
 
@@ -699,7 +700,7 @@ ALIASES
   $ pd incident:acknowledge
 ```
 
-_See code: [src/commands/incident/ack.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/incident/ack.ts)_
+_See code: [src/commands/incident/ack.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/incident/ack.ts)_
 
 ## `pd incident:alerts`
 
@@ -748,7 +749,7 @@ OPTIONS
   --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/incident/alerts.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/incident/alerts.ts)_
+_See code: [src/commands/incident/alerts.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/incident/alerts.ts)_
 
 ## `pd incident:analytics`
 
@@ -777,7 +778,7 @@ OPTIONS
   --token=token           Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/incident/analytics.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/incident/analytics.ts)_
+_See code: [src/commands/incident/analytics.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/incident/analytics.ts)_
 
 ## `pd incident:assign`
 
@@ -820,7 +821,7 @@ ALIASES
   $ pd incident:reassign
 ```
 
-_See code: [src/commands/incident/assign.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/incident/assign.ts)_
+_See code: [src/commands/incident/assign.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/incident/assign.ts)_
 
 ## `pd incident:create`
 
@@ -869,7 +870,7 @@ OPTIONS
   --user_id=user_id                            The ID of a user to assign the incident to
 ```
 
-_See code: [src/commands/incident/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/incident/create.ts)_
+_See code: [src/commands/incident/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/incident/create.ts)_
 
 ## `pd incident:list`
 
@@ -937,7 +938,7 @@ OPTIONS
   --until=until                                               The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/incident/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/incident/list.ts)_
+_See code: [src/commands/incident/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/incident/list.ts)_
 
 ## `pd incident:log`
 
@@ -985,7 +986,7 @@ OPTIONS
   --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/incident/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/incident/log.ts)_
+_See code: [src/commands/incident/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/incident/log.ts)_
 
 ## `pd incident:merge`
 
@@ -1014,7 +1015,7 @@ OPTIONS
   --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/incident/merge.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/incident/merge.ts)_
+_See code: [src/commands/incident/merge.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/incident/merge.ts)_
 
 ## `pd incident:notes`
 
@@ -1042,7 +1043,7 @@ OPTIONS
   --token=token           Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/incident/notes.ts)_
+_See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/incident/notes.ts)_
 
 ## `pd incident:open`
 
@@ -1062,7 +1063,7 @@ OPTIONS
   --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/incident/open.ts)_
+_See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/incident/open.ts)_
 
 ## `pd incident:priority`
 
@@ -1084,7 +1085,7 @@ OPTIONS
   --token=token            Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/incident/priority.ts)_
+_See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/incident/priority.ts)_
 
 ## `pd incident:resolve`
 
@@ -1105,7 +1106,7 @@ OPTIONS
   --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/incident/resolve.ts)_
+_See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/incident/resolve.ts)_
 
 ## `pd log`
 
@@ -1153,7 +1154,7 @@ OPTIONS
   --until=until              The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/log.ts)_
+_See code: [src/commands/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/log.ts)_
 
 ## `pd rest:delete`
 
@@ -1181,7 +1182,7 @@ OPTIONS
   --token=token            Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/rest/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/rest/delete.ts)_
+_See code: [src/commands/rest/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/rest/delete.ts)_
 
 ## `pd rest:fetch`
 
@@ -1235,7 +1236,7 @@ OPTIONS
   --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/rest/fetch.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/rest/fetch.ts)_
+_See code: [src/commands/rest/fetch.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/rest/fetch.ts)_
 
 ## `pd rest:get`
 
@@ -1263,7 +1264,7 @@ OPTIONS
   --token=token            Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/rest/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/rest/get.ts)_
+_See code: [src/commands/rest/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/rest/get.ts)_
 
 ## `pd rest:post`
 
@@ -1293,7 +1294,7 @@ OPTIONS
   --token=token            Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/rest/post.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/rest/post.ts)_
+_See code: [src/commands/rest/post.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/rest/post.ts)_
 
 ## `pd rest:put`
 
@@ -1323,7 +1324,7 @@ OPTIONS
   --token=token            Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/rest/put.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/rest/put.ts)_
+_See code: [src/commands/rest/put.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/rest/put.ts)_
 
 ## `pd schedule:copy`
 
@@ -1345,7 +1346,7 @@ OPTIONS
   --token=token                  Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/schedule/copy.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/schedule/copy.ts)_
+_See code: [src/commands/schedule/copy.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/schedule/copy.ts)_
 
 ## `pd schedule:list`
 
@@ -1392,7 +1393,7 @@ OPTIONS
   --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/schedule/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/schedule/list.ts)_
+_See code: [src/commands/schedule/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/schedule/list.ts)_
 
 ## `pd schedule:oncall`
 
@@ -1423,7 +1424,7 @@ OPTIONS
   --until=until           The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/schedule/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/schedule/oncall.ts)_
+_See code: [src/commands/schedule/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/schedule/oncall.ts)_
 
 ## `pd schedule:open`
 
@@ -1443,7 +1444,7 @@ OPTIONS
   --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/schedule/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/schedule/open.ts)_
+_See code: [src/commands/schedule/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/schedule/open.ts)_
 
 ## `pd schedule:override:add`
 
@@ -1466,7 +1467,7 @@ OPTIONS
   --token=token                Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/schedule/override/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/schedule/override/add.ts)_
+_See code: [src/commands/schedule/override/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/schedule/override/add.ts)_
 
 ## `pd schedule:override:list`
 
@@ -1519,7 +1520,7 @@ OPTIONS
   --until=until              [default: in 30 days] The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/schedule/override/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/schedule/override/list.ts)_
+_See code: [src/commands/schedule/override/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/schedule/override/list.ts)_
 
 ## `pd schedule:render`
 
@@ -1548,7 +1549,7 @@ OPTIONS
   --until=until           The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/schedule/render.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/schedule/render.ts)_
+_See code: [src/commands/schedule/render.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/schedule/render.ts)_
 
 ## `pd schedule:show`
 
@@ -1569,7 +1570,7 @@ OPTIONS
   --until=until          The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/schedule/show.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/schedule/show.ts)_
+_See code: [src/commands/schedule/show.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/schedule/show.ts)_
 
 ## `pd service:create`
 
@@ -1637,7 +1638,7 @@ OPTIONS
   --token=token                                            Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/service/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/service/create.ts)_
+_See code: [src/commands/service/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/service/create.ts)_
 
 ## `pd service:disable`
 
@@ -1657,7 +1658,7 @@ OPTIONS
   --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/service/disable.ts)_
+_See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/service/disable.ts)_
 
 ## `pd service:enable`
 
@@ -1677,7 +1678,7 @@ OPTIONS
   --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/service/enable.ts)_
+_See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/service/enable.ts)_
 
 ## `pd service:list`
 
@@ -1726,7 +1727,7 @@ OPTIONS
   --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/service/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/service/list.ts)_
+_See code: [src/commands/service/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/service/list.ts)_
 
 ## `pd service:open`
 
@@ -1746,7 +1747,7 @@ OPTIONS
   --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/service/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/service/open.ts)_
+_See code: [src/commands/service/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/service/open.ts)_
 
 ## `pd service:set`
 
@@ -1768,7 +1769,7 @@ OPTIONS
   --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/service/set.ts)_
+_See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/service/set.ts)_
 
 ## `pd team:create`
 
@@ -1791,7 +1792,7 @@ OPTIONS
   --token=token                  Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/team/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/team/create.ts)_
+_See code: [src/commands/team/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/team/create.ts)_
 
 ## `pd team:ep:add`
 
@@ -1821,7 +1822,7 @@ OPTIONS
   --token=token            Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/team/ep/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/team/ep/add.ts)_
+_See code: [src/commands/team/ep/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/team/ep/add.ts)_
 
 ## `pd team:ep:remove`
 
@@ -1851,7 +1852,7 @@ OPTIONS
   --token=token            Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/team/ep/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/team/ep/remove.ts)_
+_See code: [src/commands/team/ep/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/team/ep/remove.ts)_
 
 ## `pd team:list`
 
@@ -1898,7 +1899,7 @@ OPTIONS
   --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/team/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/team/list.ts)_
+_See code: [src/commands/team/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/team/list.ts)_
 
 ## `pd team:open`
 
@@ -1918,7 +1919,7 @@ OPTIONS
   --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/team/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/team/open.ts)_
+_See code: [src/commands/team/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/team/open.ts)_
 
 ## `pd team:user:add`
 
@@ -1940,7 +1941,7 @@ OPTIONS
   --token=token                          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/team/user/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/team/user/add.ts)_
+_See code: [src/commands/team/user/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/team/user/add.ts)_
 
 ## `pd team:user:list`
 
@@ -1989,7 +1990,7 @@ OPTIONS
   --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/team/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/team/user/list.ts)_
+_See code: [src/commands/team/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/team/user/list.ts)_
 
 ## `pd team:user:remove`
 
@@ -2010,7 +2011,7 @@ OPTIONS
   --token=token                  Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/team/user/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/team/user/remove.ts)_
+_See code: [src/commands/team/user/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/team/user/remove.ts)_
 
 ## `pd update [CHANNEL]`
 
@@ -2046,7 +2047,7 @@ OPTIONS
   --token=token               Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/user/contact/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/user/contact/add.ts)_
+_See code: [src/commands/user/contact/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/user/contact/add.ts)_
 
 ## `pd user:contact:list`
 
@@ -2095,7 +2096,7 @@ OPTIONS
   --token=token              Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/user/contact/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/user/contact/list.ts)_
+_See code: [src/commands/user/contact/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/user/contact/list.ts)_
 
 ## `pd user:contact:set`
 
@@ -2117,7 +2118,7 @@ OPTIONS
   --token=token                Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/user/contact/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/user/contact/set.ts)_
+_See code: [src/commands/user/contact/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/user/contact/set.ts)_
 
 ## `pd user:create`
 
@@ -2177,7 +2178,39 @@ OPTIONS
       Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/user/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/user/create.ts)_
+_See code: [src/commands/user/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/user/create.ts)_
+
+## `pd user:delete`
+
+[1mDangerous[22m - Delete PagerDuty Users
+
+```
+USAGE
+  $ pd user:delete
+
+OPTIONS
+  -E, --exact_emails=exact_emails  Select a user whose login email is this exact text.  Specify multiple times for
+                                   multiple emails.
+
+  -b, --useauth=useauth            Use the saved REST API token with this alias
+
+  -e, --emails=emails              Select users whose emails contain the given text. Specify multiple times for multiple
+                                   emails.
+
+  -h, --help                       show CLI help
+
+  -i, --ids=ids                    Select users with the given ID. Specify multiple times for multiple users.
+
+  -p, --pipe                       Read user ID's from stdin.
+
+  --debug                          Print REST API call debug logs
+
+  --force                          Extreme danger mode: do not prompt before deleting
+
+  --token=token                    Ignore the saved configuration and use this token
+```
+
+_See code: [src/commands/user/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/user/delete.ts)_
 
 ## `pd user:list`
 
@@ -2225,7 +2258,7 @@ OPTIONS
   --token=token                  Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/user/list.ts)_
+_See code: [src/commands/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/user/list.ts)_
 
 ## `pd user:log`
 
@@ -2280,7 +2313,7 @@ OPTIONS
   --until=until                  The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/user/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/user/log.ts)_
+_See code: [src/commands/user/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/user/log.ts)_
 
 ## `pd user:oncall`
 
@@ -2313,7 +2346,7 @@ OPTIONS
   --until=until           The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/user/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/user/oncall.ts)_
+_See code: [src/commands/user/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/user/oncall.ts)_
 
 ## `pd user:replace`
 
@@ -2336,7 +2369,7 @@ OPTIONS
   --token=token                Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/user/replace.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/user/replace.ts)_
+_See code: [src/commands/user/replace.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/user/replace.ts)_
 
 ## `pd user:session:list`
 
@@ -2369,7 +2402,7 @@ OPTIONS
   --until=until           The end of the date range over which you want to search.
 ```
 
-_See code: [src/commands/user/session/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/user/session/list.ts)_
+_See code: [src/commands/user/session/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/user/session/list.ts)_
 
 ## `pd user:set`
 
@@ -2403,7 +2436,7 @@ OPTIONS
   --token=token                    Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/user/set.ts)_
+_See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/user/set.ts)_
 
 ## `pd util:timestamp [DATE]`
 
@@ -2423,5 +2456,5 @@ OPTIONS
   --token=token          Ignore the saved configuration and use this token
 ```
 
-_See code: [src/commands/util/timestamp.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.81/src/commands/util/timestamp.ts)_
+_See code: [src/commands/util/timestamp.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.82/src/commands/util/timestamp.ts)_
 <!-- commandsstop -->
