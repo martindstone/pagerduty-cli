@@ -64,7 +64,7 @@
   else
     wget -O- "\$URL" | tar "\$TAR_ARGS"
   fi
-  # delete old heroku bin if exists
+  # delete old pd bin if exists
   rm -f \$(command -v pd) || true
   rm -f /usr/local/bin/pd
   ln -s /usr/local/lib/pd/bin/pd /usr/local/bin/pd
