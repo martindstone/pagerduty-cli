@@ -2182,7 +2182,7 @@ _See code: [src/commands/user/create.ts](https://github.com/martindstone/pagerdu
 
 ## `pd user:delete`
 
-[1mDangerous[22m - Delete PagerDuty Users
+Dangerous - Delete PagerDuty Users
 
 ```
 USAGE

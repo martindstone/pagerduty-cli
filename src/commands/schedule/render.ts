@@ -3,6 +3,7 @@ import {flags} from '@oclif/command'
 import cli from 'cli-ux'
 import chalk from 'chalk'
 import * as utils from '../../utils'
+import jp from 'jsonpath'
 import * as chrono from 'chrono-node'
 
 export default class ScheduleRender extends Command {
@@ -25,6 +26,21 @@ export default class ScheduleRender extends Command {
     }),
     until: flags.string({
       description: 'The end of the date range over which you want to search.',
+    }),
+    keys: flags.string({
+      char: 'k',
+      description: 'Additional fields to display. Specify multiple times for multiple fields.',
+      multiple: true,
+    }),
+    json: flags.boolean({
+      char: 'j',
+      description: 'output full details as JSON',
+      exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
+    }),
+    delimiter: flags.string({
+      char: 'd',
+      description: 'Delimiter for fields that have more than one value',
+      default: '\n',
     }),
     ...cli.table.flags(),
   }
@@ -78,6 +94,10 @@ export default class ScheduleRender extends Command {
       ...flags, // parsed flags
     }
 
+    if (flags.json) {
+      await utils.printJsonAndExit(schedule.final_schedule.rendered_schedule_entries)
+    }
+
     const columns: Record<string, object> = {
       start: {
         get: (row: any) => row.start ? (new Date(row.start)).toLocaleString() : '',
@@ -94,6 +114,15 @@ export default class ScheduleRender extends Command {
       user_name: {
         get: (row: any) => row.user.summary,
       },
+    }
+
+    if (flags.keys) {
+      for (const key of flags.keys) {
+        columns[key] = {
+          header: key,
+          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
+        }
+      }
     }
 
     cli.table(schedule.final_schedule.rendered_schedule_entries, columns, options)

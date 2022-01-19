@@ -6,7 +6,7 @@ import getStream from 'get-stream'
 import * as utils from '../../utils'
 
 export default class UserDelete extends Command {
-  static description = `${chalk.bold('Dangerous')} - Delete PagerDuty Users`
+  static description = `Dangerous - Delete PagerDuty Users`
 
   static flags = {
     ...Command.flags,
