@@ -1,13 +1,13 @@
 /* eslint-disable complexity */
 import Command from '../../base'
 import {flags} from '@oclif/command'
-
-import IncidentSet from './set'
+import chalk from 'chalk'
+import cli from 'cli-ux'
+import getStream from 'get-stream'
+import * as utils from '../../utils'
 
 export default class IncidentRename extends Command {
-  static description = 'Update PagerDuty Incidents'
-
-  static aliases = ['incident:update']
+  static description = 'Rename (change the title of) PagerDuty Incidents'
 
   static flags = {
     ...Command.flags,
@@ -25,7 +25,11 @@ export default class IncidentRename extends Command {
     title: flags.string({
       char: 't',
       description: 'Set the incident title to this string',
-      required: true,
+      exclusive: ['prefix'],
+    }),
+    prefix: flags.string({
+      description: 'Prefix the incident title with this string',
+      exclusive: ['title'],
     }),
     from: flags.string({
       char: 'F',
@@ -42,31 +46,90 @@ export default class IncidentRename extends Command {
 
     const {flags} = this.parse(IncidentRename)
 
-    let title = flags.title
+    if (!(flags.title || flags.prefix)) {
+      this.error('You must specify --title or --prefix')
+    }
 
-    let args = ['-k', 'title', '-v', title]
-    if (flags.me) {
-      args = [...args, '-m']
-    }
-    if (flags.ids) {
-      args = [...args, ...flags.ids.map(e => ['-i', e]).flat()]
-    }
+    const headers: Record<string, string> = {}
     if (flags.from) {
-      args = [...args, '-F', flags.from]
-    }
-    if (flags.pipe) {
-      args = [...args, '-p']
-    }
-    if (flags.useauth) {
-      args = [...args, '-b', flags.useauth]
-    }
-    if (flags.debug) {
-      args = [...args, '--debug']
-    }
-    if (flags.token) {
-      args = [...args, '--token', flags.token]
+      headers.From = flags.from
     }
 
-    await IncidentSet.run(args)
+    let incident_ids: string[] = []
+    let incidents: any[] = []
+
+    if (flags.me) {
+      const me = await this.me(true)
+      const params = {user_ids: [me.user.id]}
+      cli.action.start('Getting incidents from PD')
+      incidents = await this.pd.fetch('incidents', {params: params})
+
+      if (incidents.length === 0) {
+        cli.action.stop(chalk.bold.red('none found'))
+        this.exit(1)
+      }
+      incident_ids = incidents.map((e: { id: any }) => e.id)
+    } else if (flags.ids) {
+      incident_ids = utils.splitDedupAndFlatten(flags.ids)
+    } else if (flags.pipe) {
+      const str: string = await getStream(process.stdin)
+      incident_ids = utils.splitDedupAndFlatten([str])
+    } else {
+      this.error('You must specify one of: -i, -m, -p', {exit: 1})
+    }
+
+    if (flags.prefix && (flags.ids || flags.pipe)) {
+      const requests: any[] = []
+      for (const incident_id of incident_ids) {
+        requests.push({
+          endpoint: `incidents/${incident_id}`,
+          method: 'GET',
+        })
+      }
+      const r = await this.pd.batchedRequestWithSpinner(requests, {activityDescription: `Getting incidents`})
+      const fetched_incidents = r.getDatas()
+      for (const fetched_incident of fetched_incidents) {
+        incidents = [...incidents, fetched_incident.incident]
+      }
+    }
+    const incident_titles: Record<string, any> = {}
+    if (flags.prefix) {
+      for (const incident of incidents) {
+        incident_titles[incident.id] = incident.title
+      }
+    }
+
+    let invalid_ids = utils.invalidPagerDutyIDs(incident_ids)
+    if (invalid_ids && invalid_ids.length > 0) {
+      this.error(`Invalid incident ID's: ${invalid_ids.join(', ')}`, {exit: 1})
+    }
+
+    const requests: any[] = []
+    for (const incident_id of incident_ids) {
+      let title: string
+      if (flags.prefix) {
+        title = `${flags.prefix}${incident_titles[incident_id]}`
+      } else {
+        title = flags.title as string
+      }
+      requests.push({
+        endpoint: `/incidents/${incident_id}`,
+        method: 'PUT',
+        params: {},
+        data: {
+          incident: {
+            type: 'incident_reference',
+            title
+          }
+        },
+        headers: headers,
+      })
+    }
+
+    const r = await this.pd.batchedRequestWithSpinner(requests, {activityDescription: `Renaming incidents`})
+    for (const failure of r.getFailedIndices()) {
+      // eslint-disable-next-line no-console
+      console.error(`${chalk.bold.red('Failed to update incident ')}${chalk.bold.blue(requests[failure].data.incident.id)}: ${r.results[failure].getFormattedError()}`)
+    }
   }
 }
