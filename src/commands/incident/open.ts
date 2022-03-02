@@ -1,7 +1,6 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
-import cli from 'cli-ux'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 
@@ -10,18 +9,18 @@ export default class IncidentOpen extends Command {
 
   static flags = {
     ...Command.flags,
-    me: flags.boolean({
+    me: Flags.boolean({
       char: 'm',
       description: 'Open all incidents assigned to me',
       exclusive: ['ids'],
     }),
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'Incident ID\'s to open. Specify multiple times for multiple incidents.',
       multiple: true,
       exclusive: ['me'],
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read incident ID\'s from stdin.',
       exclusive: ['me', 'ids'],
@@ -29,7 +28,7 @@ export default class IncidentOpen extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(IncidentOpen)
+    const {flags} = await this.parse(IncidentOpen)
 
     let incident_ids = []
 
@@ -52,24 +51,24 @@ export default class IncidentOpen extends Command {
       this.error('You must specify one of: -i, -m, -p', {exit: 1})
     }
 
-    cli.action.start('Finding your PD domain')
+    CliUx.ux.action.start('Finding your PD domain')
     const domain = await this.pd.domain()
 
     this.log('Incident URLs:')
     const urlstrings: string[] = incident_ids.map(x => chalk.bold.blue(`https://${domain}.pagerduty.com/incidents/${x}`))
     this.log(urlstrings.join('\n') + '\n')
 
-    cli.action.start(`Opening ${incident_ids.length} incidents in the browser`)
+    CliUx.ux.action.start(`Opening ${incident_ids.length} incidents in the browser`)
 
     try {
       for (const incident_id of incident_ids) {
-        await cli.open(`https://${domain}.pagerduty.com/incidents/${incident_id}`)
+        await CliUx.ux.open(`https://${domain}.pagerduty.com/incidents/${incident_id}`)
       }
     } catch (error) {
-      cli.action.stop(chalk.bold.red('failed!'))
+      CliUx.ux.action.stop(chalk.bold.red('failed!'))
       this.error('Couldn\'t open your browser. Are you running as root?', {exit: 1})
     }
 
-    cli.action.stop(chalk.bold.green('done'))
+    CliUx.ux.action.stop(chalk.bold.green('done'))
   }
 }

@@ -1,6 +1,5 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
@@ -10,32 +9,32 @@ export default class IncidentAnalytics extends Command {
 
   static flags = {
     ...Command.flags,
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'Incident ID\'s to look at. Specify multiple times for multiple incidents.',
       multiple: true,
       exclusive: ['pipe'],
     }),
-    keys: flags.string({
+    keys: Flags.string({
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
       multiple: true,
     }),
-    json: flags.boolean({
+    json: Flags.boolean({
       char: 'j',
       description: 'output full details as JSON',
       exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read incident ID\'s from stdin.',
       exclusive: ['ids'],
     }),
-    ...cli.table.flags(),
+    ...CliUx.ux.table.flags(),
   }
 
   async run() {
-    const {flags} = this.parse(IncidentAnalytics)
+    const {flags} = await this.parse(IncidentAnalytics)
 
     let incident_ids: string[] = []
     if (flags.ids) {
@@ -112,9 +111,8 @@ export default class IncidentAnalytics extends Command {
     }
 
     const options = {
-      printLine: this.log,
       ...flags, // parsed flags
     }
-    cli.table(analytics, columns, options)
+    CliUx.ux.table(analytics, columns, options)
   }
 }

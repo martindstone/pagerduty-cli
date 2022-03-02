@@ -95,6 +95,7 @@ PagerDuty Command Line Interface
 * [`pd user:set`](#pd-userset)
 * [`pd util:deleteresource`](#pd-utildeleteresource)
 * [`pd util:timestamp [DATE]`](#pd-utiltimestamp-date)
+* [`pd version`](#pd-version)
 
 ## `pd analytics:incident`
 
@@ -115,7 +116,7 @@ OPTIONS
   -g, --aggregate_unit=day|week|month  The time unit to aggregate metrics by. If no value is provided, the metrics will
                                        be aggregated for the entire period.
 
-  -h, --help                           show CLI help
+  -h, --help                           Show CLI help.
 
   -j, --json                           output full details as JSON
 
@@ -168,7 +169,7 @@ OPTIONS
   -d, --delimiter=delimiter  [default:
                              ] Delimiter for fields that have more than one value
 
-  -h, --help                 show CLI help
+  -h, --help                 Show CLI help.
 
   -j, --json                 output full details as JSON
 
@@ -214,7 +215,7 @@ USAGE
 OPTIONS
   -a, --alias=alias   The alias to use for this token. Defaults to the name of the PD subdomain
   -d, --[no-]default  Use this token as the default for all PD commands
-  -h, --help          show CLI help
+  -h, --help          Show CLI help.
   -t, --token=token   A PagerDuty API token
   --debug             Print REST API call debug logs
 
@@ -234,7 +235,7 @@ USAGE
 
 OPTIONS
   -a, --alias=alias  (required) The alias of the PD domain authentication to delete
-  -h, --help         show CLI help
+  -h, --help         Show CLI help.
   --debug            Print REST API call debug logs
 ```
 
@@ -249,7 +250,7 @@ USAGE
   $ pd auth:get
 
 OPTIONS
-  -h, --help  show CLI help
+  -h, --help  Show CLI help.
   --debug     Print REST API call debug logs
 ```
 
@@ -264,7 +265,7 @@ USAGE
   $ pd auth:list
 
 OPTIONS
-  -h, --help  show CLI help
+  -h, --help  Show CLI help.
   --debug     Print REST API call debug logs
 ```
 
@@ -280,7 +281,7 @@ USAGE
 
 OPTIONS
   -a, --alias=alias  (required) The alias of the PD domain to use
-  -h, --help         show CLI help
+  -h, --help         Show CLI help.
   --debug            Print REST API call debug logs
 ```
 
@@ -297,7 +298,7 @@ USAGE
 OPTIONS
   -a, --alias=alias   The alias to use for this token. Defaults to the name of the PD subdomain
   -d, --[no-]default  Use this token as the default for all PD commands
-  -h, --help          show CLI help
+  -h, --help          Show CLI help.
   --debug             Print REST API call debug logs
 
 ALIASES
@@ -327,7 +328,7 @@ EXAMPLES
   $ pd autocomplete --refresh-cache
 ```
 
-_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v0.3.0/src/commands/autocomplete/index.ts)_
+_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v1.2.0/src/commands/autocomplete/index.ts)_
 
 ## `pd commands`
 
@@ -338,20 +339,20 @@ USAGE
   $ pd commands
 
 OPTIONS
-  -h, --help              show CLI help
-  -j, --json              display unfiltered api data in json format
+  -h, --help              Show CLI help.
   -x, --extended          show extra columns
   --columns=columns       only show provided columns (comma-separated)
   --csv                   output is csv format [alias: --output=csv]
   --filter=filter         filter property by partial string matching, ex: name=foo
   --hidden                show hidden commands
+  --json                  Format output as json.
   --no-header             hide table header from output
   --no-truncate           do not truncate output to fit screen
   --output=csv|json|yaml  output in a more machine friendly format
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
-_See code: [@oclif/plugin-commands](https://github.com/oclif/plugin-commands/blob/v1.3.0/src/commands/commands.ts)_
+_See code: [@oclif/plugin-commands](https://github.com/oclif/plugin-commands/blob/v2.1.0/src/commands/commands.ts)_
 
 ## `pd ep:copy`
 
@@ -364,7 +365,7 @@ USAGE
 OPTIONS
   -b, --useauth=useauth          Use the saved REST API token with this alias
   -d, --destination=destination  The name for the new escalation policy
-  -h, --help                     show CLI help
+  -h, --help                     Show CLI help.
   -i, --id=id                    The ID of the escalation policy to copy.
   -n, --name=name                The name of the escalation policy to copy.
   -o, --open                     Open the new escalation policy in the browser
@@ -394,7 +395,7 @@ OPTIONS
   -d, --delay=delay                    [default: 30] Delay in minutes before unacknowledged incidents escalate away from
                                        this level
 
-  -h, --help                           show CLI help
+  -h, --help                           Show CLI help.
 
   -n, --name=name                      (required) The name of the escalation policy to add.
 
@@ -436,7 +437,7 @@ OPTIONS
   -d, --delay=delay                    [default: 30] Delay in minutes before unacknowledged incidents escalate away from
                                        this level
 
-  -h, --help                           show CLI help
+  -h, --help                           Show CLI help.
 
   -i, --ids=ids                        The IDs of escalation policies to update.
 
@@ -469,7 +470,7 @@ USAGE
 
 OPTIONS
   -b, --useauth=useauth  Use the saved REST API token with this alias
-  -h, --help             show CLI help
+  -h, --help             Show CLI help.
   -i, --ids=ids          The IDs of escalation policies to update.
 
   -l, --level=level      (required) Escalation policy level to remove (the lowest level is 1; any existing levels above
@@ -500,7 +501,7 @@ OPTIONS
   -d, --delimiter=delimiter  [default:
                              ] Delimiter for fields that have more than one value
 
-  -h, --help                 show CLI help
+  -h, --help                 Show CLI help.
 
   -j, --json                 output full details as JSON
 
@@ -543,7 +544,7 @@ USAGE
 
 OPTIONS
   -b, --useauth=useauth   Use the saved REST API token with this alias
-  -h, --help              show CLI help
+  -h, --help              Show CLI help.
   -i, --id=id             Show oncalls for the EP with this ID.
   -j, --json              output full details as JSON
   -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
@@ -574,7 +575,7 @@ USAGE
 
 OPTIONS
   -b, --useauth=useauth  Use the saved REST API token with this alias
-  -h, --help             show CLI help
+  -h, --help             Show CLI help.
   -i, --ids=ids          The IDs of escalation policies to open.
   -n, --name=name        Open escalation policies whose names match this string.
   -p, --pipe             Read escalation policy ID's from stdin.
@@ -600,7 +601,7 @@ OPTIONS
 
   -b, --useauth=useauth                Use the saved REST API token with this alias
 
-  -h, --help                           show CLI help
+  -h, --help                           Show CLI help.
 
   -i, --ids=ids                        The IDs of escalation policies to update.
 
@@ -638,7 +639,7 @@ OPTIONS
 
   -b, --useauth=useauth                Use the saved REST API token with this alias
 
-  -h, --help                           show CLI help
+  -h, --help                           Show CLI help.
 
   -i, --ids=ids                        The IDs of escalation policies to update.
 
@@ -662,20 +663,20 @@ _See code: [src/commands/ep/target/remove.ts](https://github.com/martindstone/pa
 
 ## `pd help [COMMAND]`
 
-display help for pd
+Display help for pd.
 
 ```
 USAGE
   $ pd help [COMMAND]
 
 ARGUMENTS
-  COMMAND  command to show help for
+  COMMAND  Command to show help for.
 
 OPTIONS
-  --all  see all commands in CLI
+  -n, --nested-commands  Include all nested commands in the output.
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.3/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.11/src/commands/help.ts)_
 
 ## `pd incident:ack`
 
@@ -688,7 +689,7 @@ USAGE
 OPTIONS
   -F, --from=from        Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
   -b, --useauth=useauth  Use the saved REST API token with this alias
-  -h, --help             show CLI help
+  -h, --help             Show CLI help.
   -i, --ids=ids          Incident ID's to acknowledge. Specify multiple times for multiple incidents.
   -m, --me               Acknowledge all incidents assigned to me
   -p, --pipe             Read incident ID's from stdin.
@@ -720,7 +721,7 @@ OPTIONS
   -d, --delimiter=delimiter  [default:
                              ] Delimiter for fields that have more than one value
 
-  -h, --help                 show CLI help
+  -h, --help                 Show CLI help.
 
   -i, --ids=ids              Show alerts for these Incident ID's. Specify multiple times for multiple incidents.
 
@@ -765,7 +766,7 @@ USAGE
 
 OPTIONS
   -b, --useauth=useauth   Use the saved REST API token with this alias
-  -h, --help              show CLI help
+  -h, --help              Show CLI help.
   -i, --ids=ids           Incident ID's to look at. Specify multiple times for multiple incidents.
   -j, --json              output full details as JSON
   -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
@@ -805,7 +806,7 @@ OPTIONS
 
   -e, --assign_to_ep_id=assign_to_ep_id              Escalation policy ID to assign incidents to.
 
-  -h, --help                                         show CLI help
+  -h, --help                                         Show CLI help.
 
   -i, --ids=ids                                      Incident ID's to assign. Specify multiple times for multiple
                                                      incidents.
@@ -851,7 +852,7 @@ OPTIONS
 
   -d, --details=details                        Incident details
 
-  -h, --help                                   show CLI help
+  -h, --help                                   Show CLI help.
 
   -k, --key=key                                Incident key
 
@@ -896,7 +897,7 @@ OPTIONS
   -e, --assignees=assignees                                   Return only incidents assigned to this PD login email.
                                                               Specify multiple times for multiple assignees.
 
-  -h, --help                                                  show CLI help
+  -h, --help                                                  Show CLI help.
 
   -j, --json                                                  output full details as JSON
 
@@ -959,7 +960,7 @@ OPTIONS
   -d, --delimiter=delimiter  [default:
                              ] Delimiter for fields that have more than one value
 
-  -h, --help                 show CLI help
+  -h, --help                 Show CLI help.
 
   -i, --ids=ids              Select incidents with the given ID. Specify multiple times for multiple incidents.
 
@@ -1004,7 +1005,7 @@ OPTIONS
   -F, --from=from            Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
   -I, --parent_id=parent_id  Use this incident ID as the parent ID.
   -b, --useauth=useauth      Use the saved REST API token with this alias
-  -h, --help                 show CLI help
+  -h, --help                 Show CLI help.
 
   -i, --ids=ids              Merge incidents with the given ID. Specify multiple times for multiple incidents. If -I is
                              not given, the first incident in the list will be the parent incident.
@@ -1032,7 +1033,7 @@ USAGE
 OPTIONS
   -F, --from=from         Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
   -b, --useauth=useauth   Use the saved REST API token with this alias
-  -h, --help              show CLI help
+  -h, --help              Show CLI help.
   -i, --id=id             (required) Incident ID.
   -n, --note=note         Note to add
   -x, --extended          show extra columns
@@ -1059,7 +1060,7 @@ USAGE
 
 OPTIONS
   -b, --useauth=useauth  Use the saved REST API token with this alias
-  -h, --help             show CLI help
+  -h, --help             Show CLI help.
   -i, --ids=ids          Incident ID's to open. Specify multiple times for multiple incidents.
   -m, --me               Open all incidents assigned to me
   -p, --pipe             Read incident ID's from stdin.
@@ -1080,7 +1081,7 @@ USAGE
 OPTIONS
   -F, --from=from          Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
   -b, --useauth=useauth    Use the saved REST API token with this alias
-  -h, --help               show CLI help
+  -h, --help               Show CLI help.
   -i, --ids=ids            Incident ID's to set priority on. Specify multiple times for multiple incidents.
   -m, --me                 Set priority on all incidents assigned to me
   -n, --priority=priority  (required) The name of the priority to set.
@@ -1102,7 +1103,7 @@ USAGE
 OPTIONS
   -F, --from=from        Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
   -b, --useauth=useauth  Use the saved REST API token with this alias
-  -h, --help             show CLI help
+  -h, --help             Show CLI help.
   -i, --ids=ids          Incident ID's to rename. Specify multiple times for multiple incidents.
   -m, --me               Rename all incidents that are currently assigned to me
   -p, --pipe             Read incident ID's from stdin.
@@ -1125,7 +1126,7 @@ USAGE
 OPTIONS
   -F, --from=from        Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
   -b, --useauth=useauth  Use the saved REST API token with this alias
-  -h, --help             show CLI help
+  -h, --help             Show CLI help.
   -i, --ids=ids          Incident ID's to resolve. Specify multiple times for multiple incidents.
   -m, --me               Resolve all incidents assigned to me
   -p, --pipe             Read incident ID's from stdin.
@@ -1146,7 +1147,7 @@ USAGE
 OPTIONS
   -F, --from=from        Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
   -b, --useauth=useauth  Use the saved REST API token with this alias
-  -h, --help             show CLI help
+  -h, --help             Show CLI help.
   -i, --ids=ids          Incident ID's to update. Specify multiple times for multiple incidents.
   -k, --key=key          (required) Attribute key to set
   -m, --me               Update all incidents that are currently assigned to me
@@ -1176,7 +1177,7 @@ OPTIONS
   -d, --delimiter=delimiter  [default:
                              ] Delimiter for fields that have more than one value
 
-  -h, --help                 show CLI help
+  -h, --help                 Show CLI help.
 
   -j, --json                 output full details as JSON
 
@@ -1228,7 +1229,7 @@ OPTIONS
 
   -e, --endpoint=endpoint  (required) The path to the endpoint, for example, `/users/PXXXXXX` or `/services`
 
-  -h, --help               show CLI help
+  -h, --help               Show CLI help.
 
   --debug                  Print REST API call debug logs
 
@@ -1259,7 +1260,7 @@ OPTIONS
 
   -e, --endpoint=endpoint    (required) The path to the endpoint, for example, `/users/PXXXXXX` or `/services`
 
-  -h, --help                 show CLI help
+  -h, --help                 Show CLI help.
 
   -k, --keys=keys            Additional fields to display, for use with `--table`. Specify multiple times for multiple
                              fields.
@@ -1310,7 +1311,7 @@ OPTIONS
 
   -e, --endpoint=endpoint  (required) The path to the endpoint, for example, `/users/PXXXXXX` or `/services`
 
-  -h, --help               show CLI help
+  -h, --help               Show CLI help.
 
   --debug                  Print REST API call debug logs
 
@@ -1340,7 +1341,7 @@ OPTIONS
 
   -e, --endpoint=endpoint  (required) The path to the endpoint, for example, `/users/PXXXXXX` or `/services`
 
-  -h, --help               show CLI help
+  -h, --help               Show CLI help.
 
   --debug                  Print REST API call debug logs
 
@@ -1370,7 +1371,7 @@ OPTIONS
 
   -e, --endpoint=endpoint  (required) The path to the endpoint, for example, `/users/PXXXXXX` or `/services`
 
-  -h, --help               show CLI help
+  -h, --help               Show CLI help.
 
   --debug                  Print REST API call debug logs
 
@@ -1390,7 +1391,7 @@ USAGE
 OPTIONS
   -b, --useauth=useauth          Use the saved REST API token with this alias
   -d, --destination=destination  The name for the new schedule
-  -h, --help                     show CLI help
+  -h, --help                     Show CLI help.
   -i, --id=id                    The ID of the schedule to copy.
   -n, --name=name                The name of the schedule to copy.
   -o, --open                     Open the new schedule in the browser
@@ -1415,7 +1416,7 @@ OPTIONS
   -d, --delimiter=delimiter  [default:
                              ] Delimiter for fields that have more than one value
 
-  -h, --help                 show CLI help
+  -h, --help                 Show CLI help.
 
   -j, --json                 output full details as JSON
 
@@ -1458,7 +1459,7 @@ USAGE
 
 OPTIONS
   -b, --useauth=useauth   Use the saved REST API token with this alias
-  -h, --help              show CLI help
+  -h, --help              Show CLI help.
   -i, --id=id             Show oncalls for the schedule with this ID.
   -j, --json              output full details as JSON
   -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
@@ -1489,7 +1490,7 @@ USAGE
 
 OPTIONS
   -b, --useauth=useauth  Use the saved REST API token with this alias
-  -h, --help             show CLI help
+  -h, --help             Show CLI help.
   -i, --ids=ids          The IDs of schedules to open.
   -n, --name=name        Open schedules matching this string.
   -p, --pipe             Read schedule ID's from stdin.
@@ -1510,7 +1511,7 @@ USAGE
 OPTIONS
   -U, --user_email=user_email  The email of the PagerDuty user for the override
   -b, --useauth=useauth        Use the saved REST API token with this alias
-  -h, --help                   show CLI help
+  -h, --help                   Show CLI help.
   -i, --id=id                  Add an override to the schedule with this ID.
   -n, --name=name              Add an override to the schedule with this name.
   -u, --user_id=user_id        The ID of the PagerDuty user for the override
@@ -1536,7 +1537,7 @@ OPTIONS
   -d, --delimiter=delimiter  [default:
                              ] Delimiter for fields that have more than one value
 
-  -h, --help                 show CLI help
+  -h, --help                 Show CLI help.
 
   -i, --id=id                Show overrides for the schedule with this ID.
 
@@ -1589,7 +1590,7 @@ OPTIONS
   -d, --delimiter=delimiter  [default:
                              ] Delimiter for fields that have more than one value
 
-  -h, --help                 show CLI help
+  -h, --help                 Show CLI help.
 
   -i, --id=id                Render the schedule with this ID.
 
@@ -1636,7 +1637,7 @@ USAGE
 
 OPTIONS
   -b, --useauth=useauth  Use the saved REST API token with this alias
-  -h, --help             show CLI help
+  -h, --help             Show CLI help.
   -i, --id=id            Show the schedule with this ID.
   -n, --name=name        Show the schedule with this name.
   --debug                Print REST API call debug logs
@@ -1667,7 +1668,7 @@ OPTIONS
 
   -e, --escalation_policy_id=escalation_policy_id          The ID of the service's escalation policy.
 
-  -h, --help                                               show CLI help
+  -h, --help                                               Show CLI help.
 
   -n, --name=name                                          (required) The service's name
 
@@ -1725,7 +1726,7 @@ USAGE
 
 OPTIONS
   -b, --useauth=useauth  Use the saved REST API token with this alias
-  -h, --help             show CLI help
+  -h, --help             Show CLI help.
   -i, --ids=ids          Select services with the given ID. Specify multiple times for multiple services.
   -n, --name=name        Select services whose names contain the given text
   -p, --pipe             Read service ID's from stdin.
@@ -1745,7 +1746,7 @@ USAGE
 
 OPTIONS
   -b, --useauth=useauth  Use the saved REST API token with this alias
-  -h, --help             show CLI help
+  -h, --help             Show CLI help.
   -i, --ids=ids          Select services with the given ID. Specify multiple times for multiple services.
   -n, --name=name        Select services whose names contain the given text
   -p, --pipe             Read service ID's from stdin.
@@ -1769,7 +1770,7 @@ OPTIONS
   -d, --delimiter=delimiter  [default:
                              ] Delimiter for fields that have more than one value
 
-  -h, --help                 show CLI help
+  -h, --help                 Show CLI help.
 
   -j, --json                 output full details as JSON
 
@@ -1814,7 +1815,7 @@ USAGE
 
 OPTIONS
   -b, --useauth=useauth  Use the saved REST API token with this alias
-  -h, --help             show CLI help
+  -h, --help             Show CLI help.
   -i, --ids=ids          The IDs of services to open.
   -n, --name=name        Open services matching this string.
   -p, --pipe             Read service ID's from stdin.
@@ -1834,7 +1835,7 @@ USAGE
 
 OPTIONS
   -b, --useauth=useauth  Use the saved REST API token with this alias
-  -h, --help             show CLI help
+  -h, --help             Show CLI help.
   -i, --ids=ids          Select services with the given ID. Specify multiple times for multiple services.
   -k, --key=key          (required) Attribute key to set
   -n, --name=name        Select services whose names contain the given text
@@ -1858,7 +1859,7 @@ OPTIONS
   -A, --parent_name=parent_name  The name of the new team's parent team
   -a, --parent_id=parent_id      The ID of the new team's parent team
   -b, --useauth=useauth          Use the saved REST API token with this alias
-  -h, --help                     show CLI help
+  -h, --help                     Show CLI help.
   -n, --name=name                (required) The name of the team to add.
   -o, --open                     Open the new team in the browser
   -p, --pipe                     Print the team ID only to stdout, for use with pipes.
@@ -1886,7 +1887,7 @@ OPTIONS
   -e, --ep_ids=ep_ids      Add an escalation policy with this ID. Specify multiple times for multiple escalation
                            policies.
 
-  -h, --help               show CLI help
+  -h, --help               Show CLI help.
 
   -i, --ids=ids            The IDs of teams to add escalation policies to.
 
@@ -1913,7 +1914,7 @@ OPTIONS
   -d, --delimiter=delimiter  [default:
                              ] Delimiter for fields that have more than one value
 
-  -h, --help                 show CLI help
+  -h, --help                 Show CLI help.
 
   -i, --ids=ids              The IDs of teams to list escalation policies for.
 
@@ -1965,7 +1966,7 @@ OPTIONS
   -e, --ep_ids=ep_ids      Remove an escalation policy with this ID. Specify multiple times for multiple escalation
                            policies.
 
-  -h, --help               show CLI help
+  -h, --help               Show CLI help.
 
   -i, --ids=ids            The IDs of teams to remove escalation policies from.
 
@@ -1992,7 +1993,7 @@ OPTIONS
   -d, --delimiter=delimiter  [default:
                              ] Delimiter for fields that have more than one value
 
-  -h, --help                 show CLI help
+  -h, --help                 Show CLI help.
 
   -j, --json                 output full details as JSON
 
@@ -2035,7 +2036,7 @@ USAGE
 
 OPTIONS
   -b, --useauth=useauth  Use the saved REST API token with this alias
-  -h, --help             show CLI help
+  -h, --help             Show CLI help.
   -i, --ids=ids          The IDs of teams to open.
   -n, --name=name        Open teams matching this string.
   -p, --pipe             Read team ID's from stdin.
@@ -2056,7 +2057,7 @@ USAGE
 OPTIONS
   -U, --user_emails=user_emails          Add a user with this email. Specify multiple times for multiple users.
   -b, --useauth=useauth                  Use the saved REST API token with this alias
-  -h, --help                             show CLI help
+  -h, --help                             Show CLI help.
   -i, --ids=ids                          The IDs of teams to add members to.
   -n, --name=name                        Select teams whose names contain the given text
   -r, --role=manager|responder|observer  [default: manager] The role of the user(s) on the team(s)
@@ -2081,7 +2082,7 @@ OPTIONS
   -d, --delimiter=delimiter  [default:
                              ] Delimiter for fields that have more than one value
 
-  -h, --help                 show CLI help
+  -h, --help                 Show CLI help.
 
   -i, --ids=ids              The IDs of teams to list members for.
 
@@ -2127,7 +2128,7 @@ USAGE
 OPTIONS
   -U, --user_emails=user_emails  Remove a user with this email. Specify multiple times for multiple users.
   -b, --useauth=useauth          Use the saved REST API token with this alias
-  -h, --help                     show CLI help
+  -h, --help                     Show CLI help.
   -i, --ids=ids                  The IDs of teams to remove members from.
   -n, --name=name                Select teams whose names contain the given text
   -u, --user_ids=user_ids        Remove a user with this ID. Specify multiple times for multiple users.
@@ -2146,10 +2147,19 @@ USAGE
   $ pd update [CHANNEL]
 
 OPTIONS
-  --from-local  interactively choose an already installed version
+  -a, --available        Install a specific version.
+  -i, --interactive      Interactively select version to install. This is ignored if a channel is provided.
+  -v, --version=version  Install a specific version.
+  --force                Force a re-download of the requested version.
+
+EXAMPLES
+  [object Object]
+  [object Object]
+  [object Object]
+  [object Object]
 ```
 
-_See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v1.5.0/src/commands/update.ts)_
+_See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v3.0.0/src/commands/update.ts)_
 
 ## `pd user:contact:add`
 
@@ -2164,7 +2174,7 @@ OPTIONS
   -a, --address=address       (required) The contact method address or phone number.
   -b, --useauth=useauth       Use the saved REST API token with this alias
   -e, --email=email           Add contact to the user with this login email.
-  -h, --help                  show CLI help
+  -h, --help                  Show CLI help.
   -i, --id=id                 Add contact to the user with this ID.
   -l, --label=label           (required) The contact method label.
   --debug                     Print REST API call debug logs
@@ -2189,7 +2199,7 @@ OPTIONS
 
   -e, --email=email          Show contacts for the user with this login email.
 
-  -h, --help                 show CLI help
+  -h, --help                 Show CLI help.
 
   -i, --id=id                Show contacts for the user with this ID.
 
@@ -2235,7 +2245,7 @@ OPTIONS
   -b, --useauth=useauth        Use the saved REST API token with this alias
   -c, --contact_id=contact_id  (required) Update the contact with this ID.
   -e, --email=email            Update a contact for the user with this login email.
-  -h, --help                   show CLI help
+  -h, --help                   Show CLI help.
   -i, --id=id                  Update a contact for the user with this ID.
   -l, --label=label            The contact method label to set.
   --debug                      Print REST API call debug logs
@@ -2269,7 +2279,7 @@ OPTIONS
       (required) The user's login email
 
   -h, --help
-      show CLI help
+      Show CLI help.
 
   -n, --name=name
       (required) The user's name
@@ -2321,7 +2331,7 @@ OPTIONS
   -e, --emails=emails              Select users whose emails contain the given text. Specify multiple times for multiple
                                    emails.
 
-  -h, --help                       show CLI help
+  -h, --help                       Show CLI help.
 
   -i, --ids=ids                    Select users with the given ID. Specify multiple times for multiple users.
 
@@ -2353,7 +2363,7 @@ OPTIONS
 
   -e, --email=email              Select users whose login email addresses contain the given text
 
-  -h, --help                     show CLI help
+  -h, --help                     Show CLI help.
 
   -j, --json                     output full details as JSON
 
@@ -2402,7 +2412,7 @@ OPTIONS
 
   -e, --email=email              Select users whose login email addresses contain the given text
 
-  -h, --help                     show CLI help
+  -h, --help                     Show CLI help.
 
   -i, --ids=ids                  Select users with the given ID. Specify multiple times for multiple users.
 
@@ -2451,7 +2461,7 @@ OPTIONS
   -a, --always            Include 'Always on call.'
   -b, --useauth=useauth   Use the saved REST API token with this alias
   -e, --email=email       Show oncalls for the user with this login email.
-  -h, --help              show CLI help
+  -h, --help              Show CLI help.
   -i, --id=id             Show oncalls for the user with this ID.
   -j, --json              output full details as JSON
   -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
@@ -2484,7 +2494,7 @@ OPTIONS
   -U, --user_email=user_email  The email of the replacement user.
   -b, --useauth=useauth        Use the saved REST API token with this alias
   -d, --deleted                Replace all deleted users
-  -h, --help                   show CLI help
+  -h, --help                   Show CLI help.
   -i, --ids=ids                Replace users with the given IDs. Specify multiple times for multiple users.
   -p, --pipe                   Read user ID's from stdin.
   -u, --user_id=user_id        The ID of the replacement user.
@@ -2506,7 +2516,7 @@ USAGE
 OPTIONS
   -b, --useauth=useauth   Use the saved REST API token with this alias
   -e, --email=email       Show sessions for the user with this login email.
-  -h, --help              show CLI help
+  -h, --help              Show CLI help.
   -i, --id=id             Show sessions for the user with this ID.
   -j, --json              output full details as JSON
   -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
@@ -2545,7 +2555,7 @@ OPTIONS
   -e, --emails=emails              Select users whose emails contain the given text. Specify multiple times for multiple
                                    emails.
 
-  -h, --help                       show CLI help
+  -h, --help                       Show CLI help.
 
   -i, --ids=ids                    Select users with the given ID. Specify multiple times for multiple users.
 
@@ -2575,7 +2585,7 @@ OPTIONS
       Use the saved REST API token with this alias
 
   -h, --help
-      show CLI help
+      Show CLI help.
 
   -i, --ids=ids
       Select resources with the given ID. Specify multiple times for multiple resources.
@@ -2583,10 +2593,9 @@ OPTIONS
   -p, --pipe
       Read resource ID's from stdin.
 
-  -t, 
-  --resource-type=business_service|escalation_policy|extension|response_play|ruleset|schedule|service|tag|team|user|webh
-  ook_subscription
-      (required) The type of PagerDuty resource to delete. You have to provide either -i or -p to specify IDs of objects 
+  -t, --resource-type=business_service|escalation_policy|extension|response_play|ruleset|schedule|service|tag|team|user|
+  webhook_subscription
+      (required) The type of PagerDuty resource to delete. You have to provide either -i or -p to specify IDs of objects
       to delete.
 
   --debug
@@ -2614,10 +2623,19 @@ ARGUMENTS
 
 OPTIONS
   -b, --useauth=useauth  Use the saved REST API token with this alias
-  -h, --help             show CLI help
+  -h, --help             Show CLI help.
   --debug                Print REST API call debug logs
   --token=token          Ignore the saved configuration and use this token
 ```
 
 _See code: [src/commands/util/timestamp.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.0.85/src/commands/util/timestamp.ts)_
+
+## `pd version`
+
+```
+USAGE
+  $ pd version
+```
+
+_See code: [@oclif/plugin-version](https://github.com/oclif/plugin-version/blob/v1.0.4/src/commands/version.ts)_
 <!-- commandsstop -->

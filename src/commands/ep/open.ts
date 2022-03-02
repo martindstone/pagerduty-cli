@@ -1,6 +1,5 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
@@ -10,18 +9,18 @@ export default class EpOpen extends Command {
 
   static flags = {
     ...Command.flags,
-    name: flags.string({
+    name: Flags.string({
       char: 'n',
       description: 'Open escalation policies whose names match this string.',
       exclusive: ['ids', 'pipe'],
     }),
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'The IDs of escalation policies to open.',
       exclusive: ['name', 'pipe'],
       multiple: true,
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read escalation policy ID\'s from stdin.',
       exclusive: ['ids', 'name'],
@@ -29,7 +28,7 @@ export default class EpOpen extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(EpOpen)
+    const {flags} = await this.parse(EpOpen)
 
     const params: Record<string, any> = {}
 
@@ -65,22 +64,22 @@ export default class EpOpen extends Command {
       this.error('No escalation policies specified', {exit: 1})
     }
 
-    cli.action.start('Finding your PD domain')
+    CliUx.ux.action.start('Finding your PD domain')
     const domain = await this.pd.domain()
 
     this.log('Escalation Policy URLs:')
     const urlstrings: string[] = ep_ids.map(x => chalk.bold.blue(`https://${domain}.pagerduty.com/escalation_policies/${x}`))
     this.log(urlstrings.join('\n') + '\n')
 
-    cli.action.start(`Opening ${ep_ids.length} escalation policies in the browser`)
+    CliUx.ux.action.start(`Opening ${ep_ids.length} escalation policies in the browser`)
     try {
       for (const ep_id of ep_ids) {
-        await cli.open(`https://${domain}.pagerduty.com/escalation_policies/${ep_id}`)
+        await CliUx.ux.open(`https://${domain}.pagerduty.com/escalation_policies/${ep_id}`)
       }
     } catch (error) {
-      cli.action.stop(chalk.bold.red('failed'))
+      CliUx.ux.action.stop(chalk.bold.red('failed'))
       this.error('Couldn\'t open browser. Are you running as root?', {exit: 1})
     }
-    cli.action.stop(chalk.bold.green('done'))
+    CliUx.ux.action.stop(chalk.bold.green('done'))
   }
 }

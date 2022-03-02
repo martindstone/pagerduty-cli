@@ -1,5 +1,5 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {Flags} from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
@@ -9,22 +9,22 @@ export default class IncidentResolve extends Command {
 
   static flags = {
     ...Command.flags,
-    me: flags.boolean({
+    me: Flags.boolean({
       char: 'm',
       description: 'Resolve all incidents assigned to me',
       exclusive: ['ids', 'pipe'],
     }),
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'Incident ID\'s to resolve. Specify multiple times for multiple incidents.',
       multiple: true,
       exclusive: ['me', 'pipe'],
     }),
-    from: flags.string({
+    from: Flags.string({
       char: 'F',
       description: 'Login email of a PD user account for the "From:" header. Use only with legacy API tokens.',
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read incident ID\'s from stdin.',
       exclusive: ['me', 'ids'],
@@ -32,7 +32,7 @@ export default class IncidentResolve extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(IncidentResolve)
+    const {flags} = await this.parse(IncidentResolve)
 
     const headers: Record<string, string> = {}
     if (flags.from) {

@@ -1,5 +1,6 @@
 import AuthBase from './authbase'
-import {flags} from '@oclif/command'
+// import {flags} from '@oclif/command'
+import {Flags} from '@oclif/core'
 import {Config} from './config'
 import {PD} from './pd'
 import chalk from 'chalk'
@@ -7,18 +8,18 @@ import chalk from 'chalk'
 export default abstract class Base extends AuthBase {
   static flags = {
     ...AuthBase.flags,
-    useauth: flags.string({
+    useauth: Flags.string({
       char: 'b',
       description: 'Use the saved REST API token with this alias',
     }),
-    token: flags.string({
+    token: Flags.string({
       description: 'Ignore the saved configuration and use this token',
       exclusive: ['useauth'],
     }),
   }
 
   async init() {
-    const {flags} = this.parse(this.ctor)
+    const {flags} = await this.parse(this.ctor)
 
     this._config = new Config()
     if (flags.token) {
@@ -58,7 +59,7 @@ export default abstract class Base extends AuthBase {
       }
     }
 
-    if ((flags as any).output) {
+    if ((flags as any).output || (flags as any).csv) {
       chalk.level = 0
     }
   }

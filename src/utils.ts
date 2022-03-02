@@ -1,4 +1,4 @@
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 /* eslint-disable no-process-exit */
 /* eslint-disable unicorn/no-process-exit */
@@ -98,7 +98,7 @@ export async function printJsonAndExit(data: any) {
   if (process.stdout.write(JSON.stringify(data, null, 2) + '\n')) {
     process.exit(0)
   }
-  await cli.wait(10000)
+  await CliUx.ux.wait(10000)
   console.error('Timed out waiting for pipe', {exit: 1})
 }
 

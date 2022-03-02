@@ -1,6 +1,5 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
@@ -10,35 +9,35 @@ export default class EpList extends Command {
 
   static flags = {
     ...Command.flags,
-    name: flags.string({
+    name: Flags.string({
       char: 'n',
       description: 'Select escalation policies whose names contain the given text',
     }),
-    keys: flags.string({
+    keys: Flags.string({
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
       multiple: true,
     }),
-    json: flags.boolean({
+    json: Flags.boolean({
       char: 'j',
       description: 'output full details as JSON',
       exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Print escalation policy ID\'s only to stdout, for use with pipes.',
       exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
     }),
-    delimiter: flags.string({
+    delimiter: Flags.string({
       char: 'd',
       description: 'Delimiter for fields that have more than one value',
       default: '\n',
     }),
-    ...cli.table.flags(),
+    ...CliUx.ux.table.flags(),
   }
 
   async run() {
-    const {flags} = this.parse(EpList)
+    const {flags} = await this.parse(EpList)
 
     const params: Record<string, any> = {}
 
@@ -52,10 +51,10 @@ export default class EpList extends Command {
     })
 
     if (eps.length === 0) {
-      cli.action.stop(chalk.bold.red('none found'))
+      CliUx.ux.action.stop(chalk.bold.red('none found'))
       this.exit(0)
     }
-    cli.action.stop(chalk.bold.green(`got ${eps.length}`))
+    CliUx.ux.action.stop(chalk.bold.green(`got ${eps.length}`))
 
     if (flags.json) {
       await utils.printJsonAndExit(eps)
@@ -94,7 +93,6 @@ export default class EpList extends Command {
     }
 
     const options = {
-      printLine: this.log,
       ...flags, // parsed flags
     }
     if (flags.pipe) {
@@ -106,6 +104,6 @@ export default class EpList extends Command {
       }
       options['no-header'] = true
     }
-    cli.table(eps, columns, options)
+    CliUx.ux.table(eps, columns, options)
   }
 }

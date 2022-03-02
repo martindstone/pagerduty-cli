@@ -1,7 +1,6 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
-import cli from 'cli-ux'
 import * as utils from '../../utils'
 
 export default class RestPost extends Command {
@@ -9,24 +8,24 @@ export default class RestPost extends Command {
 
   static flags = {
     ...Command.flags,
-    endpoint: flags.string({
+    endpoint: Flags.string({
       char: 'e',
       description: 'The path to the endpoint, for example, `/users/PXXXXXX` or `/services`',
       required: true,
     }),
-    params: flags.string({
+    params: Flags.string({
       char: 'P',
       description: 'Parameters to add, for example, `query=martin` or `include[]=teams. Specify multiple times for multiple params.',
       multiple: true,
       default: [],
     }),
-    headers: flags.string({
+    headers: Flags.string({
       char: 'H',
       description: 'Headers to add, for example, `From=martin@pagerduty.com`. Specify multiple times for multiple headers.',
       multiple: true,
       default: [],
     }),
-    data: flags.string({
+    data: Flags.string({
       char: 'd',
       description: 'JSON data to send',
       required: true,
@@ -34,7 +33,7 @@ export default class RestPost extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(RestPost)
+    const {flags} = await this.parse(RestPost)
 
     const params: Record<string, any> = {}
 
@@ -72,10 +71,10 @@ export default class RestPost extends Command {
     try {
       data = JSON.parse(flags.data)
     } catch (error) {
-      this.error(`Error parsing request body: ${error.message}`, {exit: 1})
+      this.error(`Error parsing request body: ${(error as any).message}`, {exit: 1})
     }
 
-    cli.action.start('Talking to PD')
+    CliUx.ux.action.start('Talking to PD')
     const response = await this.pd.request({
       endpoint: flags.endpoint,
       method: 'POST',
@@ -85,10 +84,10 @@ export default class RestPost extends Command {
     })
 
     if (response.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
+      CliUx.ux.action.stop(chalk.bold.red('failed!'))
       this.error(`Request failed: ${response.getFormattedError()}`)
     }
-    cli.action.stop(chalk.bold.green('done'))
+    CliUx.ux.action.stop(chalk.bold.green('done'))
     await utils.printJsonAndExit(response.getData())
   }
 }

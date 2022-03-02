@@ -1,8 +1,7 @@
 /* eslint-disable complexity */
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
-import cli from 'cli-ux'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 
@@ -11,32 +10,32 @@ export default class UserSet extends Command {
 
   static flags = {
     ...Command.flags,
-    emails: flags.string({
+    emails: Flags.string({
       char: 'e',
       description: 'Select users whose emails contain the given text. Specify multiple times for multiple emails.',
       multiple: true,
     }),
-    exact_emails: flags.string({
+    exact_emails: Flags.string({
       char: 'E',
       description: 'Select a user whose login email is this exact text.  Specify multiple times for multiple emails.',
       multiple: true,
     }),
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'Select users with the given ID. Specify multiple times for multiple users.',
       multiple: true,
     }),
-    key: flags.string({
+    key: Flags.string({
       char: 'k',
       description: 'Attribute key to set',
       required: true,
     }),
-    value: flags.string({
+    value: Flags.string({
       char: 'v',
       description: 'Attribute value to set',
       required: true,
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read user ID\'s from stdin.',
       exclusive: ['email', 'ids'],
@@ -44,7 +43,7 @@ export default class UserSet extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(UserSet)
+    const {flags} = await this.parse(UserSet)
 
     if (!(flags.emails || flags.exact_emails || flags.ids || flags.pipe)) {
       this.error('You must specify at least one of: -i, -e, -E, -p', {exit: 1})
@@ -52,11 +51,11 @@ export default class UserSet extends Command {
 
     let user_ids: string[] = []
     if (flags.emails) {
-      cli.action.start('Getting user IDs from PD')
+      CliUx.ux.action.start('Getting user IDs from PD')
       user_ids = await this.pd.userIDsForEmails(flags.emails)
     }
     if (flags.exact_emails) {
-      cli.action.start('Getting user IDs from PD')
+      CliUx.ux.action.start('Getting user IDs from PD')
       for (const email of flags.exact_emails) {
         // eslint-disable-next-line no-await-in-loop
         const user_id = await this.pd.userIDForEmail(email)

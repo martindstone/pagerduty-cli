@@ -1,6 +1,5 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 
@@ -9,32 +8,32 @@ export default class ScheduleCopy extends Command {
 
   static flags = {
     ...Command.flags,
-    name: flags.string({
+    name: Flags.string({
       char: 'n',
       description: 'The name of the schedule to copy.',
       exclusive: ['id'],
     }),
-    id: flags.string({
+    id: Flags.string({
       char: 'i',
       description: 'The ID of the schedule to copy.',
       exclusive: ['name'],
     }),
-    destination: flags.string({
+    destination: Flags.string({
       char: 'd',
       description: 'The name for the new schedule',
     }),
-    open: flags.boolean({
+    open: Flags.boolean({
       char: 'o',
       description: 'Open the new schedule in the browser',
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Print the new schedule ID only to stdout, for use with pipes.',
     }),
   }
 
   async run() {
-    const {flags} = this.parse(ScheduleCopy)
+    const {flags} = await this.parse(ScheduleCopy)
 
     if (!([flags.name, flags.id].some(Boolean))) {
       this.error('You must specify one of: -i, -n', {exit: 1})
@@ -59,13 +58,13 @@ export default class ScheduleCopy extends Command {
       this.error('No schedule specified', {exit: 1})
     }
 
-    cli.action.start(`Getting schedule ${chalk.bold.blue(schedule_id)}`)
+    CliUx.ux.action.start(`Getting schedule ${chalk.bold.blue(schedule_id)}`)
     let r = await this.pd.request({
       endpoint: `schedules/${schedule_id}`,
       method: 'GET',
     })
     if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
+      CliUx.ux.action.stop(chalk.bold.red('failed!'))
       this.error(`Couldn't get schedule ${chalk.bold.blue(schedule_id)}: ${r.getFormattedError()}`)
     }
 
@@ -81,30 +80,30 @@ export default class ScheduleCopy extends Command {
         schedule_layers: schedule_layers,
       },
     }
-    cli.action.start(`Copying schedule ${chalk.bold.blue(schedule_id)}`)
+    CliUx.ux.action.start(`Copying schedule ${chalk.bold.blue(schedule_id)}`)
     r = await this.pd.request({
       endpoint: 'schedules',
       method: 'POST',
       data: dest_schedule,
     })
     if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
+      CliUx.ux.action.stop(chalk.bold.red('failed!'))
       this.error(`Couldn't create schedule: ${r.getFormattedError()}`)
     }
     const returned_schedule = r.getData()
-    cli.action.stop(chalk.bold.green('done'))
+    CliUx.ux.action.stop(chalk.bold.green('done'))
 
     if (flags.pipe) {
       this.log(returned_schedule.schedule.id)
     } else if (flags.open) {
-      cli.action.start(`Opening ${chalk.bold.blue(returned_schedule.schedule.html_url)} in the browser`)
+      CliUx.ux.action.start(`Opening ${chalk.bold.blue(returned_schedule.schedule.html_url)} in the browser`)
       try {
-        await cli.open(returned_schedule.schedule.html_url)
+        await CliUx.ux.open(returned_schedule.schedule.html_url)
       } catch (error) {
-        cli.action.stop(chalk.bold.red('failed!'))
+        CliUx.ux.action.stop(chalk.bold.red('failed!'))
         this.error('Couldn\'t open your browser. Are you running as root?', {exit: 1})
       }
-      cli.action.stop(chalk.bold.green('done'))
+      CliUx.ux.action.stop(chalk.bold.green('done'))
     } else {
       this.log(`Your new schedule is at ${chalk.bold.blue(returned_schedule.schedule.html_url)}`)
     }

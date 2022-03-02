@@ -1,9 +1,7 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {Flags} from '@oclif/core'
 import chalk from 'chalk'
-// import cli from 'cli-ux'
 import getStream from 'get-stream'
-// import * as pd from '../../pd'
 import * as utils from '../../utils'
 import parse from 'parse-duration'
 import log from 'ololog'
@@ -15,34 +13,34 @@ export default class IncidentAck extends Command {
 
   static flags = {
     ...Command.flags,
-    me: flags.boolean({
+    me: Flags.boolean({
       char: 'm',
       description: 'Acknowledge all incidents assigned to me',
       exclusive: ['ids', 'pipe'],
     }),
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'Incident ID\'s to acknowledge. Specify multiple times for multiple incidents.',
       multiple: true,
       exclusive: ['me', 'pipe'],
     }),
-    from: flags.string({
+    from: Flags.string({
       char: 'F',
       description: 'Login email of a PD user account for the "From:" header. Use only with legacy API tokens.',
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read incident ID\'s from stdin.',
       exclusive: ['me', 'ids'],
     }),
-    snooze: flags.string({
+    snooze: Flags.string({
       char: 'z',
       description: 'Also snooze selected incidents for the specified amount of time (5m, \'1 hour\', default unit is seconds).',
     }),
   }
 
   async run() {
-    const {flags} = this.parse(IncidentAck)
+    const {flags} = await this.parse(IncidentAck)
 
     let snooze_secs = NaN
     if (flags.snooze) {

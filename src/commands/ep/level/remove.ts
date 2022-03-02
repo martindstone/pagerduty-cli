@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
 import Command from '../../../base'
-import {flags} from '@oclif/command'
+import {Flags} from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../../utils'
@@ -11,23 +11,23 @@ export default class EpLevelRemove extends Command {
 
   static flags = {
     ...Command.flags,
-    name: flags.string({
+    name: Flags.string({
       char: 'n',
       description: 'Update escalation policies whose names match this string.',
       exclusive: ['ids', 'pipe'],
     }),
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'The IDs of escalation policies to update.',
       exclusive: ['name', 'pipe'],
       multiple: true,
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read escalation policy ID\'s from stdin.',
       exclusive: ['ids', 'name'],
     }),
-    level: flags.integer({
+    level: Flags.integer({
       char: 'l',
       description: 'Escalation policy level to remove (the lowest level is 1; any existing levels above the deleted level will be moved down.',
       required: true,
@@ -35,7 +35,7 @@ export default class EpLevelRemove extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(EpLevelRemove)
+    const {flags} = await this.parse(EpLevelRemove)
 
     if (flags.level < 1) {
       this.error('The lowest level number is 1', {exit: 1})

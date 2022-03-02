@@ -1,6 +1,5 @@
 import Command from '../../../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import parsePhoneNumber from 'libphonenumber-js'
 
@@ -9,56 +8,56 @@ export default class UserContactSet extends Command {
 
   static flags = {
     ...Command.flags,
-    id: flags.string({
+    id: Flags.string({
       char: 'i',
       description: 'Update a contact for the user with this ID.',
       exclusive: ['email'],
     }),
-    email: flags.string({
+    email: Flags.string({
       char: 'e',
       description: 'Update a contact for the user with this login email.',
       exclusive: ['id'],
     }),
-    contact_id: flags.string({
+    contact_id: Flags.string({
       char: 'c',
       description: 'Update the contact with this ID.',
       required: true,
     }),
-    label: flags.string({
+    label: Flags.string({
       char: 'l',
       description: 'The contact method label to set.',
     }),
-    address: flags.string({
+    address: Flags.string({
       char: 'a',
       description: 'The contact method address or phone number to set.',
     }),
   }
 
   async run() {
-    const {flags} = this.parse(UserContactSet)
+    const {flags} = await this.parse(UserContactSet)
 
     let userID
     if (flags.id) {
       userID = flags.id
     } else if (flags.email) {
-      cli.action.start(`Finding PD user ${chalk.bold.blue(flags.email)}`)
+      CliUx.ux.action.start(`Finding PD user ${chalk.bold.blue(flags.email)}`)
       userID = await this.pd.userIDForEmail(flags.email)
       if (!userID) {
-        cli.action.stop(chalk.bold.red('failed!'))
+        CliUx.ux.action.stop(chalk.bold.red('failed!'))
         this.error(`No user was found for the email "${flags.email}"`, {exit: 1})
       }
     } else {
       this.error('You must specify one of: -i, -e', {exit: 1})
     }
 
-    cli.action.start(`Finding contact ${chalk.bold.blue(flags.contact_id)}`)
+    CliUx.ux.action.start(`Finding contact ${chalk.bold.blue(flags.contact_id)}`)
     let r = await this.pd.request({
       endpoint: `users/${userID}/contact_methods/${flags.contact_id}`,
       method: 'GET',
     })
 
     if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
+      CliUx.ux.action.stop(chalk.bold.red('failed!'))
       this.error(`Request failed: ${r.getFormattedError}`, {exit: 1})
     }
 
@@ -79,17 +78,17 @@ export default class UserContactSet extends Command {
       body.contact_method.label = flags.label
     }
 
-    cli.action.start(`Updating contact method ${flags.contact_id} for user ${chalk.bold.blue(userID)}`)
+    CliUx.ux.action.start(`Updating contact method ${flags.contact_id} for user ${chalk.bold.blue(userID)}`)
     r = await this.pd.request({
       endpoint: `users/${userID}/contact_methods/${flags.contact_id}`,
       method: 'PUT',
       data: body,
     })
     if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
+      CliUx.ux.action.stop(chalk.bold.red('failed!'))
       this.error(`Request failed: ${r.getFormattedError()}`, {exit: 1})
     }
     const contact_method = r.getData()
-    cli.action.stop(`${chalk.bold.green('updated contact method')} ${chalk.bold.blue(contact_method.contact_method.id)}`)
+    CliUx.ux.action.stop(`${chalk.bold.green('updated contact method')} ${chalk.bold.blue(contact_method.contact_method.id)}`)
   }
 }

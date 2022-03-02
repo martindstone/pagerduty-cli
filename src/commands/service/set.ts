@@ -1,8 +1,7 @@
 /* eslint-disable complexity */
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
-import cli from 'cli-ux'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 
@@ -11,26 +10,26 @@ export default class ServiceSet extends Command {
 
   static flags = {
     ...Command.flags,
-    name: flags.string({
+    name: Flags.string({
       char: 'n',
       description: 'Select services whose names contain the given text',
     }),
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'Select services with the given ID. Specify multiple times for multiple services.',
       multiple: true,
     }),
-    key: flags.string({
+    key: Flags.string({
       char: 'k',
       description: 'Attribute key to set',
       required: true,
     }),
-    value: flags.string({
+    value: Flags.string({
       char: 'v',
       description: 'Attribute value to set',
       required: true,
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read service ID\'s from stdin.',
       exclusive: ['name', 'ids'],
@@ -38,17 +37,17 @@ export default class ServiceSet extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(ServiceSet)
+    const {flags} = await this.parse(ServiceSet)
 
     if (!(flags.name || flags.ids || flags.pipe)) {
       this.error('You must specify one of: -i, -n, -p', {exit: 1})
     }
     let service_ids: string[] = []
     if (flags.name) {
-      cli.action.start('Getting service IDs from PD')
+      CliUx.ux.action.start('Getting service IDs from PD')
       const services = await this.pd.fetch('services', {params: {query: flags.name}})
       if (!services || services.length === 0) {
-        cli.action.stop(chalk.bold.red('none found'))
+        CliUx.ux.action.stop(chalk.bold.red('none found'))
       }
       service_ids = services.map((e: { id: any }) => e.id)
     } else if (flags.ids) {

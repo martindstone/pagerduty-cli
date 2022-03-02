@@ -1,50 +1,49 @@
 /* eslint-disable complexity */
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 import {PD} from '../../pd'
-import {cli} from 'cli-ux'
 
 export default class UserReplace extends Command {
   static description = 'Replace PagerDuty Users in all Schedules and Escalation Policies'
 
   static flags = {
     ...Command.flags,
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'Replace users with the given IDs. Specify multiple times for multiple users.',
       multiple: true,
       exclusive: ['deleted', 'pipe'],
     }),
-    deleted: flags.boolean({
+    deleted: Flags.boolean({
       char: 'd',
       description: 'Replace all deleted users',
       exclusive: ['ids', 'pipe'],
     }),
-    user_id: flags.string({
+    user_id: Flags.string({
       char: 'u',
       description: 'The ID of the replacement user.',
       exclusive: ['user_email'],
     }),
-    user_email: flags.string({
+    user_email: Flags.string({
       char: 'U',
       description: 'The email of the replacement user.',
       exclusive: ['user_id'],
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read user ID\'s from stdin.',
       exclusive: ['ids', 'deleted'],
     }),
-    force: flags.boolean({
+    force: Flags.boolean({
       description: chalk.red('Extreme danger mode') + ': do not prompt before updating',
     }),
   }
 
   async run() {
-    const {flags} = this.parse(UserReplace)
+    const {flags} = await this.parse(UserReplace)
 
     if (!(flags.deleted || flags.ids || flags.pipe)) {
       this.error('You must specify one of: -d, -i, -p', {exit: 1})
@@ -53,12 +52,12 @@ export default class UserReplace extends Command {
     if (flags.force) {
       let countdown = 5
       while (countdown > -1) {
-        cli.action.start(`Warning: user:replace running in ${chalk.bold.red('extreme danger mode')}, hit Ctrl-C to abort, starting in ${chalk.bold(String(countdown))}`)
+        CliUx.ux.action.start(`Warning: user:replace running in ${chalk.bold.red('extreme danger mode')}, hit Ctrl-C to abort, starting in ${chalk.bold(String(countdown))}`)
         // eslint-disable-next-line no-await-in-loop
-        await cli.wait(1000)
+        await CliUx.ux.wait(1000)
         countdown--
       }
-      cli.action.stop(chalk.bold.green('ok'))
+      CliUx.ux.action.stop(chalk.bold.green('ok'))
     }
 
     let user_ids: string[] = []
@@ -223,7 +222,7 @@ export default class UserReplace extends Command {
     }
 
     if (!flags.force) {
-      const ok = await cli.prompt(chalk.bold.red(`About to update ${schedule_requests.length} schedules and ${ep_requests.length} escalation policies. Are you absolutely sure?\nType '${chalk.bold.blue(replacement_user_id)}' to confirm`), {default: 'nope'})
+      const ok = await CliUx.ux.prompt(chalk.bold.red(`About to update ${schedule_requests.length} schedules and ${ep_requests.length} escalation policies. Are you absolutely sure?\nType '${chalk.bold.blue(replacement_user_id)}' to confirm`), {default: 'nope'})
       if (ok !== replacement_user_id) {
         // eslint-disable-next-line no-console
         console.warn(`OK, doing nothing... ${chalk.bold.green('done')}`)

@@ -1,6 +1,5 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 import * as chrono from 'chrono-node'
@@ -11,26 +10,26 @@ export default class ScheduleShow extends Command {
 
   static flags = {
     ...Command.flags,
-    id: flags.string({
+    id: Flags.string({
       char: 'i',
       description: 'Show the schedule with this ID.',
       exclusive: ['email', 'me'],
     }),
-    name: flags.string({
+    name: Flags.string({
       char: 'n',
       description: 'Show the schedule with this name.',
       exclusive: ['id'],
     }),
-    since: flags.string({
+    since: Flags.string({
       description: 'The start of the date range over which you want to search.',
     }),
-    until: flags.string({
+    until: Flags.string({
       description: 'The end of the date range over which you want to search.',
     }),
   }
 
   async run() {
-    const {flags} = this.parse(ScheduleShow)
+    const {flags} = await this.parse(ScheduleShow)
 
     const params: Record<string, any> = {}
 
@@ -41,10 +40,10 @@ export default class ScheduleShow extends Command {
       }
       scheduleID = flags.id
     } else if (flags.name) {
-      cli.action.start(`Finding PD schedule ${chalk.bold.blue(flags.name)}`)
+      CliUx.ux.action.start(`Finding PD schedule ${chalk.bold.blue(flags.name)}`)
       scheduleID = await this.pd.scheduleIDForName(flags.name)
       if (!scheduleID) {
-        cli.action.stop(chalk.bold.red('failed!'))
+        CliUx.ux.action.stop(chalk.bold.red('failed!'))
         this.error(`No schedule or multiple schedules found with the name "${flags.name}"`, {exit: 1})
       }
     } else {
@@ -64,13 +63,13 @@ export default class ScheduleShow extends Command {
       }
     }
 
-    cli.action.start(`Getting schedule ${chalk.bold.blue(scheduleID)}`)
+    CliUx.ux.action.start(`Getting schedule ${chalk.bold.blue(scheduleID)}`)
     const r = await this.pd.request({
       endpoint: `schedules/${scheduleID}`,
       method: 'GET',
       params: params,
     })
-    cli.action.stop(chalk.bold.green('done'))
+    CliUx.ux.action.stop(chalk.bold.green('done'))
     const schedule = r.getData().schedule
 
     const coverage_int = schedule.final_schedule.rendered_coverage_percentage
@@ -89,7 +88,6 @@ export default class ScheduleShow extends Command {
     this.log(`${chalk.bold('Schedule coverage:')} ${coverage_str}\n`)
 
     const options = {
-      printLine: this.log,
       ...flags, // parsed flags
     }
 
@@ -117,7 +115,7 @@ export default class ScheduleShow extends Command {
         get: (row: any) => utils.formatField(jp.query(row, 'users[*].user.summary'), '\n'),
       },
     }
-    cli.table(schedule.schedule_layers, columns, options)
+    CliUx.ux.table(schedule.schedule_layers, columns, options)
 
     columns = {
       start: {
@@ -140,11 +138,11 @@ export default class ScheduleShow extends Command {
     if (schedule.overrides_subschedule.rendered_schedule_entries.length > 0) {
       this.log('')
       this.log(chalk.bold.cyan('Overrides:'))
-      cli.table(schedule.overrides_subschedule.rendered_schedule_entries, columns, options)
+      CliUx.ux.table(schedule.overrides_subschedule.rendered_schedule_entries, columns, options)
     }
 
     this.log('')
     this.log(chalk.bold.cyan('Final Schedule:'))
-    cli.table(schedule.final_schedule.rendered_schedule_entries, columns, options)
+    CliUx.ux.table(schedule.final_schedule.rendered_schedule_entries, columns, options)
   }
 }

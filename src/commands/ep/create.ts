@@ -1,8 +1,7 @@
 /* eslint-disable complexity */
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
-import cli from 'cli-ux'
 import * as utils from '../../utils'
 
 export default class EpCreate extends Command {
@@ -10,49 +9,49 @@ export default class EpCreate extends Command {
 
   static flags = {
     ...Command.flags,
-    name: flags.string({
+    name: Flags.string({
       char: 'n',
       description: 'The name of the escalation policy to add.',
       required: true,
     }),
-    delay: flags.integer({
+    delay: Flags.integer({
       char: 'd',
       description: 'Delay in minutes before unacknowledged incidents escalate away from this level',
       default: 30,
     }),
-    description: flags.string({
+    description: Flags.string({
       description: 'The description of the escalation policy',
     }),
-    repeat: flags.integer({
+    repeat: Flags.integer({
       char: 'r',
       description: 'Number of times to repeat this level',
       default: 0,
     }),
-    user_ids: flags.string({
+    user_ids: Flags.string({
       char: 'u',
       description: 'Add a target user with this ID. Specify multiple times for multiple targets.',
       multiple: true,
     }),
-    user_emails: flags.string({
+    user_emails: Flags.string({
       char: 'U',
       description: 'Add a target user with this email. Specify multiple times for multiple targets.',
       multiple: true,
     }),
-    schedule_ids: flags.string({
+    schedule_ids: Flags.string({
       char: 's',
       description: 'Add a target schedule with this ID. Specify multiple times for multiple targets.',
       multiple: true,
     }),
-    schedule_names: flags.string({
+    schedule_names: Flags.string({
       char: 'S',
       description: 'Add a target schedule with this name. Specify multiple times for multiple targets.',
       multiple: true,
     }),
-    open: flags.boolean({
+    open: Flags.boolean({
       char: 'o',
       description: 'Open the new escalation policy in the browser',
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Print the escalation policy ID only to stdout, for use with pipes.',
       exclusive: ['open'],
@@ -60,7 +59,7 @@ export default class EpCreate extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(EpCreate)
+    const {flags} = await this.parse(EpCreate)
 
     let schedule_ids: string[] = []
     if (flags.schedule_ids) {
@@ -153,20 +152,20 @@ export default class EpCreate extends Command {
     if (r.isFailure) {
       this.error(`Failed to create escalation policy: ${r.getFormattedError()}`, {exit: 1})
     }
-    cli.action.stop(chalk.bold.green('done'))
+    CliUx.ux.action.stop(chalk.bold.green('done'))
     const returned_ep = r.getData()
 
     if (flags.pipe) {
       this.log(returned_ep.escalation_policy.id)
     } else if (flags.open) {
-      cli.action.start(`Opening ${chalk.bold.blue(returned_ep.escalation_policy.html_url)} in the browser`)
+      CliUx.ux.action.start(`Opening ${chalk.bold.blue(returned_ep.escalation_policy.html_url)} in the browser`)
       try {
-        await cli.open(returned_ep.escalation_policy.html_url)
+        await CliUx.ux.open(returned_ep.escalation_policy.html_url)
       } catch (error) {
-        cli.action.stop(chalk.bold.red('failed!'))
+        CliUx.ux.action.stop(chalk.bold.red('failed!'))
         this.error('Couldn\'t open your browser. Are you running as root?', {exit: 1})
       }
-      cli.action.stop(chalk.bold.green('done'))
+      CliUx.ux.action.stop(chalk.bold.green('done'))
     } else {
       this.log(`Your new escalation policy is at ${chalk.bold.blue(returned_ep.escalation_policy.html_url)}`)
     }

@@ -1,6 +1,5 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 import * as chrono from 'chrono-node'
@@ -11,47 +10,47 @@ export default class UserOncall extends Command {
 
   static flags = {
     ...Command.flags,
-    me: flags.boolean({
+    me: Flags.boolean({
       char: 'm',
       description: 'Show my oncalls.',
       exclusive: ['id', 'email'],
     }),
-    id: flags.string({
+    id: Flags.string({
       char: 'i',
       description: 'Show oncalls for the user with this ID.',
       exclusive: ['email', 'me'],
     }),
-    email: flags.string({
+    email: Flags.string({
       char: 'e',
       description: 'Show oncalls for the user with this login email.',
       exclusive: ['id', 'me'],
     }),
-    since: flags.string({
+    since: Flags.string({
       description: 'The start of the date range over which you want to search.',
     }),
-    until: flags.string({
+    until: Flags.string({
       description: 'The end of the date range over which you want to search.',
     }),
-    always: flags.boolean({
+    always: Flags.boolean({
       char: 'a',
       description: 'Include \'Always on call.\'',
       default: false,
     }),
-    keys: flags.string({
+    keys: Flags.string({
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
       multiple: true,
     }),
-    json: flags.boolean({
+    json: Flags.boolean({
       char: 'j',
       description: 'output full details as JSON',
       exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
     }),
-    ...cli.table.flags(),
+    ...CliUx.ux.table.flags(),
   }
 
   async run() {
-    const {flags} = this.parse(UserOncall)
+    const {flags} = await this.parse(UserOncall)
 
     const params: Record<string, any> = {}
 
@@ -62,14 +61,14 @@ export default class UserOncall extends Command {
       }
       userID = flags.id
     } else if (flags.email) {
-      cli.action.start(`Finding PD user ${chalk.bold.blue(flags.email)}`)
+      CliUx.ux.action.start(`Finding PD user ${chalk.bold.blue(flags.email)}`)
       userID = await this.pd.userIDForEmail(flags.email)
       if (!userID) {
-        cli.action.stop(chalk.bold.red('failed!'))
+        CliUx.ux.action.stop(chalk.bold.red('failed!'))
         this.error(`No user was found for the email "${flags.email}"`, {exit: 1})
       }
     } else if (flags.me) {
-      cli.action.start('Finding your PD user ID')
+      CliUx.ux.action.start('Finding your PD user ID')
       const me = await this.me(true)
       userID = me.user.id
     } else {
@@ -101,10 +100,10 @@ export default class UserOncall extends Command {
     }
 
     if (oncalls.length === 0) {
-      cli.action.stop(chalk.bold.red('none found'))
+      CliUx.ux.action.stop(chalk.bold.red('none found'))
       this.exit(0)
     }
-    cli.action.stop(chalk.bold.green('done'))
+    CliUx.ux.action.stop(chalk.bold.green('done'))
 
     if (flags.json) {
       await utils.printJsonAndExit(oncalls)
@@ -140,9 +139,8 @@ export default class UserOncall extends Command {
     }
 
     const options = {
-      printLine: this.log,
       ...flags, // parsed flags
     }
-    cli.table(oncalls, columns, options)
+    CliUx.ux.table(oncalls, columns, options)
   }
 }

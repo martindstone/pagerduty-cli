@@ -1,7 +1,6 @@
 /* eslint-disable complexity */
 import Command from '../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import * as utils from '../utils'
 import * as chrono from 'chrono-node'
 import jp from 'jsonpath'
@@ -11,37 +10,37 @@ export default class Log extends Command {
 
   static flags = {
     ...Command.flags,
-    since: flags.string({
+    since: Flags.string({
       description: 'The start of the date range over which you want to search.',
       default: '30 days ago',
     }),
-    until: flags.string({
+    until: Flags.string({
       description: 'The end of the date range over which you want to search.',
     }),
-    overview: flags.boolean({
+    overview: Flags.boolean({
       char: 'O',
       description: 'Get only `overview` log entries',
     }),
-    keys: flags.string({
+    keys: Flags.string({
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
       multiple: true,
     }),
-    json: flags.boolean({
+    json: Flags.boolean({
       char: 'j',
       description: 'output full details as JSON',
       exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
     }),
-    delimiter: flags.string({
+    delimiter: Flags.string({
       char: 'd',
       description: 'Delimiter for fields that have more than one value',
       default: '\n',
     }),
-    ...cli.table.flags(),
+    ...CliUx.ux.table.flags(),
   }
 
   async run() {
-    const {flags} = this.parse(Log)
+    const {flags} = await this.parse(Log)
 
     const params: Record<string, any> = {
       is_overview: flags.overview,
@@ -99,9 +98,8 @@ export default class Log extends Command {
     }
 
     const options = {
-      printLine: this.log,
       ...flags, // parsed flags
     }
-    cli.table(log_entries, columns, options)
+    CliUx.ux.table(log_entries, columns, options)
   }
 }

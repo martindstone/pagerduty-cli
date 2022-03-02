@@ -1,7 +1,6 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
-import cli from 'cli-ux'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 import log from 'ololog'
@@ -12,42 +11,42 @@ export default class IncidentAlerts extends Command {
 
   static flags = {
     ...Command.flags,
-    me: flags.boolean({
+    me: Flags.boolean({
       char: 'm',
       description: 'Show alerts for all incidents assigned to me',
       exclusive: ['ids', 'pipe'],
     }),
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'Show alerts for these Incident ID\'s. Specify multiple times for multiple incidents.',
       multiple: true,
       exclusive: ['me', 'pipe'],
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read incident ID\'s from stdin.',
       exclusive: ['me', 'ids'],
     }),
-    json: flags.boolean({
+    json: Flags.boolean({
       char: 'j',
       description: 'output full details as JSON',
       exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
     }),
-    keys: flags.string({
+    keys: Flags.string({
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
       multiple: true,
     }),
-    delimiter: flags.string({
+    delimiter: Flags.string({
       char: 'd',
       description: 'Delimiter for fields that have more than one value',
       default: '\n',
     }),
-    ...cli.table.flags(),
+    ...CliUx.ux.table.flags(),
   }
 
   async run() {
-    const {flags} = this.parse(IncidentAlerts)
+    const {flags} = await this.parse(IncidentAlerts)
 
     let incident_ids: string[] = []
     if (flags.me) {
@@ -88,7 +87,7 @@ export default class IncidentAlerts extends Command {
       })
       alerts = [...alerts, ...r]
     }
-    cli.action.stop(chalk.bold.green('done'))
+    CliUx.ux.action.stop(chalk.bold.green('done'))
     if (alerts.length === 0) {
       this.error('No incidents found', {exit: 0})
     }
@@ -139,10 +138,9 @@ export default class IncidentAlerts extends Command {
     }
 
     const options = {
-      printLine: this.log,
       ...flags, // parsed flags
     }
 
-    cli.table(alerts, columns, options)
+    CliUx.ux.table(alerts, columns, options)
   }
 }

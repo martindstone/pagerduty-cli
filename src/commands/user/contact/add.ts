@@ -1,6 +1,5 @@
 import Command from '../../../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import parsePhoneNumber from 'libphonenumber-js'
 
@@ -9,28 +8,28 @@ export default class UserContactAdd extends Command {
 
   static flags = {
     ...Command.flags,
-    id: flags.string({
+    id: Flags.string({
       char: 'i',
       description: 'Add contact to the user with this ID.',
       exclusive: ['email'],
     }),
-    email: flags.string({
+    email: Flags.string({
       char: 'e',
       description: 'Add contact to the user with this login email.',
       exclusive: ['id'],
     }),
-    label: flags.string({
+    label: Flags.string({
       char: 'l',
       description: 'The contact method label.',
       required: true,
     }),
-    type: flags.string({
+    type: Flags.string({
       char: 'T',
       description: 'The contact method type.',
       required: true,
       options: ['email', 'phone', 'sms'],
     }),
-    address: flags.string({
+    address: Flags.string({
       char: 'a',
       description: 'The contact method address or phone number.',
       required: true,
@@ -38,16 +37,16 @@ export default class UserContactAdd extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(UserContactAdd)
+    const {flags} = await this.parse(UserContactAdd)
 
     let userID
     if (flags.id) {
       userID = flags.id
     } else if (flags.email) {
-      cli.action.start(`Finding PD user ${chalk.bold.blue(flags.email)}`)
+      CliUx.ux.action.start(`Finding PD user ${chalk.bold.blue(flags.email)}`)
       userID = await this.pd.userIDForEmail(flags.email)
       if (!userID) {
-        cli.action.stop(chalk.bold.red('failed!'))
+        CliUx.ux.action.stop(chalk.bold.red('failed!'))
         this.error(`No user was found for the email "${flags.email}"`, {exit: 1})
       }
     } else {
@@ -69,17 +68,17 @@ export default class UserContactAdd extends Command {
       body.contact_method.address = flags.address
     }
 
-    cli.action.start(`Adding ${chalk.bold.blue(flags.type)} contact method for user ${chalk.bold.blue(userID)}`)
+    CliUx.ux.action.start(`Adding ${chalk.bold.blue(flags.type)} contact method for user ${chalk.bold.blue(userID)}`)
     const r = await this.pd.request({
       endpoint: `users/${userID}/contact_methods`,
       method: 'POST',
       data: body,
     })
     if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
+      CliUx.ux.action.stop(chalk.bold.red('failed!'))
       this.error(`Request failed: ${r.getFormattedError}`, {exit: 1})
     }
     const contact_method = r.getData()
-    cli.action.stop(`${chalk.bold.green('created contact method')} ${chalk.bold.blue(contact_method.contact_method.id)}`)
+    CliUx.ux.action.stop(`${chalk.bold.green('created contact method')} ${chalk.bold.blue(contact_method.contact_method.id)}`)
   }
 }

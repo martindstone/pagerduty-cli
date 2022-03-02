@@ -1,6 +1,5 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
@@ -10,18 +9,18 @@ export default class TeamOpen extends Command {
 
   static flags = {
     ...Command.flags,
-    name: flags.string({
+    name: Flags.string({
       char: 'n',
       description: 'Open teams matching this string.',
       exclusive: ['ids', 'pipe'],
     }),
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'The IDs of teams to open.',
       exclusive: ['name', 'pipe'],
       multiple: true,
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read team ID\'s from stdin.',
       exclusive: ['ids', 'name'],
@@ -29,17 +28,17 @@ export default class TeamOpen extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(TeamOpen)
+    const {flags} = await this.parse(TeamOpen)
 
     const params: Record<string, any> = {}
 
     let team_ids = []
     if (flags.name) {
       params.query = flags.name
-      cli.action.start('Finding teams in PD')
+      CliUx.ux.action.start('Finding teams in PD')
       const teams = await this.pd.fetch('teams', {params: params})
       if (teams.length === 0) {
-        cli.action.stop(chalk.bold.red('no teams found matching ') + chalk.bold.blue(flags.name))
+        CliUx.ux.action.stop(chalk.bold.red('no teams found matching ') + chalk.bold.blue(flags.name))
         this.exit(0)
       }
       for (const team of teams) {
@@ -58,25 +57,25 @@ export default class TeamOpen extends Command {
       this.error('You must specify one of: -i, -n, -p', {exit: 1})
     }
     if (team_ids.length === 0) {
-      cli.action.stop(chalk.bold.red('no teams specified'))
+      CliUx.ux.action.stop(chalk.bold.red('no teams specified'))
       this.exit(0)
     }
-    cli.action.start('Finding your PD domain')
+    CliUx.ux.action.start('Finding your PD domain')
     const domain = await this.pd.domain()
 
     this.log('Team URLs:')
     const urlstrings: string[] = team_ids.map(x => chalk.bold.blue(`https://${domain}.pagerduty.com/teams/${x}`))
     this.log(urlstrings.join('\n') + '\n')
 
-    cli.action.start('Opening your browser')
+    CliUx.ux.action.start('Opening your browser')
     try {
       for (const team_id of team_ids) {
-        await cli.open(`https://${domain}.pagerduty.com/teams/${team_id}`)
+        await CliUx.ux.open(`https://${domain}.pagerduty.com/teams/${team_id}`)
       }
     } catch (error) {
-      cli.action.stop(chalk.bold.red('failed!'))
+      CliUx.ux.action.stop(chalk.bold.red('failed!'))
       this.error('Couldn\'t open browser. Are you running as root?', {exit: 1})
     }
-    cli.action.stop(chalk.bold.green('done'))
+    CliUx.ux.action.stop(chalk.bold.green('done'))
   }
 }

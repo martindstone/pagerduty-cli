@@ -3,7 +3,7 @@
 /* eslint-disable max-depth */
 /* eslint-disable no-await-in-loop */
 import axios, {Method} from 'axios'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import chalk from 'chalk'
 import util from 'util'
 
@@ -244,7 +244,7 @@ export class PD {
         if (callback) {
           callback({waiting: true})
         }
-        await cli.wait(10000)
+        await CliUx.ux.wait(10000)
         if (callback) {
           callback({waiting: false})
         }
@@ -279,7 +279,7 @@ export class PD {
       this.progressState.failed = 0
       this.progressState.succeeded = 0
       this.progressState.total = 0
-      cli.action.start(this.progressState.format)
+      CliUx.ux.action.start(this.progressState.format)
       this.progressState.started = true
     }
     if (p.waiting !== undefined) {
@@ -307,10 +307,10 @@ export class PD {
       const failureText = chalk.bold.red(`${this.progressState.failed}/${totalText} 👎`)
       let statusText = `${successText}, ${failureText}`
       if (this.progressState.waiting) statusText += chalk.bold.red(' Rate limited! Waiting')
-      cli.action.start(this.progressState.format + ' ' + statusText)
+      CliUx.ux.action.start(this.progressState.format + ' ' + statusText)
     }
     if (p.done) {
-      if (this.progressState.stopSpinnerWhenDone) cli.action.stop(chalk.bold.green('done'))
+      if (this.progressState.stopSpinnerWhenDone) CliUx.ux.action.stop(chalk.bold.green('done'))
       this.progressState.started = false
     }
   }

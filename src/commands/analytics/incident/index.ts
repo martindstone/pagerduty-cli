@@ -1,9 +1,8 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable complexity */
 import Command from '../../../base'
-import {flags} from '@oclif/command'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
-import cli from 'cli-ux'
 import * as utils from '../../../utils'
 import * as chrono from 'chrono-node'
 
@@ -12,60 +11,60 @@ export default class AnalyticsIncident extends Command {
 
   static flags = {
     ...Command.flags,
-    teams: flags.string({
+    teams: Flags.string({
       char: 't',
       description: 'Team names to include. Specify multiple times for multiple teams.',
       multiple: true,
     }),
-    services: flags.string({
+    services: Flags.string({
       char: 'S',
       description: 'Service names to include. Specify multiple times for multiple services.',
       multiple: true,
     }),
-    major: flags.boolean({
+    major: Flags.boolean({
       char: 'M',
       description: 'Include only major incidents',
     }),
-    urgencies: flags.string({
+    urgencies: Flags.string({
       char: 'u',
       description: 'Urgencies to include.',
       multiple: true,
       options: ['high', 'low'],
       default: ['high', 'low'],
     }),
-    since: flags.string({
+    since: Flags.string({
       description: 'The start of the date range over which you want to search.',
       default: '7 days ago',
     }),
-    until: flags.string({
+    until: Flags.string({
       description: 'The end of the date range over which you want to search.',
       default: 'now',
     }),
-    aggregate_unit: flags.string({
+    aggregate_unit: Flags.string({
       char: 'g',
       description: 'The time unit to aggregate metrics by. If no value is provided, the metrics will be aggregated for the entire period.',
       options: ['day', 'week', 'month'],
     }),
-    keys: flags.string({
+    keys: Flags.string({
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
       multiple: true,
     }),
-    json: flags.boolean({
+    json: Flags.boolean({
       char: 'j',
       description: 'output full details as JSON',
       exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
     }),
-    delimiter: flags.string({
+    delimiter: Flags.string({
       char: 'd',
       description: 'Delimiter for fields that have more than one value',
       default: '\n',
     }),
-    ...cli.table.flags(),
+    ...CliUx.ux.table.flags(),
   }
 
   async run() {
-    const {flags} = this.parse(AnalyticsIncident)
+    const {flags} = await this.parse(AnalyticsIncident)
 
     const headers = {
       'X-EARLY-ACCESS': 'analytics-v2',
@@ -83,7 +82,7 @@ export default class AnalyticsIncident extends Command {
     }
 
     if (flags.teams) {
-      cli.action.start('Finding teams')
+      CliUx.ux.action.start('Finding teams')
       let teams: any[] = []
       for (const name of flags.teams) {
         // eslint-disable-next-line no-await-in-loop
@@ -92,14 +91,14 @@ export default class AnalyticsIncident extends Command {
       }
       const team_ids = [...new Set(teams)]
       if (team_ids.length === 0) {
-        cli.action.stop(chalk.bold.red('none found'))
+        CliUx.ux.action.stop(chalk.bold.red('none found'))
         this.error('No teams found. Please check your search.', {exit: 1})
       }
       data.filters.team_ids = team_ids
     }
 
     if (flags.services) {
-      cli.action.start('Finding services')
+      CliUx.ux.action.start('Finding services')
       let services: any[] = []
       for (const name of flags.services) {
         // eslint-disable-next-line no-await-in-loop
@@ -108,7 +107,7 @@ export default class AnalyticsIncident extends Command {
       }
       const service_ids = [...new Set(services)]
       if (service_ids.length === 0) {
-        cli.action.stop(chalk.bold.red('none found'))
+        CliUx.ux.action.stop(chalk.bold.red('none found'))
         this.error('No services found. Please check your search.', {exit: 1})
       }
       data.filters.service_ids = service_ids
@@ -143,7 +142,6 @@ export default class AnalyticsIncident extends Command {
     }
 
     const options = {
-      printLine: this.log,
       ...flags, // parsed flags
     }
     const columns: Record<string, any> = {
@@ -198,7 +196,7 @@ export default class AnalyticsIncident extends Command {
     }
 
     if (flags.csv || flags.output) {
-      cli.table(analytics, columns, options)
+      CliUx.ux.table(analytics, columns, options)
       this.exit(0)
     }
 
@@ -210,7 +208,7 @@ export default class AnalyticsIncident extends Command {
     })
     const meanColumns = Object.fromEntries(meanColumnsArr)
     this.log(chalk.bold.blue('Mean values:'))
-    cli.table(analytics, meanColumns, options)
+    CliUx.ux.table(analytics, meanColumns, options)
 
     let totalColumnsArr = Object.entries(columns).filter(([k, _v]) => {
       return k === 'range_start' || k.indexOf('total') > -1
@@ -221,6 +219,6 @@ export default class AnalyticsIncident extends Command {
     const totalColumns = Object.fromEntries(totalColumnsArr)
     this.log('')
     this.log(chalk.bold.blue('Total values:'))
-    cli.table(analytics, totalColumns, options)
+    CliUx.ux.table(analytics, totalColumns, options)
   }
 }

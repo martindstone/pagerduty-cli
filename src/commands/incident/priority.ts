@@ -1,7 +1,6 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
-import cli from 'cli-ux'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 
@@ -10,27 +9,27 @@ export default class IncidentPriority extends Command {
 
   static flags = {
     ...Command.flags,
-    me: flags.boolean({
+    me: Flags.boolean({
       char: 'm',
       description: 'Set priority on all incidents assigned to me',
       exclusive: ['ids'],
     }),
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'Incident ID\'s to set priority on. Specify multiple times for multiple incidents.',
       multiple: true,
       exclusive: ['me'],
     }),
-    priority: flags.string({
+    priority: Flags.string({
       char: 'n',
       description: 'The name of the priority to set.',
       required: true,
     }),
-    from: flags.string({
+    from: Flags.string({
       char: 'F',
       description: 'Login email of a PD user account for the "From:" header. Use only with legacy API tokens.',
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read incident ID\'s from stdin.',
       exclusive: ['me', 'ids'],
@@ -38,7 +37,7 @@ export default class IncidentPriority extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(IncidentPriority)
+    const {flags} = await this.parse(IncidentPriority)
 
     const headers: Record<string, string> = {}
     if (flags.from) {
@@ -51,13 +50,13 @@ export default class IncidentPriority extends Command {
 
       const params = {user_ids: [me.user.id]}
 
-      cli.action.start('Getting incidents from PD')
+      CliUx.ux.action.start('Getting incidents from PD')
       const incidents = await this.pd.fetch('incidents', {params: params})
       if (incidents.length === 0) {
-        cli.action.stop(chalk.bold.red('none found'))
+        CliUx.ux.action.stop(chalk.bold.red('none found'))
         return
       }
-      cli.action.stop(`got ${incidents.length}`)
+      CliUx.ux.action.stop(`got ${incidents.length}`)
       incident_ids = incidents.map((e: { id: any }) => e.id)
     } else if (flags.ids) {
       incident_ids = utils.splitDedupAndFlatten(flags.ids)
@@ -73,21 +72,21 @@ export default class IncidentPriority extends Command {
       this.error(`Invalid incident ID's: ${invalid_ids.join(', ')}`, {exit: 1})
     }
 
-    cli.action.start('Getting incident priorities from PD')
+    CliUx.ux.action.start('Getting incident priorities from PD')
     const priorities_map = await this.pd.getPrioritiesMapByName()
     if (priorities_map === {}) {
-      cli.action.stop(chalk.bold.red('none found'))
+      CliUx.ux.action.stop(chalk.bold.red('none found'))
       this.error('No incident priorities were found. Is the priority feature enabled?', {exit: 1})
     }
 
     if (!(flags.priority in priorities_map)) {
-      cli.action.stop('failed!')
+      CliUx.ux.action.stop('failed!')
       this.error(`No incident priority matches name ${flags.priority}`, {exit: 1})
     }
 
     const priority_id = priorities_map[flags.priority].id
     const requests: any[] = []
-    cli.action.start(`Setting priority ${chalk.bold.blue(`${flags.priority} (${priority_id})`)} on incident(s) ${chalk.bold.blue(incident_ids.join(', '))}`)
+    CliUx.ux.action.start(`Setting priority ${chalk.bold.blue(`${flags.priority} (${priority_id})`)} on incident(s) ${chalk.bold.blue(incident_ids.join(', '))}`)
     for (const incident_id of incident_ids) {
       const body = {
         incident: {

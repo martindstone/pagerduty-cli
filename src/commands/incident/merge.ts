@@ -1,6 +1,5 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
@@ -10,33 +9,33 @@ export default class IncidentMerge extends Command {
 
   static flags = {
     ...Command.flags,
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'Merge incidents with the given ID. Specify multiple times for multiple incidents. If -I is not given, the first incident in the list will be the parent incident.',
       exclusive: ['pipe'],
       multiple: true,
     }),
-    parent_id: flags.string({
+    parent_id: Flags.string({
       char: 'I',
       description: 'Use this incident ID as the parent ID.',
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read incident IDs from stdin, for use with pipes. If -I is not given, the first incident ID from the pipe will be the parent incident.',
       exclusive: ['ids'],
     }),
-    from: flags.string({
+    from: Flags.string({
       char: 'F',
       description: 'Login email of a PD user account for the "From:" header. Use only with legacy API tokens.',
     }),
-    open: flags.boolean({
+    open: Flags.boolean({
       char: 'o',
       description: 'Open the merged incident in the browser',
     }),
   }
 
   async run() {
-    const {flags} = this.parse(IncidentMerge)
+    const {flags} = await this.parse(IncidentMerge)
 
     if (!flags.ids && !flags.pipe) {
       this.error('You must specify at least one of: -i, -p', {exit: 1})
@@ -78,7 +77,7 @@ export default class IncidentMerge extends Command {
     const source_incidents = incident_ids.map(x => ({id: x, type: 'incident_reference'}))
     const data = {source_incidents}
 
-    cli.action.start(`Merging ${chalk.bold.blue(incident_ids.length.toString())} incidents into parent incident ${chalk.bold.blue(parent_id)}`)
+    CliUx.ux.action.start(`Merging ${chalk.bold.blue(incident_ids.length.toString())} incidents into parent incident ${chalk.bold.blue(parent_id)}`)
 
     const r = await this.pd.request({
       method: 'PUT',
@@ -88,21 +87,21 @@ export default class IncidentMerge extends Command {
     })
 
     if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
+      CliUx.ux.action.stop(chalk.bold.red('failed!'))
       this.error(`Couldn't merge incidents: ${r.getFormattedError()}`)
     }
     const returned_incident = r.getData()
-    cli.action.stop(chalk.bold.green('done'))
+    CliUx.ux.action.stop(chalk.bold.green('done'))
 
     if (flags.open) {
-      cli.action.start(`Opening ${chalk.bold.blue(returned_incident.incident.html_url)} in the browser`)
+      CliUx.ux.action.start(`Opening ${chalk.bold.blue(returned_incident.incident.html_url)} in the browser`)
       try {
-        await cli.open(returned_incident.incident.html_url)
+        await CliUx.ux.open(returned_incident.incident.html_url)
       } catch (error) {
-        cli.action.stop(chalk.bold.red('failed!'))
+        CliUx.ux.action.stop(chalk.bold.red('failed!'))
         this.error('Couldn\'t open your browser. Are you running as root?', {exit: 1})
       }
-      cli.action.stop(chalk.bold.green('done'))
+      CliUx.ux.action.stop(chalk.bold.green('done'))
     }
   }
 }

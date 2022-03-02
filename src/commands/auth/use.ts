@@ -1,5 +1,5 @@
 import Command from '../../authbase'
-import {flags} from '@oclif/command'
+import {Flags} from '@oclif/core'
 import chalk from 'chalk'
 import {Config} from '../../config'
 
@@ -8,7 +8,7 @@ export default class AuthUse extends Command {
 
   static flags = {
     ...Command.flags,
-    alias: flags.string({
+    alias: Flags.string({
       char: 'a',
       description: 'The alias of the PD domain to use',
       required: true,
@@ -16,7 +16,7 @@ export default class AuthUse extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(AuthUse)
+    const {flags} = await this.parse(AuthUse)
     const config = new Config()
     if (config.setDefaultAlias(flags.alias)) {
       this.log(`You are logged in to ${chalk.bold.blue(config.getCurrentSubdomain())} as ${chalk.bold.blue(config.get()?.user?.email || 'nobody')} (alias: ${chalk.bold.blue(config.defaultAlias())})`)

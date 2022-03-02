@@ -1,6 +1,5 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 
@@ -9,32 +8,32 @@ export default class EpCopy extends Command {
 
   static flags = {
     ...Command.flags,
-    name: flags.string({
+    name: Flags.string({
       char: 'n',
       description: 'The name of the escalation policy to copy.',
       exclusive: ['id'],
     }),
-    id: flags.string({
+    id: Flags.string({
       char: 'i',
       description: 'The ID of the escalation policy to copy.',
       exclusive: ['name'],
     }),
-    destination: flags.string({
+    destination: Flags.string({
       char: 'd',
       description: 'The name for the new escalation policy',
     }),
-    open: flags.boolean({
+    open: Flags.boolean({
       char: 'o',
       description: 'Open the new escalation policy in the browser',
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Print the new escalation policy ID only to stdout, for use with pipes.',
     }),
   }
 
   async run() {
-    const {flags} = this.parse(EpCopy)
+    const {flags} = await this.parse(EpCopy)
 
     if (!([flags.name, flags.id].some(Boolean))) {
       this.error('You must specify one of: -i, -n', {exit: 1})
@@ -59,13 +58,13 @@ export default class EpCopy extends Command {
       this.error('No escalation policy specified', {exit: 1})
     }
 
-    cli.action.start(`Getting escalation policy ${chalk.bold.blue(ep_id)}`)
+    CliUx.ux.action.start(`Getting escalation policy ${chalk.bold.blue(ep_id)}`)
     let r = await this.pd.request({
       endpoint: `escalation_policies/${ep_id}`,
       method: 'GET',
     })
     if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
+      CliUx.ux.action.stop(chalk.bold.red('failed!'))
       this.error(`Couldn't get escalation policy ${chalk.bold.blue(ep_id)}: ${r.getFormattedError()}`)
     }
 
@@ -81,30 +80,30 @@ export default class EpCopy extends Command {
         escalation_rules: escalation_rules,
       },
     }
-    cli.action.start(`Copying escalation policy ${chalk.bold.blue(ep_id)}`)
+    CliUx.ux.action.start(`Copying escalation policy ${chalk.bold.blue(ep_id)}`)
     r = await this.pd.request({
       endpoint: 'escalation_policies',
       method: 'POST',
       data: dest_ep,
     })
     if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
+      CliUx.ux.action.stop(chalk.bold.red('failed!'))
       this.error(`Couldn't create escalation policy: ${r.getFormattedError()}`)
     }
     const returned_ep = r.getData()
-    cli.action.stop(chalk.bold.green('done'))
+    CliUx.ux.action.stop(chalk.bold.green('done'))
 
     if (flags.pipe) {
       this.log(returned_ep.escalation_policy.id)
     } else if (flags.open) {
-      cli.action.start(`Opening ${chalk.bold.blue(returned_ep.escalation_policy.html_url)} in the browser`)
+      CliUx.ux.action.start(`Opening ${chalk.bold.blue(returned_ep.escalation_policy.html_url)} in the browser`)
       try {
-        await cli.open(returned_ep.escalation_policy.html_url)
+        await CliUx.ux.open(returned_ep.escalation_policy.html_url)
       } catch (error) {
-        cli.action.stop(chalk.bold.red('failed!'))
+        CliUx.ux.action.stop(chalk.bold.red('failed!'))
         this.error('Couldn\'t open your browser. Are you running as root?', {exit: 1})
       }
-      cli.action.stop(chalk.bold.green('done'))
+      CliUx.ux.action.stop(chalk.bold.green('done'))
     } else {
       this.log(`Your new escalation policy is at ${chalk.bold.blue(returned_ep.escalation_policy.html_url)}`)
     }

@@ -1,5 +1,4 @@
 import Command from '../../base'
-// import {flags} from '@oclif/command'
 import * as chrono from 'chrono-node'
 
 export default class UtilTimestamp extends Command {

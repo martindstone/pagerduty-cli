@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
 import Command from '../../../base'
-import {flags} from '@oclif/command'
+import {Flags} from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../../utils'
@@ -11,43 +11,43 @@ export default class EpTargetAdd extends Command {
 
   static flags = {
     ...Command.flags,
-    name: flags.string({
+    name: Flags.string({
       char: 'n',
       description: 'Update escalation policies whose names match this string.',
       exclusive: ['ids', 'pipe'],
     }),
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'The IDs of escalation policies to update.',
       exclusive: ['name', 'pipe'],
       multiple: true,
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read escalation policy ID\'s from stdin.',
       exclusive: ['ids', 'name'],
     }),
-    level: flags.integer({
+    level: Flags.integer({
       char: 'l',
       description: 'Escalation policy level to add targets to',
       required: true,
     }),
-    user_ids: flags.string({
+    user_ids: Flags.string({
       char: 'u',
       description: 'Add a target user with this ID. Specify multiple times for multiple targets.',
       multiple: true,
     }),
-    user_emails: flags.string({
+    user_emails: Flags.string({
       char: 'U',
       description: 'Add a target user with this email. Specify multiple times for multiple targets.',
       multiple: true,
     }),
-    schedule_ids: flags.string({
+    schedule_ids: Flags.string({
       char: 's',
       description: 'Add a target schedule with this ID. Specify multiple times for multiple targets.',
       multiple: true,
     }),
-    schedule_names: flags.string({
+    schedule_names: Flags.string({
       char: 'S',
       description: 'Add a target schedule with this name. Specify multiple times for multiple targets.',
       multiple: true,
@@ -55,7 +55,7 @@ export default class EpTargetAdd extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(EpTargetAdd)
+    const {flags} = await this.parse(EpTargetAdd)
 
     if (flags.level < 1) {
       this.error('The lowest level number is 1', {exit: 1})

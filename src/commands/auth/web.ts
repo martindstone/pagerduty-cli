@@ -1,8 +1,6 @@
 import Command from '../../authbase'
-import {flags} from '@oclif/command'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
-import cli from 'cli-ux'
-// import {PD} from '../../pd'
 import {Config} from '../../config'
 import * as http from 'http'
 
@@ -15,11 +13,11 @@ export default class AuthWeb extends Command {
 
   static flags = {
     ...Command.flags,
-    alias: flags.string({
+    alias: Flags.string({
       char: 'a',
       description: 'The alias to use for this token. Defaults to the name of the PD subdomain',
     }),
-    default: flags.boolean({
+    default: Flags.boolean({
       char: 'd',
       description: 'Use this token as the default for all PD commands',
       default: true,
@@ -28,7 +26,7 @@ export default class AuthWeb extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(this.ctor)
+    const {flags} = await this.parse(this.ctor)
 
     const config = {
       client: {
@@ -37,8 +35,6 @@ export default class AuthWeb extends Command {
       },
       auth: {
         tokenHost: 'https://app.pagerduty.com',
-        // authorizePath: '/global/oauth/authorize',
-        // tokenPath: '/global/oauth/token',
       },
     }
     const client = new AuthorizationCode(config)
@@ -51,7 +47,7 @@ export default class AuthWeb extends Command {
     })
 
     try {
-      await cli.open(authorizationUri)
+      await CliUx.ux.open(authorizationUri)
     } catch (error) {
       this.error(`Couldn't open a browser for web authentication: ${error}`, {
         exit: 1,
@@ -80,7 +76,7 @@ export default class AuthWeb extends Command {
 
     server.on('request', (req, res) => {
       // eslint-disable-next-line node/no-unsupported-features/node-builtins
-      const urlParts = new URL(req.url, `http://${req.headers.host}`)
+      const urlParts = new URL(req.url as string, `http://${req.headers.host}`)
       if (urlParts.pathname === '/callback' && urlParts.searchParams.has('code')) {
         const tokenParams: AuthorizationTokenConfig = {
           code: urlParts.searchParams.get('code') as string,
@@ -90,15 +86,15 @@ export default class AuthWeb extends Command {
         client.getToken(tokenParams).then(accessToken => {
           if (accessToken && accessToken.token && accessToken.token.access_token) {
             const token = accessToken.token.access_token
-            cli.action.start(`Checking token ${chalk.bold.blue(token)}`)
+            CliUx.ux.action.start(`Checking token ${chalk.bold.blue(token)}`)
             // sometimes PD gives an error when immediately making a request
             setTimeout(this.checkToken, 2_000, accessToken, this, flags)
           } else {
-            cli.action.stop(chalk.bold.red('failed - response didn\'t contain a token'))
+            CliUx.ux.action.stop(chalk.bold.red('failed - response didn\'t contain a token'))
             this.error('Missing token', {exit: 1, suggestions: ['Get a token from the web at https://martindstone.github.io/PDOAuth']})
           }
         }, _ => {
-          cli.action.stop(chalk.bold.red('grant request failed'))
+          CliUx.ux.action.stop(chalk.bold.red('grant request failed'))
           this.error('Grant request error', {exit: 1, suggestions: ['Get a token from the web at https://martindstone.github.io/PDOAuth']})
         })
 
@@ -112,7 +108,7 @@ export default class AuthWeb extends Command {
           }
         }, 500)
       } else if (urlParts.searchParams.has('error_description')) {
-        cli.action.stop(chalk.bold.red('failed'))
+        CliUx.ux.action.stop(chalk.bold.red('failed'))
         // eslint-disable-next-line no-console
         console.error(urlParts.searchParams.get('error_description'))
         res.statusCode = 200
@@ -124,7 +120,7 @@ export default class AuthWeb extends Command {
           }
         }, 500)
       } else {
-        cli.action.stop(chalk.bold.red('failed'))
+        CliUx.ux.action.stop(chalk.bold.red('failed'))
         // eslint-disable-next-line no-console
         console.error('Authentication failed')
         res.statusCode = 200
@@ -140,7 +136,7 @@ export default class AuthWeb extends Command {
 
     try {
       server.listen(8000, () => {
-        cli.action.start('Waiting for browser authentication')
+        CliUx.ux.action.start('Waiting for browser authentication')
       })
     } catch (error) {
       this.error('Couldn\'t start a local server for web authentication', {
@@ -158,14 +154,14 @@ export default class AuthWeb extends Command {
       const verb = self._config.has(configSubdomain.alias) ? 'updated' : 'added'
       self._config.put(configSubdomain, flags?.default)
       self._config.save()
-      cli.action.stop(chalk.bold.green('done'))
+      CliUx.ux.action.stop(chalk.bold.green('done'))
       if (flags.default) {
         self.log(`${chalk.bold(`Domain ${verb} -`)} you are logged in to ${chalk.bold.blue(self._config.getCurrentSubdomain())} as ${chalk.bold.blue(self._config.get()?.user.email)}`)
       } else {
         self.log(`${chalk.bold(`Domain ${verb}, default unchanged -`)} you are logged in to ${chalk.bold.blue(self._config.getCurrentSubdomain())} as ${chalk.bold.blue(self._config.get()?.user.email)} (alias: ${chalk.bold.blue(self._config.defaultAlias())})`)
       }
     }).catch(error => {
-      cli.action.stop(chalk.bold.red(`failed: ${error.message}`))
+      CliUx.ux.action.stop(chalk.bold.red(`failed: ${error.message}`))
     })
   }
 }

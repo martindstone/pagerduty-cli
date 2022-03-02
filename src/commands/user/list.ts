@@ -1,6 +1,5 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
 
@@ -9,41 +8,41 @@ export default class UserList extends Command {
 
   static flags = {
     ...Command.flags,
-    email: flags.string({
+    email: Flags.string({
       char: 'e',
       description: 'Select users whose login email addresses contain the given text',
       exclusive: ['exact_email'],
     }),
-    exact_email: flags.string({
+    exact_email: Flags.string({
       char: 'E',
       description: 'Select the user whose login email is this exact text',
       exclusive: ['email'],
     }),
-    keys: flags.string({
+    keys: Flags.string({
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
       multiple: true,
     }),
-    json: flags.boolean({
+    json: Flags.boolean({
       char: 'j',
       description: 'output full details as JSON',
       exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Print user ID\'s only to stdout, for use with pipes.',
       exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
     }),
-    delimiter: flags.string({
+    delimiter: Flags.string({
       char: 'd',
       description: 'Delimiter for fields that have more than one value',
       default: '\n',
     }),
-    ...cli.table.flags(),
+    ...CliUx.ux.table.flags(),
   }
 
   async run() {
-    const {flags} = this.parse(UserList)
+    const {flags} = await this.parse(UserList)
 
     const params: Record<string, any> = {
       include: ['contact_methods', 'notification_rules', 'teams'],
@@ -111,7 +110,6 @@ export default class UserList extends Command {
     }
 
     const options = {
-      printLine: this.log,
       ...flags, // parsed flags
     }
     if (flags.pipe) {
@@ -123,6 +121,6 @@ export default class UserList extends Command {
       }
       options['no-header'] = true
     }
-    cli.table(users, columns, options)
+    CliUx.ux.table(users, columns, options)
   }
 }

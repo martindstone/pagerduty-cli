@@ -1,6 +1,5 @@
 import Command from '../../../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../../utils'
 import * as chrono from 'chrono-node'
@@ -11,49 +10,49 @@ export default class ScheduleOverrideList extends Command {
 
   static flags = {
     ...Command.flags,
-    id: flags.string({
+    id: Flags.string({
       char: 'i',
       description: 'Show overrides for the schedule with this ID.',
       exclusive: ['name'],
     }),
-    name: flags.string({
+    name: Flags.string({
       char: 'n',
       description: 'Show overrides for the schedule with this name.',
       exclusive: ['id'],
     }),
-    since: flags.string({
+    since: Flags.string({
       description: 'The start of the date range over which you want to search.',
       default: 'now',
     }),
-    until: flags.string({
+    until: Flags.string({
       description: 'The end of the date range over which you want to search.',
       default: 'in 30 days',
     }),
-    keys: flags.string({
+    keys: Flags.string({
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
       multiple: true,
     }),
-    json: flags.boolean({
+    json: Flags.boolean({
       char: 'j',
       description: 'output full details as JSON',
       exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Print override ID\'s only to stdout, for use with pipes.',
       exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
     }),
-    delimiter: flags.string({
+    delimiter: Flags.string({
       char: 'd',
       description: 'Delimiter for fields that have more than one value',
       default: '\n',
     }),
-    ...cli.table.flags(),
+    ...CliUx.ux.table.flags(),
   }
 
   async run() {
-    const {flags} = this.parse(ScheduleOverrideList)
+    const {flags} = await this.parse(ScheduleOverrideList)
 
     let scheduleID
     if (flags.id) {
@@ -62,10 +61,10 @@ export default class ScheduleOverrideList extends Command {
       }
       scheduleID = flags.id
     } else if (flags.name) {
-      cli.action.start(`Finding PD schedule ${chalk.bold.blue(flags.name)}`)
+      CliUx.ux.action.start(`Finding PD schedule ${chalk.bold.blue(flags.name)}`)
       scheduleID = await this.pd.scheduleIDForName(flags.name)
       if (!scheduleID) {
-        cli.action.stop(chalk.bold.red('failed!'))
+        CliUx.ux.action.stop(chalk.bold.red('failed!'))
         this.error(`No schedule was found with the name "${flags.name}"`, {exit: 1})
       }
     } else {
@@ -130,7 +129,6 @@ export default class ScheduleOverrideList extends Command {
     }
 
     const options = {
-      printLine: this.log,
       ...flags, // parsed flags
     }
     if (flags.pipe) {
@@ -142,6 +140,6 @@ export default class ScheduleOverrideList extends Command {
       }
       options['no-header'] = true
     }
-    cli.table(overrides, columns, options)
+    CliUx.ux.table(overrides, columns, options)
   }
 }

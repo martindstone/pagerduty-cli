@@ -1,7 +1,6 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
-import cli from 'cli-ux'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 
@@ -10,30 +9,30 @@ export default class UtilDeleteResource extends Command {
 
   static flags = {
     ...Command.flags,
-    'resource-type': flags.string({
+    'resource-type': Flags.string({
       char: 't',
       description: 'The type of PagerDuty resource to delete. You have to provide either -i or -p to specify IDs of objects to delete.',
       options: ['business_service', 'escalation_policy', 'extension', 'response_play', 'ruleset', 'schedule', 'service', 'tag', 'team', 'user', 'webhook_subscription'],
       exclusive: ['endpoint'],
       required: true,
     }),
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'Select resources with the given ID. Specify multiple times for multiple resources.',
       multiple: true,
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read resource ID\'s from stdin.',
       exclusive: ['ids'],
     }),
-    force: flags.boolean({
+    force: Flags.boolean({
       description: chalk.red('Extreme danger mode') + ': do not prompt before deleting',
     }),
   }
 
   async run() {
-    const {flags} = this.parse(UtilDeleteResource)
+    const {flags} = await this.parse(UtilDeleteResource)
 
     if (!(flags.ids || flags.pipe)) {
       this.error('You must specify at least one of: -i, -p', {exit: 1})
@@ -80,15 +79,15 @@ export default class UtilDeleteResource extends Command {
     if (flags.force) {
       let countdown = 5
       while (countdown > -1) {
-        cli.action.start(`Warning: util:delete running in ${chalk.bold.red('extreme danger mode')}!\nHit ${chalk.bold.blue('Ctrl-C')} if you don't want to delete ${things_to_delete_str}.\nStarting in ${chalk.bold(String(countdown) + ' seconds')}`)
+        CliUx.ux.action.start(`Warning: util:delete running in ${chalk.bold.red('extreme danger mode')}!\nHit ${chalk.bold.blue('Ctrl-C')} if you don't want to delete ${things_to_delete_str}.\nStarting in ${chalk.bold(String(countdown) + ' seconds')}`)
         // eslint-disable-next-line no-await-in-loop
-        await cli.wait(1000)
+        await CliUx.ux.wait(1000)
         countdown--
       }
-      cli.action.stop(chalk.bold.green('ok'))
+      CliUx.ux.action.stop(chalk.bold.green('ok'))
     } else {
       const confirm_str = `Yes, delete ${things_to_delete_str}`
-      const ok = await cli.prompt(chalk.bold.red(`About to delete ${chalk.bold(things_to_delete_str)}. Are you absolutely sure?\nType '${chalk.bold.blue(confirm_str)}' to confirm`), {default: 'nope'})
+      const ok = await CliUx.ux.prompt(chalk.bold.red(`About to delete ${chalk.bold(things_to_delete_str)}. Are you absolutely sure?\nType '${chalk.bold.blue(confirm_str)}' to confirm`), {default: 'nope'})
       if (ok !== confirm_str) {
         // eslint-disable-next-line no-console
         console.warn(`OK, doing nothing... ${chalk.bold.green('done')}`)

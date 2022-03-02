@@ -1,6 +1,5 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 import * as chrono from 'chrono-node'
@@ -11,37 +10,37 @@ export default class EpOncall extends Command {
 
   static flags = {
     ...Command.flags,
-    id: flags.string({
+    id: Flags.string({
       char: 'i',
       description: 'Show oncalls for the EP with this ID.',
       exclusive: ['email', 'me'],
     }),
-    name: flags.string({
+    name: Flags.string({
       char: 'n',
       description: 'Show oncalls for the EP with this name.',
       exclusive: ['id'],
     }),
-    since: flags.string({
+    since: Flags.string({
       description: 'The start of the date range over which you want to search.',
     }),
-    until: flags.string({
+    until: Flags.string({
       description: 'The end of the date range over which you want to search.',
     }),
-    keys: flags.string({
+    keys: Flags.string({
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
       multiple: true,
     }),
-    json: flags.boolean({
+    json: Flags.boolean({
       char: 'j',
       description: 'output full details as JSON',
       exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
     }),
-    ...cli.table.flags(),
+    ...CliUx.ux.table.flags(),
   }
 
   async run() {
-    const {flags} = this.parse(EpOncall)
+    const {flags} = await this.parse(EpOncall)
 
     const params: Record<string, any> = {}
 
@@ -52,10 +51,10 @@ export default class EpOncall extends Command {
       }
       EPID = flags.id
     } else if (flags.name) {
-      cli.action.start(`Finding PD escalation policy ${chalk.bold.blue(flags.name)}`)
+      CliUx.ux.action.start(`Finding PD escalation policy ${chalk.bold.blue(flags.name)}`)
       EPID = await this.pd.epIDForName(flags.name)
       if (!EPID) {
-        cli.action.stop(chalk.bold.red('failed!'))
+        CliUx.ux.action.stop(chalk.bold.red('failed!'))
         this.error(`No EP was found with the name "${flags.name}"`, {exit: 1})
       }
     } else {
@@ -122,9 +121,8 @@ export default class EpOncall extends Command {
     }
 
     const options = {
-      printLine: this.log,
       ...flags, // parsed flags
     }
-    cli.table(oncalls, columns, options)
+    CliUx.ux.table(oncalls, columns, options)
   }
 }

@@ -1,8 +1,7 @@
 /* eslint-disable complexity */
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
-import cli from 'cli-ux'
 import * as utils from '../../utils'
 
 export default class TeamCreate extends Command {
@@ -10,29 +9,29 @@ export default class TeamCreate extends Command {
 
   static flags = {
     ...Command.flags,
-    name: flags.string({
+    name: Flags.string({
       char: 'n',
       description: 'The name of the team to add.',
       required: true,
     }),
-    description: flags.string({
+    description: Flags.string({
       description: 'The description of the team',
     }),
-    parent_id: flags.string({
+    parent_id: Flags.string({
       char: 'a',
       description: 'The ID of the new team\'s parent team',
       exclusive: ['parent_name'],
     }),
-    parent_name: flags.string({
+    parent_name: Flags.string({
       char: 'A',
       description: 'The name of the new team\'s parent team',
       exclusive: ['parent_id'],
     }),
-    open: flags.boolean({
+    open: Flags.boolean({
       char: 'o',
       description: 'Open the new team in the browser',
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Print the team ID only to stdout, for use with pipes.',
       exclusive: ['open'],
@@ -40,7 +39,7 @@ export default class TeamCreate extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(TeamCreate)
+    const {flags} = await this.parse(TeamCreate)
 
     const body: any = {
       team: {
@@ -81,20 +80,20 @@ export default class TeamCreate extends Command {
     if (r.isFailure) {
       this.error(`Failed to create team: ${r.getFormattedError()}`, {exit: 1})
     }
-    cli.action.stop(chalk.bold.green('done'))
+    CliUx.ux.action.stop(chalk.bold.green('done'))
     const returned_team = r.getData()
 
     if (flags.pipe) {
       this.log(returned_team.team.id)
     } else if (flags.open) {
-      cli.action.start(`Opening ${chalk.bold.blue(returned_team.team.html_url)} in the browser`)
+      CliUx.ux.action.start(`Opening ${chalk.bold.blue(returned_team.team.html_url)} in the browser`)
       try {
-        await cli.open(returned_team.team.html_url)
+        await CliUx.ux.open(returned_team.team.html_url)
       } catch (error) {
-        cli.action.stop(chalk.bold.red('failed!'))
+        CliUx.ux.action.stop(chalk.bold.red('failed!'))
         this.error('Couldn\'t open your browser. Are you running as root?', {exit: 1})
       }
-      cli.action.stop(chalk.bold.green('done'))
+      CliUx.ux.action.stop(chalk.bold.green('done'))
     } else {
       this.log(`Your new team is at ${chalk.bold.blue(returned_team.team.html_url)}`)
     }

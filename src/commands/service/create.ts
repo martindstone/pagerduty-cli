@@ -1,8 +1,7 @@
 /* eslint-disable complexity */
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
-import cli from 'cli-ux'
 import * as utils from '../../utils'
 import * as chrono from 'chrono-node'
 
@@ -11,90 +10,90 @@ export default class ServiceCreate extends Command {
 
   static flags = {
     ...Command.flags,
-    name: flags.string({
+    name: Flags.string({
       char: 'n',
       description: 'The service\'s name',
       required: true,
     }),
-    description: flags.string({
+    description: Flags.string({
       char: 'd',
       description: 'The service\'s description',
     }),
-    escalation_policy_id: flags.string({
+    escalation_policy_id: Flags.string({
       char: 'e',
       description: 'The ID of the service\'s escalation policy.',
       exclusive: ['escalation_policy_name'],
     }),
-    escalation_policy_name: flags.string({
+    escalation_policy_name: Flags.string({
       char: 'E',
       description: 'The name of the service\'s escalation policy.',
       exclusive: ['user_id'],
     }),
-    auto_resolve_timeout: flags.integer({
+    auto_resolve_timeout: Flags.integer({
       char: 'r',
       description: 'Automatically resolve incidents after this number of minutes',
     }),
-    ack_timeout: flags.integer({
+    ack_timeout: Flags.integer({
       char: 't',
       description: 'Automatically re-trigger incidents after this number of minutes',
     }),
-    create_alerts: flags.boolean({
+    create_alerts: Flags.boolean({
       description: 'Turn on alert support in the service (default: true)',
       default: true,
     }),
-    urgency: flags.string({
+    urgency: Flags.string({
       char: 'u',
       description: 'The urgency of incidents in the service',
       options: ['high', 'low', 'use_support_hours', 'severity_based'],
     }),
-    Ss: flags.string({
+    Ss: Flags.string({
       description: 'The time of day when support hours start',
     }),
-    Se: flags.string({
+    Se: Flags.string({
       description: 'The time of day when support hours end',
     }),
-    Sd: flags.string({
+    Sd: Flags.string({
       description: 'A day when support hours are active. Specify multiple times for multiple days.',
       multiple: true,
     }),
-    Ud: flags.string({
+    Ud: Flags.string({
       description: 'Incident urgency during support hours.',
       options: ['high', 'low', 'severity_based'],
     }),
-    Uo: flags.string({
+    Uo: Flags.string({
       description: 'Incident urgency outside of support hours.',
       options: ['high', 'low', 'severity_based'],
     }),
-    Uc: flags.boolean({
+    Uc: Flags.boolean({
       description: 'Change unacknowledged incidents to high urgency when entering high-urgency support hours',
     }),
-    Gd: flags.integer({
+    Gd: Flags.integer({
       description: 'Do time based alert grouping for this number of minutes.',
       exclusive: ['Gi', 'Gc', 'Gf'],
     }),
-    Gi: flags.boolean({
+    Gi: Flags.boolean({
       description: 'Do intelligent alert grouping',
       exclusive: ['Gd', 'Gc', 'Gf'],
     }),
-    Gc: flags.string({
+    Gc: Flags.string({
       description: 'Do content-based alert grouping. Specify the fields to look at with --Gf and choose \'any\' or \'all\' fields.',
       options: ['any', 'all'],
       exclusive: ['Gd', 'Gi'],
     }),
-    Gf: flags.string({
+    Gf: Flags.string({
       description: 'The fields to look at for content based alert grouping. Specify multiple times for multiple fields.',
       multiple: true,
       exclusive: ['Gd', 'Gi'],
     }),
-    from: flags.string({
+    from: Flags.string({
       char: 'F',
       description: 'Login email of a PD user account for the "From:" header. Use only with legacy API tokens.',
     }),
-    open: flags.boolean({
+    open: Flags.boolean({
       char: 'o',
       description: 'Open the new service in the browser',
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Print the service ID only to stdout, for use with pipes.',
       exclusive: ['open'],
@@ -102,7 +101,7 @@ export default class ServiceCreate extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(ServiceCreate)
+    const {flags} = await this.parse(ServiceCreate)
 
     const headers: Record<string, string> = {}
 
@@ -262,7 +261,7 @@ export default class ServiceCreate extends Command {
       }
     }
 
-    cli.action.start('Creating a PagerDuty service')
+    CliUx.ux.action.start('Creating a PagerDuty service')
     const r = await this.pd.request({
       endpoint: 'services',
       method: 'POST',
@@ -270,24 +269,24 @@ export default class ServiceCreate extends Command {
       headers: headers,
     })
     if (r.isFailure) {
-      cli.action.stop(chalk.bold.red('failed!'))
+      CliUx.ux.action.stop(chalk.bold.red('failed!'))
       this.error(`Failed to create service: ${r.getFormattedError()}`, {exit: 1})
     }
-    cli.action.stop(chalk.bold.green('done'))
+    CliUx.ux.action.stop(chalk.bold.green('done'))
     const returned_service = r.getData()
 
     if (flags.pipe) {
       this.log(returned_service.service.id)
     } else if (flags.open) {
-      await cli.wait(1000)
-      cli.action.start(`Opening ${chalk.bold.blue(returned_service.service.html_url)} in the browser`)
+      await CliUx.ux.wait(1000)
+      CliUx.ux.action.start(`Opening ${chalk.bold.blue(returned_service.service.html_url)} in the browser`)
       try {
-        await cli.open(returned_service.service.html_url)
+        await CliUx.ux.open(returned_service.service.html_url)
       } catch (error) {
-        cli.action.stop(chalk.bold.red('failed!'))
+        CliUx.ux.action.stop(chalk.bold.red('failed!'))
         this.error('Couldn\'t open your browser. Are you running as root?', {exit: 1})
       }
-      cli.action.stop(chalk.bold.green('done'))
+      CliUx.ux.action.stop(chalk.bold.green('done'))
     } else {
       this.log(`Your new service is at ${chalk.bold.blue(returned_service.service.html_url)}`)
     }

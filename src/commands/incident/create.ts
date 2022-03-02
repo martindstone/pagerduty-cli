@@ -1,8 +1,7 @@
 /* eslint-disable complexity */
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
-import cli from 'cli-ux'
 import * as utils from '../../utils'
 
 export default class IncidentCreate extends Command {
@@ -10,66 +9,66 @@ export default class IncidentCreate extends Command {
 
   static flags = {
     ...Command.flags,
-    service: flags.string({
+    service: Flags.string({
       char: 'S',
       description: 'The name of the service to create the incident in',
       exclusive: ['service_id'],
     }),
-    service_id: flags.string({
+    service_id: Flags.string({
       description: 'The ID of the service to create the incident in',
       exclusive: ['service'],
     }),
-    escalation_policy: flags.string({
+    escalation_policy: Flags.string({
       char: 'E',
       description: 'The name of the escalation policy to assign the incident to',
       exclusive: ['escalation_policy_id'],
     }),
-    escalation_policy_id: flags.string({
+    escalation_policy_id: Flags.string({
       description: 'The ID of the escalation policy to assign the incident to',
       exclusive: ['escalation_policy'],
     }),
-    user: flags.string({
+    user: Flags.string({
       char: 'U',
       description: 'The email of a user to assign the incident to',
       exclusive: ['escalation_policy', 'escalation_policy_id'],
       multiple: true,
     }),
-    user_id: flags.string({
+    user_id: Flags.string({
       description: 'The ID of a user to assign the incident to',
       exclusive: ['escalation_policy', 'escalation_policy_id'],
       multiple: true,
     }),
-    title: flags.string({
+    title: Flags.string({
       char: 't',
       description: 'Incident title',
       required: true,
     }),
-    details: flags.string({
+    details: Flags.string({
       char: 'd',
       description: 'Incident details',
     }),
-    urgency: flags.string({
+    urgency: Flags.string({
       char: 'u',
       description: 'Incident urgency',
       options: ['high', 'low'],
     }),
-    priority: flags.string({
+    priority: Flags.string({
       char: 'P',
       description: 'Incident priority',
     }),
-    key: flags.string({
+    key: Flags.string({
       char: 'k',
       description: 'Incident key',
     }),
-    from: flags.string({
+    from: Flags.string({
       char: 'F',
       description: 'Login email of a PD user account for the "From:" header. Use only with legacy API tokens.',
     }),
-    open: flags.boolean({
+    open: Flags.boolean({
       char: 'o',
       description: 'Open the new incident in the browser',
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Print the incident ID only to stdout, for use with pipes.',
       exclusive: ['open'],
@@ -77,7 +76,7 @@ export default class IncidentCreate extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(IncidentCreate)
+    const {flags} = await this.parse(IncidentCreate)
 
     const headers: Record<string, string> = {}
 
@@ -118,10 +117,10 @@ export default class IncidentCreate extends Command {
     }
 
     if (flags.priority) {
-      cli.action.start('Getting incident priorities from PD')
+      CliUx.ux.action.start('Getting incident priorities from PD')
       const priorities_map = await this.pd.getPrioritiesMapByName()
       if (priorities_map === {}) {
-        cli.action.stop(chalk.bold.red('none found'))
+        CliUx.ux.action.stop(chalk.bold.red('none found'))
       }
       if (priorities_map[flags.priority]) {
         incident.incident.priority = {
@@ -140,7 +139,7 @@ export default class IncidentCreate extends Command {
       }
       incident.incident.service.id = flags.service_id
     } else if (flags.service) {
-      cli.action.start('Finding service in PD')
+      CliUx.ux.action.start('Finding service in PD')
       let services = await this.pd.fetch('services', {params: {query: flags.service}})
       services = services.filter((e: { name: string | undefined }) => {
         return e.name === flags.service
@@ -163,7 +162,7 @@ export default class IncidentCreate extends Command {
         id: flags.escalation_policy_id,
       }
     } else if (flags.escalation_policy) {
-      cli.action.start('Finding escalation policy in PD')
+      CliUx.ux.action.start('Finding escalation policy in PD')
       let eps = await this.pd.fetch('escalation_policies', {params: {query: flags.escalation_policy}})
       eps = eps.filter((e: { name: string | undefined }) => {
         return e.name === flags.escalation_policy
@@ -179,11 +178,11 @@ export default class IncidentCreate extends Command {
 
     if (flags.user) {
       for (const email of flags.user) {
-        cli.action.start(`Finding user ${chalk.bold.blue(email)}`)
+        CliUx.ux.action.start(`Finding user ${chalk.bold.blue(email)}`)
         // eslint-disable-next-line no-await-in-loop
         const user: any = await this.pd.userIDForEmail(email)
         if (!user) {
-          cli.action.stop(chalk.bold.red('failed!'))
+          CliUx.ux.action.stop(chalk.bold.red('failed!'))
           this.error(`No user was found for email ${email}`, {exit: 1})
         }
         if (!incident.incident.assignments) {
@@ -198,7 +197,7 @@ export default class IncidentCreate extends Command {
       }
     }
 
-    cli.action.start('Creating PagerDuty incident')
+    CliUx.ux.action.start('Creating PagerDuty incident')
     // const r = await pd.request(token, 'incidents', 'POST', null, incident, headers)
     const r = await this.pd.request({
       endpoint: 'incidents',
@@ -209,20 +208,20 @@ export default class IncidentCreate extends Command {
     if (r.isFailure) {
       this.error(`Failed to create incident: ${r.getFormattedError()}`, {exit: 1})
     }
-    cli.action.stop(chalk.bold.green('done'))
+    CliUx.ux.action.stop(chalk.bold.green('done'))
     const returned_incident = r.getData()
 
     if (flags.pipe) {
       this.log(returned_incident.incident.id)
     } else if (flags.open) {
-      cli.action.start(`Opening ${chalk.bold.blue(returned_incident.incident.html_url)} in the browser`)
+      CliUx.ux.action.start(`Opening ${chalk.bold.blue(returned_incident.incident.html_url)} in the browser`)
       try {
-        await cli.open(returned_incident.incident.html_url)
+        await CliUx.ux.open(returned_incident.incident.html_url)
       } catch (error) {
-        cli.action.stop(chalk.bold.red('failed!'))
+        CliUx.ux.action.stop(chalk.bold.red('failed!'))
         this.error('Couldn\'t open your browser. Are you running as root?', {exit: 1})
       }
-      cli.action.stop(chalk.bold.green('done'))
+      CliUx.ux.action.stop(chalk.bold.green('done'))
     } else {
       this.log(`Your new incident is at ${chalk.bold.blue(returned_incident.incident.html_url)}`)
     }

@@ -1,7 +1,6 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
-import cli from 'cli-ux'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
 
@@ -10,40 +9,40 @@ export default class ServiceList extends Command {
 
   static flags = {
     ...Command.flags,
-    name: flags.string({
+    name: Flags.string({
       char: 'n',
       description: 'Retrieve only services whose names contain this text',
     }),
-    keys: flags.string({
+    keys: Flags.string({
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
       multiple: true,
     }),
-    teams: flags.string({
+    teams: Flags.string({
       char: 't',
       description: 'Team names to include. Specify multiple times for multiple teams.',
       multiple: true,
     }),
-    json: flags.boolean({
+    json: Flags.boolean({
       char: 'j',
       description: 'output full details as JSON',
       exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Print service ID\'s only to stdin, for use with pipes.',
       exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
     }),
-    delimiter: flags.string({
+    delimiter: Flags.string({
       char: 'd',
       description: 'Delimiter for fields that have more than one value',
       default: '\n',
     }),
-    ...cli.table.flags(),
+    ...CliUx.ux.table.flags(),
   }
 
   async run() {
-    const {flags} = this.parse(ServiceList)
+    const {flags} = await this.parse(ServiceList)
 
     const params: Record<string, any> = {}
 
@@ -52,7 +51,7 @@ export default class ServiceList extends Command {
     }
 
     if (flags.teams) {
-      cli.action.start('Finding teams')
+      CliUx.ux.action.start('Finding teams')
       let teams: any[] = []
       for (const name of flags.teams) {
         // eslint-disable-next-line no-await-in-loop
@@ -61,7 +60,7 @@ export default class ServiceList extends Command {
       }
       const team_ids = [...new Set(teams.map(x => x.id))]
       if (team_ids.length === 0) {
-        cli.action.stop(chalk.bold.red('none found'))
+        CliUx.ux.action.stop(chalk.bold.red('none found'))
         this.error('No teams found. Please check your search.', {exit: 1})
       }
       params.team_ids = team_ids
@@ -123,7 +122,6 @@ export default class ServiceList extends Command {
     }
 
     const options = {
-      printLine: this.log,
       ...flags, // parsed flags
     }
 
@@ -137,6 +135,6 @@ export default class ServiceList extends Command {
       options['no-header'] = true
     }
 
-    cli.table(services, columns, options)
+    CliUx.ux.table(services, columns, options)
   }
 }

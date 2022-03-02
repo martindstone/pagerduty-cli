@@ -1,14 +1,15 @@
-import Command, {flags} from '@oclif/command'
+// import Command, {flags} from '@oclif/command'
+import {Command, Flags} from '@oclif/core'
 import {Config} from './config'
 import {PD} from './pd'
 import chalk from 'chalk'
 
 export default abstract class AuthBase extends Command {
   static flags = {
-    help: flags.help({
+    help: Flags.help({
       char: 'h',
     }),
-    debug: flags.boolean({
+    debug: Flags.boolean({
       description: 'Print REST API call debug logs',
     }),
   }
@@ -28,7 +29,7 @@ export default abstract class AuthBase extends Command {
   }
 
   async init() {
-    const {flags} = this.parse(this.ctor)
+    const {flags} = await this.parse(this.ctor)
 
     this._config = new Config()
     this.token = this._config.token()

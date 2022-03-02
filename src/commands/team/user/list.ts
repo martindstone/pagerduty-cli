@@ -1,6 +1,5 @@
 import Command from '../../../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../../utils'
 import jp from 'jsonpath'
@@ -10,41 +9,41 @@ export default class TeamUserList extends Command {
 
   static flags = {
     ...Command.flags,
-    name: flags.string({
+    name: Flags.string({
       char: 'n',
       description: 'Select teams whose names contain the given text',
     }),
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'The IDs of teams to list members for.',
       exclusive: ['name', 'pipe'],
       multiple: true,
     }),
-    keys: flags.string({
+    keys: Flags.string({
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
       multiple: true,
     }),
-    json: flags.boolean({
+    json: Flags.boolean({
       char: 'j',
       description: 'output full details as JSON',
       exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Print user ID\'s only to stdout, for use with pipes.',
       exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
     }),
-    delimiter: flags.string({
+    delimiter: Flags.string({
       char: 'd',
       description: 'Delimiter for fields that have more than one value',
       default: '\n',
     }),
-    ...cli.table.flags(),
+    ...CliUx.ux.table.flags(),
   }
 
   async run() {
-    const {flags} = this.parse(TeamUserList)
+    const {flags} = await this.parse(TeamUserList)
 
     const params: Record<string, any> = {}
 
@@ -55,10 +54,10 @@ export default class TeamUserList extends Command {
     let team_ids = []
     if (flags.name) {
       params.query = flags.name
-      cli.action.start('Finding teams in PD')
+      CliUx.ux.action.start('Finding teams in PD')
       const teams = await this.pd.fetch('teams', {params: params})
       if (teams.length === 0) {
-        cli.action.stop(chalk.bold.red('no teams found matching ') + chalk.bold.blue(flags.name))
+        CliUx.ux.action.stop(chalk.bold.red('no teams found matching ') + chalk.bold.blue(flags.name))
         this.exit(0)
       }
       for (const team of teams) {
@@ -75,7 +74,7 @@ export default class TeamUserList extends Command {
     }
 
     if (team_ids.length === 0) {
-      cli.action.stop(chalk.bold.red('no teams specified'))
+      CliUx.ux.action.stop(chalk.bold.red('no teams specified'))
       this.exit(0)
     }
 
@@ -91,7 +90,7 @@ export default class TeamUserList extends Command {
       }
       members = [...members, ...r]
     }
-    cli.action.stop(chalk.bold.green('done'))
+    CliUx.ux.action.stop(chalk.bold.green('done'))
 
     if (flags.json) {
       await utils.printJsonAndExit(members)
@@ -125,7 +124,6 @@ export default class TeamUserList extends Command {
     }
 
     const options = {
-      printLine: this.log,
       ...flags, // parsed flags
     }
     if (flags.pipe) {
@@ -137,6 +135,6 @@ export default class TeamUserList extends Command {
       }
       options['no-header'] = true
     }
-    cli.table(members, columns, options)
+    CliUx.ux.table(members, columns, options)
   }
 }

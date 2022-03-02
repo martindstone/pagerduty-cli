@@ -1,8 +1,7 @@
 /* eslint-disable complexity */
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
-import cli from 'cli-ux'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 
@@ -13,43 +12,43 @@ export default class IncidentAssign extends Command {
 
   static flags = {
     ...Command.flags,
-    me: flags.boolean({
+    me: Flags.boolean({
       char: 'm',
       description: 'Reassign all incidents that are currently assigned to me',
       exclusive: ['ids', 'pipe'],
     }),
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'Incident ID\'s to assign. Specify multiple times for multiple incidents.',
       multiple: true,
       exclusive: ['me', 'pipe'],
     }),
-    assign_to_user_ids: flags.string({
+    assign_to_user_ids: Flags.string({
       char: 'u',
       description: 'User ID\'s to assign incidents to. Specify multiple times for multiple assignees.',
       multiple: true,
       exclusive: ['assign_to_ep_id', 'assign_to_ep_name'],
     }),
-    assign_to_user_emails: flags.string({
+    assign_to_user_emails: Flags.string({
       char: 'U',
       description: 'User emails to assign incidents to. Specify multiple times for multiple assignees.',
       multiple: true,
       exclusive: ['assign_to_ep_id', 'assign_to_ep_name'],
     }),
-    assign_to_ep_id: flags.string({
+    assign_to_ep_id: Flags.string({
       char: 'e',
       description: 'Escalation policy ID to assign incidents to.',
       exclusive: ['assign_to_ep_name'],
     }),
-    assign_to_ep_name: flags.string({
+    assign_to_ep_name: Flags.string({
       char: 'E',
       description: 'Escalation policy name to assign incidents to.',
     }),
-    from: flags.string({
+    from: Flags.string({
       char: 'F',
       description: 'Login email of a PD user account for the "From:" header. Use only with legacy API tokens.',
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read incident ID\'s from stdin.',
       exclusive: ['me', 'ids'],
@@ -57,7 +56,7 @@ export default class IncidentAssign extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(IncidentAssign)
+    const {flags} = await this.parse(IncidentAssign)
 
     const headers: Record<string, string> = {}
     if (flags.from) {
@@ -68,11 +67,11 @@ export default class IncidentAssign extends Command {
     if (flags.me) {
       const me = await this.me(true)
       const params = {user_ids: [me.user.id]}
-      cli.action.start('Getting incidents from PD')
+      CliUx.ux.action.start('Getting incidents from PD')
       const incidents = await this.pd.fetch('incidents', {params: params})
 
       if (incidents.length === 0) {
-        cli.action.stop(chalk.bold.red('none found'))
+        CliUx.ux.action.stop(chalk.bold.red('none found'))
         this.exit(1)
       }
       incident_ids = incidents.map((e: { id: any }) => e.id)
@@ -114,7 +113,7 @@ export default class IncidentAssign extends Command {
 
     if (flags.assign_to_user_emails) {
       for (const user_email of flags.assign_to_user_emails) {
-        cli.action.start(`Finding user ID for ${chalk.bold.blue(user_email)}`)
+        CliUx.ux.action.start(`Finding user ID for ${chalk.bold.blue(user_email)}`)
         // eslint-disable-next-line no-await-in-loop
         const user_id = await this.pd.userIDForEmail(user_email)
         if (!user_id) {
@@ -145,7 +144,7 @@ export default class IncidentAssign extends Command {
     }
 
     if (flags.assign_to_ep_name) {
-      cli.action.start(`Finding EP ID for ${chalk.bold.blue(flags.assign_to_ep_name)}`)
+      CliUx.ux.action.start(`Finding EP ID for ${chalk.bold.blue(flags.assign_to_ep_name)}`)
       const ep_id = await this.pd.epIDForName(flags.assign_to_ep_name)
       if (!ep_id) {
         this.error(`No EP or multiple EPs found for name ${flags.assign_to_ep_name}`, {exit: 1})
@@ -161,7 +160,6 @@ export default class IncidentAssign extends Command {
     }
 
     const requests: any[] = []
-    // cli.action.start(`Assigning incident(s) ${chalk.bold.blue(incident_ids.join(', '))}`)
     for (const incident_id of incident_ids) {
       requests.push({
         endpoint: `/incidents/${incident_id}`,

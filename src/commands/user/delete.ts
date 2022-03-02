@@ -1,7 +1,6 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
-import cli from 'cli-ux'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 
@@ -10,33 +9,33 @@ export default class UserDelete extends Command {
 
   static flags = {
     ...Command.flags,
-    emails: flags.string({
+    emails: Flags.string({
       char: 'e',
       description: 'Select users whose emails contain the given text. Specify multiple times for multiple emails.',
       multiple: true,
     }),
-    exact_emails: flags.string({
+    exact_emails: Flags.string({
       char: 'E',
       description: 'Select a user whose login email is this exact text.  Specify multiple times for multiple emails.',
       multiple: true,
     }),
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'Select users with the given ID. Specify multiple times for multiple users.',
       multiple: true,
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read user ID\'s from stdin.',
       exclusive: ['email', 'ids'],
     }),
-    force: flags.boolean({
+    force: Flags.boolean({
       description: chalk.red('Extreme danger mode') + ': do not prompt before deleting',
     }),
   }
 
   async run() {
-    const {flags} = this.parse(UserDelete)
+    const {flags} = await this.parse(UserDelete)
 
     if (!(flags.emails || flags.exact_emails || flags.ids || flags.pipe)) {
       this.error('You must specify at least one of: -i, -e, -E, -p', {exit: 1})
@@ -44,18 +43,18 @@ export default class UserDelete extends Command {
 
     let user_ids: string[] = []
     if (flags.emails) {
-      cli.action.start('Getting user IDs from PD')
+      CliUx.ux.action.start('Getting user IDs from PD')
       user_ids = await this.pd.userIDsForEmails(flags.emails)
     }
     if (flags.exact_emails) {
-      cli.action.start('Getting user IDs from PD')
+      CliUx.ux.action.start('Getting user IDs from PD')
       for (const email of flags.exact_emails) {
         // eslint-disable-next-line no-await-in-loop
         const user_id = await this.pd.userIDForEmail(email)
         if (user_id) user_ids = [...new Set([...user_ids, user_id])]
       }
     }
-    cli.action.stop(chalk.bold.green('done'))
+    CliUx.ux.action.stop(chalk.bold.green('done'))
     if (flags.ids) {
       user_ids = [...new Set([...user_ids, ...utils.splitDedupAndFlatten(flags.ids)])]
     }
@@ -79,15 +78,15 @@ export default class UserDelete extends Command {
     if (flags.force) {
       let countdown = 5
       while (countdown > -1) {
-        cli.action.start(`Warning: user:delete running in ${chalk.bold.red('extreme danger mode')}!\nHit ${chalk.bold.blue('Ctrl-C')} if you don't want to delete ${things_to_delete_str}.\nStarting in ${chalk.bold(String(countdown) + ' seconds')}`)
+        CliUx.ux.action.start(`Warning: user:delete running in ${chalk.bold.red('extreme danger mode')}!\nHit ${chalk.bold.blue('Ctrl-C')} if you don't want to delete ${things_to_delete_str}.\nStarting in ${chalk.bold(String(countdown) + ' seconds')}`)
         // eslint-disable-next-line no-await-in-loop
-        await cli.wait(1000)
+        await CliUx.ux.wait(1000)
         countdown--
       }
-      cli.action.stop(chalk.bold.green('ok'))
+      CliUx.ux.action.stop(chalk.bold.green('ok'))
     } else {
       const confirm_str = `Yes, delete ${things_to_delete_str}`
-      const ok = await cli.prompt(chalk.bold.red(`About to delete ${chalk.bold(things_to_delete_str)}. Are you absolutely sure?\nType '${chalk.bold.blue(confirm_str)}' to confirm`), {default: 'nope'})
+      const ok = await CliUx.ux.prompt(chalk.bold.red(`About to delete ${chalk.bold(things_to_delete_str)}. Are you absolutely sure?\nType '${chalk.bold.blue(confirm_str)}' to confirm`), {default: 'nope'})
       if (ok !== confirm_str) {
         // eslint-disable-next-line no-console
         console.warn(`OK, doing nothing... ${chalk.bold.green('done')}`)

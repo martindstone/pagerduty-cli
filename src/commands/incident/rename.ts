@@ -1,8 +1,7 @@
 /* eslint-disable complexity */
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
-import cli from 'cli-ux'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 
@@ -11,31 +10,31 @@ export default class IncidentRename extends Command {
 
   static flags = {
     ...Command.flags,
-    me: flags.boolean({
+    me: Flags.boolean({
       char: 'm',
       description: 'Rename all incidents that are currently assigned to me',
       exclusive: ['ids', 'pipe'],
     }),
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'Incident ID\'s to rename. Specify multiple times for multiple incidents.',
       multiple: true,
       exclusive: ['me', 'pipe'],
     }),
-    title: flags.string({
+    title: Flags.string({
       char: 't',
       description: 'Set the incident title to this string',
       exclusive: ['prefix'],
     }),
-    prefix: flags.string({
+    prefix: Flags.string({
       description: 'Prefix the incident title with this string',
       exclusive: ['title'],
     }),
-    from: flags.string({
+    from: Flags.string({
       char: 'F',
       description: 'Login email of a PD user account for the "From:" header. Use only with legacy API tokens.',
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read incident ID\'s from stdin.',
       exclusive: ['me', 'ids'],
@@ -44,7 +43,7 @@ export default class IncidentRename extends Command {
 
   async run() {
 
-    const {flags} = this.parse(IncidentRename)
+    const {flags} = await this.parse(IncidentRename)
 
     if (!(flags.title || flags.prefix)) {
       this.error('You must specify --title or --prefix')
@@ -61,11 +60,11 @@ export default class IncidentRename extends Command {
     if (flags.me) {
       const me = await this.me(true)
       const params = {user_ids: [me.user.id]}
-      cli.action.start('Getting incidents from PD')
+      CliUx.ux.action.start('Getting incidents from PD')
       incidents = await this.pd.fetch('incidents', {params: params})
 
       if (incidents.length === 0) {
-        cli.action.stop(chalk.bold.red('none found'))
+        CliUx.ux.action.stop(chalk.bold.red('none found'))
         this.exit(1)
       }
       incident_ids = incidents.map((e: { id: any }) => e.id)

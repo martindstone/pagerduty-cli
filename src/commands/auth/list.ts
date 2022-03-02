@@ -1,8 +1,5 @@
 import Command from '../../authbase'
-import {flags} from '@oclif/command'
-// import chalk from 'chalk'
-import cli from 'cli-ux'
-// import {PD} from '../../pd'
+import {CliUx, Flags} from '@oclif/core'
 import {Config} from '../../config'
 
 export default class AuthList extends Command {
@@ -40,10 +37,6 @@ export default class AuthList extends Command {
       },
     }
 
-    const options = {
-      printLine: this.log,
-      ...flags, // parsed flags
-    }
-    cli.table(subdomains, columns, options)
+    CliUx.ux.table(subdomains, columns)
   }
 }

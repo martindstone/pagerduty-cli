@@ -1,9 +1,8 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable complexity */
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {Flags, CliUx} from '@oclif/core'
 import chalk from 'chalk'
-import cli from 'cli-ux'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
 import * as chrono from 'chrono-node'
@@ -14,75 +13,75 @@ export default class IncidentList extends Command {
 
   static flags = {
     ...Command.flags,
-    me: flags.boolean({
+    me: Flags.boolean({
       char: 'm',
       description: 'Return only incidents assigned to me',
       exclusive: ['assignees'],
     }),
-    statuses: flags.string({
+    statuses: Flags.string({
       char: 's',
       description: 'Return only incidents with the given statuses. Specify multiple times for multiple statuses.',
       multiple: true,
       options: ['open', 'closed', 'triggered', 'acknowledged', 'resolved'],
       default: ['open'],
     }),
-    assignees: flags.string({
+    assignees: Flags.string({
       char: 'e',
       description: 'Return only incidents assigned to this PD login email. Specify multiple times for multiple assignees.',
       multiple: true,
       exclusive: ['me'],
     }),
-    teams: flags.string({
+    teams: Flags.string({
       char: 't',
       description: 'Team names to include. Specify multiple times for multiple teams.',
       multiple: true,
     }),
-    services: flags.string({
+    services: Flags.string({
       char: 'S',
       description: 'Service names to include. Specify multiple times for multiple services.',
       multiple: true,
     }),
-    urgencies: flags.string({
+    urgencies: Flags.string({
       char: 'u',
       description: 'Urgencies to include.',
       multiple: true,
       options: ['high', 'low'],
       default: ['high', 'low'],
     }),
-    since: flags.string({
+    since: Flags.string({
       description: 'The start of the date range over which you want to search.',
     }),
-    until: flags.string({
+    until: Flags.string({
       description: 'The end of the date range over which you want to search.',
     }),
-    keys: flags.string({
+    keys: Flags.string({
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
       multiple: true,
     }),
-    notes: flags.boolean({
+    notes: Flags.boolean({
       description: 'Also show incident notes (Uses a lot more HTTPS requests!)',
     }),
-    json: flags.boolean({
+    json: Flags.boolean({
       char: 'j',
       description: 'output full details as JSON',
       exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Print incident ID\'s only to stdout, for use with pipes.',
       exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
     }),
-    delimiter: flags.string({
+    delimiter: Flags.string({
       char: 'd',
       description: 'Delimiter for fields that have more than one value',
       default: '\n',
     }),
-    ...cli.table.flags(),
+    ...CliUx.ux.table.flags(),
   }
 
   async run() {
-    const {flags} = this.parse(this.ctor)
+    const {flags} = await this.parse(this.ctor)
 
     const statuses = [...new Set(flags.statuses)]
     if (statuses.indexOf('open') >= 0) {
@@ -110,7 +109,7 @@ export default class IncidentList extends Command {
     }
 
     if (flags.assignees) {
-      cli.action.start('Finding users')
+      CliUx.ux.action.start('Finding users')
       let users: any[] = []
       for (const email of flags.assignees) {
         // eslint-disable-next-line no-await-in-loop
@@ -119,14 +118,14 @@ export default class IncidentList extends Command {
       }
       const user_ids = [...new Set(users)]
       if (user_ids.length === 0) {
-        cli.action.stop(chalk.bold.red('none found'))
+        CliUx.ux.action.stop(chalk.bold.red('none found'))
         this.error('No assignee user IDs found. Please check your search.', {exit: 1})
       }
       params.user_ids = user_ids
     }
 
     if (flags.teams) {
-      cli.action.start('Finding teams')
+      CliUx.ux.action.start('Finding teams')
       let teams: any[] = []
       for (const name of flags.teams) {
         // eslint-disable-next-line no-await-in-loop
@@ -135,14 +134,14 @@ export default class IncidentList extends Command {
       }
       const team_ids = [...new Set(teams)]
       if (team_ids.length === 0) {
-        cli.action.stop(chalk.bold.red('none found'))
+        CliUx.ux.action.stop(chalk.bold.red('none found'))
         this.error('No teams found. Please check your search.', {exit: 1})
       }
       params.team_ids = team_ids
     }
 
     if (flags.services) {
-      cli.action.start('Finding services')
+      CliUx.ux.action.start('Finding services')
       let services: any[] = []
       for (const name of flags.services) {
         // eslint-disable-next-line no-await-in-loop
@@ -151,7 +150,7 @@ export default class IncidentList extends Command {
       }
       const service_ids = [...new Set(services)]
       if (service_ids.length === 0) {
-        cli.action.stop(chalk.bold.red('none found'))
+        CliUx.ux.action.stop(chalk.bold.red('none found'))
         this.error('No services found. Please check your search.', {exit: 1})
       }
       params.service_ids = service_ids
@@ -170,10 +169,10 @@ export default class IncidentList extends Command {
       }
     }
 
-    cli.action.start('Getting incident priorities from PD')
+    CliUx.ux.action.start('Getting incident priorities from PD')
     const priorities_map = await this.pd.getPrioritiesMapByID()
     if (priorities_map === {}) {
-      cli.action.stop(chalk.bold.red('none found'))
+      CliUx.ux.action.stop(chalk.bold.red('none found'))
     }
 
     const incidents = await this.pd.fetchWithSpinner('incidents', {
@@ -303,7 +302,6 @@ export default class IncidentList extends Command {
     }
 
     const options: any = {
-      printLine: this.log,
       ...flags, // parsed flags
     }
 
@@ -317,6 +315,6 @@ export default class IncidentList extends Command {
       options['no-header'] = true
     }
 
-    cli.table(incidents, columns, options)
+    CliUx.ux.table(incidents, columns, options)
   }
 }

@@ -1,7 +1,6 @@
 /* eslint-disable complexity */
 import Command from '../../../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../../utils'
 import {PD} from '../../../pd'
@@ -11,22 +10,22 @@ export default class TeamEpAdd extends Command {
 
   static flags = {
     ...Command.flags,
-    name: flags.string({
+    name: Flags.string({
       char: 'n',
       description: 'Select teams whose names contain the given text',
     }),
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'The IDs of teams to add escalation policies to.',
       exclusive: ['name', 'pipe'],
       multiple: true,
     }),
-    ep_ids: flags.string({
+    ep_ids: Flags.string({
       char: 'e',
       description: 'Add an escalation policy with this ID. Specify multiple times for multiple escalation policies.',
       multiple: true,
     }),
-    ep_names: flags.string({
+    ep_names: Flags.string({
       char: 'E',
       description: 'Add an escalation policy with this name. Specify multiple times for multiple escalation policies.',
       multiple: true,
@@ -34,7 +33,7 @@ export default class TeamEpAdd extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(TeamEpAdd)
+    const {flags} = await this.parse(TeamEpAdd)
 
     const params: Record<string, any> = {}
 
@@ -45,10 +44,10 @@ export default class TeamEpAdd extends Command {
     let team_ids = []
     if (flags.name) {
       params.query = flags.name
-      cli.action.start('Finding teams in PD')
+      CliUx.ux.action.start('Finding teams in PD')
       const teams = await this.pd.fetch('teams', {params: params})
       if (teams.length === 0) {
-        cli.action.stop(chalk.bold.red('no teams found matching ') + chalk.bold.blue(flags.name))
+        CliUx.ux.action.stop(chalk.bold.red('no teams found matching ') + chalk.bold.blue(flags.name))
         this.exit(0)
       }
       for (const team of teams) {
@@ -65,7 +64,7 @@ export default class TeamEpAdd extends Command {
     }
 
     if (team_ids.length === 0) {
-      cli.action.stop(chalk.bold.red('no teams specified'))
+      CliUx.ux.action.stop(chalk.bold.red('no teams specified'))
       this.exit(0)
     }
 

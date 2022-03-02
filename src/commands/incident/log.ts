@@ -1,7 +1,6 @@
 /* eslint-disable complexity */
 import Command from '../../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
@@ -12,41 +11,41 @@ export default class IncidentLog extends Command {
 
   static flags = {
     ...Command.flags,
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'Select incidents with the given ID. Specify multiple times for multiple incidents.',
       exclusive: ['pipe'],
       multiple: true,
     }),
-    overview: flags.boolean({
+    overview: Flags.boolean({
       char: 'O',
       description: 'Get only `overview` log entries',
     }),
-    keys: flags.string({
+    keys: Flags.string({
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
       multiple: true,
     }),
-    json: flags.boolean({
+    json: Flags.boolean({
       char: 'j',
       description: 'output full details as JSON',
       exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read incident IDs from stdin, for use with pipes.',
       exclusive: ['ids'],
     }),
-    delimiter: flags.string({
+    delimiter: Flags.string({
       char: 'd',
       description: 'Delimiter for fields that have more than one value',
       default: '\n',
     }),
-    ...cli.table.flags(),
+    ...CliUx.ux.table.flags(),
   }
 
   async run() {
-    const {flags} = this.parse(IncidentLog)
+    const {flags} = await this.parse(IncidentLog)
 
     if (!flags.ids && !flags.pipe) {
       this.error('You must specify at least one of: -i, -p', {exit: 1})
@@ -74,7 +73,7 @@ export default class IncidentLog extends Command {
 
     let log_entries: any[] = []
     for (const incident_id of incident_ids) {
-      cli.action.start(`Getting log entries for incident ${chalk.bold.blue(incident_id)}`)
+      CliUx.ux.action.start(`Getting log entries for incident ${chalk.bold.blue(incident_id)}`)
       // eslint-disable-next-line no-await-in-loop
       const r = await this.pd.fetchWithSpinner(`incidents/${incident_id}/log_entries`,
         {
@@ -122,9 +121,8 @@ export default class IncidentLog extends Command {
     }
 
     const options = {
-      printLine: this.log,
       ...flags, // parsed flags
     }
-    cli.table(log_entries, columns, options)
+    CliUx.ux.table(log_entries, columns, options)
   }
 }

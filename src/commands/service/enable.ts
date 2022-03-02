@@ -1,5 +1,5 @@
 import Command from '../../base'
-import {flags} from '@oclif/command'
+import {Flags} from '@oclif/core'
 import ServiceSet from './set'
 
 export default class ServiceEnable extends Command {
@@ -7,16 +7,16 @@ export default class ServiceEnable extends Command {
 
   static flags = {
     ...Command.flags,
-    name: flags.string({
+    name: Flags.string({
       char: 'n',
       description: 'Select services whose names contain the given text',
     }),
-    ids: flags.string({
+    ids: Flags.string({
       char: 'i',
       description: 'Select services with the given ID. Specify multiple times for multiple services.',
       multiple: true,
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Read service ID\'s from stdin.',
       exclusive: ['name', 'ids'],
@@ -24,7 +24,7 @@ export default class ServiceEnable extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(ServiceEnable)
+    const {flags} = await this.parse(ServiceEnable)
     let args = ['-k', 'status', '-v', 'active']
     if (flags.name) {
       args = [...args, '-n', flags.name]

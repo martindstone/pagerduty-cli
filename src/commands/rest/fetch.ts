@@ -1,8 +1,7 @@
 /* eslint-disable no-process-exit */
 /* eslint-disable unicorn/no-process-exit */
 import Command from '../../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
 
@@ -11,47 +10,47 @@ export default class RestFetch extends Command {
 
   static flags = {
     ...Command.flags,
-    endpoint: flags.string({
+    endpoint: Flags.string({
       char: 'e',
       description: 'The path to the endpoint, for example, `/users/PXXXXXX` or `/services`',
       required: true,
     }),
-    params: flags.string({
+    params: Flags.string({
       char: 'P',
       description: 'Parameters to add, for example, `query=martin` or `include[]=teams. Specify multiple times for multiple params.',
       multiple: true,
       default: [],
     }),
-    headers: flags.string({
+    headers: Flags.string({
       char: 'H',
       description: 'Headers to add, for example, `From=martin@pagerduty.com`. Specify multiple times for multiple headers.',
       multiple: true,
       default: [],
     }),
-    table: flags.boolean({
+    table: Flags.boolean({
       char: 't',
       description: 'Output in table format instead of JSON',
     }),
-    keys: flags.string({
+    keys: Flags.string({
       char: 'k',
       description: 'Additional fields to display, for use with `--table`. Specify multiple times for multiple fields.',
       multiple: true,
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Print object ID\'s only to stdout, for use with pipes.',
       exclusive: ['columns', 'sort', 'csv', 'extended', 'json', 'keys'],
     }),
-    delimiter: flags.string({
+    delimiter: Flags.string({
       char: 'd',
       description: 'Delimiter for fields that have more than one value, for use with `--table`.',
       default: '\n',
     }),
-    ...cli.table.flags(),
+    ...CliUx.ux.table.flags(),
   }
 
   async run() {
-    const {flags} = this.parse(RestFetch)
+    const {flags} = await this.parse(RestFetch)
 
     if (flags.pipe) {
       flags.table = true
@@ -89,7 +88,7 @@ export default class RestFetch extends Command {
       headers[key] = value
     }
 
-    cli.action.start('Talking to PD')
+    CliUx.ux.action.start('Talking to PD')
     const data = await this.pd.fetchWithSpinner(flags.endpoint, {
       params: params,
       headers: headers,
@@ -106,7 +105,6 @@ export default class RestFetch extends Command {
     }
 
     const options = {
-      printLine: this.log,
       ...flags, // parsed flags
     }
 
@@ -122,6 +120,6 @@ export default class RestFetch extends Command {
       }
     }
 
-    cli.table(data, columns, options)
+    CliUx.ux.table(data, columns, options)
   }
 }

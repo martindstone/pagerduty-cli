@@ -1,6 +1,5 @@
 import Command from '../../../base'
-import {flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../../utils'
 import jp from 'jsonpath'
@@ -11,55 +10,55 @@ export default class UserSessionList extends Command {
 
   static flags = {
     ...Command.flags,
-    id: flags.string({
+    id: Flags.string({
       char: 'i',
       description: 'Show sessions for the user with this ID.',
       exclusive: ['email'],
     }),
-    email: flags.string({
+    email: Flags.string({
       char: 'e',
       description: 'Show sessions for the user with this login email.',
       exclusive: ['id'],
     }),
-    keys: flags.string({
+    keys: Flags.string({
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
       multiple: true,
     }),
-    since: flags.string({
+    since: Flags.string({
       description: 'The start of the date range over which you want to search.',
     }),
-    until: flags.string({
+    until: Flags.string({
       description: 'The end of the date range over which you want to search.',
     }),
-    json: flags.boolean({
+    json: Flags.boolean({
       char: 'j',
       description: 'output full details as JSON',
       exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
     }),
-    pipe: flags.boolean({
+    pipe: Flags.boolean({
       char: 'p',
       description: 'Print session ID\'s only to stdout, for use with pipes.',
       exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
     }),
-    ...cli.table.flags(),
-    query: flags.string({
+    query: Flags.string({
       description: 'Query the API output',
       char: 'q',
     }),
+    ...CliUx.ux.table.flags(),
   }
 
   async run() {
-    const {flags} = this.parse(UserSessionList)
+    const {flags} = await this.parse(UserSessionList)
 
     let userID
     if (flags.id) {
       userID = flags.id
     } else if (flags.email) {
-      cli.action.start(`Finding PD user ${chalk.bold.blue(flags.email)}`)
+      CliUx.ux.action.start(`Finding PD user ${chalk.bold.blue(flags.email)}`)
       userID = await this.pd.userIDForEmail(flags.email)
       if (!userID) {
-        cli.action.stop(chalk.bold.red('failed!'))
+        CliUx.ux.action.stop(chalk.bold.red('failed!'))
         this.error(`No user was found for the email "${flags.email}"`, {exit: 1})
       }
     } else {
@@ -91,9 +90,9 @@ export default class UserSessionList extends Command {
     }
 
     if (sessions.length > 0) {
-      cli.action.stop(chalk.bold.green(`got ${sessions.length}`))
+      CliUx.ux.action.stop(chalk.bold.green(`got ${sessions.length}`))
     } else {
-      cli.action.stop(chalk.bold.red('none found'))
+      CliUx.ux.action.stop(chalk.bold.red('none found'))
       this.exit(0)
     }
 
@@ -123,7 +122,6 @@ export default class UserSessionList extends Command {
     }
 
     const options = {
-      printLine: this.log,
       ...flags, // parsed flags
     }
     if (flags.pipe) {
@@ -135,6 +133,6 @@ export default class UserSessionList extends Command {
       }
       options['no-header'] = true
     }
-    cli.table(sessions, columns, options)
+    CliUx.ux.table(sessions, columns, options)
   }
 }
