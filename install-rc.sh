@@ -46,7 +46,7 @@
   ARCH="\$(uname -m)"
   if [ "\$ARCH" == "x86_64" ]; then
     ARCH=x64
-  elif [[ "\$ARCH" == arm64 ]]; then
+  elif [[ "\$ARCH" == arm64 && "\$OS" == darwin ]]; then
     ARCH=arm64
   elif [[ "\$ARCH" == arm* ]]; then
     ARCH=arm
