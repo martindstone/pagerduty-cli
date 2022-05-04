@@ -10,6 +10,7 @@ export default class RestFetch extends Command {
 
   static flags = {
     ...Command.flags,
+    ...Command.listCommandFlags,
     endpoint: Flags.string({
       char: 'e',
       description: 'The path to the endpoint, for example, `/users/PXXXXXX` or `/services`',
@@ -92,6 +93,7 @@ export default class RestFetch extends Command {
     const data = await this.pd.fetchWithSpinner(flags.endpoint, {
       params: params,
       headers: headers,
+      fetchLimit: flags.limit,
     })
 
     if (!flags.table) {

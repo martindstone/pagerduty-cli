@@ -8,6 +8,7 @@ export default class UserList extends Command {
 
   static flags = {
     ...Command.flags,
+    ...Command.listCommandFlags,
     email: Flags.string({
       char: 'e',
       description: 'Select users whose login email addresses contain the given text',
@@ -55,6 +56,7 @@ export default class UserList extends Command {
     let users = await this.pd.fetchWithSpinner('users', {
       params: params,
       activityDescription: 'Getting users from PD',
+      fetchLimit: flags.limit,
     })
 
     if (flags.exact_email) {

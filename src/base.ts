@@ -18,8 +18,21 @@ export default abstract class Base extends AuthBase {
     }),
   }
 
+  static listCommandFlags = {
+    limit: Flags.integer({
+      description: 'Return no more than this many entries. This option turns off table filtering options.',
+      exclusive: ['filter', 'sort'],
+    }),
+  }
+
   async init() {
     const {flags} = await this.parse(this.ctor)
+
+    if ('limit' in flags && flags.limit <= 0) {
+      if (flags.limit <= 0) {
+        this.error('Oops, you can\'t have a limit of <= 0', {exit: 1})
+      }
+    }
 
     this._config = new Config()
     if (flags.token) {

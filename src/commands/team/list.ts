@@ -8,6 +8,7 @@ export default class TeamList extends Command {
 
   static flags = {
     ...Command.flags,
+    ...Command.listCommandFlags,
     name: Flags.string({
       char: 'n',
       description: 'Select teams whose names contain the given text',
@@ -47,6 +48,7 @@ export default class TeamList extends Command {
     const teams = await this.pd.fetchWithSpinner('teams', {
       params: params,
       activityDescription: 'Getting teams from PD',
+      fetchLimit: flags.limit,
     })
 
     if (flags.json) {

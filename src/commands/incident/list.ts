@@ -13,6 +13,7 @@ export default class IncidentList extends Command {
 
   static flags = {
     ...Command.flags,
+    ...Command.listCommandFlags,
     me: Flags.boolean({
       char: 'm',
       description: 'Return only incidents assigned to me',
@@ -178,6 +179,7 @@ export default class IncidentList extends Command {
     const incidents = await this.pd.fetchWithSpinner('incidents', {
       params: params,
       activityDescription: 'Getting incidents',
+      fetchLimit: flags.limit,
     })
 
     if (incidents.length === 0) {

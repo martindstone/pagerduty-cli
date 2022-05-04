@@ -8,6 +8,7 @@ export default class ScheduleList extends Command {
 
   static flags = {
     ...Command.flags,
+    ...Command.listCommandFlags,
     name: Flags.string({
       char: 'n',
       description: 'Select schedules whose names contain the given text',
@@ -47,6 +48,7 @@ export default class ScheduleList extends Command {
     const schedules = await this.pd.fetchWithSpinner('schedules', {
       params: params,
       activityDescription: 'Getting schedules from PD',
+      fetchLimit: flags.limit,
     })
     if (schedules.length === 0) {
       this.error('No schedules found.', {exit: 1})

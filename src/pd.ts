@@ -54,7 +54,6 @@ export class PD {
 
   public static isNewBearerToken(token: string): boolean {
     // disable oauth token validation for now, because the format has changed yet again
-    // TODO: figure out a better way to do this
     return !(this.isLegacyToken(token) || this.isOldBearerToken(token))
   }
 
@@ -353,6 +352,7 @@ export class PD {
     method?: Method;
     data?: object;
     callback?: PD.Callback;
+    fetchLimit?: number;
   } = {
     method: 'get',
   }) {
@@ -410,7 +410,7 @@ export class PD {
         })
       }
       const requests: PD.Request[] = []
-      for (let offset = limit; offset < firstPage.total; offset += limit) {
+      for (let offset = limit; offset < firstPage.total && (p.fetchLimit && offset < p.fetchLimit); offset += limit) {
         getParams = Object.assign({}, getParams, {offset: offset})
         requests.push({
           endpoint: endpoint,
@@ -433,7 +433,7 @@ export class PD {
       // cursor-based pagination
       if (p.callback) p.callback({total: -1})
       let next_cursor = firstPage.next_cursor
-      while (next_cursor) {
+      while (next_cursor && (p.fetchLimit && fetchedData.length < p.fetchLimit)) {
         getParams = Object.assign({}, getParams, {cursor: next_cursor})
         // eslint-disable-next-line no-await-in-loop
         r = await this.request({
@@ -454,7 +454,7 @@ export class PD {
       if (p.callback) p.callback({total: -1})
       let last = firstPage.last
       let more = true
-      while (last && more) {
+      while (last && more && (p.fetchLimit && fetchedData.length < p.fetchLimit)) {
         const data = Object.assign({}, p.data, {starting_after: last})
         // getParams = Object.assign({}, getParams, {cursor: next_cursor})
         // eslint-disable-next-line no-await-in-loop
@@ -477,7 +477,7 @@ export class PD {
       if (p.callback) p.callback({total: -1})
       let more = firstPage.more
       let offset = 0
-      while (more) {
+      while (more && (p.fetchLimit && fetchedData.length < p.fetchLimit)) {
         offset += limit
         getParams = Object.assign({}, getParams, {offset: offset})
         // eslint-disable-next-line no-await-in-loop
@@ -497,6 +497,9 @@ export class PD {
     } else if (p.callback) {
       p.callback({done: true})
     }
+    if (p.fetchLimit) {
+      fetchedData = fetchedData.slice(0, p.fetchLimit)
+    }
     return fetchedData
   }
 
@@ -507,6 +510,7 @@ export class PD {
     data?: object;
     activityDescription?: string;
     stopSpinnerWhenDone?: boolean;
+    fetchLimit?: number;
   } = {
     method: 'get',
     activityDescription: 'Fetching',
@@ -514,7 +518,7 @@ export class PD {
   }): Promise<any[]> {
     this.progressState.stopSpinnerWhenDone = !(p?.stopSpinnerWhenDone === false)
     this.progressState.format = p.activityDescription ? p.activityDescription : 'Fetching'
-    return this.fetch(endpoint, {params: p.params, headers: p.headers, method: p.method, data: p.data, callback: this.spinnerCallback})
+    return this.fetch(endpoint, {params: p.params, headers: p.headers, method: p.method, data: p.data, callback: this.spinnerCallback, fetchLimit: p.fetchLimit})
   }
 
   private async objectIDForName(endpoint: string, name: string, attrToCompare = 'summary'): Promise<string | null> {

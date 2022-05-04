@@ -9,6 +9,7 @@ export default class EpList extends Command {
 
   static flags = {
     ...Command.flags,
+    ...Command.listCommandFlags,
     name: Flags.string({
       char: 'n',
       description: 'Select escalation policies whose names contain the given text',
@@ -48,6 +49,7 @@ export default class EpList extends Command {
     const eps = await this.pd.fetchWithSpinner('escalation_policies', {
       params: params,
       activityDescription: 'Getting escalation policies from PD',
+      fetchLimit: flags.limit,
     })
 
     if (eps.length === 0) {

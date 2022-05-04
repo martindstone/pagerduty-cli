@@ -9,6 +9,7 @@ export default class ServiceList extends Command {
 
   static flags = {
     ...Command.flags,
+    ...Command.listCommandFlags,
     name: Flags.string({
       char: 'n',
       description: 'Retrieve only services whose names contain this text',
@@ -69,6 +70,7 @@ export default class ServiceList extends Command {
     const services = await this.pd.fetchWithSpinner('services', {
       params: params,
       activityDescription: 'Getting services from PD',
+      fetchLimit: flags.limit,
     })
     if (services.length === 0) {
       this.error('No services found. Please check your search.', {exit: 1})
