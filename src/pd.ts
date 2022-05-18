@@ -410,7 +410,7 @@ export class PD {
         })
       }
       const requests: PD.Request[] = []
-      for (let offset = limit; offset < firstPage.total && (p.fetchLimit && offset < p.fetchLimit); offset += limit) {
+      for (let offset = limit; offset < firstPage.total && (!p.fetchLimit || offset < p.fetchLimit); offset += limit) {
         getParams = Object.assign({}, getParams, {offset: offset})
         requests.push({
           endpoint: endpoint,
@@ -433,7 +433,7 @@ export class PD {
       // cursor-based pagination
       if (p.callback) p.callback({total: -1})
       let next_cursor = firstPage.next_cursor
-      while (next_cursor && (p.fetchLimit && fetchedData.length < p.fetchLimit)) {
+      while (next_cursor && (!p.fetchLimit || fetchedData.length < p.fetchLimit)) {
         getParams = Object.assign({}, getParams, {cursor: next_cursor})
         // eslint-disable-next-line no-await-in-loop
         r = await this.request({
@@ -454,7 +454,7 @@ export class PD {
       if (p.callback) p.callback({total: -1})
       let last = firstPage.last
       let more = true
-      while (last && more && (p.fetchLimit && fetchedData.length < p.fetchLimit)) {
+      while (last && more && (!p.fetchLimit || fetchedData.length < p.fetchLimit)) {
         const data = Object.assign({}, p.data, {starting_after: last})
         // getParams = Object.assign({}, getParams, {cursor: next_cursor})
         // eslint-disable-next-line no-await-in-loop
@@ -477,7 +477,7 @@ export class PD {
       if (p.callback) p.callback({total: -1})
       let more = firstPage.more
       let offset = 0
-      while (more && (p.fetchLimit && fetchedData.length < p.fetchLimit)) {
+      while (more && (!p.fetchLimit || fetchedData.length < p.fetchLimit)) {
         offset += limit
         getParams = Object.assign({}, getParams, {offset: offset})
         // eslint-disable-next-line no-await-in-loop
