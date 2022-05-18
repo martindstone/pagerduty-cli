@@ -58,7 +58,7 @@
   mkdir -p /usr/local/lib
   cd /usr/local/lib
   rm -rf pd
-  URL=https://ms-pagerduty-cli.s3-us-west-2.amazonaws.com/pd-\$OS-\$ARCH.tar.gz
+  URL=https://ms-pagerduty-cli.s3-us-west-2.amazonaws.com/channels/stable/pd-\$OS-\$ARCH.tar.gz
   TAR_ARGS="xz"
   echo "Installing CLI from \$URL"
   if [ \$(command -v curl) ]; then
