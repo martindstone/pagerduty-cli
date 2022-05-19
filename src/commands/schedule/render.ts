@@ -87,6 +87,10 @@ export default class ScheduleRender extends Command {
     })
     CliUx.ux.action.stop(chalk.bold.green('done'))
     const schedule = r.getData().schedule
+    const {
+      id: schedule_id,
+      name: schedule_name
+    } = schedule
 
     const options = {
       ...flags, // parsed flags
@@ -97,6 +101,14 @@ export default class ScheduleRender extends Command {
     }
 
     const columns: Record<string, object> = {
+      schedule_id: {
+        extended: true,
+        get: () => schedule_id,
+      },
+      schedule_name: {
+        extended: true,
+        get: () => schedule_name,
+      },
       start: {
         get: (row: any) => row.start ? (new Date(row.start)).toLocaleString() : '',
       },
