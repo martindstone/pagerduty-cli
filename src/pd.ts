@@ -587,6 +587,10 @@ export class PD {
     return this.objectIDsForNames('users', emails)
   }
 
+  public async tagIDForName(name: string): Promise<string | null> {
+    return this.objectIDForName('tags', name, 'label')
+  }
+
   public async teamIDForName(name: string): Promise<string | null> {
     return this.objectIDForName('teams', name)
   }
