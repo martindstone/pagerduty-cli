@@ -5,7 +5,7 @@ import * as utils from '../../../utils'
 import jp from 'jsonpath'
 
 export default class TeamEpList extends Command {
-  static description = 'List PagerDuty Team Members'
+  static description = 'List the Escalation Policies for a PagerDuty Team'
 
   static flags = {
     ...Command.flags,
