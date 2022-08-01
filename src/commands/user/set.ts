@@ -3,6 +3,7 @@ import Command from '../../base'
 import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
+import jp from 'jsonpath'
 import * as utils from '../../utils'
 
 export default class UserSet extends Command {
@@ -25,20 +26,27 @@ export default class UserSet extends Command {
       description: 'Select users with the given ID. Specify multiple times for multiple users.',
       multiple: true,
     }),
-    key: Flags.string({
+    keys: Flags.string({
       char: 'k',
-      description: 'Attribute key to set',
+      description: 'Attribute keys to set. Specify multiple times to set multiple keys.',
       required: true,
+      multiple: true,
     }),
-    value: Flags.string({
+    values: Flags.string({
       char: 'v',
-      description: 'Attribute value to set',
+      description: 'Attribute values to set. To set multiple key/values, specify multiple times in the same order as the keys.',
       required: true,
+      multiple: true,
+    }),
+    jsonvalues: Flags.boolean({
+      description: 'Interpret values as JSON [default: true]',
+      default: true,
+      allowNo: true,
     }),
     pipe: Flags.boolean({
       char: 'p',
       description: 'Read user ID\'s from stdin.',
-      exclusive: ['email', 'ids'],
+      exclusive: ['emails', 'exact_emails', 'ids'],
     }),
   }
 
@@ -52,23 +60,21 @@ export default class UserSet extends Command {
     let user_ids: string[] = []
     if (flags.emails) {
       CliUx.ux.action.start('Getting user IDs from PD')
-      user_ids = await this.pd.userIDsForEmails(flags.emails)
+      user_ids = [...user_ids, ...await this.pd.userIDsForEmails(flags.emails)]
     }
     if (flags.exact_emails) {
       CliUx.ux.action.start('Getting user IDs from PD')
-      for (const email of flags.exact_emails) {
-        // eslint-disable-next-line no-await-in-loop
-        const user_id = await this.pd.userIDForEmail(email)
-        if (user_id) user_ids = [...new Set([...user_ids, user_id])]
-      }
+      user_ids = [...user_ids, ...await this.pd.userIDsForEmails(flags.exact_emails, true)]
     }
     if (flags.ids) {
-      user_ids = [...new Set([...user_ids, ...utils.splitDedupAndFlatten(flags.ids)])]
+      user_ids = [...user_ids, ...utils.splitDedupAndFlatten(flags.ids)]
     }
     if (flags.pipe) {
       const str: string = await getStream(process.stdin)
       user_ids = utils.splitDedupAndFlatten([str])
     }
+    CliUx.ux.action.stop(chalk.bold.green('done'))
+    user_ids = [...new Set(user_ids)]
     if (user_ids.length === 0) {
       this.error('No user ID\'s were found. Please try a different search.', {exit: 1})
     }
@@ -77,12 +83,21 @@ export default class UserSet extends Command {
       this.error(`Invalid user ID's: ${invalid_ids.join(', ')}`, {exit: 1})
     }
 
-    const key = flags.key
-    const value = flags.value.trim().length > 0 ? flags.value : null
+    const attributes = []
+    for (const [i, key] of flags.keys.entries()) {
+      let value = flags.values[i]
+      if (flags.jsonvalues) {
+        try {
+          const jsonvalue = JSON.parse(value)
+          value = jsonvalue
+        } catch (e) {}
+      }
+      attributes.push({key, value})
+    }
 
     const requests: any[] = []
     for (const user_id of user_ids) {
-      const body: Record<string, any> = utils.putBodyForSetAttribute('user', user_id, key, value)
+      const body: Record<string, any> = utils.putBodyForSetAttributes('user', user_id, attributes)
       requests.push({
         endpoint: `/users/${user_id}`,
         method: 'PUT',
@@ -91,18 +106,29 @@ export default class UserSet extends Command {
       })
     }
 
+    const kvString = attributes.map(a => `${a.key}=${JSON.stringify(a.value)}`).join(', ')
     const r = await this.pd.batchedRequestWithSpinner(requests, {
-      activityDescription: `Setting ${chalk.bold.blue(flags.key)} = '${chalk.bold.blue(flags.value)}' on ${requests.length} users`,
+      activityDescription: `Setting ${chalk.bold.blue(kvString)}' on ${user_ids.length} users`,
     })
 
     for (const failure of r.getFailedIndices()) {
       // eslint-disable-next-line no-console
       console.error(`${chalk.bold.red('Failed to set user ')}${chalk.bold.blue(requests[failure].data.user.id)}: ${r.results[failure].getFormattedError()}`)
     }
-    for (const u of r.getDatas()) {
-      if (u.user[key] !== value) {
-        // eslint-disable-next-line no-console
-        console.error(`${chalk.bold.red('Failed to set value on user ')}${chalk.bold.blue(u.user.id)}`)
+    for (const s of r.getDatas()) {
+      for (const {key, value} of attributes) {
+        const returnedValues = jp.query(s.user, key)
+        const returnedValue = returnedValues ? returnedValues[0] : null
+        if (returnedValue !== value) {
+          if (typeof value === 'object' && value !== null) {
+            // special case when the value to be set was an object
+            if (JSON.stringify(returnedValue) === JSON.stringify(value)) {
+              continue
+            }
+          }
+          // eslint-disable-next-line no-console
+          console.error(`${chalk.bold.red('Failed to set value on user ')}${chalk.bold.blue(s.service.id)}`)
+        }
       }
     }
   }

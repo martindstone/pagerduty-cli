@@ -102,10 +102,19 @@ export async function printJsonAndExit(data: any) {
   console.error('Timed out waiting for pipe', {exit: 1})
 }
 
+function setValueAtPath(obj: object, path: string, value: any) {
+  // set the given value at the given path in an object, creating path elements along the way if they don't exist
+  let dataPointer: any = obj
+  const elements: string[] = path.split('.')
+  const last: string = elements.pop() as string
+  elements.forEach(element => (dataPointer[element] = dataPointer[element] || {}) && (dataPointer = dataPointer[element]))
+  dataPointer[last] = value
+}
+
 export function putBodyForSetAttributes(
   pdObjectType: string,
   pdObjectId: string,
-  attributes: { key: string; value: string | null }[],
+  attributes: { key: string; value: any }[],
 ) {
   const body: Record<string, any> = {
     [pdObjectType]: {
@@ -114,7 +123,14 @@ export function putBodyForSetAttributes(
     },
   }
   for (const attribute of attributes) {
-    body[pdObjectType][attribute.key] = (attribute.value && attribute.value.trim().length > 0) ? attribute.value : null
+    let value;
+    if (typeof attribute.value === 'string') {
+      // strings
+      setValueAtPath(body[pdObjectType], attribute.key, (attribute.value && attribute.value.trim().length > 0) ? attribute.value : null)
+    } else {
+      // objects, booleans, numbers or nulls
+      setValueAtPath(body[pdObjectType], attribute.key, attribute.value)
+    }
   }
   return body
 }

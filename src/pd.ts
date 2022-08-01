@@ -541,7 +541,7 @@ export class PD {
     }
   }
 
-  private async objectIDsForNames(endpoint: string, names: string[]): Promise<string[]> {
+  private async objectIDsForNames(endpoint: string, names: string[], exact = false, attrToCompare = 'summary'): Promise<string[]> {
     let fetchedData: any[] = []
     for (const name of names) {
       try {
@@ -551,6 +551,9 @@ export class PD {
       } catch (error) {
       }
     }
+    if (exact) {
+      fetchedData = fetchedData.filter((x: any) => names.includes(x[attrToCompare]))
+    }
     const fetchedIDs = fetchedData.map(x => x.id)
     return [...new Set(fetchedIDs)]
   }
@@ -559,8 +562,8 @@ export class PD {
     return this.objectIDForName('services', name)
   }
 
-  public async serviceIDsForNames(names: string[]): Promise<string[]> {
-    return this.objectIDsForNames('services', names)
+  public async serviceIDsForNames(names: string[], exact = false): Promise<string[]> {
+    return this.objectIDsForNames('services', names, exact)
   }
 
   public async scheduleIDForName(name: string): Promise<string | null> {
@@ -583,8 +586,8 @@ export class PD {
     return this.objectIDForName('users', email, 'email')
   }
 
-  public async userIDsForEmails(emails: string[]): Promise<string[]> {
-    return this.objectIDsForNames('users', emails)
+  public async userIDsForEmails(emails: string[], exact = false): Promise<string[]> {
+    return this.objectIDsForNames('users', emails, exact, 'email')
   }
 
   public async tagIDForName(name: string): Promise<string | null> {

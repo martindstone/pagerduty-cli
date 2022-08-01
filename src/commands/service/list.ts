@@ -45,7 +45,9 @@ export default class ServiceList extends Command {
   async run() {
     const {flags} = await this.parse(ServiceList)
 
-    const params: Record<string, any> = {}
+    const params: Record<string, any> = {
+      include: ['auto_pause_notifications_parameters']
+    }
 
     if (flags.name) {
       params.query = flags.name
