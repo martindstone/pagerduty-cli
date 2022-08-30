@@ -713,7 +713,7 @@ export namespace PD {
     public getFormattedError(): string {
       if (this.isSuccess) return ''
       const v = this.value as any
-      return `${v.response.status} ${v.response.statusText}` + (v.response?.data?.error?.message ? `: ${v.response.data.error.message}` : '')
+      return `${v.response.status} ${v.response.statusText}` + (v.response?.data?.error?.errors ? `: ${v.response.data.error.errors.join('; ')}` : '')
     }
 
     public statusCode(): number {
