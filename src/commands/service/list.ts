@@ -31,7 +31,7 @@ export default class ServiceList extends Command {
     }),
     pipe: Flags.boolean({
       char: 'p',
-      description: 'Print service ID\'s only to stdin, for use with pipes.',
+      description: 'Print service ID\'s only to stdout, for use with pipes.',
       exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
     }),
     delimiter: Flags.string({
