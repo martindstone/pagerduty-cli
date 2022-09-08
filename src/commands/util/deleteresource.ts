@@ -12,7 +12,21 @@ export default class UtilDeleteResource extends Command {
     'resource-type': Flags.string({
       char: 't',
       description: 'The type of PagerDuty resource to delete. You have to provide either -i or -p to specify IDs of objects to delete.',
-      options: ['business_service', 'escalation_policy', 'extension', 'response_play', 'ruleset', 'schedule', 'service', 'tag', 'team', 'user', 'webhook_subscription'],
+      options: [
+        'business_service',
+        'escalation_policy',
+        'extension',
+        'response_play',
+        'ruleset',
+        'schedule',
+        'service',
+        'tag',
+        'team',
+        'user',
+        'webhook_subscription',
+        'field',
+        'field_schema'
+      ],
       exclusive: ['endpoint'],
       required: true,
     }),
@@ -50,9 +64,16 @@ export default class UtilDeleteResource extends Command {
       'ruleset': 'rulesets',
       'webhook_subscription': 'webhook_subscriptions',
       'business_service': 'business_services',
+      'field': 'fields',
+      'field_schema': 'field_schemas',
     }
 
     const resource = resource_types[flags['resource-type']]
+
+    const headers: Record<string, string> = {}
+    if (['field', 'field_schema'].includes(flags['resource-type'])) {
+      headers['X-EARLY-ACCESS'] = 'flex-service-early-access'
+    }
 
     let resource_ids: string[] = []
     if (flags.ids) {
@@ -101,6 +122,7 @@ export default class UtilDeleteResource extends Command {
         endpoint: `/${resource}/${resource_id}`,
         method: 'DELETE',
         params: {},
+        headers
       })
     }
 
