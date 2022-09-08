@@ -26,6 +26,12 @@ export default class ScheduleShow extends Command {
     until: Flags.string({
       description: 'The end of the date range over which you want to search.',
     }),
+    json: Flags.boolean({
+      char: 'j',
+      description: 'output full details as JSON',
+      exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
+    }),
+    ...CliUx.ux.table.flags(),
   }
 
   async run() {
@@ -71,6 +77,10 @@ export default class ScheduleShow extends Command {
     })
     CliUx.ux.action.stop(chalk.bold.green('done'))
     const schedule = r.getData().schedule
+
+    if (flags.json) {
+      await utils.printJsonAndExit({schedule})
+    }
 
     const coverage_int = schedule.final_schedule.rendered_coverage_percentage
     let coverage_str = coverage_int ? `${coverage_int}%` : '0%'
