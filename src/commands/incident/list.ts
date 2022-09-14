@@ -172,7 +172,7 @@ export default class IncidentList extends Command {
 
     CliUx.ux.action.start('Getting incident priorities from PD')
     const priorities_map = await this.pd.getPrioritiesMapByID()
-    if (priorities_map === {}) {
+    if (Object.keys(priorities_map).length === 0) {
       CliUx.ux.action.stop(chalk.bold.red('none found'))
     }
 
