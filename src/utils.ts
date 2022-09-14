@@ -102,7 +102,7 @@ export async function printJsonAndExit(data: any) {
   console.error('Timed out waiting for pipe', {exit: 1})
 }
 
-function setValueAtPath(obj: object, path: string, value: any) {
+export function setValueAtPath(obj: object, path: string, value: any) {
   // set the given value at the given path in an object, creating path elements along the way if they don't exist
   let dataPointer: any = obj
   const elements: string[] = path.split('.')
