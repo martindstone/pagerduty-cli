@@ -4,7 +4,7 @@
 
     echoerr() { echo "$@" 1>&2; }
 
-    if [ -e /usr/local/lib/pd -o -e /usr/local/bin/pd]; then
+    if [ -e /usr/local/lib/pd -o -e /usr/local/bin/pd ]; then
       printf "WARNING: This installation will overwrite /usr/local/lib/pd and /usr/local/bin/pd. Continue? (y/N) "
       read yn
       if [ "$yn" != 'y' ] && [ "$yn" != 'Y' ]; then
