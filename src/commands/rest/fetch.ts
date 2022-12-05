@@ -59,12 +59,18 @@ export default class RestFetch extends Command {
 
     const params: Record<string, any> = {}
 
+    const disallowedParams = ['limit', 'offset', 'cursor']
+
     for (const param of flags.params) {
       const m = param.match(/([^=]+)=(.+)/)
       if (!m || m.length !== 3) {
         this.error(`Invalid parameter '${param}' - params should be formatted as 'key=value'`, {exit: 1})
       }
       let key = m[1].trim()
+      if (disallowedParams.includes(key)) {
+        this.warn(`Parameter '${key}' is not allowed in rest:fetch - ignoring`)
+        continue
+      }
       const value = m[2].trim()
       if (key.endsWith('[]')) {
         key = key.slice(0, -2)
