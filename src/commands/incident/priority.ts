@@ -74,7 +74,7 @@ export default class IncidentPriority extends Command {
 
     CliUx.ux.action.start('Getting incident priorities from PD')
     const priorities_map = await this.pd.getPrioritiesMapByName()
-    if (priorities_map === {}) {
+    if (Object.keys(priorities_map).length === 0) {
       CliUx.ux.action.stop(chalk.bold.red('none found'))
       this.error('No incident priorities were found. Is the priority feature enabled?', {exit: 1})
     }

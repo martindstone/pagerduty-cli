@@ -119,7 +119,7 @@ export default class IncidentCreate extends Command {
     if (flags.priority) {
       CliUx.ux.action.start('Getting incident priorities from PD')
       const priorities_map = await this.pd.getPrioritiesMapByName()
-      if (priorities_map === {}) {
+      if (Object.keys(priorities_map).length === 0) {
         CliUx.ux.action.stop(chalk.bold.red('none found'))
       }
       if (priorities_map[flags.priority]) {
