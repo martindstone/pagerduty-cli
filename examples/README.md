@@ -64,6 +64,20 @@ options:
         File to write CSV results
 ```
 
+## responders.py
+
+_Get stats on incident responder responses_
+
+options:
+```
+  -o OUTPUT_FILE, --output_file OUTPUT_FILE
+        File to write CSV results
+  -s START, --start START
+        The start of the time range to look at
+  -e END, --end END
+        The end of the time range to look at
+```
+
 ## schedule_coverage.py
 
 _Get schedule coverage stats_
