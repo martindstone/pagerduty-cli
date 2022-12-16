@@ -32,7 +32,7 @@ for ep in eps:
       elif target['type'] == 'user_reference':
         users = target['summary']
         if 'deleted_at' in target:
-          users += f" (deleted at {target['deleted_at'])}"
+          users += f" (deleted at {target['deleted_at']})"
         schedule_name = ''
         schedule_id = ''
       else:
