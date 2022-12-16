@@ -25,10 +25,19 @@ for ep in eps:
         users = target['name']
         schedule_name = ''
         schedule_id = ''
-      else:
+      elif target['type'] == 'schedule':
         users = ', '.join([x['summary'] for x in target['users']])
         schedule_name = target['summary']
         schedule_id = target['id']
+      elif target['type'] == 'user_reference':
+        users = target['summary']
+        if 'deleted_at' in target:
+          users += f" (deleted at {target['deleted_at'])}"
+        schedule_name = ''
+        schedule_id = ''
+      else:
+        print('unknown target type:')
+        print(json.dumps(target, indent=2))
     rows.append([
       ep['id'],
       ep['summary'],
