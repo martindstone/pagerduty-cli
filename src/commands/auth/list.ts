@@ -1,8 +1,8 @@
-import Command from '../../authbase'
-import {CliUx, Flags} from '@oclif/core'
-import {Config} from '../../config'
+import { BaseCommand } from '../../base/base-command'
+import { CliUx } from '@oclif/core'
+import { Config } from '../../config'
 
-export default class AuthList extends Command {
+export default class AuthList extends BaseCommand<typeof AuthList> {
   static description = 'List authenticated PagerDuty domains'
 
   async run() {
@@ -13,12 +13,10 @@ export default class AuthList extends Command {
 
     const columns: Record<string, object> = {
       default: {
-        get: (row: any) => row.alias === defaultAlias ? '  ✅' : '',
+        get: (row: any) => (row.alias === defaultAlias ? '  ✅' : ''),
       },
-      alias: {
-      },
-      subdomain: {
-      },
+      alias: {},
+      subdomain: {},
       email: {
         get: (row: { user: any }) => row.user?.email || '',
       },
