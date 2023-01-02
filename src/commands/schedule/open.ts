@@ -1,14 +1,13 @@
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 
-export default class ScheduleOpen extends Command {
+export default class ScheduleOpen extends AuthenticatedBaseCommand<typeof ScheduleOpen> {
   static description = 'Open PagerDuty Schedules in the browser'
 
   static flags = {
-    ...Command.flags,
     name: Flags.string({
       char: 'n',
       description: 'Open schedules matching this string.',
@@ -28,33 +27,31 @@ export default class ScheduleOpen extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(ScheduleOpen)
-
     const params: Record<string, any> = {}
 
     let schedule_ids = []
-    if (flags.name) {
-      params.query = flags.name
+    if (this.flags.name) {
+      params.query = this.flags.name
       CliUx.ux.action.start('Finding schedules in PD')
-      const schedules = await this.pd.fetch('schedules', {params: params})
+      const schedules = await this.pd.fetch('schedules', { params: params })
       if (schedules.length === 0) {
-        CliUx.ux.action.stop(chalk.bold.red('no schedules found matching ') + chalk.bold.blue(flags.name))
+        CliUx.ux.action.stop(chalk.bold.red('no schedules found matching ') + chalk.bold.blue(this.flags.name))
         this.exit(0)
       }
       for (const schedule of schedules) {
         schedule_ids.push(schedule.id)
       }
-    } else if (flags.ids) {
-      const invalid_ids = utils.invalidPagerDutyIDs(flags.ids)
+    } else if (this.flags.ids) {
+      const invalid_ids = utils.invalidPagerDutyIDs(this.flags.ids)
       if (invalid_ids.length > 0) {
-        this.error(`Invalid schedule IDs ${chalk.bold.blue(invalid_ids.join(', '))}`, {exit: 1})
+        this.error(`Invalid schedule IDs ${chalk.bold.blue(invalid_ids.join(', '))}`, { exit: 1 })
       }
-      schedule_ids = flags.ids
-    } else if (flags.pipe) {
+      schedule_ids = this.flags.ids
+    } else if (this.flags.pipe) {
       const str: string = await getStream(process.stdin)
       schedule_ids = utils.splitDedupAndFlatten([str])
     } else {
-      this.error('You must specify one of: -i, -n, -p', {exit: 1})
+      this.error('You must specify one of: -i, -n, -p', { exit: 1 })
     }
     if (schedule_ids.length === 0) {
       CliUx.ux.action.stop(chalk.bold.red('no schedules specified'))
@@ -74,7 +71,7 @@ export default class ScheduleOpen extends Command {
       }
     } catch (error) {
       CliUx.ux.action.stop(chalk.bold.red('failed!'))
-      this.error('Couldn\'t open browser. Are you running as root?', {exit: 1})
+      this.error('Couldn\'t open browser. Are you running as root?', { exit: 1 })
     }
     CliUx.ux.action.stop(chalk.bold.green('done'))
   }

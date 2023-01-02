@@ -1,15 +1,14 @@
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 import * as chrono from 'chrono-node'
 import jp from 'jsonpath'
 
-export default class ScheduleShow extends Command {
+export default class ScheduleShow extends AuthenticatedBaseCommand<typeof ScheduleShow> {
   static description = 'Show a PagerDuty Schedule'
 
   static flags = {
-    ...Command.flags,
     id: Flags.string({
       char: 'i',
       description: 'Show the schedule with this ID.',
@@ -35,35 +34,33 @@ export default class ScheduleShow extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(ScheduleShow)
-
     const params: Record<string, any> = {}
 
     let scheduleID
-    if (flags.id) {
-      if (utils.invalidPagerDutyIDs([flags.id]).length > 0) {
-        this.error(`${chalk.bold.blue(flags.id)} is not a valid PagerDuty schedule ID`, {exit: 1})
+    if (this.flags.id) {
+      if (utils.invalidPagerDutyIDs([this.flags.id]).length > 0) {
+        this.error(`${chalk.bold.blue(this.flags.id)} is not a valid PagerDuty schedule ID`, { exit: 1 })
       }
-      scheduleID = flags.id
-    } else if (flags.name) {
-      CliUx.ux.action.start(`Finding PD schedule ${chalk.bold.blue(flags.name)}`)
-      scheduleID = await this.pd.scheduleIDForName(flags.name)
+      scheduleID = this.flags.id
+    } else if (this.flags.name) {
+      CliUx.ux.action.start(`Finding PD schedule ${chalk.bold.blue(this.flags.name)}`)
+      scheduleID = await this.pd.scheduleIDForName(this.flags.name)
       if (!scheduleID) {
         CliUx.ux.action.stop(chalk.bold.red('failed!'))
-        this.error(`No schedule or multiple schedules found with the name "${flags.name}"`, {exit: 1})
+        this.error(`No schedule or multiple schedules found with the name "${this.flags.name}"`, { exit: 1 })
       }
     } else {
-      this.error('You must specify one of: -i, -n', {exit: 1})
+      this.error('You must specify one of: -i, -n', { exit: 1 })
     }
 
-    if (flags.since) {
-      const since = chrono.parseDate(flags.since)
+    if (this.flags.since) {
+      const since = chrono.parseDate(this.flags.since)
       if (since) {
         params.since = since.toISOString()
       }
     }
-    if (flags.until) {
-      const until = chrono.parseDate(flags.until)
+    if (this.flags.until) {
+      const until = chrono.parseDate(this.flags.until)
       if (until) {
         params.until = until.toISOString()
       }
@@ -78,8 +75,8 @@ export default class ScheduleShow extends Command {
     CliUx.ux.action.stop(chalk.bold.green('done'))
     const schedule = r.getData().schedule
 
-    if (flags.json) {
-      await utils.printJsonAndExit({schedule})
+    if (this.flags.json) {
+      await utils.printJsonAndExit({ schedule })
     }
 
     const coverage_int = schedule.final_schedule.rendered_coverage_percentage
@@ -98,7 +95,7 @@ export default class ScheduleShow extends Command {
     this.log(`${chalk.bold('Schedule coverage:')} ${coverage_str}\n`)
 
     const options = {
-      ...flags, // parsed flags
+      ...this.flags, // parsed flags
     }
 
     this.log(chalk.bold.cyan('Schedule Layers:'))

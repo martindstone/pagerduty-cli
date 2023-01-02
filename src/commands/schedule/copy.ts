@@ -1,13 +1,12 @@
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 
-export default class ScheduleCopy extends Command {
+export default class ScheduleCopy extends AuthenticatedBaseCommand<typeof ScheduleCopy> {
   static description = 'Make a copy of a PagerDuty Schedule'
 
   static flags = {
-    ...Command.flags,
     name: Flags.string({
       char: 'n',
       description: 'The name of the schedule to copy.',
@@ -33,29 +32,27 @@ export default class ScheduleCopy extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(ScheduleCopy)
-
-    if (!([flags.name, flags.id].some(Boolean))) {
-      this.error('You must specify one of: -i, -n', {exit: 1})
+    if (!([this.flags.name, this.flags.id].some(Boolean))) {
+      this.error('You must specify one of: -i, -n', { exit: 1 })
     }
 
     let schedule_id
 
-    if (flags.name) {
-      schedule_id = await this.pd.scheduleIDForName(flags.name)
+    if (this.flags.name) {
+      schedule_id = await this.pd.scheduleIDForName(this.flags.name)
       if (!schedule_id) {
-        this.error(`No schedule was found with the name ${chalk.bold.blue(flags.name)}`, {exit: 1})
+        this.error(`No schedule was found with the name ${chalk.bold.blue(this.flags.name)}`, { exit: 1 })
       }
     }
-    if (flags.id) {
-      schedule_id = flags.id
+    if (this.flags.id) {
+      schedule_id = this.flags.id
       if (utils.invalidPagerDutyIDs([schedule_id]).length > 0) {
-        this.error(`Invalid schedule ID ${chalk.bold.blue(schedule_id)}`, {exit: 1})
+        this.error(`Invalid schedule ID ${chalk.bold.blue(schedule_id)}`, { exit: 1 })
       }
     }
 
     if (!schedule_id) {
-      this.error('No schedule specified', {exit: 1})
+      this.error('No schedule specified', { exit: 1 })
     }
 
     CliUx.ux.action.start(`Getting schedule ${chalk.bold.blue(schedule_id)}`)
@@ -69,12 +66,12 @@ export default class ScheduleCopy extends Command {
     }
 
     const source_schedule = r.getData()
-    const {time_zone, description, schedule_layers} = source_schedule.schedule
+    const { time_zone, description, schedule_layers } = source_schedule.schedule
     const dest_schedule = {
       schedule: {
         overflow: true,
         type: 'schedule',
-        name: flags.destination || `${flags.name} copy ${new Date()}`,
+        name: this.flags.destination || `${this.flags.name} copy ${new Date()}`,
         time_zone: time_zone,
         description: description,
         schedule_layers: schedule_layers,
@@ -93,15 +90,15 @@ export default class ScheduleCopy extends Command {
     const returned_schedule = r.getData()
     CliUx.ux.action.stop(chalk.bold.green('done'))
 
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       this.log(returned_schedule.schedule.id)
-    } else if (flags.open) {
+    } else if (this.flags.open) {
       CliUx.ux.action.start(`Opening ${chalk.bold.blue(returned_schedule.schedule.html_url)} in the browser`)
       try {
         await CliUx.ux.open(returned_schedule.schedule.html_url)
       } catch (error) {
         CliUx.ux.action.stop(chalk.bold.red('failed!'))
-        this.error('Couldn\'t open your browser. Are you running as root?', {exit: 1})
+        this.error('Couldn\'t open your browser. Are you running as root?', { exit: 1 })
       }
       CliUx.ux.action.stop(chalk.bold.green('done'))
     } else {

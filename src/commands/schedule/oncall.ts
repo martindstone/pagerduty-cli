@@ -1,15 +1,15 @@
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 import * as chrono from 'chrono-node'
 import jp from 'jsonpath'
+import { splitDedupAndFlatten } from '../../utils'
 
-export default class ScheduleOncall extends Command {
+export default class ScheduleOncall extends AuthenticatedBaseCommand<typeof ScheduleOncall> {
   static description = 'List a PagerDuty Schedule\'s on call shifts.'
 
   static flags = {
-    ...Command.flags,
     id: Flags.string({
       char: 'i',
       description: 'Show oncalls for the schedule with this ID.',
@@ -31,6 +31,11 @@ export default class ScheduleOncall extends Command {
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
       multiple: true,
     }),
+    delimiter: Flags.string({
+      char: 'd',
+      description: 'Delimiter for fields that have more than one value',
+      default: '\\n',
+    }),
     json: Flags.boolean({
       char: 'j',
       description: 'output full details as JSON',
@@ -39,38 +44,46 @@ export default class ScheduleOncall extends Command {
     ...CliUx.ux.table.flags(),
   }
 
-  async run() {
-    const {flags} = await this.parse(ScheduleOncall)
+  public async init(): Promise<void> {
+    await super.init()
+    if (this.flags.delimiter === '\\n') {
+      this.flags.delimiter = '\n'
+    }
+    if (this.flags.keys) {
+      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+    }
+  }
 
+  async run() {
     const params: Record<string, any> = {}
 
     let scheduleID
-    if (flags.id) {
-      if (utils.invalidPagerDutyIDs([flags.id]).length > 0) {
-        this.error(`${chalk.bold.blue(flags.id)} is not a valid PagerDuty schedule ID`, {exit: 1})
+    if (this.flags.id) {
+      if (utils.invalidPagerDutyIDs([this.flags.id]).length > 0) {
+        this.error(`${chalk.bold.blue(this.flags.id)} is not a valid PagerDuty schedule ID`, { exit: 1 })
       }
-      scheduleID = flags.id
-    } else if (flags.name) {
-      CliUx.ux.action.start(`Finding PD schedule ${chalk.bold.blue(flags.name)}`)
-      scheduleID = await this.pd.scheduleIDForName(flags.name)
+      scheduleID = this.flags.id
+    } else if (this.flags.name) {
+      CliUx.ux.action.start(`Finding PD schedule ${chalk.bold.blue(this.flags.name)}`)
+      scheduleID = await this.pd.scheduleIDForName(this.flags.name)
       if (!scheduleID) {
         CliUx.ux.action.stop(chalk.bold.red('failed!'))
-        this.error(`No schedule or multiple schedules found with the name "${flags.name}"`, {exit: 1})
+        this.error(`No schedule or multiple schedules found with the name "${this.flags.name}"`, { exit: 1 })
       }
     } else {
-      this.error('You must specify one of: -i, -n', {exit: 1})
+      this.error('You must specify one of: -i, -n', { exit: 1 })
     }
 
     params['schedule_ids[]'] = scheduleID
 
-    if (flags.since) {
-      const since = chrono.parseDate(flags.since)
+    if (this.flags.since) {
+      const since = chrono.parseDate(this.flags.since)
       if (since) {
         params.since = since.toISOString()
       }
     }
-    if (flags.until) {
-      const until = chrono.parseDate(flags.until)
+    if (this.flags.until) {
+      const until = chrono.parseDate(this.flags.until)
       if (until) {
         params.until = until.toISOString()
       }
@@ -82,10 +95,10 @@ export default class ScheduleOncall extends Command {
     })
 
     if (oncalls.length === 0) {
-      this.error('No oncalls found.', {exit: 1})
+      this.error('No oncalls found.', { exit: 1 })
     }
 
-    if (flags.json) {
+    if (this.flags.json) {
       await utils.printJsonAndExit(oncalls)
     }
 
@@ -109,17 +122,17 @@ export default class ScheduleOncall extends Command {
       },
     }
 
-    if (flags.keys) {
-      for (const key of flags.keys) {
+    if (this.flags.keys) {
+      for (const key of this.flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), '\n'),
+          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
         }
       }
     }
 
     const options = {
-      ...flags, // parsed flags
+      ...this.flags, // parsed flags
     }
     CliUx.ux.table(oncalls, columns, options)
   }

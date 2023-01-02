@@ -1,14 +1,13 @@
-import Command from '../../../base'
+import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
 import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../../utils'
 import * as chrono from 'chrono-node'
 
-export default class ScheduleOverrideAdd extends Command {
+export default class ScheduleOverrideAdd extends AuthenticatedBaseCommand<typeof ScheduleOverrideAdd> {
   static description = 'Add an override to a PagerDuty schedule.'
 
   static flags = {
-    ...Command.flags,
     id: Flags.string({
       char: 'i',
       description: 'Add an override to the schedule with this ID.',
@@ -40,37 +39,35 @@ export default class ScheduleOverrideAdd extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(ScheduleOverrideAdd)
-
     let scheduleID
-    if (flags.id) {
-      if (utils.invalidPagerDutyIDs([flags.id]).length > 0) {
-        this.error(`${chalk.bold.blue(flags.id)} is not a valid PagerDuty schedule ID`)
+    if (this.flags.id) {
+      if (utils.invalidPagerDutyIDs([this.flags.id]).length > 0) {
+        this.error(`${chalk.bold.blue(this.flags.id)} is not a valid PagerDuty schedule ID`)
       }
-      scheduleID = flags.id
-    } else if (flags.name) {
-      CliUx.ux.action.start(`Finding PD schedule ${chalk.bold.blue(flags.name)}`)
-      scheduleID = await this.pd.scheduleIDForName(flags.name)
+      scheduleID = this.flags.id
+    } else if (this.flags.name) {
+      CliUx.ux.action.start(`Finding PD schedule ${chalk.bold.blue(this.flags.name)}`)
+      scheduleID = await this.pd.scheduleIDForName(this.flags.name)
       if (!scheduleID) {
         CliUx.ux.action.stop(chalk.bold.red('failed!'))
-        this.error(`No schedule was found with the name "${flags.name}"`, {exit: 1})
+        this.error(`No schedule was found with the name "${this.flags.name}"`, {exit: 1})
       }
     } else {
       this.error('You must specify one of: -i, -n', {exit: 1})
     }
 
     let userID
-    if (flags.user_id) {
-      if (utils.invalidPagerDutyIDs([flags.user_id]).length > 0) {
-        this.error(`${chalk.bold.blue(flags.user_id)} is not a valid PagerDuty user ID`, {exit: 1})
+    if (this.flags.user_id) {
+      if (utils.invalidPagerDutyIDs([this.flags.user_id]).length > 0) {
+        this.error(`${chalk.bold.blue(this.flags.user_id)} is not a valid PagerDuty user ID`, {exit: 1})
       }
-      userID = flags.user_id
-    } else if (flags.user_email) {
-      CliUx.ux.action.start(`Finding PD user ${chalk.bold.blue(flags.user_email)}`)
-      userID = await this.pd.userIDForEmail(flags.user_email)
+      userID = this.flags.user_id
+    } else if (this.flags.user_email) {
+      CliUx.ux.action.start(`Finding PD user ${chalk.bold.blue(this.flags.user_email)}`)
+      userID = await this.pd.userIDForEmail(this.flags.user_email)
       if (!userID) {
         CliUx.ux.action.stop(chalk.bold.red('failed!'))
-        this.error(`No user was found for the email "${flags.user_email}"`, {exit: 1})
+        this.error(`No user was found for the email "${this.flags.user_email}"`, {exit: 1})
       }
     } else {
       this.error('You must specify one of: -u, -U', {exit: 1})
@@ -78,8 +75,8 @@ export default class ScheduleOverrideAdd extends Command {
 
     const body: any = {
       override: {
-        start: chrono.parseDate(flags.start).toISOString(),
-        end: chrono.parseDate(flags.end).toISOString(),
+        start: chrono.parseDate(this.flags.start).toISOString(),
+        end: chrono.parseDate(this.flags.end).toISOString(),
         user: {
           id: userID,
           type: 'user_reference',
