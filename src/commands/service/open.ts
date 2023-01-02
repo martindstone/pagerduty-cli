@@ -1,14 +1,13 @@
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 
-export default class ServiceOpen extends Command {
+export default class ServiceOpen extends AuthenticatedBaseCommand<typeof ServiceOpen> {
   static description = 'Open PagerDuty Services in the browser'
 
   static flags = {
-    ...Command.flags,
     name: Flags.string({
       char: 'n',
       description: 'Open services matching this string.',
@@ -28,33 +27,31 @@ export default class ServiceOpen extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(ServiceOpen)
-
     const params: Record<string, any> = {}
 
     let service_ids = []
-    if (flags.name) {
-      params.query = flags.name
+    if (this.flags.name) {
+      params.query = this.flags.name
       CliUx.ux.action.start('Finding services in PD')
-      const services = await this.pd.fetch('services', {params: params})
+      const services = await this.pd.fetch('services', { params: params })
       if (services.length === 0) {
-        CliUx.ux.action.stop(chalk.bold.red('no services found matching ') + chalk.bold.blue(flags.name))
+        CliUx.ux.action.stop(chalk.bold.red('no services found matching ') + chalk.bold.blue(this.flags.name))
         this.exit(0)
       }
       for (const service of services) {
         service_ids.push(service.id)
       }
-    } else if (flags.ids) {
-      const invalid_ids = utils.invalidPagerDutyIDs(flags.ids)
+    } else if (this.flags.ids) {
+      const invalid_ids = utils.invalidPagerDutyIDs(this.flags.ids)
       if (invalid_ids.length > 0) {
-        this.error(`Invalid service IDs ${chalk.bold.blue(invalid_ids.join(', '))}`, {exit: 1})
+        this.error(`Invalid service IDs ${chalk.bold.blue(invalid_ids.join(', '))}`, { exit: 1 })
       }
-      service_ids = flags.ids
-    } else if (flags.pipe) {
+      service_ids = this.flags.ids
+    } else if (this.flags.pipe) {
       const str: string = await getStream(process.stdin)
       service_ids = utils.splitDedupAndFlatten([str])
     } else {
-      this.error('You must specify one of: -i, -n, -p', {exit: 1})
+      this.error('You must specify one of: -i, -n, -p', { exit: 1 })
     }
     if (service_ids.length === 0) {
       CliUx.ux.action.stop(chalk.bold.red('no services specified'))
@@ -74,7 +71,7 @@ export default class ServiceOpen extends Command {
       }
     } catch (error) {
       CliUx.ux.action.stop(chalk.bold.red('failed!'))
-      this.error('Couldn\'t open browser. Are you running as root?', {exit: 1})
+      this.error('Couldn\'t open browser. Are you running as root?', { exit: 1 })
     }
     CliUx.ux.action.stop(chalk.bold.green('done'))
   }

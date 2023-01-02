@@ -1,15 +1,13 @@
-/* eslint-disable complexity */
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 import * as chrono from 'chrono-node'
 
-export default class ServiceCreate extends Command {
+export default class ServiceCreate extends AuthenticatedBaseCommand<typeof ServiceCreate> {
   static description = 'Create a PagerDuty Service'
 
   static flags = {
-    ...Command.flags,
     name: Flags.string({
       char: 'n',
       description: 'The service\'s name',
@@ -101,20 +99,18 @@ export default class ServiceCreate extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(ServiceCreate)
-
     const headers: Record<string, string> = {}
 
     let ep_id: string | null = null
-    if (flags.escalation_policy_id) {
-      ep_id = flags.escalation_policy_id
+    if (this.flags.escalation_policy_id) {
+      ep_id = this.flags.escalation_policy_id
       if (utils.invalidPagerDutyIDs([ep_id]).length > 0) {
         this.error(`Invalid escalation policy ID ${chalk.bold.blue(ep_id)}`)
       }
-    } else if (flags.escalation_policy_name) {
-      ep_id = await this.pd.epIDForName(flags.escalation_policy_name)
+    } else if (this.flags.escalation_policy_name) {
+      ep_id = await this.pd.epIDForName(this.flags.escalation_policy_name)
       if (!ep_id) {
-        this.error(`No escalation policy was found with the name ${chalk.bold.blue(flags.escalation_policy_name)}`, {exit: 1})
+        this.error(`No escalation policy was found with the name ${chalk.bold.blue(this.flags.escalation_policy_name)}`, { exit: 1 })
       }
     } else {
       this.error('No escalation policy was specified. Please specify one with -e or -E')
@@ -123,7 +119,7 @@ export default class ServiceCreate extends Command {
     const service: any = {
       service: {
         type: 'service',
-        name: flags.name,
+        name: this.flags.name,
         escalation_policy: {
           type: 'escalation_policy_reference',
           id: ep_id,
@@ -131,41 +127,41 @@ export default class ServiceCreate extends Command {
       },
     }
 
-    service.service.alert_creation = flags.create_alerts ? 'create_alerts_and_incidents' : 'create_incidents'
+    service.service.alert_creation = this.flags.create_alerts ? 'create_alerts_and_incidents' : 'create_incidents'
 
-    if (flags.description) service.service.description = flags.description
-    if (flags.ack_timeout) {
-      service.service.acknowledgement_timeout = flags.ack_timeout * 60
+    if (this.flags.description) service.service.description = this.flags.description
+    if (this.flags.ack_timeout) {
+      service.service.acknowledgement_timeout = this.flags.ack_timeout * 60
     }
-    if (flags.auto_resolve_timeout) {
-      service.service.auto_resolve_timeout = flags.auto_resolve_timeout * 60
+    if (this.flags.auto_resolve_timeout) {
+      service.service.auto_resolve_timeout = this.flags.auto_resolve_timeout * 60
     }
-    if (flags.urgency) {
-      if (['high', 'low', 'severity_based'].includes(flags.urgency)) {
+    if (this.flags.urgency) {
+      if (['high', 'low', 'severity_based'].includes(this.flags.urgency)) {
         service.service.incident_urgency_rule = {
           type: 'constant',
-          urgency: flags.urgency,
+          urgency: this.flags.urgency,
         }
       } else {
         // support hours based
-        if (!(flags.Ss && flags.Se && flags.Sd)) {
-          this.error('Support hours were not specified. Please specify support hours with --Ss, --Se, and --Sd', {exit: 1})
+        if (!(this.flags.Ss && this.flags.Se && this.flags.Sd)) {
+          this.error('Support hours were not specified. Please specify support hours with --Ss, --Se, and --Sd', { exit: 1 })
         }
-        if (!(flags.Ud && flags.Uo)) {
-          this.error('Incident urgency during and outside of support hours was not specified. Please specify with --Ud and --Uo', {exit: 1})
+        if (!(this.flags.Ud && this.flags.Uo)) {
+          this.error('Incident urgency during and outside of support hours was not specified. Please specify with --Ud and --Uo', { exit: 1 })
         }
-        if (flags.Ud === flags.Uo) {
-          this.error('Urgency during and outside support hours must be different.', {exit: 1})
+        if (this.flags.Ud === this.flags.Uo) {
+          this.error('Urgency during and outside support hours must be different.', { exit: 1 })
         }
-        const start = chrono.parseDate(flags.Ss)
-        const end = chrono.parseDate(flags.Se)
+        const start = chrono.parseDate(this.flags.Ss)
+        const end = chrono.parseDate(this.flags.Se)
         if (!start) {
-          this.error(`Invalid support hours start time: '${start}'`, {exit: 1})
+          this.error(`Invalid support hours start time: '${start}'`, { exit: 1 })
         }
         if (!end) {
-          this.error(`Invalid support hours end time: '${end}'`, {exit: 1})
+          this.error(`Invalid support hours end time: '${end}'`, { exit: 1 })
         }
-        const days_of_week_flags = utils.splitDedupAndFlatten(flags.Sd)
+        const days_of_week_flags = utils.splitDedupAndFlatten(this.flags.Sd)
         const days_of_week = []
         for (const days_of_week_flag of days_of_week_flags) {
           const w = days_of_week_flag.toLowerCase()
@@ -184,18 +180,18 @@ export default class ServiceCreate extends Command {
           } else if (w.startsWith('sun') || w === '0') {
             days_of_week.push(7)
           } else {
-            this.error(`Invalid support hours day of week: '${w}'`, {exit: 1})
+            this.error(`Invalid support hours day of week: '${w}'`, { exit: 1 })
           }
         }
         service.service.incident_urgency_rule = {
           type: 'use_support_hours',
           during_support_hours: {
             type: 'constant',
-            urgency: flags.Ud,
+            urgency: this.flags.Ud,
           },
           outside_support_hours: {
             type: 'constant',
-            urgency: flags.Uo,
+            urgency: this.flags.Uo,
           },
         }
         const start_time = start.toTimeString().split(' ')[0]
@@ -210,13 +206,13 @@ export default class ServiceCreate extends Command {
         }
         service.service.scheduled_actions = []
         let time_name = ''
-        if (flags.Uc) {
-          if (flags.Ud === 'high') {
+        if (this.flags.Uc) {
+          if (this.flags.Ud === 'high') {
             time_name = 'support_hours_start'
-          } else if (flags.Uo === 'high') {
+          } else if (this.flags.Uo === 'high') {
             time_name = 'support_hours_end'
           } else {
-            this.error('You can\'t change urgency of incidents to high because there are no support hours when urgency is high', {exit: 1})
+            this.error('You can\'t change urgency of incidents to high because there are no support hours when urgency is high', { exit: 1 })
           }
           service.service.scheduled_actions.push({
             type: 'urgency_change',
@@ -230,32 +226,32 @@ export default class ServiceCreate extends Command {
       }
     }
 
-    if (flags.Gd) {
+    if (this.flags.Gd) {
       service.service.alert_grouping_parameters = {
         type: 'time',
         config: {
-          timeout: flags.Gd,
+          timeout: this.flags.Gd,
         },
       }
-    } else if (flags.Gi) {
+    } else if (this.flags.Gi) {
       service.service.alert_grouping_parameters = {
         type: 'intelligent',
       }
-    } else if (flags.Gc || flags.Gf) {
-      if (!(flags.Gc && flags.Gf)) {
-        this.error('You have to specify both --Gc and --Gf for content based alert grouping', {exit: 1})
+    } else if (this.flags.Gc || this.flags.Gf) {
+      if (!(this.flags.Gc && this.flags.Gf)) {
+        this.error('You have to specify both --Gc and --Gf for content based alert grouping', { exit: 1 })
       }
 
-      const fields = utils.splitDedupAndFlatten(flags.Gf)
+      const fields = utils.splitDedupAndFlatten(this.flags.Gf)
       const acceptable_fields = ['class', 'component', 'group', 'source', 'severity', 'summary']
       if (fields.some(x => !(acceptable_fields.includes(x) || x.startsWith('custom_details.')))) {
-        this.error(`Content-based alert grouping fields must be one of ${acceptable_fields.map(x => chalk.bold(x)).join(', ')}, or begin with ${chalk.bold('custom_details.')}`, {exit: 1})
+        this.error(`Content-based alert grouping fields must be one of ${acceptable_fields.map(x => chalk.bold(x)).join(', ')}, or begin with ${chalk.bold('custom_details.')}`, { exit: 1 })
       }
 
       service.service.alert_grouping_parameters = {
         type: 'content_based',
         config: {
-          aggregate: flags.Gc,
+          aggregate: this.flags.Gc,
           fields,
         },
       }
@@ -270,21 +266,21 @@ export default class ServiceCreate extends Command {
     })
     if (r.isFailure) {
       CliUx.ux.action.stop(chalk.bold.red('failed!'))
-      this.error(`Failed to create service: ${r.getFormattedError()}`, {exit: 1})
+      this.error(`Failed to create service: ${r.getFormattedError()}`, { exit: 1 })
     }
     CliUx.ux.action.stop(chalk.bold.green('done'))
     const returned_service = r.getData()
 
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       this.log(returned_service.service.id)
-    } else if (flags.open) {
+    } else if (this.flags.open) {
       await CliUx.ux.wait(1000)
       CliUx.ux.action.start(`Opening ${chalk.bold.blue(returned_service.service.html_url)} in the browser`)
       try {
         await CliUx.ux.open(returned_service.service.html_url)
       } catch (error) {
         CliUx.ux.action.stop(chalk.bold.red('failed!'))
-        this.error('Couldn\'t open your browser. Are you running as root?', {exit: 1})
+        this.error('Couldn\'t open your browser. Are you running as root?', { exit: 1 })
       }
       CliUx.ux.action.stop(chalk.bold.green('done'))
     } else {

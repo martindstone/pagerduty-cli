@@ -1,12 +1,11 @@
-import Command from '../../base'
-import {Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { Flags } from '@oclif/core'
 import ServiceSet from './set'
 
-export default class ServiceEnable extends Command {
+export default class ServiceEnable extends AuthenticatedBaseCommand<typeof ServiceEnable> {
   static description = 'Enable PagerDuty Services'
 
   static flags = {
-    ...Command.flags,
     name: Flags.string({
       char: 'n',
       description: 'Select services whose names contain the given text',
@@ -24,19 +23,18 @@ export default class ServiceEnable extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(ServiceEnable)
     let args = ['-k', 'status', '-v', 'active']
-    if (flags.name) {
-      args = [...args, '-n', flags.name]
+    if (this.flags.name) {
+      args = [...args, '-n', this.flags.name]
     }
-    if (flags.ids) {
-      args = [...args, ...flags.ids.map(e => ['-i', e]).flat()]
+    if (this.flags.ids) {
+      args = [...args, ...this.flags.ids.map(e => ['-i', e]).flat()]
     }
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       args = [...args, '-p']
     }
-    if (flags.useauth) {
-      args = [...args, '-b', flags.useauth]
+    if (this.flags.useauth) {
+      args = [...args, '-b', this.flags.useauth]
     }
 
     await ServiceSet.run(args)

@@ -1,16 +1,14 @@
-/* eslint-disable complexity */
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import jp from 'jsonpath'
 import * as utils from '../../utils'
 
-export default class ServiceSet extends Command {
+export default class ServiceSet extends AuthenticatedBaseCommand<typeof ServiceSet> {
   static description = 'Set PagerDuty Service attributes'
 
   static flags = {
-    ...Command.flags,
     names: Flags.string({
       char: 'n',
       description: 'Select services whose names contain the given text. Specify multiple times for multiple names.',
@@ -18,7 +16,7 @@ export default class ServiceSet extends Command {
     }),
     exact_names: Flags.string({
       char: 'N',
-      description: 'Select service whose name is this exact text. Specify multiple times for multiple services.',
+      description: 'Select a service whose name is this exact text. Specify multiple times for multiple services.',
       multiple: true,
     }),
     ids: Flags.string({
@@ -51,51 +49,49 @@ export default class ServiceSet extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(ServiceSet)
-
-    if (!(flags.names || flags.exact_names || flags.ids || flags.pipe)) {
-      this.error('You must specify one of: -i, -n, -N, -p', {exit: 1})
+    if (!(this.flags.names || this.flags.exact_names || this.flags.ids || this.flags.pipe)) {
+      this.error('You must specify one of: -i, -n, -N, -p', { exit: 1 })
     }
-    if (flags.keys.length !== flags.values.length) {
-      this.error('You must specify the same number of keys and values for this to work.', {exit: 1})
+    if (this.flags.keys.length !== this.flags.values.length) {
+      this.error('You must specify the same number of keys and values for this to work.', { exit: 1 })
     }
 
     let service_ids: string[] = []
-    if (flags.names) {
+    if (this.flags.names) {
       CliUx.ux.action.start('Getting service IDs from PD')
-      service_ids = [...service_ids, ...await this.pd.serviceIDsForNames(flags.names)]
+      service_ids = [...service_ids, ...await this.pd.serviceIDsForNames(this.flags.names)]
     }
-    if (flags.exact_names) {
+    if (this.flags.exact_names) {
       CliUx.ux.action.start('Getting service IDs from PD')
-      service_ids = [...service_ids, ...await this.pd.serviceIDsForNames(flags.exact_names, true)]
+      service_ids = [...service_ids, ...await this.pd.serviceIDsForNames(this.flags.exact_names, true)]
     }
-    if (flags.ids) {
-      service_ids = [...service_ids, ...utils.splitDedupAndFlatten(flags.ids)]
+    if (this.flags.ids) {
+      service_ids = [...service_ids, ...utils.splitDedupAndFlatten(this.flags.ids)]
     }
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       const str: string = await getStream(process.stdin)
       service_ids = utils.splitDedupAndFlatten([str])
     }
     CliUx.ux.action.stop(chalk.bold.green('done'))
     service_ids = [...new Set(service_ids)]
     if (service_ids.length === 0) {
-      this.error('No service ID\'s were found. Please try a different search.', {exit: 1})
+      this.error('No service ID\'s were found. Please try a different search.', { exit: 1 })
     }
     const invalid_ids = utils.invalidPagerDutyIDs(service_ids)
     if (invalid_ids && invalid_ids.length > 0) {
-      this.error(`Invalid service ID's: ${invalid_ids.join(', ')}`, {exit: 1})
+      this.error(`Invalid service ID's: ${invalid_ids.join(', ')}`, { exit: 1 })
     }
 
     const attributes = []
-    for (const [i, key] of flags.keys.entries()) {
-      let value = flags.values[i]
-      if (flags.jsonvalues) {
+    for (const [i, key] of this.flags.keys.entries()) {
+      let value = this.flags.values[i]
+      if (this.flags.jsonvalues) {
         try {
           const jsonvalue = JSON.parse(value)
           value = jsonvalue
-        } catch (e) {}
+        } catch (e) { }
       }
-      attributes.push({key, value})
+      attributes.push({ key, value })
     }
 
     const requests: any[] = []
@@ -117,7 +113,7 @@ export default class ServiceSet extends Command {
       console.error(`${chalk.bold.red('Failed to set service ')}${chalk.bold.blue(requests[failure].data.service.id)}: ${r.results[failure].getFormattedError()}`)
     }
     for (const s of r.getDatas()) {
-      for (const {key, value} of attributes) {
+      for (const { key, value } of attributes) {
         const returnedValues = jp.query(s.service, key)
         const returnedValue = returnedValues ? returnedValues[0] : null
         if (returnedValue !== value) {
