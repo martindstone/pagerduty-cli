@@ -1,14 +1,12 @@
-/* eslint-disable complexity */
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 
-export default class EpCreate extends Command {
+export default class EpCreate extends AuthenticatedBaseCommand<typeof EpCreate> {
   static description = 'Create a PagerDuty Escalation Policy with a single level. You can add levels and targets later with ep:level and ep:target'
 
   static flags = {
-    ...Command.flags,
     name: Flags.string({
       char: 'n',
       description: 'The name of the escalation policy to add.',
@@ -59,18 +57,16 @@ export default class EpCreate extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(EpCreate)
-
     let schedule_ids: string[] = []
-    if (flags.schedule_ids) {
-      schedule_ids = [...schedule_ids, ...flags.schedule_ids]
+    if (this.flags.schedule_ids) {
+      schedule_ids = [...schedule_ids, ...this.flags.schedule_ids]
     }
-    if (flags.schedule_names) {
-      for (const name of flags.schedule_names) {
+    if (this.flags.schedule_names) {
+      for (const name of this.flags.schedule_names) {
         // eslint-disable-next-line no-await-in-loop
         const schedule_id = await this.pd.scheduleIDForName(name)
         if (schedule_id === null) {
-          this.error(`No schedule was found with the name ${chalk.bold.blue(name)}`, {exit: 1})
+          this.error(`No schedule was found with the name ${chalk.bold.blue(name)}`, { exit: 1 })
         } else {
           schedule_ids.push(schedule_id)
         }
@@ -80,19 +76,19 @@ export default class EpCreate extends Command {
 
     let invalid_ids = utils.invalidPagerDutyIDs(schedule_ids)
     if (invalid_ids && invalid_ids.length > 0) {
-      this.error(`Invalid Schedule ID's: ${invalid_ids.join(', ')}`, {exit: 1})
+      this.error(`Invalid Schedule ID's: ${invalid_ids.join(', ')}`, { exit: 1 })
     }
 
     let user_ids: string[] = []
-    if (flags.user_ids) {
-      user_ids = [...user_ids, ...flags.user_ids]
+    if (this.flags.user_ids) {
+      user_ids = [...user_ids, ...this.flags.user_ids]
     }
-    if (flags.user_emails) {
-      for (const email of flags.user_emails) {
+    if (this.flags.user_emails) {
+      for (const email of this.flags.user_emails) {
         // eslint-disable-next-line no-await-in-loop
         const user_id = await this.pd.userIDForEmail(email)
         if (user_id === null) {
-          this.error(`No user was found with the email ${chalk.bold.blue(email)}`, {exit: 1})
+          this.error(`No user was found with the email ${chalk.bold.blue(email)}`, { exit: 1 })
         } else {
           user_ids.push(user_id)
         }
@@ -102,11 +98,11 @@ export default class EpCreate extends Command {
 
     invalid_ids = utils.invalidPagerDutyIDs(user_ids)
     if (invalid_ids && invalid_ids.length > 0) {
-      this.error(`Invalid User ID's: ${invalid_ids.join(', ')}`, {exit: 1})
+      this.error(`Invalid User ID's: ${invalid_ids.join(', ')}`, { exit: 1 })
     }
 
     if (user_ids.length === 0 && schedule_ids.length === 0) {
-      this.error('No targets specified. Please specify some targets using -s, -S, -u, -U', {exit: 1})
+      this.error('No targets specified. Please specify some targets using -s, -S, -u, -U', { exit: 1 })
     }
 
     const targets = [
@@ -126,7 +122,7 @@ export default class EpCreate extends Command {
 
     const escalation_rules = [
       {
-        escalation_delay_in_minutes: flags.delay,
+        escalation_delay_in_minutes: this.flags.delay,
         targets: targets,
       },
     ]
@@ -134,14 +130,14 @@ export default class EpCreate extends Command {
     const body: any = {
       escalation_policy: {
         type: 'escalation_policy',
-        name: flags.name,
+        name: this.flags.name,
         escalation_rules: escalation_rules,
-        num_loops: flags.repeat,
+        num_loops: this.flags.repeat,
       },
     }
 
-    if (flags.description) {
-      body.escalation_policy.description = flags.description
+    if (this.flags.description) {
+      body.escalation_policy.description = this.flags.description
     }
     const r = await this.pd.request({
       endpoint: 'escalation_policies',
@@ -150,20 +146,20 @@ export default class EpCreate extends Command {
     })
 
     if (r.isFailure) {
-      this.error(`Failed to create escalation policy: ${r.getFormattedError()}`, {exit: 1})
+      this.error(`Failed to create escalation policy: ${r.getFormattedError()}`, { exit: 1 })
     }
     CliUx.ux.action.stop(chalk.bold.green('done'))
     const returned_ep = r.getData()
 
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       this.log(returned_ep.escalation_policy.id)
-    } else if (flags.open) {
+    } else if (this.flags.open) {
       CliUx.ux.action.start(`Opening ${chalk.bold.blue(returned_ep.escalation_policy.html_url)} in the browser`)
       try {
         await CliUx.ux.open(returned_ep.escalation_policy.html_url)
       } catch (error) {
         CliUx.ux.action.stop(chalk.bold.red('failed!'))
-        this.error('Couldn\'t open your browser. Are you running as root?', {exit: 1})
+        this.error('Couldn\'t open your browser. Are you running as root?', { exit: 1 })
       }
       CliUx.ux.action.stop(chalk.bold.green('done'))
     } else {

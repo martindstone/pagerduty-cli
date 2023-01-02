@@ -1,16 +1,14 @@
-/* eslint-disable complexity */
-import Command from '../../../base'
-import {Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
+import { Flags } from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../../utils'
-import {PD} from '../../../pd'
+import { PD } from '../../../pd'
 
-export default class EpLevelRemove extends Command {
+export default class EpLevelRemove extends AuthenticatedBaseCommand<typeof EpLevelRemove> {
   static description = 'Remove a level from PagerDuty Escalation Policies'
 
   static flags = {
-    ...Command.flags,
     name: Flags.string({
       char: 'n',
       description: 'Update escalation policies whose names match this string.',
@@ -35,33 +33,31 @@ export default class EpLevelRemove extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(EpLevelRemove)
-
-    if (flags.level < 1) {
-      this.error('The lowest level number is 1', {exit: 1})
+    if (this.flags.level < 1) {
+      this.error('The lowest level number is 1', { exit: 1 })
     }
     let ep_ids: string[] = []
-    if (flags.name) {
+    if (this.flags.name) {
       const eps = await this.pd.fetchWithSpinner('escalation_policies', {
-        params: {query: flags.name},
+        params: { query: this.flags.name },
         activityDescription: 'Finding escalation policies in PD',
       })
       if (eps.length === 0) {
-        this.error(`No escalation policies found matching ${chalk.bold.blue(flags.name)}`, {exit: 1})
+        this.error(`No escalation policies found matching ${chalk.bold.blue(this.flags.name)}`, { exit: 1 })
       }
-      ep_ids = [...ep_ids, ...eps.map((ep: {id: string}) => ep.id)]
-    } else if (flags.ids) {
-      ep_ids = utils.splitDedupAndFlatten(flags.ids)
-    } else if (flags.pipe) {
+      ep_ids = [...ep_ids, ...eps.map((ep: { id: string }) => ep.id)]
+    } else if (this.flags.ids) {
+      ep_ids = utils.splitDedupAndFlatten(this.flags.ids)
+    } else if (this.flags.pipe) {
       const str: string = await getStream(process.stdin)
       ep_ids = utils.splitDedupAndFlatten([str])
     } else {
-      this.error('You must specify one of: -i, -m, -p', {exit: 1})
+      this.error('You must specify one of: -i, -m, -p', { exit: 1 })
     }
 
     const invalid_ids = utils.invalidPagerDutyIDs(ep_ids)
     if (invalid_ids && invalid_ids.length > 0) {
-      this.error(`Invalid Escalation Policy ID's: ${invalid_ids.join(', ')}`, {exit: 1})
+      this.error(`Invalid Escalation Policy ID's: ${invalid_ids.join(', ')}`, { exit: 1 })
     }
 
     let requests: PD.Request[] = []
@@ -79,9 +75,9 @@ export default class EpLevelRemove extends Command {
     requests = []
     for (const ep of eps) {
       const levels = ep.escalation_policy.escalation_rules
-      if (levels.length < flags.level) {
+      if (levels.length < this.flags.level) {
         // eslint-disable-next-line no-console
-        console.error(chalk.bold.red('Escalation policy ') + chalk.bold.blue(ep.escalation_policy.summary) + chalk.bold.red(` does not have level ${flags.level}`))
+        console.error(chalk.bold.red('Escalation policy ') + chalk.bold.blue(ep.escalation_policy.summary) + chalk.bold.red(` does not have level ${this.flags.level}`))
         continue
       }
       if (levels.length === 1) {
@@ -89,9 +85,8 @@ export default class EpLevelRemove extends Command {
         console.error(chalk.bold.red('Escalation policy ') + chalk.bold.blue(ep.escalation_policy.summary) + chalk.bold.red(' only has one level'))
         continue
       }
-      levels.splice(flags.level - 1, 1)
+      levels.splice(this.flags.level - 1, 1)
 
-      // eslint-disable-next-line no-await-in-loop
       requests.push({
         endpoint: `escalation_policies/${ep.escalation_policy.id}`,
         method: 'PUT',
@@ -104,9 +99,9 @@ export default class EpLevelRemove extends Command {
       })
     }
     if (requests.length === 0) {
-      this.error('Nothing to do.', {exit: 0})
+      this.error('Nothing to do.', { exit: 0 })
     }
-    // console.log(JSON.stringify(requests, null, 2))
+
     r = await this.pd.batchedRequestWithSpinner(requests, {
       activityDescription: `Updating ${requests.length} escalation policies`,
     })

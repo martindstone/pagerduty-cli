@@ -1,14 +1,13 @@
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 
-export default class EpOpen extends Command {
+export default class EpOpen extends AuthenticatedBaseCommand<typeof EpOpen> {
   static description = 'Open PagerDuty Escalation policies in the browser'
 
   static flags = {
-    ...Command.flags,
     name: Flags.string({
       char: 'n',
       description: 'Open escalation policies whose names match this string.',
@@ -28,40 +27,38 @@ export default class EpOpen extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(EpOpen)
-
     const params: Record<string, any> = {}
 
-    if (!([flags.name, flags.ids, flags.pipe].some(Boolean))) {
-      this.error('You must specify one of: -i, -n, -p', {exit: 1})
+    if (!([this.flags.name, this.flags.ids, this.flags.pipe].some(Boolean))) {
+      this.error('You must specify one of: -i, -n, -p', { exit: 1 })
     }
     let ep_ids: string[] = []
-    if (flags.name) {
-      params.query = flags.name
+    if (this.flags.name) {
+      params.query = this.flags.name
       const eps = await this.pd.fetchWithSpinner('escalation_policies', {
         params: params,
         activityDescription: 'Finding escalation policies in PD',
       })
       if (eps.length === 0) {
-        this.error(`No escalation policies found matching ${chalk.bold.blue(flags.name)}`, {exit: 1})
+        this.error(`No escalation policies found matching ${chalk.bold.blue(this.flags.name)}`, { exit: 1 })
       }
-      ep_ids = [...ep_ids, ...eps.map((ep: {id: string}) => ep.id)]
+      ep_ids = [...ep_ids, ...eps.map((ep: { id: string }) => ep.id)]
     }
-    if (flags.ids) {
-      ep_ids = [...ep_ids, ...flags.ids]
+    if (this.flags.ids) {
+      ep_ids = [...ep_ids, ...this.flags.ids]
     }
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       const str: string = await getStream(process.stdin)
       ep_ids = [...ep_ids, ...utils.splitDedupAndFlatten([str])]
     }
 
     const invalid_ids = utils.invalidPagerDutyIDs(ep_ids)
     if (invalid_ids.length > 0) {
-      this.error(`Invalid escalation policy IDs ${chalk.bold.blue(invalid_ids.join(', '))}`, {exit: 1})
+      this.error(`Invalid escalation policy IDs ${chalk.bold.blue(invalid_ids.join(', '))}`, { exit: 1 })
     }
 
     if (ep_ids.length === 0) {
-      this.error('No escalation policies specified', {exit: 1})
+      this.error('No escalation policies specified', { exit: 1 })
     }
 
     CliUx.ux.action.start('Finding your PD domain')
@@ -78,7 +75,7 @@ export default class EpOpen extends Command {
       }
     } catch (error) {
       CliUx.ux.action.stop(chalk.bold.red('failed'))
-      this.error('Couldn\'t open browser. Are you running as root?', {exit: 1})
+      this.error('Couldn\'t open browser. Are you running as root?', { exit: 1 })
     }
     CliUx.ux.action.stop(chalk.bold.green('done'))
   }
