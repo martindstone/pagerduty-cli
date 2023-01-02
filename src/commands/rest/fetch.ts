@@ -1,19 +1,16 @@
-/* eslint-disable no-process-exit */
-/* eslint-disable unicorn/no-process-exit */
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
+import { splitDedupAndFlatten } from '../../utils'
 
-export default class RestFetch extends Command {
+export default class RestFetch extends AuthenticatedBaseCommand<typeof RestFetch> {
   static description = 'Fetch objects from PagerDuty'
 
   static flags = {
-    ...Command.flags,
-    ...Command.listCommandFlags,
     endpoint: Flags.string({
       char: 'e',
-      description: 'The path to the endpoint, for example, `/users/PXXXXXX` or `/services`',
+      description: 'The path to the endpoint, for example, `users` or `services`',
       required: true,
     }),
     params: Flags.string({
@@ -45,26 +42,38 @@ export default class RestFetch extends Command {
     delimiter: Flags.string({
       char: 'd',
       description: 'Delimiter for fields that have more than one value, for use with `--table`.',
-      default: '\n',
+      default: '\\n',
+    }),
+    limit: Flags.integer({
+      description: 'Return no more than this many entries. This option turns off table filtering options.',
+      exclusive: ['filter', 'sort'],
     }),
     ...CliUx.ux.table.flags(),
   }
 
-  async run() {
-    const {flags} = await this.parse(RestFetch)
+  public async init(): Promise<void> {
+    await super.init()
+    if (this.flags.delimiter === '\\n') {
+      this.flags.delimiter = '\n'
+    }
+    if (this.flags.keys) {
+      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+    }
+  }
 
-    if (flags.pipe) {
-      flags.table = true
+  async run() {
+    if (this.flags.pipe) {
+      this.flags.table = true
     }
 
     const params: Record<string, any> = {}
 
     const disallowedParams = ['limit', 'offset', 'cursor']
 
-    for (const param of flags.params) {
+    for (const param of this.flags.params) {
       const m = param.match(/([^=]+)=(.+)/)
       if (!m || m.length !== 3) {
-        this.error(`Invalid parameter '${param}' - params should be formatted as 'key=value'`, {exit: 1})
+        this.error(`Invalid parameter '${param}' - params should be formatted as 'key=value'`, { exit: 1 })
       }
       let key = m[1].trim()
       if (disallowedParams.includes(key)) {
@@ -85,10 +94,10 @@ export default class RestFetch extends Command {
 
     const headers: Record<string, any> = {}
 
-    for (const header of flags.headers) {
+    for (const header of this.flags.headers) {
       const m = header.match(/([^=]+)=(.+)/)
       if (!m || m.length !== 3) {
-        this.error(`Invalid header '${header}' - headers should be formatted as 'key=value'`, {exit: 1})
+        this.error(`Invalid header '${header}' - headers should be formatted as 'key=value'`, { exit: 1 })
       }
       const key = m[1].trim()
       const value = m[2].trim()
@@ -96,13 +105,13 @@ export default class RestFetch extends Command {
     }
 
     CliUx.ux.action.start('Talking to PD')
-    const data = await this.pd.fetchWithSpinner(flags.endpoint, {
+    const data = await this.pd.fetchWithSpinner(this.flags.endpoint, {
       params: params,
       headers: headers,
-      fetchLimit: flags.limit,
+      fetchLimit: this.flags.limit,
     })
 
-    if (!flags.table) {
+    if (!this.flags.table) {
       await utils.printJsonAndExit(data)
     }
 
@@ -113,17 +122,17 @@ export default class RestFetch extends Command {
     }
 
     const options = {
-      ...flags, // parsed flags
+      ...this.flags, // parsed flags
     }
 
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       options['no-header'] = true
     }
-    if (flags.keys) {
-      for (const key of flags.keys) {
+    if (this.flags.keys) {
+      for (const key of this.flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
+          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
         }
       }
     }

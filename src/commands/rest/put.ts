@@ -1,13 +1,12 @@
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 
-export default class RestPut extends Command {
+export default class RestPut extends AuthenticatedBaseCommand<typeof RestPut> {
   static description = 'Make a PUT request to PagerDuty'
 
   static flags = {
-    ...Command.flags,
     endpoint: Flags.string({
       char: 'e',
       description: 'The path to the endpoint, for example, `/users/PXXXXXX` or `/services`',
@@ -33,14 +32,12 @@ export default class RestPut extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(RestPut)
-
     const params: Record<string, any> = {}
 
-    for (const param of flags.params) {
+    for (const param of this.flags.params) {
       const m = param.match(/([^=]+)=(.+)/)
       if (!m || m.length !== 3) {
-        this.error(`Invalid parameter '${param}' - params should be formatted as 'key=value'`, {exit: 1})
+        this.error(`Invalid parameter '${param}' - params should be formatted as 'key=value'`, { exit: 1 })
       }
       let key = m[1].trim()
       const value = m[2].trim()
@@ -57,10 +54,10 @@ export default class RestPut extends Command {
 
     const headers: Record<string, any> = {}
 
-    for (const header of flags.headers) {
+    for (const header of this.flags.headers) {
       const m = header.match(/([^=]+)=(.+)/)
       if (!m || m.length !== 3) {
-        this.error(`Invalid header '${header}' - headers should be formatted as 'key=value'`, {exit: 1})
+        this.error(`Invalid header '${header}' - headers should be formatted as 'key=value'`, { exit: 1 })
       }
       const key = m[1].trim()
       const value = m[2].trim()
@@ -69,14 +66,14 @@ export default class RestPut extends Command {
 
     let data: object
     try {
-      data = JSON.parse(flags.data)
+      data = JSON.parse(this.flags.data)
     } catch (error) {
-      this.error(`Error parsing request body: ${(error as any).message}`, {exit: 1})
+      this.error(`Error parsing request body: ${(error as any).message}`, { exit: 1 })
     }
 
     CliUx.ux.action.start('Talking to PD')
     const response = await this.pd.request({
-      endpoint: flags.endpoint,
+      endpoint: this.flags.endpoint,
       method: 'PUT',
       params: params,
       data: data,

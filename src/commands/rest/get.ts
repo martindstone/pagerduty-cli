@@ -1,13 +1,12 @@
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 
-export default class RestGet extends Command {
+export default class RestGet extends AuthenticatedBaseCommand<typeof RestGet> {
   static description = 'Make a GET request to PagerDuty'
 
   static flags = {
-    ...Command.flags,
     endpoint: Flags.string({
       char: 'e',
       description: 'The path to the endpoint, for example, `/users/PXXXXXX` or `/services`',
@@ -28,14 +27,12 @@ export default class RestGet extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(RestGet)
-
     const params: Record<string, any> = {}
 
-    for (const param of flags.params) {
+    for (const param of this.flags.params) {
       const m = param.match(/([^=]+)=(.+)/)
       if (!m || m.length !== 3) {
-        this.error(`Invalid parameter '${param}' - params should be formatted as 'key=value'`, {exit: 1})
+        this.error(`Invalid parameter '${param}' - params should be formatted as 'key=value'`, { exit: 1 })
       }
       let key = m[1].trim()
       const value = m[2].trim()
@@ -52,10 +49,10 @@ export default class RestGet extends Command {
 
     const headers: Record<string, any> = {}
 
-    for (const header of flags.headers) {
+    for (const header of this.flags.headers) {
       const m = header.match(/([^=]+)=(.+)/)
       if (!m || m.length !== 3) {
-        this.error(`Invalid header '${header}' - headers should be formatted as 'key=value'`, {exit: 1})
+        this.error(`Invalid header '${header}' - headers should be formatted as 'key=value'`, { exit: 1 })
       }
       const key = m[1].trim()
       const value = m[2].trim()
@@ -64,7 +61,7 @@ export default class RestGet extends Command {
 
     CliUx.ux.action.start('Talking to PD')
     const response = await this.pd.request({
-      endpoint: flags.endpoint,
+      endpoint: this.flags.endpoint,
       method: 'GET',
       params: params,
       headers: headers,
