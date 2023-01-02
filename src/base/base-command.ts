@@ -1,4 +1,3 @@
-// import Command, {flags} from '@oclif/command'
 import { Command, Flags, Interfaces } from '@oclif/core'
 import { DocOpts } from './docopts'
 import { Config } from '../config'
