@@ -10,6 +10,10 @@ const initialConfig = {
   subdomains: [],
 }
 
+export const CLIENT_ID = '4cd1af90cbf22d5d880aafbbb1829835e0a79c7d8811b0a8e87138bd61caf734'
+// not really secret
+export const CLIENT_SECRET = '4c42b8fffe4cc36ebfff88fa783d842af4cc44e43f7aae5590488d7d3574bebd'
+
 export type ConfigSubdomain = {
   alias: string;
   subdomain: string;
