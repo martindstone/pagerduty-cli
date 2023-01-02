@@ -1,15 +1,14 @@
-/* eslint-disable complexity */
-import Command from '../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import * as utils from '../utils'
 import * as chrono from 'chrono-node'
 import jp from 'jsonpath'
+import { splitDedupAndFlatten } from '../utils'
 
-export default class Log extends Command {
+export default class Log extends AuthenticatedBaseCommand<typeof Log> {
   static description = 'Show PagerDuty Domain Log Entries'
 
   static flags = {
-    ...Command.flags,
     since: Flags.string({
       description: 'The start of the date range over which you want to search.',
       default: '30 days ago',
@@ -34,26 +33,34 @@ export default class Log extends Command {
     delimiter: Flags.string({
       char: 'd',
       description: 'Delimiter for fields that have more than one value',
-      default: '\n',
+      default: '\\n',
     }),
     ...CliUx.ux.table.flags(),
   }
 
-  async run() {
-    const {flags} = await this.parse(Log)
+  public async init(): Promise<void> {
+    await super.init()
+    if (this.flags.delimiter === '\\n') {
+      this.flags.delimiter = '\n'
+    }
+    if (this.flags.keys) {
+      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+    }
+  }
 
+  async run() {
     const params: Record<string, any> = {
-      is_overview: flags.overview,
+      is_overview: this.flags.overview,
     }
 
-    if (flags.since) {
-      const since = chrono.parseDate(flags.since)
+    if (this.flags.since) {
+      const since = chrono.parseDate(this.flags.since)
       if (since) {
         params.since = since.toISOString()
       }
     }
-    if (flags.until) {
-      const until = chrono.parseDate(flags.until)
+    if (this.flags.until) {
+      const until = chrono.parseDate(this.flags.until)
       if (until) {
         params.until = until.toISOString()
       }
@@ -67,7 +74,7 @@ export default class Log extends Command {
     if (log_entries.length === 0) {
       this.exit(0)
     }
-    if (flags.json) {
+    if (this.flags.json) {
       await utils.printJsonAndExit(log_entries)
     }
 
@@ -85,20 +92,20 @@ export default class Log extends Command {
       },
     }
 
-    if (flags.keys) {
-      for (const key of flags.keys) {
+    if (this.flags.keys) {
+      for (const key of this.flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
+          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
         }
       }
     }
-    if (!flags.sort) {
-      flags.sort = 'created'
+    if (!this.flags.sort) {
+      this.flags.sort = 'created'
     }
 
     const options = {
-      ...flags, // parsed flags
+      ...this.flags, // parsed flags
     }
     CliUx.ux.table(log_entries, columns, options)
   }
