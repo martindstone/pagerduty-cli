@@ -1,15 +1,14 @@
-import axios, {Method} from 'axios'
-import Command from '../../authbase'
-import {CliUx, Flags} from '@oclif/core'
+import { BaseCommand } from '../../base/base-command'
+import axios, { Method } from 'axios'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 import * as chrono from 'chrono-node'
 
-export default class EventChange extends Command {
+export default class EventChange extends BaseCommand<typeof EventChange> {
   static description = 'Send a Change Event to PagerDuty'
 
   static flags = {
-    ...Command.flags,
     routing_key: Flags.string({
       char: 'r',
       description: 'The integration key to send to',
@@ -62,8 +61,6 @@ export default class EventChange extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(this.ctor)
-
     const {
       routing_key,
       summary,
@@ -74,7 +71,7 @@ export default class EventChange extends Command {
       endpoint,
       jsonvalues,
       json,
-    } = flags
+    } = this.flags
 
     let timestamp
     if (timestampStr) {
@@ -82,7 +79,7 @@ export default class EventChange extends Command {
       if (ts) {
         timestamp = ts.toISOString()
       } else {
-        this.error(`Error parsing date ${timestampStr}`, {exit: 1})
+        this.error(`Error parsing date ${timestampStr}`, { exit: 1 })
       }
     }
 
@@ -90,16 +87,18 @@ export default class EventChange extends Command {
       try {
         new URL(endpoint)
       } catch (e) {
-        this.error(`${endpoint} is not a valid URL`, {exit: 1})
+        this.error(`${endpoint} is not a valid URL`, { exit: 1 })
       }
     }
 
-    if ((keys || values) && keys.length !== values.length) {
-      this.error('You must specify the same number of keys and values for this to work.', {exit: 1})
+    if (keys || values) {
+      if (!(keys && values && keys.length === values.length)) {
+        this.error('You must specify the same number of keys and values for this to work.', { exit: 1 })
+      }
     }
 
     if (link_texts && link_texts.length > 0 && !(link_hrefs && link_hrefs.length >= link_texts.length)) {
-      this.error('You can\'t have more link_texts than link_hrefs.', {exit: 1})
+      this.error('You can\'t have more link_texts than link_hrefs.', { exit: 1 })
     }
 
     const event: any = {
@@ -111,7 +110,7 @@ export default class EventChange extends Command {
       },
     }
 
-    if (keys) {
+    if (keys && values) {
       const custom_details = {}
       for (const [i, key] of keys.entries()) {
         let value = values[i]
@@ -119,7 +118,7 @@ export default class EventChange extends Command {
           try {
             const jsonvalue = JSON.parse(value)
             value = jsonvalue
-          } catch (e) {}
+          } catch (e) { }
         }
         utils.setValueAtPath(custom_details, key, value)
       }
@@ -159,9 +158,9 @@ export default class EventChange extends Command {
           errorStr += ': ' + chalk.bold.red(e.response.data.errors.join(', '))
         }
       }
-      this.error(errorStr, {exit: 1})
+      this.error(errorStr, { exit: 1 })
     }
-    
+
     CliUx.ux.action.stop(chalk.bold.green('done'))
 
     if (json) {

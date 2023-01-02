@@ -1,15 +1,14 @@
+import { BaseCommand } from '../../base/base-command'
 import axios, {Method} from 'axios'
-import Command from '../../authbase'
 import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 import * as chrono from 'chrono-node'
 
-export default class EventAlert extends Command {
+export default class EventAlert extends BaseCommand<typeof EventAlert> {
   static description = 'Send an Alert to PagerDuty'
 
   static flags = {
-    ...Command.flags,
     routing_key: Flags.string({
       char: 'r',
       description: 'The integration key to send to',
@@ -115,8 +114,6 @@ export default class EventAlert extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(this.ctor)
-
     const {
       routing_key,
       dedup_key,
@@ -136,7 +133,7 @@ export default class EventAlert extends Command {
       jsonvalues,
       json,
       pipe,
-    } = flags
+    } = this.flags
 
     let timestamp
     if (timestampStr) {
@@ -160,8 +157,10 @@ export default class EventAlert extends Command {
       this.error('When acknowledging or resolving an alert, dedup_key is required.', {exit: 1})
     }
 
-    if ((keys || values) && keys.length !== values.length) {
-      this.error('You must specify the same number of keys and values for this to work.', {exit: 1})
+    if (keys || values) {
+      if (!(keys && values && keys.length === values.length)) {
+        this.error('You must specify the same number of keys and values for this to work.', {exit: 1})
+      }
     }
 
     if (image_hrefs && image_hrefs.length > 0 && !(image_srcs && image_srcs.length >= image_hrefs.length)) {
@@ -196,7 +195,7 @@ export default class EventAlert extends Command {
       client_url,
     }
 
-    if (keys) {
+    if (keys && values) {
       const custom_details = {}
       for (const [i, key] of keys.entries()) {
         let value = values[i]
