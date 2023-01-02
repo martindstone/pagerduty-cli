@@ -1,14 +1,13 @@
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 
-export default class TeamOpen extends Command {
+export default class TeamOpen extends AuthenticatedBaseCommand<typeof TeamOpen> {
   static description = 'Open PagerDuty Teams in the browser'
 
   static flags = {
-    ...Command.flags,
     name: Flags.string({
       char: 'n',
       description: 'Open teams matching this string.',
@@ -28,33 +27,31 @@ export default class TeamOpen extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(TeamOpen)
-
     const params: Record<string, any> = {}
 
     let team_ids = []
-    if (flags.name) {
-      params.query = flags.name
+    if (this.flags.name) {
+      params.query = this.flags.name
       CliUx.ux.action.start('Finding teams in PD')
-      const teams = await this.pd.fetch('teams', {params: params})
+      const teams = await this.pd.fetch('teams', { params: params })
       if (teams.length === 0) {
-        CliUx.ux.action.stop(chalk.bold.red('no teams found matching ') + chalk.bold.blue(flags.name))
+        CliUx.ux.action.stop(chalk.bold.red('no teams found matching ') + chalk.bold.blue(this.flags.name))
         this.exit(0)
       }
       for (const team of teams) {
         team_ids.push(team.id)
       }
-    } else if (flags.ids) {
-      const invalid_ids = utils.invalidPagerDutyIDs(flags.ids)
+    } else if (this.flags.ids) {
+      const invalid_ids = utils.invalidPagerDutyIDs(this.flags.ids)
       if (invalid_ids.length > 0) {
-        this.error(`Invalid team IDs ${chalk.bold.blue(invalid_ids.join(', '))}`, {exit: 1})
+        this.error(`Invalid team IDs ${chalk.bold.blue(invalid_ids.join(', '))}`, { exit: 1 })
       }
-      team_ids = flags.ids
-    } else if (flags.pipe) {
+      team_ids = this.flags.ids
+    } else if (this.flags.pipe) {
       const str: string = await getStream(process.stdin)
       team_ids = utils.splitDedupAndFlatten([str])
     } else {
-      this.error('You must specify one of: -i, -n, -p', {exit: 1})
+      this.error('You must specify one of: -i, -n, -p', { exit: 1 })
     }
     if (team_ids.length === 0) {
       CliUx.ux.action.stop(chalk.bold.red('no teams specified'))
@@ -74,7 +71,7 @@ export default class TeamOpen extends Command {
       }
     } catch (error) {
       CliUx.ux.action.stop(chalk.bold.red('failed!'))
-      this.error('Couldn\'t open browser. Are you running as root?', {exit: 1})
+      this.error('Couldn\'t open browser. Are you running as root?', { exit: 1 })
     }
     CliUx.ux.action.stop(chalk.bold.green('done'))
   }

@@ -1,15 +1,13 @@
-/* eslint-disable complexity */
-import Command from '../../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../../utils'
-import {PD} from '../../../pd'
+import { PD } from '../../../pd'
 
-export default class TeamEpRemove extends Command {
+export default class TeamEpRemove extends AuthenticatedBaseCommand<typeof TeamEpRemove> {
   static description = 'Remove PagerDuty escalation policies from Teams.'
 
   static flags = {
-    ...Command.flags,
     name: Flags.string({
       char: 'n',
       description: 'Select teams whose names contain the given text',
@@ -33,34 +31,25 @@ export default class TeamEpRemove extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(TeamEpRemove)
-
-    const params: Record<string, any> = {}
-
-    if (flags.name) {
-      params.query = flags.name
-    }
-
     let team_ids = []
-    if (flags.name) {
-      params.query = flags.name
+    if (this.flags.name) {
       CliUx.ux.action.start('Finding teams in PD')
-      const teams = await this.pd.fetch('teams', {params: params})
+      const teams = await this.pd.fetch('teams', { params: { query: this.flags.name } })
       if (teams.length === 0) {
-        CliUx.ux.action.stop(chalk.bold.red('no teams found matching ') + chalk.bold.blue(flags.name))
+        CliUx.ux.action.stop(chalk.bold.red('no teams found matching ') + chalk.bold.blue(this.flags.name))
         this.exit(0)
       }
       for (const team of teams) {
         team_ids.push(team.id)
       }
-    } else if (flags.ids) {
-      const invalid_ids = utils.invalidPagerDutyIDs(flags.ids)
+    } else if (this.flags.ids) {
+      const invalid_ids = utils.invalidPagerDutyIDs(this.flags.ids)
       if (invalid_ids.length > 0) {
-        this.error(`Invalid team IDs ${chalk.bold.blue(invalid_ids.join(', '))}`, {exit: 1})
+        this.error(`Invalid team IDs ${chalk.bold.blue(invalid_ids.join(', '))}`, { exit: 1 })
       }
-      team_ids = flags.ids
+      team_ids = this.flags.ids
     } else {
-      this.error('You must specify one of: -i, -n', {exit: 1})
+      this.error('You must specify one of: -i, -n', { exit: 1 })
     }
 
     if (team_ids.length === 0) {
@@ -69,15 +58,15 @@ export default class TeamEpRemove extends Command {
     }
 
     let ep_ids: string[] = []
-    if (flags.ep_ids) {
-      ep_ids = [...ep_ids, ...flags.ep_ids]
+    if (this.flags.ep_ids) {
+      ep_ids = [...ep_ids, ...this.flags.ep_ids]
     }
-    if (flags.ep_names) {
-      for (const name of flags.ep_names) {
+    if (this.flags.ep_names) {
+      for (const name of this.flags.ep_names) {
         // eslint-disable-next-line no-await-in-loop
         const ep_id = await this.pd.epIDForName(name)
         if (ep_id === null) {
-          this.error(`No escalation policy was found with the name ${chalk.bold.blue(name)}`, {exit: 1})
+          this.error(`No escalation policy was found with the name ${chalk.bold.blue(name)}`, { exit: 1 })
         } else {
           ep_ids.push(ep_id)
         }
@@ -87,7 +76,7 @@ export default class TeamEpRemove extends Command {
 
     const invalid_ids = utils.invalidPagerDutyIDs(ep_ids)
     if (invalid_ids && invalid_ids.length > 0) {
-      this.error(`Invalid escalation policy ID's: ${invalid_ids.join(', ')}`, {exit: 1})
+      this.error(`Invalid escalation policy ID's: ${invalid_ids.join(', ')}`, { exit: 1 })
     }
 
     if (ep_ids.length === 0) {

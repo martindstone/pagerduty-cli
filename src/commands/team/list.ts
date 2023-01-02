@@ -1,57 +1,27 @@
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { ListBaseCommand } from '../../base/list-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
 
-export default class TeamList extends Command {
+export default class TeamList extends ListBaseCommand<typeof TeamList> {
+  static pdObjectName = 'team'
+  static pdObjectNamePlural = 'teams'
   static description = 'List PagerDuty Teams'
 
-  static flags = {
-    ...Command.flags,
-    ...Command.listCommandFlags,
-    name: Flags.string({
-      char: 'n',
-      description: 'Select teams whose names contain the given text',
-    }),
-    keys: Flags.string({
-      char: 'k',
-      description: 'Additional fields to display. Specify multiple times for multiple fields.',
-      multiple: true,
-    }),
-    json: Flags.boolean({
-      char: 'j',
-      description: 'output full details as JSON',
-      exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
-    }),
-    pipe: Flags.boolean({
-      char: 'p',
-      description: 'Print user ID\'s only to stdout, for use with pipes.',
-      exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
-    }),
-    delimiter: Flags.string({
-      char: 'd',
-      description: 'Delimiter for fields that have more than one value',
-      default: '\n',
-    }),
-    ...CliUx.ux.table.flags(),
-  }
-
   async run() {
-    const {flags} = await this.parse(TeamList)
-
     const params: Record<string, any> = {}
 
-    if (flags.name) {
-      params.query = flags.name
+    if (this.flags.name) {
+      params.query = this.flags.name
     }
 
     const teams = await this.pd.fetchWithSpinner('teams', {
       params: params,
       activityDescription: 'Getting teams from PD',
-      fetchLimit: flags.limit,
+      fetchLimit: this.flags.limit,
     })
 
-    if (flags.json) {
+    if (this.flags.json) {
       await utils.printJsonAndExit(teams)
     }
 
@@ -67,19 +37,19 @@ export default class TeamList extends Command {
       },
     }
 
-    if (flags.keys) {
-      for (const key of flags.keys) {
+    if (this.flags.keys) {
+      for (const key of this.flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
+          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
         }
       }
     }
 
     const options = {
-      ...flags, // parsed flags
+      ...this.flags, // parsed flags
     }
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       for (const k of Object.keys(columns)) {
         if (k !== 'id') {
           const colAny = columns[k] as any

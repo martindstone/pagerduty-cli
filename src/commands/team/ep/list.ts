@@ -1,14 +1,14 @@
-import Command from '../../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../../utils'
 import jp from 'jsonpath'
+import { splitDedupAndFlatten } from '../../../utils'
 
-export default class TeamEpList extends Command {
+export default class TeamEpList extends AuthenticatedBaseCommand<typeof TeamEpList> {
   static description = 'List the Escalation Policies for a PagerDuty Team'
 
   static flags = {
-    ...Command.flags,
     name: Flags.string({
       char: 'n',
       description: 'Select teams whose names contain the given text',
@@ -37,40 +37,41 @@ export default class TeamEpList extends Command {
     delimiter: Flags.string({
       char: 'd',
       description: 'Delimiter for fields that have more than one value',
-      default: '\n',
+      default: '\\n',
     }),
     ...CliUx.ux.table.flags(),
   }
 
-  async run() {
-    const {flags} = await this.parse(TeamEpList)
-
-    const params: Record<string, any> = {}
-
-    if (flags.name) {
-      params.query = flags.name
+  public async init(): Promise<void> {
+    await super.init()
+    if (this.flags.delimiter === '\\n') {
+      this.flags.delimiter = '\n'
     }
+    if (this.flags.keys) {
+      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+    }
+  }
 
+  async run() {
     let team_ids = []
-    if (flags.name) {
-      params.query = flags.name
+    if (this.flags.name) {
       CliUx.ux.action.start('Finding teams in PD')
-      const teams = await this.pd.fetch('teams', {params: params})
+      const teams = await this.pd.fetch('teams', { params: { query: this.flags.name } })
       if (teams.length === 0) {
-        CliUx.ux.action.stop(chalk.bold.red('no teams found matching ') + chalk.bold.blue(flags.name))
+        CliUx.ux.action.stop(chalk.bold.red('no teams found matching ') + chalk.bold.blue(this.flags.name))
         this.exit(0)
       }
       for (const team of teams) {
         team_ids.push(team.id)
       }
-    } else if (flags.ids) {
-      const invalid_ids = utils.invalidPagerDutyIDs(flags.ids)
+    } else if (this.flags.ids) {
+      const invalid_ids = utils.invalidPagerDutyIDs(this.flags.ids)
       if (invalid_ids.length > 0) {
-        this.error(`Invalid team IDs ${chalk.bold.blue(invalid_ids.join(', '))}`, {exit: 1})
+        this.error(`Invalid team IDs ${chalk.bold.blue(invalid_ids.join(', '))}`, { exit: 1 })
       }
-      team_ids = flags.ids
+      team_ids = this.flags.ids
     } else {
-      this.error('You must specify one of: -i, -n', {exit: 1})
+      this.error('You must specify one of: -i, -n', { exit: 1 })
     }
 
     if (team_ids.length === 0) {
@@ -89,13 +90,13 @@ export default class TeamEpList extends Command {
         stopSpinnerWhenDone: false,
       })
       for (const m of r) {
-        m.team = {id: team_id}
+        m.team = { id: team_id }
       }
       eps = [...eps, ...r]
     }
     CliUx.ux.action.stop(chalk.bold.green('done'))
 
-    if (flags.json) {
+    if (this.flags.json) {
       await utils.printJsonAndExit(eps)
     }
 
@@ -114,19 +115,19 @@ export default class TeamEpList extends Command {
       },
     }
 
-    if (flags.keys) {
-      for (const key of flags.keys) {
+    if (this.flags.keys) {
+      for (const key of this.flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
+          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
         }
       }
     }
 
     const options = {
-      ...flags, // parsed flags
+      ...this.flags, // parsed flags
     }
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       for (const k of Object.keys(columns)) {
         if (k !== 'id') {
           const colAny = columns[k] as any

@@ -1,14 +1,12 @@
-/* eslint-disable complexity */
-import Command from '../../base'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
 import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 
-export default class TeamCreate extends Command {
+export default class TeamCreate extends AuthenticatedBaseCommand<typeof TeamCreate> {
   static description = 'Create an empty PagerDuty Team. You can add escalation policies and users later with team:ep and team:user'
 
   static flags = {
-    ...Command.flags,
     name: Flags.string({
       char: 'n',
       description: 'The name of the team to add.',
@@ -39,31 +37,29 @@ export default class TeamCreate extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(TeamCreate)
-
     const body: any = {
       team: {
         type: 'team',
-        name: flags.name,
+        name: this.flags.name,
       },
     }
 
-    if (flags.description) {
-      body.team.description = flags.description
+    if (this.flags.description) {
+      body.team.description = this.flags.description
     }
 
-    if (flags.parent_id) {
-      if (utils.invalidPagerDutyIDs([flags.parent_id]).length > 0) {
-        this.error(`Invalid team ID: ${chalk.bold.blue(flags.parent_id)}`, {exit: 1})
+    if (this.flags.parent_id) {
+      if (utils.invalidPagerDutyIDs([this.flags.parent_id]).length > 0) {
+        this.error(`Invalid team ID: ${chalk.bold.blue(this.flags.parent_id)}`, {exit: 1})
       }
       body.team.parent = {
-        id: flags.parent_id,
+        id: this.flags.parent_id,
         type: 'team_reference',
       }
-    } else if (flags.parent_name) {
-      const parent_id = await this.pd.teamIDForName(flags.parent_name)
+    } else if (this.flags.parent_name) {
+      const parent_id = await this.pd.teamIDForName(this.flags.parent_name)
       if (!parent_id) {
-        this.error(`No team was found with the name ${chalk.bold.blue(flags.parent_name)}`, {exit: 1})
+        this.error(`No team was found with the name ${chalk.bold.blue(this.flags.parent_name)}`, {exit: 1})
       }
       body.team.parent = {
         id: parent_id,
@@ -83,9 +79,9 @@ export default class TeamCreate extends Command {
     CliUx.ux.action.stop(chalk.bold.green('done'))
     const returned_team = r.getData()
 
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       this.log(returned_team.team.id)
-    } else if (flags.open) {
+    } else if (this.flags.open) {
       CliUx.ux.action.start(`Opening ${chalk.bold.blue(returned_team.team.html_url)} in the browser`)
       try {
         await CliUx.ux.open(returned_team.team.html_url)
