@@ -1,7 +1,7 @@
-import Command from '../../base'
+import { BaseCommand } from '../../base/base-command'
 import * as chrono from 'chrono-node'
 
-export default class UtilTimestamp extends Command {
+export default class UtilTimestamp extends BaseCommand<typeof UtilTimestamp> {
   static description = 'Make ISO8601 timestamps'
 
   static strict = false
