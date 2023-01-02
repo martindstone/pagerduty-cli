@@ -1,14 +1,13 @@
-import Command from '../../base'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
 import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 
-export default class IncidentPriority extends Command {
+export default class IncidentPriority extends AuthenticatedBaseCommand<typeof IncidentPriority> {
   static description = 'Set priority on PagerDuty Incidents'
 
   static flags = {
-    ...Command.flags,
     me: Flags.boolean({
       char: 'm',
       description: 'Set priority on all incidents assigned to me',
@@ -37,15 +36,13 @@ export default class IncidentPriority extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(IncidentPriority)
-
     const headers: Record<string, string> = {}
-    if (flags.from) {
-      headers.From = flags.from
+    if (this.flags.from) {
+      headers.From = this.flags.from
     }
 
     let incident_ids: string[] = []
-    if (flags.me) {
+    if (this.flags.me) {
       const me = await this.me(true)
 
       const params = {user_ids: [me.user.id]}
@@ -58,9 +55,9 @@ export default class IncidentPriority extends Command {
       }
       CliUx.ux.action.stop(`got ${incidents.length}`)
       incident_ids = incidents.map((e: { id: any }) => e.id)
-    } else if (flags.ids) {
-      incident_ids = utils.splitDedupAndFlatten(flags.ids)
-    } else if (flags.pipe) {
+    } else if (this.flags.ids) {
+      incident_ids = utils.splitDedupAndFlatten(this.flags.ids)
+    } else if (this.flags.pipe) {
       const str: string = await getStream(process.stdin)
       incident_ids = utils.splitDedupAndFlatten([str])
     } else {
@@ -79,14 +76,14 @@ export default class IncidentPriority extends Command {
       this.error('No incident priorities were found. Is the priority feature enabled?', {exit: 1})
     }
 
-    if (!(flags.priority in priorities_map)) {
+    if (!(this.flags.priority in priorities_map)) {
       CliUx.ux.action.stop('failed!')
-      this.error(`No incident priority matches name ${flags.priority}`, {exit: 1})
+      this.error(`No incident priority matches name ${this.flags.priority}`, {exit: 1})
     }
 
-    const priority_id = priorities_map[flags.priority].id
+    const priority_id = priorities_map[this.flags.priority].id
     const requests: any[] = []
-    CliUx.ux.action.start(`Setting priority ${chalk.bold.blue(`${flags.priority} (${priority_id})`)} on incident(s) ${chalk.bold.blue(incident_ids.join(', '))}`)
+    CliUx.ux.action.start(`Setting priority ${chalk.bold.blue(`${this.flags.priority} (${priority_id})`)} on incident(s) ${chalk.bold.blue(incident_ids.join(', '))}`)
     for (const incident_id of incident_ids) {
       const body = {
         incident: {
@@ -106,7 +103,7 @@ export default class IncidentPriority extends Command {
       })
     }
     const r = await this.pd.batchedRequestWithSpinner(requests, {
-      activityDescription: `Setting priority ${chalk.bold.blue(`${flags.priority} (${priority_id})`)} on ${incident_ids.length} incident(s)`,
+      activityDescription: `Setting priority ${chalk.bold.blue(`${this.flags.priority} (${priority_id})`)} on ${incident_ids.length} incident(s)`,
     })
     for (const failure of r.getFailedIndices()) {
       // eslint-disable-next-line no-console

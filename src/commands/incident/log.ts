@@ -1,16 +1,15 @@
-/* eslint-disable complexity */
-import Command from '../../base'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
 import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
+import { splitDedupAndFlatten } from '../../utils'
 
-export default class IncidentLog extends Command {
+export default class IncidentLog extends AuthenticatedBaseCommand<typeof IncidentLog> {
   static description = 'Show PagerDuty Incident Log Entries'
 
   static flags = {
-    ...Command.flags,
     ids: Flags.string({
       char: 'i',
       description: 'Select incidents with the given ID. Specify multiple times for multiple incidents.',
@@ -26,6 +25,11 @@ export default class IncidentLog extends Command {
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
       multiple: true,
     }),
+    delimiter: Flags.string({
+      char: 'd',
+      description: 'Delimiter for fields that have more than one value',
+      default: '\\n',
+    }),
     json: Flags.boolean({
       char: 'j',
       description: 'output full details as JSON',
@@ -36,29 +40,32 @@ export default class IncidentLog extends Command {
       description: 'Read incident IDs from stdin, for use with pipes.',
       exclusive: ['ids'],
     }),
-    delimiter: Flags.string({
-      char: 'd',
-      description: 'Delimiter for fields that have more than one value',
-      default: '\n',
-    }),
     ...CliUx.ux.table.flags(),
   }
 
-  async run() {
-    const {flags} = await this.parse(IncidentLog)
+  public async init(): Promise<void> {
+    await super.init()
+    if (this.flags.delimiter === '\\n') {
+      this.flags.delimiter = '\n'
+    }
+    if (this.flags.keys) {
+      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+    }
+  }
 
-    if (!flags.ids && !flags.pipe) {
+  async run() {
+    if (!this.flags.ids && !this.flags.pipe) {
       this.error('You must specify at least one of: -i, -p', {exit: 1})
     }
     const params: Record<string, any> = {
-      is_overview: flags.overview,
+      is_overview: this.flags.overview,
     }
 
     let incident_ids: string[] = []
 
-    if (flags.ids) {
-      incident_ids = utils.splitDedupAndFlatten(flags.ids)
-    } else if (flags.pipe) {
+    if (this.flags.ids) {
+      incident_ids = utils.splitDedupAndFlatten(this.flags.ids)
+    } else if (this.flags.pipe) {
       const str: string = await getStream(process.stdin)
       incident_ids = utils.splitDedupAndFlatten([str])
     }
@@ -86,7 +93,7 @@ export default class IncidentLog extends Command {
     if (log_entries.length === 0) {
       this.exit(0)
     }
-    if (flags.json) {
+    if (this.flags.json) {
       await utils.printJsonAndExit(log_entries)
     }
 
@@ -108,20 +115,20 @@ export default class IncidentLog extends Command {
       },
     }
 
-    if (flags.keys) {
-      for (const key of flags.keys) {
+    if (this.flags.keys) {
+      for (const key of this.flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
+          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
         }
       }
     }
-    if (!flags.sort) {
-      flags.sort = 'created'
+    if (!this.flags.sort) {
+      this.flags.sort = 'created'
     }
 
     const options = {
-      ...flags, // parsed flags
+      ...this.flags, // parsed flags
     }
     CliUx.ux.table(log_entries, columns, options)
   }

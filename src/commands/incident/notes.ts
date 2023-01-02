@@ -1,12 +1,11 @@
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 
-export default class IncidentNotes extends Command {
+export default class IncidentNotes extends AuthenticatedBaseCommand<typeof IncidentNotes> {
   static description = 'See or add notes on PagerDuty Incidents'
 
   static flags = {
-    ...Command.flags,
     id: Flags.string({
       char: 'i',
       description: 'Incident ID.',
@@ -25,23 +24,21 @@ export default class IncidentNotes extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(IncidentNotes)
-
     const headers: Record<string, string> = {}
-    if (flags.from) {
-      headers.From = flags.from
+    if (this.flags.from) {
+      headers.From = this.flags.from
     }
 
-    if (flags.note) {
+    if (this.flags.note) {
       // add a note
-      CliUx.ux.action.start(`Adding a note to incident ${chalk.bold.blue(flags.id)}`)
+      CliUx.ux.action.start(`Adding a note to incident ${chalk.bold.blue(this.flags.id)}`)
       const body = {
         note: {
-          content: flags.note,
+          content: this.flags.note,
         },
       }
       const r = await this.pd.request({
-        endpoint: `incidents/${flags.id}/notes`,
+        endpoint: `incidents/${this.flags.id}/notes`,
         method: 'POST',
         data: body,
         headers: headers,
@@ -55,12 +52,12 @@ export default class IncidentNotes extends Command {
       }
     } else {
       // get notes
-      CliUx.ux.action.start(`Getting notes for incident ${chalk.bold.blue(flags.id)}`)
-      const notes = await this.pd.fetchWithSpinner(`incidents/${flags.id}/notes`, {
-        activityDescription: `Getting notes for incident ${chalk.bold.blue(flags.id)}`,
+      CliUx.ux.action.start(`Getting notes for incident ${chalk.bold.blue(this.flags.id)}`)
+      const notes = await this.pd.fetchWithSpinner(`incidents/${this.flags.id}/notes`, {
+        activityDescription: `Getting notes for incident ${chalk.bold.blue(this.flags.id)}`,
       })
       if (notes.length === 0) {
-        this.error('No notes found', {exit: 1})
+        this.error('No notes found', { exit: 1 })
       }
 
       const columns: Record<string, object> = {
@@ -77,7 +74,7 @@ export default class IncidentNotes extends Command {
         },
       }
       const options = {
-        ...flags, // parsed flags
+        ...this.flags, // parsed flags
       }
       CliUx.ux.table(notes, columns, options)
     }

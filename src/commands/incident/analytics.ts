@@ -1,14 +1,14 @@
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
+import { splitDedupAndFlatten } from '../../utils'
 
-export default class IncidentAnalytics extends Command {
+export default class IncidentAnalytics extends AuthenticatedBaseCommand<typeof IncidentAnalytics> {
   static description = 'Get Incident analytics'
 
   static flags = {
-    ...Command.flags,
     ids: Flags.string({
       char: 'i',
       description: 'Incident ID\'s to look at. Specify multiple times for multiple incidents.',
@@ -19,6 +19,11 @@ export default class IncidentAnalytics extends Command {
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
       multiple: true,
+    }),
+    delimiter: Flags.string({
+      char: 'd',
+      description: 'Delimiter for fields that have more than one value',
+      default: '\\n',
     }),
     json: Flags.boolean({
       char: 'j',
@@ -33,35 +38,43 @@ export default class IncidentAnalytics extends Command {
     ...CliUx.ux.table.flags(),
   }
 
-  async run() {
-    const {flags} = await this.parse(IncidentAnalytics)
+  public async init(): Promise<void> {
+    await super.init()
+    if (this.flags.delimiter === '\\n') {
+      this.flags.delimiter = '\n'
+    }
+    if (this.flags.keys) {
+      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+    }
+  }
 
+  async run() {
     let incident_ids: string[] = []
-    if (flags.ids) {
-      incident_ids = utils.splitDedupAndFlatten(flags.ids)
-    } else if (flags.pipe) {
+    if (this.flags.ids) {
+      incident_ids = utils.splitDedupAndFlatten(this.flags.ids)
+    } else if (this.flags.pipe) {
       const str: string = await getStream(process.stdin)
       incident_ids = utils.splitDedupAndFlatten([str])
     } else {
-      this.error('You must specify one of: -i, -p', {exit: 1})
+      this.error('You must specify one of: -i, -p', { exit: 1 })
     }
 
     const invalid_ids = utils.invalidPagerDutyIDs(incident_ids)
     if (invalid_ids && invalid_ids.length > 0) {
-      this.error(`Invalid incident ID's: ${invalid_ids.join(', ')}`, {exit: 1})
+      this.error(`Invalid incident ID's: ${invalid_ids.join(', ')}`, { exit: 1 })
     }
 
     const requests = incident_ids.map(incident_id => {
       return {
         endpoint: `analytics/raw/incidents/${incident_id}`,
-        headers: {'X-EARLY-ACCESS': 'analytics-v2'},
+        headers: { 'X-EARLY-ACCESS': 'analytics-v2' },
       }
     })
 
-    const br = await this.pd.batchedRequestWithSpinner(requests, {activityDescription: 'Getting incident analytics'})
+    const br = await this.pd.batchedRequestWithSpinner(requests, { activityDescription: 'Getting incident analytics' })
 
     const analytics = br.getDatas()
-    if (flags.json) {
+    if (this.flags.json) {
       await utils.printJsonAndExit(analytics)
     }
 
@@ -101,17 +114,17 @@ export default class IncidentAnalytics extends Command {
       },
     }
 
-    if (flags.keys) {
-      for (const key of flags.keys) {
+    if (this.flags.keys) {
+      for (const key of this.flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key)),
+          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
         }
       }
     }
 
     const options = {
-      ...flags, // parsed flags
+      ...this.flags, // parsed flags
     }
     CliUx.ux.table(analytics, columns, options)
   }

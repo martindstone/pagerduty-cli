@@ -1,6 +1,4 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable complexity */
-import Command from '../../base'
+import { ListBaseCommand } from '../../base/list-base-command'
 import {Flags, CliUx} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
@@ -8,12 +6,12 @@ import jp from 'jsonpath'
 import * as chrono from 'chrono-node'
 import {PD} from '../../pd'
 
-export default class IncidentList extends Command {
+export default class IncidentList extends ListBaseCommand<typeof IncidentList> {
+  static pdObjectName = 'incident'
+  static pdObjectNamePlural = 'incidents'
   static description = 'List PagerDuty Incidents'
 
   static flags = {
-    ...Command.flags,
-    ...Command.listCommandFlags,
     me: Flags.boolean({
       char: 'm',
       description: 'Return only incidents assigned to me',
@@ -55,36 +53,13 @@ export default class IncidentList extends Command {
     until: Flags.string({
       description: 'The end of the date range over which you want to search.',
     }),
-    keys: Flags.string({
-      char: 'k',
-      description: 'Additional fields to display. Specify multiple times for multiple fields.',
-      multiple: true,
-    }),
     notes: Flags.boolean({
       description: 'Also show incident notes (Uses a lot more HTTPS requests!)',
     }),
-    json: Flags.boolean({
-      char: 'j',
-      description: 'output full details as JSON',
-      exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
-    }),
-    pipe: Flags.boolean({
-      char: 'p',
-      description: 'Print incident ID\'s only to stdout, for use with pipes.',
-      exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
-    }),
-    delimiter: Flags.string({
-      char: 'd',
-      description: 'Delimiter for fields that have more than one value',
-      default: '\n',
-    }),
-    ...CliUx.ux.table.flags(),
   }
 
   async run() {
-    const {flags} = await this.parse(this.ctor)
-
-    const statuses = [...new Set(flags.statuses)]
+    const statuses = [...new Set(this.flags.statuses)]
     if (statuses.indexOf('open') >= 0) {
       statuses.splice(statuses.indexOf('open'), 1, 'triggered', 'acknowledged')
     }
@@ -95,24 +70,24 @@ export default class IncidentList extends Command {
       statuses: [...new Set(statuses)],
     }
 
-    if ((flags.me || flags.assignees) && statuses.length === 1 && statuses[0] === 'resolved') {
+    if ((this.flags.me || this.flags.assignees) && statuses.length === 1 && statuses[0] === 'resolved') {
       // looking for assignees on resolved incidents, which will never return anything
       this.error('You are looking for resolved incidents with assignees. PagerDuty incidents that are resolved are not considered to have any assigneed, so this will never return any incidents.', {exit: 1})
     }
 
-    if (flags.me) {
+    if (this.flags.me) {
       const me = await this.me(true)
       params.user_ids = [me.user.id]
     }
 
-    if (flags.urgencies) {
-      params.urgencies = flags.urgencies
+    if (this.flags.urgencies) {
+      params.urgencies = this.flags.urgencies
     }
 
-    if (flags.assignees) {
+    if (this.flags.assignees) {
       CliUx.ux.action.start('Finding users')
       let users: any[] = []
-      for (const email of flags.assignees) {
+      for (const email of this.flags.assignees) {
         // eslint-disable-next-line no-await-in-loop
         const r = await this.pd.fetch('users', {params: {query: email}})
         users = [...users, ...r.map((e: { id: any }) => e.id)]
@@ -125,10 +100,10 @@ export default class IncidentList extends Command {
       params.user_ids = user_ids
     }
 
-    if (flags.teams) {
+    if (this.flags.teams) {
       CliUx.ux.action.start('Finding teams')
       let teams: any[] = []
-      for (const name of flags.teams) {
+      for (const name of this.flags.teams) {
         // eslint-disable-next-line no-await-in-loop
         const r = await this.pd.fetch('teams', {params: {query: name}})
         teams = [...teams, ...r.map((e: { id: any }) => e.id)]
@@ -141,10 +116,10 @@ export default class IncidentList extends Command {
       params.team_ids = team_ids
     }
 
-    if (flags.services) {
+    if (this.flags.services) {
       CliUx.ux.action.start('Finding services')
       let services: any[] = []
-      for (const name of flags.services) {
+      for (const name of this.flags.services) {
         // eslint-disable-next-line no-await-in-loop
         const r = await this.pd.fetch('services', {params: {query: name}})
         services = [...services, ...r.map((e: { id: any }) => e.id)]
@@ -157,14 +132,14 @@ export default class IncidentList extends Command {
       params.service_ids = service_ids
     }
 
-    if (flags.since) {
-      const since = chrono.parseDate(flags.since)
+    if (this.flags.since) {
+      const since = chrono.parseDate(this.flags.since)
       if (since) {
         params.since = since.toISOString()
       }
     }
-    if (flags.until) {
-      const until = chrono.parseDate(flags.until)
+    if (this.flags.until) {
+      const until = chrono.parseDate(this.flags.until)
       if (until) {
         params.until = until.toISOString()
       }
@@ -179,14 +154,14 @@ export default class IncidentList extends Command {
     const incidents = await this.pd.fetchWithSpinner('incidents', {
       params: params,
       activityDescription: 'Getting incidents',
-      fetchLimit: flags.limit,
+      fetchLimit: this.flags.limit,
     })
 
     if (incidents.length === 0) {
       this.error('No incidents found', {exit: 0})
     }
 
-    if (flags.notes) {
+    if (this.flags.notes) {
       const notes_requests: PD.Request[] = []
       for (const incident of incidents) {
         notes_requests.push({
@@ -206,7 +181,7 @@ export default class IncidentList extends Command {
       }
     }
 
-    if (flags.json) {
+    if (this.flags.json) {
       await utils.printJsonAndExit(incidents)
     }
 
@@ -261,7 +236,7 @@ export default class IncidentList extends Command {
       assigned_to: {
         get: (row: {assignments: any[]}) => {
           if (row.assignments && row.assignments.length > 0) {
-            return row.assignments.map(e => e.assignee.summary).join(flags.delimiter)
+            return row.assignments.map(e => e.assignee.summary).join(this.flags.delimiter)
           }
           return ''
         },
@@ -269,7 +244,7 @@ export default class IncidentList extends Command {
       teams: {
         get: (row: {teams: any[]}) => {
           if (row.teams && row.teams.length > 0) {
-            return row.teams.map(e => e.summary).join(flags.delimiter)
+            return row.teams.map(e => e.summary).join(this.flags.delimiter)
           }
           return ''
         },
@@ -280,7 +255,7 @@ export default class IncidentList extends Command {
       },
     }
 
-    if (flags.notes) {
+    if (this.flags.notes) {
       columns.notes = {
         header: 'Notes',
         get: (row: any) => {
@@ -294,20 +269,20 @@ export default class IncidentList extends Command {
       }
     }
 
-    if (flags.keys) {
-      for (const key of flags.keys) {
+    if (this.flags.keys) {
+      for (const key of this.flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
+          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
         }
       }
     }
 
     const options: any = {
-      ...flags, // parsed flags
+      ...this.flags, // parsed flags
     }
 
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       for (const k of Object.keys(columns)) {
         if (k !== 'id') {
           const colAny = columns[k] as any
