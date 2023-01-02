@@ -1,12 +1,11 @@
-import Command from '../../../base'
-import {Flags, CliUx} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
+import { Flags, CliUx } from '@oclif/core'
 import chalk from 'chalk'
 
-export default class OrchestrationRouteAdd extends Command {
+export default class OrchestrationRouteAdd extends AuthenticatedBaseCommand<typeof OrchestrationRouteAdd> {
   static description = 'Add a Route to a PagerDuty Event Orchestration'
 
   static flags = {
-    ...Command.flags,
     id: Flags.string({
       char: 'i',
       description: 'The ID of the orchestration to add a route to',
@@ -34,35 +33,33 @@ export default class OrchestrationRouteAdd extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(this.ctor)
-
-    if (!(flags.service_id || flags.service_name)) {
-      this.error('You must specify at least one of: -s, -S', {exit: 1})
+    if (!(this.flags.service_id || this.flags.service_name)) {
+      this.error('You must specify at least one of: -s, -S', { exit: 1 })
     }
 
-    if (flags.service_name) {
+    if (this.flags.service_name) {
       let servicesList: Record<string, any> = await this.pd.fetchWithSpinner('services', {
         activityDescription: 'Getting service IDs',
         stopSpinnerWhenDone: false,
       })
-      servicesList = servicesList.filter((service: any) => service.name === flags.service_name)
+      servicesList = servicesList.filter((service: any) => service.name === this.flags.service_name)
       if (servicesList.length === 0) {
-        this.error(`No service was found with the name ${chalk.bold.blue(flags.service_name)}`, {exit: 1})
+        this.error(`No service was found with the name ${chalk.bold.blue(this.flags.service_name)}`, { exit: 1 })
       }
       if (servicesList.length > 1) {
-        this.error(`Multiple services were found with the name ${chalk.bold.blue(flags.service_name)}`, {exit: 1})
+        this.error(`Multiple services were found with the name ${chalk.bold.blue(this.flags.service_name)}`, { exit: 1 })
       }
-      flags.service_id = servicesList[0].id
+      this.flags.service_id = servicesList[0].id
     }
 
-    CliUx.ux.action.start(`Getting routes for orchestration ${chalk.bold.blue(flags.id)}`)
+    CliUx.ux.action.start(`Getting routes for orchestration ${chalk.bold.blue(this.flags.id)}`)
     let r = await this.pd.request({
-      endpoint: `event_orchestrations/${flags.id}/router`,
+      endpoint: `event_orchestrations/${this.flags.id}/router`,
     })
 
     if (r.isFailure) {
       CliUx.ux.action.stop(chalk.bold.red('failed!'))
-      this.error(`${chalk.bold.red('Failed to get orchestration ')}${chalk.bold.blue(flags.id)}: ${r.getFormattedError()}`, {exit: 1})
+      this.error(`${chalk.bold.red('Failed to get orchestration ')}${chalk.bold.blue(this.flags.id)}: ${r.getFormattedError()}`, { exit: 1 })
     }
 
     const orchestration = r.getData()
@@ -75,25 +72,25 @@ export default class OrchestrationRouteAdd extends Command {
       },
     }
     const newRule: any = {
-      conditions: flags.conditions.map((x: string) => ({expression: x})),
+      conditions: this.flags.conditions!.map((x: string) => ({ expression: x })),
       actions: {
-        route_to: flags.service_id,
+        route_to: this.flags.service_id,
       },
     }
-    if (flags.description) {
-      newRule.label = flags.description
+    if (this.flags.description) {
+      newRule.label = this.flags.description
     }
     newOrchestration.orchestration_path.sets[0].rules.push(newRule)
 
-    CliUx.ux.action.start(`Adding a route in orchestration ${chalk.bold.blue(flags.id)}`)
+    CliUx.ux.action.start(`Adding a route in orchestration ${chalk.bold.blue(this.flags.id)}`)
     r = await this.pd.request({
       method: 'PUT',
-      endpoint: `event_orchestrations/${flags.id}/router`,
+      endpoint: `event_orchestrations/${this.flags.id}/router`,
       data: newOrchestration,
     })
     if (r.isFailure) {
       CliUx.ux.action.stop(chalk.bold.red('failed!'))
-      this.error(`${chalk.bold.red('Failed to update orchestration ')}${chalk.bold.blue(flags.id)}: ${r.getFormattedError()}`, {exit: 1})
+      this.error(`${chalk.bold.red('Failed to update orchestration ')}${chalk.bold.blue(this.flags.id)}: ${r.getFormattedError()}`, { exit: 1 })
     }
     CliUx.ux.action.stop(chalk.bold.green('done'))
   }

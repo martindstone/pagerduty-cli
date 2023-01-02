@@ -1,14 +1,14 @@
-import Command from '../../../base'
-import {Flags, CliUx} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
+import { Flags, CliUx } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../../utils'
 import jp from 'jsonpath'
+import { splitDedupAndFlatten } from '../../../utils'
 
-export default class OrchestrationRouteList extends Command {
+export default class OrchestrationRouteList extends AuthenticatedBaseCommand<typeof OrchestrationRouteList> {
   static description = 'List PagerDuty Event Orchestration Routes'
 
   static flags = {
-    ...Command.flags,
     id: Flags.string({
       char: 'i',
       description: 'The ID of the orchestration whose routes to list',
@@ -32,22 +32,37 @@ export default class OrchestrationRouteList extends Command {
     delimiter: Flags.string({
       char: 'd',
       description: 'Delimiter for fields that have more than one value',
-      default: '\n',
+      default: '\\n',
     }),
     ...CliUx.ux.table.flags(),
   }
 
-  async run() {
-    const {flags} = await this.parse(this.ctor)
+  public async init(): Promise<void> {
+    await super.init()
+    if (this.flags.delimiter === '\\n') {
+      this.flags.delimiter = '\n'
+    }
+    if (this.flags.keys) {
+      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+    }
+  }
 
-    CliUx.ux.action.start(`Getting routes for orchestration ${chalk.bold.blue(flags.id)}`)
+  async run() {
+    CliUx.ux.action.start(
+      `Getting routes for orchestration ${chalk.bold.blue(this.flags.id)}`
+    )
     const r = await this.pd.request({
-      endpoint: `event_orchestrations/${flags.id}/router`,
+      endpoint: `event_orchestrations/${this.flags.id}/router`,
     })
 
     if (r.isFailure) {
       CliUx.ux.action.stop(chalk.bold.red('failed!'))
-      this.error(`${chalk.bold.red('Failed to get orchestration ')}${chalk.bold.blue(flags.id)}: ${r.getFormattedError()}`, {exit: 1})
+      this.error(
+        `${chalk.bold.red('Failed to get orchestration ')}${chalk.bold.blue(
+          this.flags.id
+        )}: ${r.getFormattedError()}`,
+        { exit: 1 }
+      )
     }
     CliUx.ux.action.stop(chalk.bold.green('done'))
 
@@ -60,7 +75,9 @@ export default class OrchestrationRouteList extends Command {
           id: rule.id,
           description: rule.label,
           conditions: rule.conditions.map((x: any) => x.expression),
-          actions: Object.keys(rule.actions).map((x: any) => `${x} ${rule.actions[x]}`),
+          actions: Object.keys(rule.actions).map(
+            (x: any) => `${x} ${rule.actions[x]}`
+          ),
         })
       }
     }
@@ -69,40 +86,43 @@ export default class OrchestrationRouteList extends Command {
       id: 'catch-all',
       description: 'Catch-All Route',
       conditions: [],
-      actions: Object.keys(catch_all.actions).map((x: any) => `${x} ${catch_all.actions[x]}`),
+      actions: Object.keys(catch_all.actions).map(
+        (x: any) => `${x} ${catch_all.actions[x]}`
+      ),
     })
 
-    if (flags.json) {
+    if (this.flags.json) {
       await utils.printJsonAndExit(rows)
     }
 
     const columns: Record<string, object> = {
       id: {},
       description: {
-        get: (row: any) => row.description ? row.description : '',
+        get: (row: any) => (row.description ? row.description : ''),
       },
       conditions: {
-        get: (row: any) => row.conditions.join(flags.delimiter),
+        get: (row: any) => row.conditions.join(this.flags.delimiter),
       },
       actions: {
-        get: (row: any) => row.actions.join(flags.delimiter),
+        get: (row: any) => row.actions.join(this.flags.delimiter),
       },
     }
 
-    if (flags.keys) {
-      for (const key of flags.keys) {
+    if (this.flags.keys) {
+      for (const key of this.flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
+          get: (row: any) =>
+            utils.formatField(jp.query(row, key), this.flags.delimiter),
         }
       }
     }
 
     const options: any = {
-      ...flags, // parsed flags
+      ...this.flags, // parsed flags
     }
 
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       for (const k of Object.keys(columns)) {
         if (k !== 'id') {
           const colAny = columns[k] as any

@@ -1,14 +1,14 @@
-import Command from '../../base'
-import {Flags, CliUx} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { Flags, CliUx } from '@oclif/core'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
-import {PD} from '../../pd'
+import { PD } from '../../pd'
+import { splitDedupAndFlatten } from '../../utils'
 
-export default class OrchestrationList extends Command {
+export default class OrchestrationList extends AuthenticatedBaseCommand<typeof OrchestrationList> {
   static description = 'List PagerDuty Event Orchestrations'
 
   static flags = {
-    ...Command.flags,
     keys: Flags.string({
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
@@ -27,26 +27,34 @@ export default class OrchestrationList extends Command {
     delimiter: Flags.string({
       char: 'd',
       description: 'Delimiter for fields that have more than one value',
-      default: '\n',
+      default: '\\n',
     }),
     ...CliUx.ux.table.flags(),
   }
 
-  async run() {
-    const {flags} = await this.parse(this.ctor)
+  public async init(): Promise<void> {
+    await super.init()
+    if (this.flags.delimiter === '\\n') {
+      this.flags.delimiter = '\n'
+    }
+    if (this.flags.keys) {
+      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+    }
+  }
 
+  async run() {
     const teamsList = await this.pd.fetchWithSpinner('teams', {
       activityDescription: 'Getting team names',
       stopSpinnerWhenDone: false,
     })
-    const teams = Object.assign({}, ...teamsList.map((x: any) => ({[x.id]: x})))
+    const teams = Object.assign({}, ...teamsList.map((x: any) => ({ [x.id]: x })))
 
     const globalOrchestrations = await this.pd.fetchWithSpinner('event_orchestrations', {
       activityDescription: 'Getting global orchestrations',
       stopSpinnerWhenDone: false,
     })
     if (globalOrchestrations.length === 0) {
-      this.error('No global orchestrations found', {exit: 0})
+      this.error('No global orchestrations found', { exit: 0 })
     }
 
     const reqs: PD.Request[] = []
@@ -66,7 +74,7 @@ export default class OrchestrationList extends Command {
       globalOrchestrations[i].integrations = orch.orchestration.integrations
     }
 
-    if (flags.json) {
+    if (this.flags.json) {
       await utils.printJsonAndExit(globalOrchestrations)
     }
 
@@ -82,25 +90,25 @@ export default class OrchestrationList extends Command {
         get: (row: any) => row.team ? teams[row.team.id].summary : '',
       },
       routing_key: {
-        get: (row: any) => row.integrations ? row.integrations.map((x: any) => x.parameters.routing_key).join(flags.delimiter) : '',
+        get: (row: any) => row.integrations ? row.integrations.map((x: any) => x.parameters.routing_key).join(this.flags.delimiter) : '',
       },
       routes: {},
     }
 
-    if (flags.keys) {
-      for (const key of flags.keys) {
+    if (this.flags.keys) {
+      for (const key of this.flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
+          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
         }
       }
     }
 
     const options: any = {
-      ...flags, // parsed flags
+      ...this.flags, // parsed flags
     }
 
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       for (const k of Object.keys(columns)) {
         if (k !== 'id') {
           const colAny = columns[k] as any
