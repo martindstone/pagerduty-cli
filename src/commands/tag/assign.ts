@@ -1,13 +1,13 @@
-import Command from '../../base'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
 import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
+import { PD } from '../../pd'
 
-export default class TagAssign extends Command {
+export default class TagAssign extends AuthenticatedBaseCommand<typeof TagAssign> {
   static description = 'Assign/Remove Tags to/from PagerDuty objects'
 
   static flags = {
-    ...Command.flags,
     add_ids: Flags.string({
       char: 'a',
       description: 'The ID of a Tag to add. Specify multiple times for multiple tags',
@@ -59,7 +59,6 @@ export default class TagAssign extends Command {
   }
 
   async run() {
-    const { flags } = await this.parse(this.ctor)
     const {
       add_ids,
       add_names,
@@ -69,7 +68,7 @@ export default class TagAssign extends Command {
       user_emails,
       team_ids,
       ep_ids,
-    } = flags
+    } = this.flags
 
     if (user_ids.length + user_emails.length + team_ids.length + ep_ids.length === 0) {
       this.error('Nothing to add a tag to. You must provide at least -u, -t or -e', { exit: 1 })
@@ -126,27 +125,27 @@ export default class TagAssign extends Command {
       CliUx.ux.action.stop(chalk.bold.green('done'))
     }
 
-    const requests = [
+    const requests: PD.Request[] = [
       ...user_ids.map((user_id: string) => {
         return {
           method: 'POST',
           endpoint: `users/${user_id}/change_tags`,
           data: postBody,
-        }
+        } as PD.Request
       }),
       ...team_ids.map((team_id: string) => {
         return {
           method: 'POST',
           endpoint: `teams/${team_id}/change_tags`,
           data: postBody,
-        }
+        } as PD.Request
       }),
       ...ep_ids.map((ep_id: string) => {
         return {
           method: 'POST',
           endpoint: `escalation_policies/${ep_id}/change_tags`,
           data: postBody,
-        }
+        } as PD.Request
       }),
     ]
 

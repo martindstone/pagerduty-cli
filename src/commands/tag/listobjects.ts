@@ -1,15 +1,14 @@
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
+import { splitDedupAndFlatten } from '../../utils'
 
-export default class TagList extends Command {
+export default class TagList extends AuthenticatedBaseCommand<typeof TagList> {
   static description = 'List Tagged PagerDuty Objects (Connected Entities)'
 
   static flags = {
-    ...Command.flags,
-    ...Command.listCommandFlags,
     ids: Flags.string({
       char: 'i',
       description: 'The ID of a Tag to show. Specify multiple times for multiple tags',
@@ -29,6 +28,11 @@ export default class TagList extends Command {
       multiple: true,
       default: ['users', 'teams', 'escalation_policies'],
     }),
+    keys: Flags.string({
+      char: 'k',
+      description: 'Additional fields to display. Specify multiple times for multiple fields.',
+      multiple: true,
+    }),
     json: Flags.boolean({
       char: 'j',
       description: 'output full details as JSON',
@@ -39,12 +43,26 @@ export default class TagList extends Command {
       description: 'Print object ID\'s only to stdout, for use with pipes.',
       exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
     }),
+    delimiter: Flags.string({
+      char: 'd',
+      description: 'Delimiter for fields that have more than one value',
+      default: '\\n',
+    }),
     ...CliUx.ux.table.flags(),
   }
 
+  public async init(): Promise<void> {
+    await super.init()
+    if (this.flags.delimiter === '\\n') {
+      this.flags.delimiter = '\n'
+    }
+    if (this.flags.keys) {
+      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+    }
+  }
+
   async run() {
-    const {flags} = await this.parse(this.ctor)
-    const {names, ids, types} = flags
+    const { names, ids, types } = this.flags
 
     if (names.length > 0) {
       CliUx.ux.action.start(`Finding IDs for ${names.length} tags`)
@@ -60,7 +78,7 @@ export default class TagList extends Command {
     }
 
     if (ids.length === 0) {
-      this.error('No tags to show. You must provide at least -i or -n', {exit: 1})
+      this.error('No tags to show. You must provide at least -i or -n', { exit: 1 })
     }
 
     let rows: any[] = []
@@ -79,9 +97,9 @@ export default class TagList extends Command {
     CliUx.ux.action.stop(chalk.bold.green('done'))
 
     if (rows.length === 0) {
-      this.error('No objects found.', {exit: 1})
+      this.error('No objects found.', { exit: 1 })
     }
-    if (flags.json) {
+    if (this.flags.json) {
       await utils.printJsonAndExit(rows)
     }
 
@@ -98,19 +116,19 @@ export default class TagList extends Command {
       },
     }
 
-    if (flags.keys) {
-      for (const key of flags.keys) {
+    if (this.flags.keys) {
+      for (const key of this.flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
+          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
         }
       }
     }
 
     const options = {
-      ...flags, // parsed flags
+      ...this.flags, // parsed flags
     }
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       for (const k of Object.keys(columns)) {
         if (k !== 'id') {
           const colAny = columns[k] as any
