@@ -1,7 +1,6 @@
-import {Command, Flags, Interfaces, CliUx} from '@oclif/core'
-import {AuthenticatedBaseCommand} from './authenticated-base-command'
-
-import { DocOpts } from './docopts'
+import { Command, Flags, Interfaces, CliUx } from '@oclif/core'
+import { AuthenticatedBaseCommand } from './authenticated-base-command'
+import { splitDedupAndFlatten } from '../utils'
 
 export type Flags<T extends typeof Command> = Interfaces.InferredFlags<typeof ListBaseCommand['globalFlags'] & T['flags']>
 
@@ -50,9 +49,12 @@ export abstract class ListBaseCommand<T extends typeof Command> extends Authenti
     if (this.flags.delimiter === '\\n') {
       this.flags.delimiter = '\n'
     }
+    if (this.flags.keys) {
+      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+    }
   }
 
-  protected async catch(err: Error & {exitCode?: number}): Promise<any> {
+  protected async catch(err: Error & { exitCode?: number }): Promise<any> {
     // add any custom logic to handle errors from the command
     // or simply return the parent class error handling
     return super.catch(err)
