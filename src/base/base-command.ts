@@ -1,8 +1,8 @@
 // import Command, {flags} from '@oclif/command'
-import {Command, Flags, Interfaces} from '@oclif/core'
-import {DocOpts} from './docopts'
-import {Config} from '../config'
-import {PD} from '../pd'
+import { Command, Flags, Interfaces } from '@oclif/core'
+import { DocOpts } from './docopts'
+import { Config } from '../config'
+import { PD } from '../pd'
 import chalk from 'chalk'
 
 export type Flags<T extends typeof Command> = Interfaces.InferredFlags<typeof BaseCommand['globalFlags'] & T['flags']>
@@ -30,14 +30,14 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
   public async me(die = false): Promise<any> {
     const me = await this.pd.me()
     if (die && !me) {
-      this.error('Request to /users/me failed. Are you using a legacy API token?', {exit: 1})
+      this.error('Request to /users/me failed. Are you using a legacy API token?', { exit: 1 })
     }
     return me
   }
 
   public async init(): Promise<void> {
     await super.init()
-    const {flags} = await this.parse(this.constructor as Interfaces.Command.Class)
+    const { flags } = await this.parse(this.constructor as Interfaces.Command.Class)
     this.flags = flags
 
     this._config = new Config()
@@ -72,11 +72,11 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
 
   requireAuth() {
     if (!this.isAuthenticated()) {
-      this.error('You are not logged in to any PagerDuty domains', {suggestions: ['pd auth:set', 'pd login'], exit: 1})
+      this.error('You are not logged in to any PagerDuty domains', { suggestions: ['pd auth:set', 'pd login'], exit: 1 })
     }
   }
 
-  protected async catch(err: Error & {exitCode?: number}): Promise<any> {
+  protected async catch(err: Error & { exitCode?: number }): Promise<any> {
     // add any custom logic to handle errors from the command
     // or simply return the parent class error handling
     return super.catch(err)

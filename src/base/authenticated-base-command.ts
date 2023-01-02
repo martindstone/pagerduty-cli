@@ -1,7 +1,7 @@
-import {Command, Flags, Interfaces, CliUx} from '@oclif/core'
-import {BaseCommand} from './base-command'
-import {Config, ConfigSubdomain, CLIENT_ID, CLIENT_SECRET} from '../config'
-import {PD} from '../pd'
+import { Command, Flags, Interfaces, CliUx } from '@oclif/core'
+import { BaseCommand } from './base-command'
+import { Config, ConfigSubdomain, CLIENT_ID, CLIENT_SECRET } from '../config'
+import { PD } from '../pd'
 import chalk from 'chalk'
 import { AuthorizationCode } from 'simple-oauth2'
 
@@ -23,7 +23,7 @@ export abstract class AuthenticatedBaseCommand<T extends typeof Command> extends
   protected flags!: Flags<T>
 
   public async refreshToken(alias: string | undefined): Promise<boolean> {
-    const {alias: configAlias, subdomain, accessToken: access_token, refreshToken: refresh_token, expiresAt: expires_at} = this._config.get(alias) as ConfigSubdomain
+    const { alias: configAlias, subdomain, accessToken: access_token, refreshToken: refresh_token, expiresAt: expires_at } = this._config.get(alias) as ConfigSubdomain
 
     if (!(expires_at && refresh_token && PD.isBearerToken(access_token as string))) {
       return false
