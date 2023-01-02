@@ -1,16 +1,14 @@
-/* eslint-disable complexity */
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import jp from 'jsonpath'
 import * as utils from '../../utils'
 
-export default class UserSet extends Command {
+export default class UserSet extends AuthenticatedBaseCommand<typeof UserSet> {
   static description = 'Set PagerDuty User attributes'
 
   static flags = {
-    ...Command.flags,
     emails: Flags.string({
       char: 'e',
       description: 'Select users whose emails contain the given text. Specify multiple times for multiple emails.',
@@ -51,48 +49,46 @@ export default class UserSet extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(UserSet)
-
-    if (!(flags.emails || flags.exact_emails || flags.ids || flags.pipe)) {
-      this.error('You must specify at least one of: -i, -e, -E, -p', {exit: 1})
+    if (!(this.flags.emails || this.flags.exact_emails || this.flags.ids || this.flags.pipe)) {
+      this.error('You must specify at least one of: -i, -e, -E, -p', { exit: 1 })
     }
 
     let user_ids: string[] = []
-    if (flags.emails) {
+    if (this.flags.emails) {
       CliUx.ux.action.start('Getting user IDs from PD')
-      user_ids = [...user_ids, ...await this.pd.userIDsForEmails(flags.emails)]
+      user_ids = [...user_ids, ...await this.pd.userIDsForEmails(this.flags.emails)]
     }
-    if (flags.exact_emails) {
+    if (this.flags.exact_emails) {
       CliUx.ux.action.start('Getting user IDs from PD')
-      user_ids = [...user_ids, ...await this.pd.userIDsForEmails(flags.exact_emails, true)]
+      user_ids = [...user_ids, ...await this.pd.userIDsForEmails(this.flags.exact_emails, true)]
     }
-    if (flags.ids) {
-      user_ids = [...user_ids, ...utils.splitDedupAndFlatten(flags.ids)]
+    if (this.flags.ids) {
+      user_ids = [...user_ids, ...utils.splitDedupAndFlatten(this.flags.ids)]
     }
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       const str: string = await getStream(process.stdin)
       user_ids = utils.splitDedupAndFlatten([str])
     }
     CliUx.ux.action.stop(chalk.bold.green('done'))
     user_ids = [...new Set(user_ids)]
     if (user_ids.length === 0) {
-      this.error('No user ID\'s were found. Please try a different search.', {exit: 1})
+      this.error('No user ID\'s were found. Please try a different search.', { exit: 1 })
     }
     const invalid_ids = utils.invalidPagerDutyIDs(user_ids)
     if (invalid_ids && invalid_ids.length > 0) {
-      this.error(`Invalid user ID's: ${invalid_ids.join(', ')}`, {exit: 1})
+      this.error(`Invalid user ID's: ${invalid_ids.join(', ')}`, { exit: 1 })
     }
 
     const attributes = []
-    for (const [i, key] of flags.keys.entries()) {
-      let value = flags.values[i]
-      if (flags.jsonvalues) {
+    for (const [i, key] of this.flags.keys.entries()) {
+      let value = this.flags.values[i]
+      if (this.flags.jsonvalues) {
         try {
           const jsonvalue = JSON.parse(value)
           value = jsonvalue
-        } catch (e) {}
+        } catch (e) { }
       }
-      attributes.push({key, value})
+      attributes.push({ key, value })
     }
 
     const requests: any[] = []
@@ -116,7 +112,7 @@ export default class UserSet extends Command {
       console.error(`${chalk.bold.red('Failed to set user ')}${chalk.bold.blue(requests[failure].data.user.id)}: ${r.results[failure].getFormattedError()}`)
     }
     for (const s of r.getDatas()) {
-      for (const {key, value} of attributes) {
+      for (const { key, value } of attributes) {
         const returnedValues = jp.query(s.user, key)
         const returnedValue = returnedValues ? returnedValues[0] : null
         if (returnedValue !== value) {

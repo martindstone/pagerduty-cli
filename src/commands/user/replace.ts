@@ -1,19 +1,17 @@
-/* eslint-disable complexity */
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
-import {PD} from '../../pd'
+import { PD } from '../../pd'
 
-export default class UserReplace extends Command {
+export default class UserReplace extends AuthenticatedBaseCommand<typeof UserReplace> {
   static description = 'Replace PagerDuty Users in all Schedules and Escalation Policies'
 
   static flags = {
-    ...Command.flags,
     ids: Flags.string({
       char: 'i',
-      description: 'Replace users with the given IDs. Specify multiple times for multiple users.',
+      description: 'Replace the given user IDs. Specify multiple times for multiple users.',
       multiple: true,
       exclusive: ['deleted', 'pipe'],
     }),
@@ -34,7 +32,7 @@ export default class UserReplace extends Command {
     }),
     pipe: Flags.boolean({
       char: 'p',
-      description: 'Read user ID\'s from stdin.',
+      description: 'Read IDs of users to replace from stdin.',
       exclusive: ['ids', 'deleted'],
     }),
     force: Flags.boolean({
@@ -43,13 +41,11 @@ export default class UserReplace extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(UserReplace)
-
-    if (!(flags.deleted || flags.ids || flags.pipe)) {
-      this.error('You must specify one of: -d, -i, -p', {exit: 1})
+    if (!(this.flags.deleted || this.flags.ids || this.flags.pipe)) {
+      this.error('You must specify one of: -d, -i, -p', { exit: 1 })
     }
 
-    if (flags.force) {
+    if (this.flags.force) {
       let countdown = 5
       while (countdown > -1) {
         CliUx.ux.action.start(`Warning: user:replace running in ${chalk.bold.red('extreme danger mode')}, hit Ctrl-C to abort, starting in ${chalk.bold(String(countdown))}`)
@@ -61,38 +57,38 @@ export default class UserReplace extends Command {
     }
 
     let user_ids: string[] = []
-    if (flags.ids) {
-      user_ids = [...new Set(utils.splitDedupAndFlatten(flags.ids))]
+    if (this.flags.ids) {
+      user_ids = [...new Set(utils.splitDedupAndFlatten(this.flags.ids))]
     }
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       const str: string = await getStream(process.stdin)
       user_ids = utils.splitDedupAndFlatten([str])
     }
-    if (!flags.deleted && user_ids.length === 0) {
-      this.error('No user ID\'s were specified.', {exit: 1})
+    if (!this.flags.deleted && user_ids.length === 0) {
+      this.error('No user ID\'s were specified.', { exit: 1 })
     }
 
     const invalid_ids = utils.invalidPagerDutyIDs(user_ids)
     if (invalid_ids && invalid_ids.length > 0) {
-      this.error(`Invalid user ID's: ${invalid_ids.join(', ')}`, {exit: 1})
+      this.error(`Invalid user ID's: ${invalid_ids.join(', ')}`, { exit: 1 })
     }
 
     let replacement_user_id: string | null = null
-    if (flags.user_email) {
-      replacement_user_id = await this.pd.userIDForEmail(flags.user_email)
+    if (this.flags.user_email) {
+      replacement_user_id = await this.pd.userIDForEmail(this.flags.user_email)
       if (!replacement_user_id) {
-        this.error(`No user was found for email ${chalk.bold.blue(flags.user_email)}`, {exit: 1})
+        this.error(`No user was found for email ${chalk.bold.blue(this.flags.user_email)}`, { exit: 1 })
       }
     }
-    if (flags.user_id) {
-      if (utils.invalidPagerDutyIDs([flags.user_id]).length > 0) {
-        this.error(`Invalid user ID: ${chalk.bold.blue(flags.user_id)}`, {exit: 1})
+    if (this.flags.user_id) {
+      if (utils.invalidPagerDutyIDs([this.flags.user_id]).length > 0) {
+        this.error(`Invalid user ID: ${chalk.bold.blue(this.flags.user_id)}`, { exit: 1 })
       }
-      replacement_user_id = flags.user_id
+      replacement_user_id = this.flags.user_id
     }
 
     if (!replacement_user_id) {
-      this.error('No replacement user specified. Please specify one with -u or -U', {exit: 1})
+      this.error('No replacement user specified. Please specify one with -u or -U', { exit: 1 })
     }
 
     const schedule_list = await this.pd.fetchWithSpinner('schedules', {
@@ -105,7 +101,7 @@ export default class UserReplace extends Command {
       requests.push({
         endpoint: `schedules/${schedule_id}`,
         method: 'GET',
-        params: {overflow: true},
+        params: { overflow: true },
       })
     }
     let r = await this.pd.batchedRequestWithSpinner(requests, {
@@ -119,11 +115,11 @@ export default class UserReplace extends Command {
 
     const schedule_requests: PD.Request[] = []
     for (const schedule of schedules) {
-      const {name, time_zone, description} = schedule.schedule
+      const { name, time_zone, description } = schedule.schedule
       let schedule_needs_update = false
       for (const layer of schedule.schedule.schedule_layers) {
         const users_to_replace = layer.users.filter((x: any) => {
-          if ((flags.deleted && x.user.self === null) || (user_ids.includes(x.user.id))) {
+          if ((this.flags.deleted && x.user.self === null) || (user_ids.includes(x.user.id))) {
             return true
           }
           return false
@@ -137,7 +133,7 @@ export default class UserReplace extends Command {
         const new_layers = []
         for (const layer of schedule.schedule.schedule_layers) {
           const new_users = layer.users.map((x: any) => {
-            if ((flags.deleted && x.user.self === null) || (user_ids.includes(x.user.id))) {
+            if ((this.flags.deleted && x.user.self === null) || (user_ids.includes(x.user.id))) {
               return {
                 user: {
                   type: 'user_reference',
@@ -173,10 +169,10 @@ export default class UserReplace extends Command {
 
     const ep_requests: PD.Request[] = []
     for (const ep of eps) {
-      const {name, escalation_rules} = ep
+      const { name, escalation_rules } = ep
       let ep_needs_update = false
       for (const rule of escalation_rules) {
-        if (rule.targets.filter((x: any) => (flags.deleted && x.type === 'user_reference' && x.self === null) || user_ids.includes(x.id)).length > 0) {
+        if (rule.targets.filter((x: any) => (this.flags.deleted && x.type === 'user_reference' && x.self === null) || user_ids.includes(x.id)).length > 0) {
           ep_needs_update = true
           break
         }
@@ -192,7 +188,7 @@ export default class UserReplace extends Command {
                 type: x.type,
                 id: x.id,
               }
-              if ((flags.deleted && x.type === 'user_reference' && x.self === null) || user_ids.includes(x.id)) {
+              if ((this.flags.deleted && x.type === 'user_reference' && x.self === null) || user_ids.includes(x.id)) {
                 new_target.id = replacement_user_id
               }
               return new_target
@@ -221,8 +217,8 @@ export default class UserReplace extends Command {
       this.exit(0)
     }
 
-    if (!flags.force) {
-      const ok = await CliUx.ux.prompt(chalk.bold.red(`About to update ${schedule_requests.length} schedules and ${ep_requests.length} escalation policies. Are you absolutely sure?\nType '${chalk.bold.blue(replacement_user_id)}' to confirm`), {default: 'nope'})
+    if (!this.flags.force) {
+      const ok = await CliUx.ux.prompt(chalk.bold.red(`About to update ${schedule_requests.length} schedules and ${ep_requests.length} escalation policies. Are you absolutely sure?\nType '${chalk.bold.blue(replacement_user_id)}' to confirm`), { default: 'nope' })
       if (ok !== replacement_user_id) {
         // eslint-disable-next-line no-console
         console.warn(`OK, doing nothing... ${chalk.bold.green('done')}`)

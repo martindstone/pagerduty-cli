@@ -1,8 +1,9 @@
-import Command from '../../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../../utils'
 import jp from 'jsonpath'
+import { splitDedupAndFlatten } from '../../../utils'
 import parsePhoneNumber from 'libphonenumber-js'
 
 const types: Record<string, string> = {
@@ -12,11 +13,10 @@ const types: Record<string, string> = {
   sms_contact_method: 'SMS',
 }
 
-export default class UserContactList extends Command {
+export default class UserContactList extends AuthenticatedBaseCommand<typeof UserContactList> {
   static description = 'List a PagerDuty User\'s contact methods.'
 
   static flags = {
-    ...Command.flags,
     id: Flags.string({
       char: 'i',
       description: 'Show contacts for the user with this ID.',
@@ -45,33 +45,41 @@ export default class UserContactList extends Command {
     delimiter: Flags.string({
       char: 'd',
       description: 'Delimiter for fields that have more than one value',
-      default: '\n',
+      default: '\\n',
     }),
     ...CliUx.ux.table.flags(),
   }
 
-  async run() {
-    const {flags} = await this.parse(UserContactList)
+  public async init(): Promise<void> {
+    await super.init()
+    if (this.flags.delimiter === '\\n') {
+      this.flags.delimiter = '\n'
+    }
+    if (this.flags.keys) {
+      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+    }
+  }
 
+  async run() {
     let userID
-    if (flags.id) {
-      userID = flags.id
-    } else if (flags.email) {
-      CliUx.ux.action.start(`Finding PD user ${chalk.bold.blue(flags.email)}`)
-      userID = await this.pd.userIDForEmail(flags.email)
+    if (this.flags.id) {
+      userID = this.flags.id
+    } else if (this.flags.email) {
+      CliUx.ux.action.start(`Finding PD user ${chalk.bold.blue(this.flags.email)}`)
+      userID = await this.pd.userIDForEmail(this.flags.email)
       if (!userID) {
         CliUx.ux.action.stop(chalk.bold.red('failed!'))
-        this.error(`No user was found for the email "${flags.email}"`, {exit: 1})
+        this.error(`No user was found for the email "${this.flags.email}"`, { exit: 1 })
       }
     } else {
-      this.error('You must specify one of: -i, -e', {exit: 1})
+      this.error('You must specify one of: -i, -e', { exit: 1 })
     }
 
     const contact_methods = await this.pd.fetchWithSpinner(`users/${userID}/contact_methods`, {
       activityDescription: `Getting contact methods for user ${chalk.bold.blue(userID)}`,
     })
 
-    if (flags.json) {
+    if (this.flags.json) {
       await utils.printJsonAndExit(contact_methods)
     }
 
@@ -97,19 +105,19 @@ export default class UserContactList extends Command {
       },
     }
 
-    if (flags.keys) {
-      for (const key of flags.keys) {
+    if (this.flags.keys) {
+      for (const key of this.flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
+          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
         }
       }
     }
 
     const options = {
-      ...flags, // parsed flags
+      ...this.flags, // parsed flags
     }
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       for (const k of Object.keys(columns)) {
         if (k !== 'id') {
           const colAny = columns[k] as any

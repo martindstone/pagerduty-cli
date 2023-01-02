@@ -1,15 +1,15 @@
-import Command from '../../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../../utils'
 import jp from 'jsonpath'
 import * as chrono from 'chrono-node'
+import { splitDedupAndFlatten } from '../../../utils'
 
-export default class UserSessionList extends Command {
+export default class UserSessionList extends AuthenticatedBaseCommand<typeof UserSessionList> {
   static description = 'List a PagerDuty User\'s sessions.'
 
   static flags = {
-    ...Command.flags,
     id: Flags.string({
       char: 'i',
       description: 'Show sessions for the user with this ID.',
@@ -24,6 +24,11 @@ export default class UserSessionList extends Command {
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
       multiple: true,
+    }),
+    delimiter: Flags.string({
+      char: 'd',
+      description: 'Delimiter for fields that have more than one value',
+      default: '\\n',
     }),
     since: Flags.string({
       description: 'The start of the date range over which you want to search.',
@@ -48,45 +53,53 @@ export default class UserSessionList extends Command {
     ...CliUx.ux.table.flags(),
   }
 
-  async run() {
-    const {flags} = await this.parse(UserSessionList)
+  public async init(): Promise<void> {
+    await super.init()
+    if (this.flags.delimiter === '\\n') {
+      this.flags.delimiter = '\n'
+    }
+    if (this.flags.keys) {
+      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+    }
+  }
 
+  async run() {
     let userID
-    if (flags.id) {
-      userID = flags.id
-    } else if (flags.email) {
-      CliUx.ux.action.start(`Finding PD user ${chalk.bold.blue(flags.email)}`)
-      userID = await this.pd.userIDForEmail(flags.email)
+    if (this.flags.id) {
+      userID = this.flags.id
+    } else if (this.flags.email) {
+      CliUx.ux.action.start(`Finding PD user ${chalk.bold.blue(this.flags.email)}`)
+      userID = await this.pd.userIDForEmail(this.flags.email)
       if (!userID) {
         CliUx.ux.action.stop(chalk.bold.red('failed!'))
-        this.error(`No user was found for the email "${flags.email}"`, {exit: 1})
+        this.error(`No user was found for the email "${this.flags.email}"`, { exit: 1 })
       }
     } else {
-      this.error('You must specify one of: -i, -e', {exit: 1})
+      this.error('You must specify one of: -i, -e', { exit: 1 })
     }
 
     let sessions = await this.pd.fetchWithSpinner(`users/${userID}/sessions`, {
       activityDescription: `Getting sessions for user ${chalk.bold.blue(userID)}`,
     })
 
-    if (flags.since) {
-      const since = chrono.parseDate(flags.since)
+    if (this.flags.since) {
+      const since = chrono.parseDate(this.flags.since)
       sessions = sessions.filter((x: any) => {
         const c = chrono.parseDate(x.created_at)
         return c > since
       })
     }
 
-    if (flags.until) {
-      const until = chrono.parseDate(flags.until)
+    if (this.flags.until) {
+      const until = chrono.parseDate(this.flags.until)
       sessions = sessions.filter((x: any) => {
         const c = chrono.parseDate(x.created_at)
         return c < until
       })
     }
 
-    if (flags.query) {
-      sessions = jp.query(sessions, flags.query)
+    if (this.flags.query) {
+      sessions = jp.query(sessions, this.flags.query)
     }
 
     if (sessions.length > 0) {
@@ -96,7 +109,7 @@ export default class UserSessionList extends Command {
       this.exit(0)
     }
 
-    if (flags.json) {
+    if (this.flags.json) {
       await utils.printJsonAndExit(sessions)
     }
 
@@ -112,19 +125,19 @@ export default class UserSessionList extends Command {
       },
     }
 
-    if (flags.keys) {
-      for (const key of flags.keys) {
+    if (this.flags.keys) {
+      for (const key of this.flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key)),
+          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
         }
       }
     }
 
     const options = {
-      ...flags, // parsed flags
+      ...this.flags, // parsed flags
     }
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       for (const k of Object.keys(columns)) {
         if (k !== 'id') {
           const colAny = columns[k] as any

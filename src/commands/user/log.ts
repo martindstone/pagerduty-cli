@@ -1,26 +1,24 @@
-/* eslint-disable complexity */
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { ListBaseCommand } from '../../base/list-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 import * as chrono from 'chrono-node'
 import jp from 'jsonpath'
 
-export default class UserLog extends Command {
+export default class UserLog extends ListBaseCommand<typeof UserLog> {
   static description = 'Show PagerDuty User Log Entries'
 
   static flags = {
-    ...Command.flags,
     email: Flags.string({
       char: 'e',
       description: 'Select users whose login email addresses contain the given text',
-      exclusive: ['exact_email'],
+      exclusive: ['exact_email', 'name'],
     }),
     exact_email: Flags.string({
       char: 'E',
       description: 'Select the user whose login email is this exact text',
-      exclusive: ['email'],
+      exclusive: ['email', 'name'],
     }),
     ids: Flags.string({
       char: 'i',
@@ -38,81 +36,58 @@ export default class UserLog extends Command {
       char: 'O',
       description: 'Get only `overview` log entries',
     }),
-    keys: Flags.string({
-      char: 'k',
-      description: 'Additional fields to display. Specify multiple times for multiple fields.',
-      multiple: true,
-    }),
-    json: Flags.boolean({
-      char: 'j',
-      description: 'output full details as JSON',
-      exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
-    }),
-    pipe: Flags.boolean({
-      char: 'p',
-      description: 'Read user IDs from stdin, for use with pipes.',
-      exclusive: ['email', 'ids'],
-    }),
-    delimiter: Flags.string({
-      char: 'd',
-      description: 'Delimiter for fields that have more than one value',
-      default: '\n',
-    }),
-    ...CliUx.ux.table.flags(),
   }
 
   async run() {
-    const {flags} = await this.parse(UserLog)
-
-    if (!flags.email && !flags.exact_email && !flags.ids && !flags.pipe) {
-      this.error('You must specify at least one of: -e, -E, -i, -p', {exit: 1})
+    if (!(this.flags.email || this.flags.exact_email || this.flags.ids || this.flags.pipe || this.flags.name)) {
+      this.error('You must specify at least one of: -e, -E, -i, -p, -n', { exit: 1 })
     }
     const params: Record<string, any> = {
-      is_overview: flags.overview,
+      is_overview: this.flags.overview,
     }
 
-    if (flags.since) {
-      const since = chrono.parseDate(flags.since)
+    if (this.flags.since) {
+      const since = chrono.parseDate(this.flags.since)
       if (since) {
         params.since = since.toISOString()
       }
     }
-    if (flags.until) {
-      const until = chrono.parseDate(flags.until)
+    if (this.flags.until) {
+      const until = chrono.parseDate(this.flags.until)
       if (until) {
         params.until = until.toISOString()
       }
     }
 
     let user_ids: string[] = []
-    if (flags.email || flags.exact_email) {
+    if (this.flags.email || this.flags.exact_email || this.flags.name) {
       CliUx.ux.action.start('Getting user IDs from PD')
       let users = await this.pd.fetchWithSpinner('users', {
-        params: {query: flags.email || flags.exact_email},
+        params: { query: this.flags.email || this.flags.exact_email || this.flags.name },
         activityDescription: 'Getting user IDs from PD',
       })
-      if (flags.exact_email) {
-        users = users.filter((user: any) => user.email === flags.exact_email)
+      if (this.flags.exact_email) {
+        users = users.filter((user: any) => user.email === this.flags.exact_email)
       }
       if (!users || users.length === 0) {
         CliUx.ux.action.stop(chalk.bold.red('none found'))
       }
       user_ids = users.map((e: { id: any }) => e.id)
     }
-    if (flags.ids) {
-      user_ids = [...new Set([...user_ids, ...utils.splitDedupAndFlatten(flags.ids)])]
+    if (this.flags.ids) {
+      user_ids = [...new Set([...user_ids, ...utils.splitDedupAndFlatten(this.flags.ids)])]
     }
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       const str: string = await getStream(process.stdin)
       user_ids = utils.splitDedupAndFlatten([str])
     }
     const invalid_ids = utils.invalidPagerDutyIDs(user_ids)
     if (invalid_ids && invalid_ids.length > 0) {
-      this.error(`Invalid user ID's: ${invalid_ids.join(', ')}`, {exit: 1})
+      this.error(`Invalid user ID's: ${invalid_ids.join(', ')}`, { exit: 1 })
     }
 
     if (user_ids.length === 0) {
-      this.error('No valid IDs specified. Nothing to do.', {exit: 1})
+      this.error('No valid IDs specified. Nothing to do.', { exit: 1 })
     }
     let log_entries: any[] = []
     for (const user_id of user_ids) {
@@ -121,6 +96,7 @@ export default class UserLog extends Command {
       const r = await this.pd.fetchWithSpinner(`users/${user_id}/log_entries`, {
         params: params,
         activityDescription: `Getting log entries for user ${chalk.bold.blue(user_id)}`,
+        fetchLimit: this.flags.limit,
       })
       log_entries = [...log_entries, ...r]
     }
@@ -128,7 +104,7 @@ export default class UserLog extends Command {
     if (log_entries.length === 0) {
       this.exit(0)
     }
-    if (flags.json) {
+    if (this.flags.json) {
       await utils.printJsonAndExit(log_entries)
     }
 
@@ -146,20 +122,20 @@ export default class UserLog extends Command {
       },
     }
 
-    if (flags.keys) {
-      for (const key of flags.keys) {
+    if (this.flags.keys) {
+      for (const key of this.flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
+          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
         }
       }
     }
-    if (!flags.sort) {
-      flags.sort = 'created'
+    if (!this.flags.sort) {
+      this.flags.sort = 'created'
     }
 
     const options = {
-      ...flags, // parsed flags
+      ...this.flags, // parsed flags
     }
     CliUx.ux.table(log_entries, columns, options)
   }

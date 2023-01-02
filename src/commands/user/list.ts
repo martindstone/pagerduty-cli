@@ -1,72 +1,50 @@
-import Command from '../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { ListBaseCommand } from '../../base/list-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
 
-export default class UserList extends Command {
+export default class UserList extends ListBaseCommand<typeof UserList> {
+  static pdObjectName = 'user'
+  static pdObjectNamePlural = 'users'
   static description = 'List PagerDuty Users'
 
   static flags = {
-    ...Command.flags,
-    ...Command.listCommandFlags,
     email: Flags.string({
       char: 'e',
       description: 'Select users whose login email addresses contain the given text',
-      exclusive: ['exact_email'],
+      exclusive: ['exact_email', 'name'],
     }),
     exact_email: Flags.string({
       char: 'E',
       description: 'Select the user whose login email is this exact text',
-      exclusive: ['email'],
-    }),
-    keys: Flags.string({
-      char: 'k',
-      description: 'Additional fields to display. Specify multiple times for multiple fields.',
-      multiple: true,
-    }),
-    json: Flags.boolean({
-      char: 'j',
-      description: 'output full details as JSON',
-      exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
-    }),
-    pipe: Flags.boolean({
-      char: 'p',
-      description: 'Print user ID\'s only to stdout, for use with pipes.',
-      exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
-    }),
-    delimiter: Flags.string({
-      char: 'd',
-      description: 'Delimiter for fields that have more than one value',
-      default: '\n',
+      exclusive: ['email', 'name'],
     }),
     ...CliUx.ux.table.flags(),
   }
 
   async run() {
-    const {flags} = await this.parse(UserList)
-
     const params: Record<string, any> = {
       include: ['contact_methods', 'notification_rules', 'teams'],
     }
 
-    if (flags.email || flags.exact_email) {
-      params.query = flags.email || flags.exact_email
+    if (this.flags.email || this.flags.exact_email || this.flags.name) {
+      params.query = this.flags.email || this.flags.exact_email || this.flags.name
     }
 
     let users = await this.pd.fetchWithSpinner('users', {
       params: params,
       activityDescription: 'Getting users from PD',
-      fetchLimit: flags.limit,
+      fetchLimit: this.flags.limit,
     })
 
-    if (flags.exact_email) {
-      users = users.filter((user: any) => user.email === flags.exact_email)
+    if (this.flags.exact_email) {
+      users = users.filter((user: any) => user.email === this.flags.exact_email)
     }
 
     if (users.length === 0) {
-      this.error('No users found.', {exit: 1})
+      this.error('No users found.', { exit: 1 })
     }
-    if (flags.json) {
+    if (this.flags.json) {
       await utils.printJsonAndExit(users)
     }
 
@@ -92,29 +70,29 @@ export default class UserList extends Command {
         extended: true,
       },
       contact_emails: {
-        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'email_contact_method').map((e: any) => e.address).join(flags.delimiter),
+        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'email_contact_method').map((e: any) => e.address).join(this.flags.delimiter),
       },
       contact_phones: {
-        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'phone_contact_method').map((e: any) => e.address).join(flags.delimiter),
+        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'phone_contact_method').map((e: any) => e.address).join(this.flags.delimiter),
       },
       contact_sms: {
-        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'sms_contact_method').map((e: any) => e.address).join(flags.delimiter),
+        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'sms_contact_method').map((e: any) => e.address).join(this.flags.delimiter),
       },
     }
 
-    if (flags.keys) {
-      for (const key of flags.keys) {
+    if (this.flags.keys) {
+      for (const key of this.flags.keys) {
         columns[key] = {
           header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
+          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
         }
       }
     }
 
     const options = {
-      ...flags, // parsed flags
+      ...this.flags, // parsed flags
     }
-    if (flags.pipe) {
+    if (this.flags.pipe) {
       for (const k of Object.keys(columns)) {
         if (k !== 'id') {
           const colAny = columns[k] as any
