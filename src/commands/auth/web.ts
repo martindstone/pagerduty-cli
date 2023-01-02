@@ -1,21 +1,27 @@
-import Command from '../../authbase'
-import {CliUx, Flags} from '@oclif/core'
+import { BaseCommand } from '../../base/base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
-import {Config} from '../../config'
+import { Config, CLIENT_ID, CLIENT_SECRET } from '../../config'
 import * as http from 'http'
+import { Socket } from 'node:net'
 
-import {AccessToken, AuthorizationCode, AuthorizationTokenConfig} from 'simple-oauth2'
+import {
+  AccessToken,
+  AuthorizationCode,
+  AuthorizationTokenConfig,
+} from 'simple-oauth2'
 
-export default class AuthWeb extends Command {
+
+export default class AuthWeb extends BaseCommand<typeof AuthWeb> {
   static description = 'Authenticate with PagerDuty in the browser'
 
   static aliases = ['login']
 
   static flags = {
-    ...Command.flags,
     alias: Flags.string({
       char: 'a',
-      description: 'The alias to use for this token. Defaults to the name of the PD subdomain',
+      description:
+        'The alias to use for this token. Defaults to the name of the PD subdomain',
     }),
     default: Flags.boolean({
       char: 'd',
@@ -25,22 +31,27 @@ export default class AuthWeb extends Command {
     }),
   }
 
-  async run() {
-    const {flags} = await this.parse(this.ctor)
+  private client!: AuthorizationCode
+  private server!: http.Server
+  private sockets: Record<any, any> = {}
+  private nextSocketID = 0
 
+  async run() {
     const config = {
       client: {
-        id: '4cd1af90cbf22d5d880aafbbb1829835e0a79c7d8811b0a8e87138bd61caf734',
-        secret: '4c42b8fffe4cc36ebfff88fa783d842af4cc44e43f7aae5590488d7d3574bebd',
+        id: CLIENT_ID,
+        secret: CLIENT_SECRET,
       },
       auth: {
         tokenHost: 'https://app.pagerduty.com',
       },
     }
-    const client = new AuthorizationCode(config)
+    this.client = new AuthorizationCode(config)
 
-    const state = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-    const authorizationUri = client.authorizeURL({
+    const state =
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15)
+    const authorizationUri = this.client.authorizeURL({
       redirect_uri: 'http://127.0.0.1:8000/callback',
       scope: 'user',
       state: state,
@@ -49,119 +60,146 @@ export default class AuthWeb extends Command {
     try {
       await CliUx.ux.open(authorizationUri)
     } catch (error) {
-      this.error(`Couldn't open a browser for web authentication: ${error}`, {
-        exit: 1,
-        suggestions: [
-          `Get a token from ${chalk.bold.blue('https://martindstone.github.io/PDOAuth/')}`,
-          `Then run ${chalk.bold.blue('pd auth:set')}`,
-        ],
-      })
+      this.reportError(`Couldn't open a browser for web authentication: ${error}`)
     }
 
-    const server = http.createServer()
-
-    // Maintain a hash of all connected sockets
-    const sockets: Record<any, any> = {}
-    let nextSocketId = 0
-    server.on('connection', function (socket) {
-      // Add a newly connected socket
-      const socketId = nextSocketId++
-      sockets[socketId] = socket
-
-      // Remove the socket when it closes
-      socket.on('close', function () {
-        delete sockets[socketId]
-      })
+    const p = new Promise<AccessToken>((resolve, reject) => {
+      this.setupServer(resolve, reject)
     })
 
-    server.on('request', (req, res) => {
+    try {
+      this.server.listen(8000, () => {
+        CliUx.ux.action.start('Waiting for browser authentication')
+      })
+    } catch (error) {
+      this.reportError('Couldn\'t start a local server for web authentication')
+    }
+    try {
+      const accessToken = await p
+      CliUx.ux.action.start('Checking token ' + chalk.bold.blue(accessToken.token.access_token))
+      const result = await this.checkToken(accessToken)
+      if (result) {
+        CliUx.ux.action.stop(chalk.bold.green('done'))
+      } else {
+        CliUx.ux.action.stop(chalk.bold.red('failed!'))
+      }
+    } catch (error: any) {
+      CliUx.ux.action.stop(chalk.bold.red('failed!'))
+      this.reportError(error.toString())
+    }
+  }
+
+  reportError(message: string) {
+    this.error(message, {
+      exit: 1,
+      suggestions: [
+        `Get a token from ${chalk.bold.blue(
+          'https://martindstone.github.io/PDOAuth/'
+        )}`,
+        `Then run ${chalk.bold.blue('pd auth:set')}`,
+      ],
+    })
+  }
+
+  trackConnectionSocket(socket: Socket) {
+    // Add a newly connected socket
+    const socketId = this.nextSocketID++
+    this.sockets[socketId] = socket
+
+    // Remove the socket when it closes
+    socket.on('close', () => {
+      delete this.sockets[socketId]
+    })
+  }
+
+  async cleanup() {
+    this.server.close()
+    await CliUx.ux.wait(200)
+    for (const socket of Object.values(this.sockets)) {
+      socket.destroy()
+    }
+  }
+
+  setupServer(resolve: any, reject: any) {
+    this.server = http.createServer()
+    this.server.timeout = 0
+
+    this.server.on('connection', this.trackConnectionSocket.bind(this))
+
+    this.server.on('request', async (req, res) => {
       // eslint-disable-next-line node/no-unsupported-features/node-builtins
       const urlParts = new URL(req.url as string, `http://${req.headers.host}`)
-      if (urlParts.pathname === '/callback' && urlParts.searchParams.has('code')) {
+      if (
+        urlParts.pathname === '/callback' &&
+        urlParts.searchParams.has('code')
+      ) {
         const tokenParams: AuthorizationTokenConfig = {
           code: urlParts.searchParams.get('code') as string,
           redirect_uri: 'http://127.0.0.1:8000/callback',
           scope: 'user',
         }
-        client.getToken(tokenParams).then(accessToken => {
-          if (accessToken && accessToken.token && accessToken.token.access_token) {
-            const token = accessToken.token.access_token
-            CliUx.ux.action.start(`Checking token ${chalk.bold.blue(token)}`)
-            // sometimes PD gives an error when immediately making a request
-            setTimeout(this.checkToken, 2_000, accessToken, this, flags)
-          } else {
-            CliUx.ux.action.stop(chalk.bold.red('failed - response didn\'t contain a token'))
-            this.error('Missing token', {exit: 1, suggestions: ['Get a token from the web at https://martindstone.github.io/PDOAuth']})
-          }
-        }, _ => {
-          CliUx.ux.action.stop(chalk.bold.red('grant request failed'))
-          this.error('Grant request error', {exit: 1, suggestions: ['Get a token from the web at https://martindstone.github.io/PDOAuth']})
-        })
 
-        res.statusCode = 200
-        res.end('\n\n  ok you can close the browser window now')
-
-        server.close()
-        setTimeout(() => {
-          for (const socket of Object.values(sockets)) {
-            socket.destroy()
-          }
-        }, 500)
+        try {
+          const accessToken = await this.client.getToken(tokenParams)
+          resolve(accessToken)
+        } catch (error: any) {
+          reject(error.message)
+        } finally {
+          res.statusCode = 200
+          res.end('\n\n  ok you can close the browser window now')
+          this.cleanup()
+        }
       } else if (urlParts.searchParams.has('error_description')) {
-        CliUx.ux.action.stop(chalk.bold.red('failed'))
-        // eslint-disable-next-line no-console
-        console.error(urlParts.searchParams.get('error_description'))
         res.statusCode = 200
-        res.end('\n\n  ok you can close the browser window now')
-        server.close()
-        setTimeout(() => {
-          for (const socket of Object.values(sockets)) {
-            socket.destroy()
-          }
-        }, 500)
+        res.end(`\n\n  Oops! ${urlParts.searchParams.get('error_description')}` +
+          '\n\n  Close the browser window and look at your terminal for more info')
+        this.cleanup()
+        reject(urlParts.searchParams.get('error_description'))
       } else {
-        CliUx.ux.action.stop(chalk.bold.red('failed'))
-        // eslint-disable-next-line no-console
-        console.error('Authentication failed')
         res.statusCode = 200
-        res.end('\n\n  ok you can close the browser window now')
-        server.close()
-        setTimeout(() => {
-          for (const socket of Object.values(sockets)) {
-            socket.destroy()
-          }
-        }, 500)
+        res.end('\n\n  Oops! Authentication failed' +
+          '\n\n  Close the browser window and look at your terminal for more info')
+        this.cleanup()
+        reject('Authentication failed')
       }
     })
-
-    try {
-      server.listen(8000, () => {
-        CliUx.ux.action.start('Waiting for browser authentication')
-      })
-    } catch (error) {
-      this.error('Couldn\'t start a local server for web authentication', {
-        exit: 1,
-        suggestions: [
-          `Get a token from ${chalk.bold.blue('https://martindstone.github.io/PDOAuth/')}`,
-          `Then run ${chalk.bold.blue('pd auth:set')}`,
-        ],
-      })
-    }
   }
 
-  checkToken(body: AccessToken, self: any, flags?: any) {
-    Config.configForTokenResponseBody(body, flags?.alias).then(configSubdomain => {
-      const verb = self._config.has(configSubdomain.alias) ? 'updated' : 'added'
-      self._config.put(configSubdomain, flags?.default)
-      self._config.save()
+  async checkToken(accessToken: AccessToken): Promise<boolean> {
+    try {
+      const configSubdomain = await Config.configForTokenResponseBody(
+        accessToken,
+        this.flags.alias
+      )
+      const verb = this._config.has(configSubdomain.alias)
+        ? 'updated'
+        : 'added'
+      this._config.put(configSubdomain, this.flags.default)
+      this._config.save()
       CliUx.ux.action.stop(chalk.bold.green('done'))
-      if (flags.default) {
-        self.log(`${chalk.bold(`Domain ${verb} -`)} you are logged in to ${chalk.bold.blue(self._config.getCurrentSubdomain())} as ${chalk.bold.blue(self._config.get()?.user.email)}`)
+      if (this.flags.default) {
+        this.log(
+          `${chalk.bold(
+            `Domain ${verb} -`
+          )} you are logged in to ${chalk.bold.blue(
+            this._config.getCurrentSubdomain()
+          )} as ${chalk.bold.blue(this._config.get()?.user.email)}`
+        )
       } else {
-        self.log(`${chalk.bold(`Domain ${verb}, default unchanged -`)} you are logged in to ${chalk.bold.blue(self._config.getCurrentSubdomain())} as ${chalk.bold.blue(self._config.get()?.user.email)} (alias: ${chalk.bold.blue(self._config.defaultAlias())})`)
+        this.log(
+          `${chalk.bold(
+            `Domain ${verb}, default unchanged -`
+          )} you are logged in to ${chalk.bold.blue(
+            this._config.getCurrentSubdomain()
+          )} as ${chalk.bold.blue(
+            this._config.get()?.user.email
+          )} (alias: ${chalk.bold.blue(this._config.defaultAlias())})`
+        )
       }
-    }).catch(error => {
-      CliUx.ux.action.stop(chalk.bold.red(`failed: ${error.message}`))
-    })
+      return true
+    } catch (error) {
+      CliUx.ux.action.stop(chalk.bold.red(`failed: ${error}`))
+      return false
+    }
   }
 }
