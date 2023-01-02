@@ -1,16 +1,14 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable complexity */
-import Command from '../../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../../utils'
 import * as chrono from 'chrono-node'
+import { splitDedupAndFlatten } from '../../../utils'
 
-export default class AnalyticsIncident extends Command {
+export default class AnalyticsIncident extends AuthenticatedBaseCommand<typeof AnalyticsIncident> {
   static description = 'Get PagerDuty Incident Analytics'
 
   static flags = {
-    ...Command.flags,
     teams: Flags.string({
       char: 't',
       description: 'Team names to include. Specify multiple times for multiple teams.',
@@ -58,14 +56,22 @@ export default class AnalyticsIncident extends Command {
     delimiter: Flags.string({
       char: 'd',
       description: 'Delimiter for fields that have more than one value',
-      default: '\n',
+      default: '\\n',
     }),
     ...CliUx.ux.table.flags(),
   }
 
-  async run() {
-    const {flags} = await this.parse(AnalyticsIncident)
+  public async init(): Promise<void> {
+    await super.init()
+    if (this.flags.delimiter === '\\n') {
+      this.flags.delimiter = '\n'
+    }
+    if (this.flags.keys) {
+      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+    }
+  }
 
+  async run() {
     const headers = {
       'X-EARLY-ACCESS': 'analytics-v2',
       'Content-Type': 'application/json',
@@ -73,54 +79,54 @@ export default class AnalyticsIncident extends Command {
 
     const data: Record<string, any> = {
       filters: {
-        major: flags.major,
+        major: this.flags.major,
       },
     }
 
-    if (flags.aggregate_unit) {
-      data.aggregate_unit = flags.aggregate_unit
+    if (this.flags.aggregate_unit) {
+      data.aggregate_unit = this.flags.aggregate_unit
     }
 
-    if (flags.teams) {
+    if (this.flags.teams) {
       CliUx.ux.action.start('Finding teams')
       let teams: any[] = []
-      for (const name of flags.teams) {
+      for (const name of this.flags.teams) {
         // eslint-disable-next-line no-await-in-loop
-        const r = await this.pd.fetch('teams', {params: {query: name}})
+        const r = await this.pd.fetch('teams', { params: { query: name } })
         teams = [...teams, ...r.map((e: { id: any }) => e.id)]
       }
       const team_ids = [...new Set(teams)]
       if (team_ids.length === 0) {
         CliUx.ux.action.stop(chalk.bold.red('none found'))
-        this.error('No teams found. Please check your search.', {exit: 1})
+        this.error('No teams found. Please check your search.', { exit: 1 })
       }
       data.filters.team_ids = team_ids
     }
 
-    if (flags.services) {
+    if (this.flags.services) {
       CliUx.ux.action.start('Finding services')
       let services: any[] = []
-      for (const name of flags.services) {
+      for (const name of this.flags.services) {
         // eslint-disable-next-line no-await-in-loop
-        const r = await this.pd.fetch('services', {params: {query: name}})
+        const r = await this.pd.fetch('services', { params: { query: name } })
         services = [...services, ...r.map((e: { id: any }) => e.id)]
       }
       const service_ids = [...new Set(services)]
       if (service_ids.length === 0) {
         CliUx.ux.action.stop(chalk.bold.red('none found'))
-        this.error('No services found. Please check your search.', {exit: 1})
+        this.error('No services found. Please check your search.', { exit: 1 })
       }
       data.filters.service_ids = service_ids
     }
 
-    if (flags.since) {
-      const since = chrono.parseDate(flags.since)
+    if (this.flags.since) {
+      const since = chrono.parseDate(this.flags.since)
       if (since) {
         data.filters.created_at_start = since.toISOString()
       }
     }
-    if (flags.until) {
-      const until = chrono.parseDate(flags.until)
+    if (this.flags.until) {
+      const until = chrono.parseDate(this.flags.until)
       if (until) {
         data.filters.created_at_end = until.toISOString()
       }
@@ -134,15 +140,15 @@ export default class AnalyticsIncident extends Command {
     })
 
     if (analytics.length === 0) {
-      this.error('No analytics found', {exit: 0})
+      this.error('No analytics found', { exit: 0 })
     }
 
-    if (flags.json) {
+    if (this.flags.json) {
       await utils.printJsonAndExit(analytics)
     }
 
     const options = {
-      ...flags, // parsed flags
+      ...this.flags, // parsed flags
     }
     const columns: Record<string, any> = {
       range_start: {
@@ -191,11 +197,11 @@ export default class AnalyticsIncident extends Command {
         get: (row: { total_snoozed_seconds: string }) => row.total_snoozed_seconds === null ? '' : row.total_snoozed_seconds,
       },
     }
-    if (!(flags.aggregate_unit)) {
+    if (!(this.flags.aggregate_unit)) {
       delete columns.range_start
     }
 
-    if (flags.csv || flags.output) {
+    if (this.flags.csv || this.flags.output) {
       CliUx.ux.table(analytics, columns, options)
       this.exit(0)
     }
@@ -203,7 +209,7 @@ export default class AnalyticsIncident extends Command {
     let meanColumnsArr = Object.entries(columns).filter(([k, _v]) => {
       return k === 'range_start' || k.indexOf('mean') > -1
     })
-    meanColumnsArr  = meanColumnsArr.map(([k, v]) => {
+    meanColumnsArr = meanColumnsArr.map(([k, v]) => {
       return [k.replace(/^mean_/, ''), v]
     })
     const meanColumns = Object.fromEntries(meanColumnsArr)
@@ -213,7 +219,7 @@ export default class AnalyticsIncident extends Command {
     let totalColumnsArr = Object.entries(columns).filter(([k, _v]) => {
       return k === 'range_start' || k.indexOf('total') > -1
     })
-    totalColumnsArr  = totalColumnsArr.map(([k, v]) => {
+    totalColumnsArr = totalColumnsArr.map(([k, v]) => {
       return [k.replace(/^total_/, ''), v]
     })
     const totalColumns = Object.fromEntries(totalColumnsArr)
