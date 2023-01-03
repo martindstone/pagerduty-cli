@@ -18,308 +18,310 @@ PagerDuty Command Line Interface
 
 # Commands
 <!-- commands -->
-* [`pd analytics:incident`](#pd-analyticsincident)
-* [`pd analytics:incident:raw`](#pd-analyticsincidentraw)
-* [`pd auth:add`](#pd-authadd)
-* [`pd auth:delete`](#pd-authdelete)
-* [`pd auth:get`](#pd-authget)
-* [`pd auth:list`](#pd-authlist)
-* [`pd auth:use`](#pd-authuse)
-* [`pd auth:web`](#pd-authweb)
+* [`pd analytics:incident [-h] [--debug] [-b <value>] [--token <value>] [-t <value>] [-S <value>] [-M] [-u high|low] [--since <value>] [--until <value>] [-g day|week|month] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-analyticsincident--h---debug--b-value---token-value--t-value--s-value--m--u-highlow---since-value---until-value--g-dayweekmonth--k-value--j--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd analytics:incident:raw [-h] [--debug] [-b <value>] [--token <value>] [-t <value>] [-S <value>] [-M] [--since <value>] [--until <value>] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-analyticsincidentraw--h---debug--b-value---token-value--t-value--s-value--m---since-value---until-value--k-value--j--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd auth:add [-h] [--debug] [-t <value>] [-a <value>] [-d]`](#pd-authadd--h---debug--t-value--a-value--d)
+* [`pd auth:delete -a <value> [-h] [--debug]`](#pd-authdelete--a-value--h---debug)
+* [`pd auth:get [-h] [--debug]`](#pd-authget--h---debug)
+* [`pd auth:list [-h] [--debug]`](#pd-authlist--h---debug)
+* [`pd auth:set [-h] [--debug] [-t <value>] [-a <value>] [-d]`](#pd-authset--h---debug--t-value--a-value--d)
+* [`pd auth:use -a <value> [-h] [--debug]`](#pd-authuse--a-value--h---debug)
+* [`pd auth:web [-h] [--debug] [-a <value>] [-d]`](#pd-authweb--h---debug--a-value--d)
 * [`pd autocomplete [SHELL]`](#pd-autocomplete-shell)
-* [`pd automation:action:list`](#pd-automationactionlist)
-* [`pd automation:runner:list`](#pd-automationrunnerlist)
 * [`pd commands`](#pd-commands)
-* [`pd ep:copy`](#pd-epcopy)
-* [`pd ep:create`](#pd-epcreate)
-* [`pd ep:level:add`](#pd-epleveladd)
-* [`pd ep:level:remove`](#pd-eplevelremove)
-* [`pd ep:list`](#pd-eplist)
-* [`pd ep:oncall`](#pd-eponcall)
-* [`pd ep:open`](#pd-epopen)
-* [`pd ep:target:add`](#pd-eptargetadd)
-* [`pd ep:target:remove`](#pd-eptargetremove)
-* [`pd event:alert`](#pd-eventalert)
-* [`pd event:change`](#pd-eventchange)
+* [`pd ep:copy [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-d <value>] [-o] [-p]`](#pd-epcopy--h---debug--b-value---token-value--n-value--i-value--d-value--o--p)
+* [`pd ep:create -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [--description <value>] [-r <value>] [-u <value>] [-U <value>] [-s <value>] [-S <value>] [-o] [-p]`](#pd-epcreate--n-value--h---debug--b-value---token-value--d-value---description-value--r-value--u-value--u-value--s-value--s-value--o--p)
+* [`pd ep:level:add -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p] [-d <value>] [-u <value>] [-U <value>] [-s <value>] [-S <value>]`](#pd-epleveladd--l-value--h---debug--b-value---token-value--n-value--i-value--p--d-value--u-value--u-value--s-value--s-value)
+* [`pd ep:level:remove -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`](#pd-eplevelremove--l-value--h---debug--b-value---token-value--n-value--i-value--p)
+* [`pd ep:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-eplist--h---debug--b-value---token-value--j--n-value--k-value---limit-value--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd ep:oncall [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-k <value>] [-d <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-eponcall--h---debug--b-value---token-value--i-value--n-value---since-value---until-value--k-value--d-value--j---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd ep:open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`](#pd-epopen--h---debug--b-value---token-value--n-value--i-value--p)
+* [`pd ep:target:add -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p] [-u <value>] [-U <value>] [-s <value>] [-S <value>]`](#pd-eptargetadd--l-value--h---debug--b-value---token-value--n-value--i-value--p--u-value--u-value--s-value--s-value)
+* [`pd ep:target:remove -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p] [-u <value>] [-U <value>] [-s <value>] [-S <value>]`](#pd-eptargetremove--l-value--h---debug--b-value---token-value--n-value--i-value--p--u-value--u-value--s-value--s-value)
+* [`pd event:alert -r <value> --summary <value> --source <value> [-h] [--debug] [-d <value>] [-a trigger|acknowledge|resolve] [--severity critical|error|warning|info] [--timestamp <value>] [--component <value>] [--group <value>] [--class <value>] [-k <value>] [-v <value>] [-I <value>] [-H <value>] [-A <value>] [-L <value>] [-T <value>] [-c <value>] [-u <value>] [-e <value>] [--jsonvalues] [-j] [-p]`](#pd-eventalert--r-value---summary-value---source-value--h---debug--d-value--a-triggeracknowledgeresolve---severity-criticalerrorwarninginfo---timestamp-value---component-value---group-value---class-value--k-value--v-value--i-value--h-value--a-value--l-value--t-value--c-value--u-value--e-value---jsonvalues--j--p)
+* [`pd event:change -r <value> --summary <value> [-h] [--debug] [--source <value>] [--timestamp <value>] [-k <value>] [-v <value>] [-L <value>] [-T <value>] [-e <value>] [--jsonvalues] [-j]`](#pd-eventchange--r-value---summary-value--h---debug---source-value---timestamp-value--k-value--v-value--l-value--t-value--e-value---jsonvalues--j)
 * [`pd help [COMMAND]`](#pd-help-command)
-* [`pd incident:ack`](#pd-incidentack)
-* [`pd incident:action:list`](#pd-incidentactionlist)
-* [`pd incident:alerts`](#pd-incidentalerts)
-* [`pd incident:analytics`](#pd-incidentanalytics)
-* [`pd incident:assign`](#pd-incidentassign)
-* [`pd incident:create`](#pd-incidentcreate)
-* [`pd incident:list`](#pd-incidentlist)
-* [`pd incident:log`](#pd-incidentlog)
-* [`pd incident:merge`](#pd-incidentmerge)
-* [`pd incident:notes`](#pd-incidentnotes)
-* [`pd incident:open`](#pd-incidentopen)
-* [`pd incident:priority`](#pd-incidentpriority)
-* [`pd incident:rename`](#pd-incidentrename)
-* [`pd incident:resolve`](#pd-incidentresolve)
-* [`pd incident:set`](#pd-incidentset)
-* [`pd log`](#pd-log)
-* [`pd orchestration:add`](#pd-orchestrationadd)
-* [`pd orchestration:list`](#pd-orchestrationlist)
-* [`pd orchestration:route:add`](#pd-orchestrationrouteadd)
-* [`pd orchestration:route:delete`](#pd-orchestrationroutedelete)
-* [`pd orchestration:route:list`](#pd-orchestrationroutelist)
-* [`pd rest:delete`](#pd-restdelete)
-* [`pd rest:fetch`](#pd-restfetch)
-* [`pd rest:get`](#pd-restget)
-* [`pd rest:post`](#pd-restpost)
-* [`pd rest:put`](#pd-restput)
-* [`pd schedule:copy`](#pd-schedulecopy)
-* [`pd schedule:create`](#pd-schedulecreate)
-* [`pd schedule:list`](#pd-schedulelist)
-* [`pd schedule:oncall`](#pd-scheduleoncall)
-* [`pd schedule:open`](#pd-scheduleopen)
-* [`pd schedule:override:add`](#pd-scheduleoverrideadd)
-* [`pd schedule:override:list`](#pd-scheduleoverridelist)
-* [`pd schedule:render`](#pd-schedulerender)
-* [`pd schedule:show`](#pd-scheduleshow)
-* [`pd service:create`](#pd-servicecreate)
-* [`pd service:disable`](#pd-servicedisable)
-* [`pd service:enable`](#pd-serviceenable)
-* [`pd service:list`](#pd-servicelist)
-* [`pd service:open`](#pd-serviceopen)
-* [`pd service:set`](#pd-serviceset)
-* [`pd tag:assign`](#pd-tagassign)
-* [`pd tag:list`](#pd-taglist)
-* [`pd tag:listobjects`](#pd-taglistobjects)
-* [`pd team:create`](#pd-teamcreate)
-* [`pd team:ep:add`](#pd-teamepadd)
-* [`pd team:ep:list`](#pd-teameplist)
-* [`pd team:ep:remove`](#pd-teamepremove)
-* [`pd team:list`](#pd-teamlist)
-* [`pd team:open`](#pd-teamopen)
-* [`pd team:user:add`](#pd-teamuseradd)
-* [`pd team:user:list`](#pd-teamuserlist)
-* [`pd team:user:remove`](#pd-teamuserremove)
+* [`pd incident:ack [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p] [-z <value>]`](#pd-incidentack--h---debug--b-value---token-value--m--i-value--f-value--p--z-value)
+* [`pd incident:acknowledge [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p] [-z <value>]`](#pd-incidentacknowledge--h---debug--b-value---token-value--m--i-value--f-value--p--z-value)
+* [`pd incident:alerts [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-p] [-j] [-k <value>] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-incidentalerts--h---debug--b-value---token-value--m--i-value--p--j--k-value--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd incident:analytics [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-k <value>] [-d <value>] [-j] [-p] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-incidentanalytics--h---debug--b-value---token-value--i-value--k-value--d-value--j--p---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd incident:assign [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-u <value>] [-U <value>] [-e <value>] [-E <value>] [-F <value>] [-p]`](#pd-incidentassign--h---debug--b-value---token-value--m--i-value--u-value--u-value--e-value--e-value--f-value--p)
+* [`pd incident:create -t <value> [-h] [--debug] [-b <value>] [--token <value>] [-S <value>] [--service_id <value>] [-E <value>] [--escalation_policy_id <value>] [-U <value>] [--user_id <value>] [-d <value>] [-u high|low] [-P <value>] [-k <value>] [-F <value>] [-o] [-p]`](#pd-incidentcreate--t-value--h---debug--b-value---token-value--s-value---service_id-value--e-value---escalation_policy_id-value--u-value---user_id-value--d-value--u-highlow--p-value--k-value--f-value--o--p)
+* [`pd incident:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header] [-m] [-s open|closed|triggered|acknowledged|resolved] [-e <value>] [-t <value>] [-S <value>] [-u high|low] [--since <value>] [--until <value>] [--notes]`](#pd-incidentlist--h---debug--b-value---token-value--j--n-value--k-value---limit-value--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header--m--s-openclosedtriggeredacknowledgedresolved--e-value--t-value--s-value--u-highlow---since-value---until-value---notes)
+* [`pd incident:log [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-O] [-k <value>] [-d <value>] [-j] [-p] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-incidentlog--h---debug--b-value---token-value--i-value--o--k-value--d-value--j--p---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd incident:merge [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-I <value>] [-p] [-F <value>] [-o]`](#pd-incidentmerge--h---debug--b-value---token-value--i-value--i-value--p--f-value--o)
+* [`pd incident:notes -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-F <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-incidentnotes--i-value--h---debug--b-value---token-value--n-value--f-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd incident:open [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-p]`](#pd-incidentopen--h---debug--b-value---token-value--m--i-value--p)
+* [`pd incident:priority -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]`](#pd-incidentpriority--n-value--h---debug--b-value---token-value--m--i-value--f-value--p)
+* [`pd incident:reassign [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-u <value>] [-U <value>] [-e <value>] [-E <value>] [-F <value>] [-p]`](#pd-incidentreassign--h---debug--b-value---token-value--m--i-value--u-value--u-value--e-value--e-value--f-value--p)
+* [`pd incident:rename [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-t <value>] [--prefix <value>] [-F <value>] [-p]`](#pd-incidentrename--h---debug--b-value---token-value--m--i-value--t-value---prefix-value--f-value--p)
+* [`pd incident:resolve [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]`](#pd-incidentresolve--h---debug--b-value---token-value--m--i-value--f-value--p)
+* [`pd incident:set -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]`](#pd-incidentset--k-value--v-value--h---debug--b-value---token-value--m--i-value--f-value--p)
+* [`pd incident:update -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]`](#pd-incidentupdate--k-value--v-value--h---debug--b-value---token-value--m--i-value--f-value--p)
+* [`pd log [-h] [--debug] [-b <value>] [--token <value>] [--since <value>] [--until <value>] [-O] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-log--h---debug--b-value---token-value---since-value---until-value--o--k-value--j--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd login [-h] [--debug] [-a <value>] [-d]`](#pd-login--h---debug--a-value--d)
+* [`pd orchestration:add [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-d <value>] [-t <value>] [-T <value>]`](#pd-orchestrationadd--h---debug--b-value---token-value--n-value--d-value--t-value--t-value)
+* [`pd orchestration:list [-h] [--debug] [-b <value>] [--token <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-orchestrationlist--h---debug--b-value---token-value--k-value--j--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd orchestration:route:add -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [-c <value>] [-s <value>] [-S <value>]`](#pd-orchestrationrouteadd--i-value--h---debug--b-value---token-value--d-value--c-value--s-value--s-value)
+* [`pd orchestration:route:delete -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-r <value>] [-s <value>] [-S <value>]`](#pd-orchestrationroutedelete--i-value--h---debug--b-value---token-value--r-value--s-value--s-value)
+* [`pd orchestration:route:list -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-orchestrationroutelist--i-value--h---debug--b-value---token-value--k-value--j--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd rest:delete -e <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]`](#pd-restdelete--e-value--h---debug--b-value---token-value--p-value--h-value)
+* [`pd rest:fetch -e <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>] [-t] [-k <value>] [-p] [-d <value>] [--limit <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-restfetch--e-value--h---debug--b-value---token-value--p-value--h-value--t--k-value--p--d-value---limit-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd rest:get -e <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]`](#pd-restget--e-value--h---debug--b-value---token-value--p-value--h-value)
+* [`pd rest:post -e <value> -d <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]`](#pd-restpost--e-value--d-value--h---debug--b-value---token-value--p-value--h-value)
+* [`pd rest:put -e <value> -d <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]`](#pd-restput--e-value--d-value--h---debug--b-value---token-value--p-value--h-value)
+* [`pd schedule:copy [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-d <value>] [-o] [-p]`](#pd-schedulecopy--h---debug--b-value---token-value--n-value--i-value--d-value--o--p)
+* [`pd schedule:create -n <value> -u <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [-z <value>] [-t <value>] [-l <value>] [-s <value>] [--rotation_virtual_start <value>] [-o] [-p]`](#pd-schedulecreate--n-value--u-value--h---debug--b-value---token-value--d-value--z-value--t-value--l-value--s-value---rotation_virtual_start-value--o--p)
+* [`pd schedule:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-schedulelist--h---debug--b-value---token-value--j--n-value--k-value---limit-value--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd schedule:oncall [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-k <value>] [-d <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-scheduleoncall--h---debug--b-value---token-value--i-value--n-value---since-value---until-value--k-value--d-value--j---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd schedule:open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`](#pd-scheduleopen--h---debug--b-value---token-value--n-value--i-value--p)
+* [`pd schedule:override:add [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--start <value>] [--end <value>] [-u <value>] [-U <value>]`](#pd-scheduleoverrideadd--h---debug--b-value---token-value--i-value--n-value---start-value---end-value--u-value--u-value)
+* [`pd schedule:override:list [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-scheduleoverridelist--h---debug--b-value---token-value--i-value--n-value---since-value---until-value--k-value--j--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd schedule:render [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-schedulerender--h---debug--b-value---token-value--i-value--n-value---since-value---until-value--k-value--j--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd schedule:show [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-scheduleshow--h---debug--b-value---token-value--i-value--n-value---since-value---until-value--j---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd service:create -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [-e <value>] [-E <value>] [-r <value>] [-t <value>] [--create_alerts] [-u high|low|use_support_hours|severity_based] [--Ss <value>] [--Se <value>] [--Sd <value>] [--Ud high|low|severity_based] [--Uo high|low|severity_based] [--Uc] [--Gd <value>] [--Gi] [--Gc any|all] [--Gf <value>] [-F <value>] [-o] [-p]`](#pd-servicecreate--n-value--h---debug--b-value---token-value--d-value--e-value--e-value--r-value--t-value---create_alerts--u-highlowuse_support_hoursseverity_based---ss-value---se-value---sd-value---ud-highlowseverity_based---uo-highlowseverity_based---uc---gd-value---gi---gc-anyall---gf-value--f-value--o--p)
+* [`pd service:disable [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`](#pd-servicedisable--h---debug--b-value---token-value--n-value--i-value--p)
+* [`pd service:enable [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`](#pd-serviceenable--h---debug--b-value---token-value--n-value--i-value--p)
+* [`pd service:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header] [-t <value>]`](#pd-servicelist--h---debug--b-value---token-value--j--n-value--k-value---limit-value--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header--t-value)
+* [`pd service:open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`](#pd-serviceopen--h---debug--b-value---token-value--n-value--i-value--p)
+* [`pd service:set -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-N <value>] [-i <value>] [--jsonvalues] [-p]`](#pd-serviceset--k-value--v-value--h---debug--b-value---token-value--n-value--n-value--i-value---jsonvalues--p)
+* [`pd tag:assign [-h] [--debug] [-b <value>] [--token <value>] [-a <value>] [-A <value>] [-r <value>] [-R <value>] [-u <value>] [-U <value>] [-t <value>] [-e <value>]`](#pd-tagassign--h---debug--b-value---token-value--a-value--a-value--r-value--r-value--u-value--u-value--t-value--e-value)
+* [`pd tag:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-taglist--h---debug--b-value---token-value--j--n-value--k-value---limit-value--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd tag:listobjects [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [-t users|teams|escalation_policies] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-taglistobjects--h---debug--b-value---token-value--i-value--n-value--t-usersteamsescalation_policies--k-value--j--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd team:create -n <value> [-h] [--debug] [-b <value>] [--token <value>] [--description <value>] [-a <value>] [-A <value>] [-o] [-p]`](#pd-teamcreate--n-value--h---debug--b-value---token-value---description-value--a-value--a-value--o--p)
+* [`pd team:ep:add [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-e <value>] [-E <value>]`](#pd-teamepadd--h---debug--b-value---token-value--n-value--i-value--e-value--e-value)
+* [`pd team:ep:list [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-teameplist--h---debug--b-value---token-value--n-value--i-value--k-value--j--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd team:ep:remove [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-e <value>] [-E <value>]`](#pd-teamepremove--h---debug--b-value---token-value--n-value--i-value--e-value--e-value)
+* [`pd team:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-teamlist--h---debug--b-value---token-value--j--n-value--k-value---limit-value--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd team:open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`](#pd-teamopen--h---debug--b-value---token-value--n-value--i-value--p)
+* [`pd team:user:add [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-u <value>] [-U <value>] [-r manager|responder|observer]`](#pd-teamuseradd--h---debug--b-value---token-value--n-value--i-value--u-value--u-value--r-managerresponderobserver)
+* [`pd team:user:list [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-teamuserlist--h---debug--b-value---token-value--n-value--i-value--k-value--j--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd team:user:remove [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-u <value>] [-U <value>]`](#pd-teamuserremove--h---debug--b-value---token-value--n-value--i-value--u-value--u-value)
 * [`pd update [CHANNEL]`](#pd-update-channel)
-* [`pd user:contact:add`](#pd-usercontactadd)
-* [`pd user:contact:list`](#pd-usercontactlist)
-* [`pd user:contact:set`](#pd-usercontactset)
-* [`pd user:create`](#pd-usercreate)
-* [`pd user:delete`](#pd-userdelete)
-* [`pd user:list`](#pd-userlist)
-* [`pd user:log`](#pd-userlog)
-* [`pd user:oncall`](#pd-useroncall)
-* [`pd user:replace`](#pd-userreplace)
-* [`pd user:session:list`](#pd-usersessionlist)
-* [`pd user:set`](#pd-userset)
-* [`pd util:deleteresource`](#pd-utildeleteresource)
-* [`pd util:timestamp [DATE]`](#pd-utiltimestamp-date)
+* [`pd user:contact:add -l <value> -T email|phone|sms -a <value> [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>]`](#pd-usercontactadd--l-value--t-emailphonesms--a-value--h---debug--b-value---token-value--i-value--e-value)
+* [`pd user:contact:list [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-usercontactlist--h---debug--b-value---token-value--i-value--e-value--k-value--j--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd user:contact:set -c <value> [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>] [-l <value>] [-a <value>]`](#pd-usercontactset--c-value--h---debug--b-value---token-value--i-value--e-value--l-value--a-value)
+* [`pd user:create -e <value> -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-z <value>] [-c <value>] [-r admin|read_only_user|read_only_limited_user|user|limited_user|observer|restricted_access] [-t <value>] [-d <value>] [-w <value>] [--show_password] [-F <value>] [-o] [-p]`](#pd-usercreate--e-value--n-value--h---debug--b-value---token-value--z-value--c-value--r-adminread_only_userread_only_limited_useruserlimited_userobserverrestricted_access--t-value--d-value--w-value---show_password--f-value--o--p)
+* [`pd user:delete [-h] [--debug] [-b <value>] [--token <value>] [-e <value>] [-E <value>] [-i <value>] [-p] [--force]`](#pd-userdelete--h---debug--b-value---token-value--e-value--e-value--i-value--p---force)
+* [`pd user:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header] [-e <value>] [-E <value>]`](#pd-userlist--h---debug--b-value---token-value--j--n-value--k-value---limit-value--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header--e-value--e-value)
+* [`pd user:log [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header] [-e <value>] [-E <value>] [-i <value>] [--since <value>] [--until <value>] [-O]`](#pd-userlog--h---debug--b-value---token-value--j--n-value--k-value---limit-value--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header--e-value--e-value--i-value---since-value---until-value--o)
+* [`pd user:oncall [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-e <value>] [--since <value>] [--until <value>] [-a] [-k <value>] [-d <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-useroncall--h---debug--b-value---token-value--m--i-value--e-value---since-value---until-value--a--k-value--d-value--j---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd user:replace [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-d] [-u <value>] [-U <value>] [-p] [--force]`](#pd-userreplace--h---debug--b-value---token-value--i-value--d--u-value--u-value--p---force)
+* [`pd user:session:list [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>] [-k <value>] [-d <value>] [--since <value>] [--until <value>] [-j] [-p] [-q <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-usersessionlist--h---debug--b-value---token-value--i-value--e-value--k-value--d-value---since-value---until-value--j--p--q-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
+* [`pd user:set -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-e <value>] [-E <value>] [-i <value>] [--jsonvalues] [-p]`](#pd-userset--k-value--v-value--h---debug--b-value---token-value--e-value--e-value--i-value---jsonvalues--p)
+* [`pd util:deleteresource -t business_service|escalation_policy|extension|response_play|ruleset|schedule|service|tag|team|user|webhook_subscription [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-p] [--force]`](#pd-utildeleteresource--t-business_serviceescalation_policyextensionresponse_playrulesetscheduleservicetagteamuserwebhook_subscription--h---debug--b-value---token-value--i-value--p---force)
+* [`pd util:timestamp [-h] [--debug]`](#pd-utiltimestamp--h---debug)
 * [`pd version`](#pd-version)
 
-## `pd analytics:incident`
+## `pd analytics:incident [-h] [--debug] [-b <value>] [--token <value>] [-t <value>] [-S <value>] [-M] [-u high|low] [--since <value>] [--until <value>] [-g day|week|month] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 Get PagerDuty Incident Analytics
 
 ```
 USAGE
-  $ pd analytics:incident
+  $ pd analytics incident [-h] [--debug] [-b <value>] [--token <value>] [-t <value>] [-S <value>] [-M] [-u high|low]
+    [--since <value>] [--until <value>] [-g day|week|month] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort
+    <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
 
-OPTIONS
-  -M, --major                          Include only major incidents
-  -S, --services=services              Service names to include. Specify multiple times for multiple services.
-  -b, --useauth=useauth                Use the saved REST API token with this alias
+FLAGS
+  -M, --major                    Include only major incidents
+  -S, --services=<value>...      Service names to include. Specify multiple times for multiple services.
+  -b, --useauth=<value>          Use the saved REST API token with this alias
+  -d, --delimiter=<value>        [default: \n] Delimiter for fields that have more than one value
+  -g, --aggregate_unit=<option>  The time unit to aggregate metrics by. If no value is provided, the metrics will be
+                                 aggregated for the entire period.
+                                 <options: day|week|month>
+  -h, --help                     Show CLI help.
+  -j, --json                     output full details as JSON
+  -k, --keys=<value>...          Additional fields to display. Specify multiple times for multiple fields.
+  -t, --teams=<value>...         Team names to include. Specify multiple times for multiple teams.
+  -u, --urgencies=<option>...    [default: high,low] Urgencies to include.
+                                 <options: high|low>
+  -x, --extended                 show extra columns
+  --columns=<value>              only show provided columns (comma-separated)
+  --csv                          output is csv format [alias: --output=csv]
+  --debug                        Print REST API call debug logs
+  --filter=<value>               filter property by partial string matching, ex: name=foo
+  --no-header                    hide table header from output
+  --no-truncate                  do not truncate output to fit screen
+  --output=<option>              output in a more machine friendly format
+                                 <options: csv|json|yaml>
+  --since=<value>                [default: 7 days ago] The start of the date range over which you want to search.
+  --sort=<value>                 property to sort by (prepend '-' for descending)
+  --token=<value>                Ignore the saved configuration and use this token
+  --until=<value>                [default: now] The end of the date range over which you want to search.
 
-  -d, --delimiter=delimiter            [default:
-                                       ] Delimiter for fields that have more than one value
-
-  -g, --aggregate_unit=day|week|month  The time unit to aggregate metrics by. If no value is provided, the metrics will
-                                       be aggregated for the entire period.
-
-  -h, --help                           Show CLI help.
-
-  -j, --json                           output full details as JSON
-
-  -k, --keys=keys                      Additional fields to display. Specify multiple times for multiple fields.
-
-  -t, --teams=teams                    Team names to include. Specify multiple times for multiple teams.
-
-  -u, --urgencies=high|low             [default: high,low] Urgencies to include.
-
-  -x, --extended                       show extra columns
-
-  --columns=columns                    only show provided columns (comma-separated)
-
-  --csv                                output is csv format [alias: --output=csv]
-
-  --debug                              Print REST API call debug logs
-
-  --filter=filter                      filter property by partial string matching, ex: name=foo
-
-  --no-header                          hide table header from output
-
-  --no-truncate                        do not truncate output to fit screen
-
-  --output=csv|json|yaml               output in a more machine friendly format
-
-  --since=since                        [default: 7 days ago] The start of the date range over which you want to search.
-
-  --sort=sort                          property to sort by (prepend '-' for descending)
-
-  --token=token                        Ignore the saved configuration and use this token
-
-  --until=until                        [default: now] The end of the date range over which you want to search.
+DESCRIPTION
+  Get PagerDuty Incident Analytics
 ```
 
-_See code: [src/commands/analytics/incident/index.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/analytics/incident/index.ts)_
-
-## `pd analytics:incident:raw`
+## `pd analytics:incident:raw [-h] [--debug] [-b <value>] [--token <value>] [-t <value>] [-S <value>] [-M] [--since <value>] [--until <value>] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 Get PagerDuty Raw Incident Analytics
 
 ```
 USAGE
-  $ pd analytics:incident:raw
+  $ pd analytics incident raw [-h] [--debug] [-b <value>] [--token <value>] [-t <value>] [-S <value>] [-M] [--since <value>]
+    [--until <value>] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv]
+    [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
 
-OPTIONS
+FLAGS
   -M, --major                Include only major incidents
-  -S, --services=services    Service names to include. Specify multiple times for multiple services.
-  -b, --useauth=useauth      Use the saved REST API token with this alias
-
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
-
+  -S, --services=<value>...  Service names to include. Specify multiple times for multiple services.
+  -b, --useauth=<value>      Use the saved REST API token with this alias
+  -d, --delimiter=<value>    [default: \n] Delimiter for fields that have more than one value
   -h, --help                 Show CLI help.
-
   -j, --json                 output full details as JSON
-
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
-
-  -t, --teams=teams          Team names to include. Specify multiple times for multiple teams.
-
+  -k, --keys=<value>...      Additional fields to display. Specify multiple times for multiple fields.
+  -t, --teams=<value>...     Team names to include. Specify multiple times for multiple teams.
   -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
+  --columns=<value>          only show provided columns (comma-separated)
   --csv                      output is csv format [alias: --output=csv]
-
   --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
+  --filter=<value>           filter property by partial string matching, ex: name=foo
   --no-header                hide table header from output
-
   --no-truncate              do not truncate output to fit screen
+  --output=<option>          output in a more machine friendly format
+                             <options: csv|json|yaml>
+  --since=<value>            The start of the date range over which you want to search.
+  --sort=<value>             property to sort by (prepend '-' for descending)
+  --token=<value>            Ignore the saved configuration and use this token
+  --until=<value>            The end of the date range over which you want to search.
 
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --since=since              The start of the date range over which you want to search.
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
-
-  --until=until              The end of the date range over which you want to search.
+DESCRIPTION
+  Get PagerDuty Raw Incident Analytics
 ```
 
-_See code: [src/commands/analytics/incident/raw.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/analytics/incident/raw.ts)_
-
-## `pd auth:add`
+## `pd auth:add [-h] [--debug] [-t <value>] [-a <value>] [-d]`
 
 Add an authenticated PagerDuty domain
 
 ```
 USAGE
-  $ pd auth:add
+  $ pd auth add [-h] [--debug] [-t <value>] [-a <value>] [-d]
 
-OPTIONS
-  -a, --alias=alias   The alias to use for this token. Defaults to the name of the PD subdomain
-  -d, --[no-]default  Use this token as the default for all PD commands
-  -h, --help          Show CLI help.
-  -t, --token=token   A PagerDuty API token
-  --debug             Print REST API call debug logs
+FLAGS
+  -a, --alias=<value>  The alias to use for this token. Defaults to the name of the PD subdomain
+  -d, --[no-]default   Use this token as the default for all PD commands
+  -h, --help           Show CLI help.
+  -t, --token=<value>  A PagerDuty API token
+  --debug              Print REST API call debug logs
+
+DESCRIPTION
+  Add an authenticated PagerDuty domain
 
 ALIASES
-  $ pd auth:set
+  $ pd auth set
 ```
 
-_See code: [src/commands/auth/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/auth/add.ts)_
-
-## `pd auth:delete`
+## `pd auth:delete -a <value> [-h] [--debug]`
 
 Delete a PagerDuty domain authentication
 
 ```
 USAGE
-  $ pd auth:delete
+  $ pd auth delete -a <value> [-h] [--debug]
 
-OPTIONS
-  -a, --alias=alias  (required) The alias of the PD domain authentication to delete
-  -h, --help         Show CLI help.
-  --debug            Print REST API call debug logs
+FLAGS
+  -a, --alias=<value>  (required) The alias of the PD domain authentication to delete
+  -h, --help           Show CLI help.
+  --debug              Print REST API call debug logs
+
+DESCRIPTION
+  Delete a PagerDuty domain authentication
 ```
 
-_See code: [src/commands/auth/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/auth/delete.ts)_
-
-## `pd auth:get`
+## `pd auth:get [-h] [--debug]`
 
 Get the current authenticated PagerDuty domain
 
 ```
 USAGE
-  $ pd auth:get
+  $ pd auth get [-h] [--debug]
 
-OPTIONS
+FLAGS
   -h, --help  Show CLI help.
   --debug     Print REST API call debug logs
+
+DESCRIPTION
+  Get the current authenticated PagerDuty domain
 ```
 
-_See code: [src/commands/auth/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/auth/get.ts)_
-
-## `pd auth:list`
+## `pd auth:list [-h] [--debug]`
 
 List authenticated PagerDuty domains
 
 ```
 USAGE
-  $ pd auth:list
+  $ pd auth list [-h] [--debug]
 
-OPTIONS
+FLAGS
   -h, --help  Show CLI help.
   --debug     Print REST API call debug logs
+
+DESCRIPTION
+  List authenticated PagerDuty domains
 ```
 
-_See code: [src/commands/auth/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/auth/list.ts)_
+## `pd auth:set [-h] [--debug] [-t <value>] [-a <value>] [-d]`
 
-## `pd auth:use`
+Add an authenticated PagerDuty domain
+
+```
+USAGE
+  $ pd auth set [-h] [--debug] [-t <value>] [-a <value>] [-d]
+
+FLAGS
+  -a, --alias=<value>  The alias to use for this token. Defaults to the name of the PD subdomain
+  -d, --[no-]default   Use this token as the default for all PD commands
+  -h, --help           Show CLI help.
+  -t, --token=<value>  A PagerDuty API token
+  --debug              Print REST API call debug logs
+
+DESCRIPTION
+  Add an authenticated PagerDuty domain
+
+ALIASES
+  $ pd auth set
+```
+
+## `pd auth:use -a <value> [-h] [--debug]`
 
 Choose a saved authenticated PagerDuty domain to use with all pd commands
 
 ```
 USAGE
-  $ pd auth:use
+  $ pd auth use -a <value> [-h] [--debug]
 
-OPTIONS
-  -a, --alias=alias  (required) The alias of the PD domain to use
-  -h, --help         Show CLI help.
-  --debug            Print REST API call debug logs
+FLAGS
+  -a, --alias=<value>  (required) The alias of the PD domain to use
+  -h, --help           Show CLI help.
+  --debug              Print REST API call debug logs
+
+DESCRIPTION
+  Choose a saved authenticated PagerDuty domain to use with all pd commands
 ```
 
-_See code: [src/commands/auth/use.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/auth/use.ts)_
-
-## `pd auth:web`
+## `pd auth:web [-h] [--debug] [-a <value>] [-d]`
 
 Authenticate with PagerDuty in the browser
 
 ```
 USAGE
-  $ pd auth:web
+  $ pd auth web [-h] [--debug] [-a <value>] [-d]
 
-OPTIONS
-  -a, --alias=alias   The alias to use for this token. Defaults to the name of the PD subdomain
-  -d, --[no-]default  Use this token as the default for all PD commands
-  -h, --help          Show CLI help.
-  --debug             Print REST API call debug logs
+FLAGS
+  -a, --alias=<value>  The alias to use for this token. Defaults to the name of the PD subdomain
+  -d, --[no-]default   Use this token as the default for all PD commands
+  -h, --help           Show CLI help.
+  --debug              Print REST API call debug logs
+
+DESCRIPTION
+  Authenticate with PagerDuty in the browser
 
 ALIASES
   $ pd login
 ```
-
-_See code: [src/commands/auth/web.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/auth/web.ts)_
 
 ## `pd autocomplete [SHELL]`
 
@@ -327,120 +329,28 @@ display autocomplete installation instructions
 
 ```
 USAGE
-  $ pd autocomplete [SHELL]
+  $ pd autocomplete [SHELL] [-r]
 
 ARGUMENTS
   SHELL  shell type
 
-OPTIONS
+FLAGS
   -r, --refresh-cache  Refresh cache (ignores displaying instructions)
+
+DESCRIPTION
+  display autocomplete installation instructions
 
 EXAMPLES
   $ pd autocomplete
+
   $ pd autocomplete bash
+
   $ pd autocomplete zsh
+
   $ pd autocomplete --refresh-cache
 ```
 
-_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v1.3.0/src/commands/autocomplete/index.ts)_
-
-## `pd automation:action:list`
-
-List PagerDuty Automation Actions
-
-```
-USAGE
-  $ pd automation:action:list
-
-OPTIONS
-  -b, --useauth=useauth      Use the saved REST API token with this alias
-
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
-
-  -h, --help                 Show CLI help.
-
-  -j, --json                 output full details as JSON
-
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
-
-  -n, --name=name            Retrieve only actions whose names contain this text
-
-  -p, --pipe                 Print action ID's only to stdout, for use with pipes.
-
-  -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
-  --csv                      output is csv format [alias: --output=csv]
-
-  --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
-  --limit=limit              Return no more than this many entries. This option turns off table filtering options.
-
-  --no-header                hide table header from output
-
-  --no-truncate              do not truncate output to fit screen
-
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
-```
-
-_See code: [src/commands/automation/action/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/automation/action/list.ts)_
-
-## `pd automation:runner:list`
-
-List PagerDuty Automation Actions Runners
-
-```
-USAGE
-  $ pd automation:runner:list
-
-OPTIONS
-  -b, --useauth=useauth      Use the saved REST API token with this alias
-
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
-
-  -h, --help                 Show CLI help.
-
-  -j, --json                 output full details as JSON
-
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
-
-  -n, --name=name            Retrieve only runners whose names contain this text
-
-  -p, --pipe                 Print runner ID's only to stdout, for use with pipes.
-
-  -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
-  --csv                      output is csv format [alias: --output=csv]
-
-  --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
-  --limit=limit              Return no more than this many entries. This option turns off table filtering options.
-
-  --no-header                hide table header from output
-
-  --no-truncate              do not truncate output to fit screen
-
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
-```
-
-_See code: [src/commands/automation/runner/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/automation/runner/list.ts)_
+_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v1.3.7/src/commands/autocomplete/index.ts)_
 
 ## `pd commands`
 
@@ -448,440 +358,364 @@ list all the commands
 
 ```
 USAGE
-  $ pd commands
+  $ pd commands [--json] [-h] [--hidden] [--tree] [--columns <value> | -x] [--sort <value>] [--filter <value>]
+    [--output csv|json|yaml |  | [--csv | --no-truncate]] [--no-header | ]
 
-OPTIONS
-  -h, --help              Show CLI help.
-  -x, --extended          show extra columns
-  --columns=columns       only show provided columns (comma-separated)
-  --csv                   output is csv format [alias: --output=csv]
-  --filter=filter         filter property by partial string matching, ex: name=foo
-  --hidden                show hidden commands
-  --json                  Format output as json.
-  --no-header             hide table header from output
-  --no-truncate           do not truncate output to fit screen
-  --output=csv|json|yaml  output in a more machine friendly format
-  --sort=sort             property to sort by (prepend '-' for descending)
+FLAGS
+  -h, --help         Show CLI help.
+  -x, --extended     show extra columns
+  --columns=<value>  only show provided columns (comma-separated)
+  --csv              output is csv format [alias: --output=csv]
+  --filter=<value>   filter property by partial string matching, ex: name=foo
+  --hidden           show hidden commands
+  --no-header        hide table header from output
+  --no-truncate      do not truncate output to fit screen
+  --output=<option>  output in a more machine friendly format
+                     <options: csv|json|yaml>
+  --sort=<value>     property to sort by (prepend '-' for descending)
+  --tree             show tree of commands
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  list all the commands
 ```
 
-_See code: [@oclif/plugin-commands](https://github.com/oclif/plugin-commands/blob/v2.1.0/src/commands/commands.ts)_
+_See code: [@oclif/plugin-commands](https://github.com/oclif/plugin-commands/blob/v2.2.1/src/commands/commands.ts)_
 
-## `pd ep:copy`
+## `pd ep:copy [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-d <value>] [-o] [-p]`
 
 Make a copy of a PagerDuty Escalation Policy
 
 ```
 USAGE
-  $ pd ep:copy
+  $ pd ep copy [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-d <value>] [-o] [-p]
 
-OPTIONS
-  -b, --useauth=useauth          Use the saved REST API token with this alias
-  -d, --destination=destination  The name for the new escalation policy
-  -h, --help                     Show CLI help.
-  -i, --id=id                    The ID of the escalation policy to copy.
-  -n, --name=name                The name of the escalation policy to copy.
-  -o, --open                     Open the new escalation policy in the browser
-  -p, --pipe                     Print the new escalation policy ID only to stdout, for use with pipes.
-  --debug                        Print REST API call debug logs
-  --token=token                  Ignore the saved configuration and use this token
+FLAGS
+  -b, --useauth=<value>      Use the saved REST API token with this alias
+  -d, --destination=<value>  The name for the new escalation policy
+  -h, --help                 Show CLI help.
+  -i, --id=<value>           The ID of the escalation policy to copy.
+  -n, --name=<value>         The name of the escalation policy to copy.
+  -o, --open                 Open the new escalation policy in the browser
+  -p, --pipe                 Print the new escalation policy ID only to stdout, for use with pipes.
+  --debug                    Print REST API call debug logs
+  --token=<value>            Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Make a copy of a PagerDuty Escalation Policy
 ```
 
-_See code: [src/commands/ep/copy.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/ep/copy.ts)_
-
-## `pd ep:create`
+## `pd ep:create -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [--description <value>] [-r <value>] [-u <value>] [-U <value>] [-s <value>] [-S <value>] [-o] [-p]`
 
 Create a PagerDuty Escalation Policy with a single level. You can add levels and targets later with ep:level and ep:target
 
 ```
 USAGE
-  $ pd ep:create
+  $ pd ep create -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [--description <value>]
+    [-r <value>] [-u <value>] [-U <value>] [-s <value>] [-S <value>] [-o] [-p]
 
-OPTIONS
-  -S, --schedule_names=schedule_names  Add a target schedule with this name. Specify multiple times for multiple
-                                       targets.
+FLAGS
+  -S, --schedule_names=<value>...  Add a target schedule with this name. Specify multiple times for multiple targets.
+  -U, --user_emails=<value>...     Add a target user with this email. Specify multiple times for multiple targets.
+  -b, --useauth=<value>            Use the saved REST API token with this alias
+  -d, --delay=<value>              [default: 30] Delay in minutes before unacknowledged incidents escalate away from
+                                   this level
+  -h, --help                       Show CLI help.
+  -n, --name=<value>               (required) The name of the escalation policy to add.
+  -o, --open                       Open the new escalation policy in the browser
+  -p, --pipe                       Print the escalation policy ID only to stdout, for use with pipes.
+  -r, --repeat=<value>             Number of times to repeat this level
+  -s, --schedule_ids=<value>...    Add a target schedule with this ID. Specify multiple times for multiple targets.
+  -u, --user_ids=<value>...        Add a target user with this ID. Specify multiple times for multiple targets.
+  --debug                          Print REST API call debug logs
+  --description=<value>            The description of the escalation policy
+  --token=<value>                  Ignore the saved configuration and use this token
 
-  -U, --user_emails=user_emails        Add a target user with this email. Specify multiple times for multiple targets.
-
-  -b, --useauth=useauth                Use the saved REST API token with this alias
-
-  -d, --delay=delay                    [default: 30] Delay in minutes before unacknowledged incidents escalate away from
-                                       this level
-
-  -h, --help                           Show CLI help.
-
-  -n, --name=name                      (required) The name of the escalation policy to add.
-
-  -o, --open                           Open the new escalation policy in the browser
-
-  -p, --pipe                           Print the escalation policy ID only to stdout, for use with pipes.
-
-  -r, --repeat=repeat                  [default: 0] Number of times to repeat this level
-
-  -s, --schedule_ids=schedule_ids      Add a target schedule with this ID. Specify multiple times for multiple targets.
-
-  -u, --user_ids=user_ids              Add a target user with this ID. Specify multiple times for multiple targets.
-
-  --debug                              Print REST API call debug logs
-
-  --description=description            The description of the escalation policy
-
-  --token=token                        Ignore the saved configuration and use this token
+DESCRIPTION
+  Create a PagerDuty Escalation Policy with a single level. You can add levels and targets later with ep:level and
+  ep:target
 ```
 
-_See code: [src/commands/ep/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/ep/create.ts)_
-
-## `pd ep:level:add`
+## `pd ep:level:add -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p] [-d <value>] [-u <value>] [-U <value>] [-s <value>] [-S <value>]`
 
 Add a level to PagerDuty Escalation Policies
 
 ```
 USAGE
-  $ pd ep:level:add
+  $ pd ep level add -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p] [-d
+    <value>] [-u <value>] [-U <value>] [-s <value>] [-S <value>]
 
-OPTIONS
-  -S, --schedule_names=schedule_names  Add a target schedule with this name. Specify multiple times for multiple
-                                       targets.
+FLAGS
+  -S, --schedule_names=<value>...  Add a target schedule with this name. Specify multiple times for multiple targets.
+  -U, --user_emails=<value>...     Add a target user with this email. Specify multiple times for multiple targets.
+  -b, --useauth=<value>            Use the saved REST API token with this alias
+  -d, --delay=<value>              [default: 30] Delay in minutes before unacknowledged incidents escalate away from
+                                   this level
+  -h, --help                       Show CLI help.
+  -i, --ids=<value>...             The IDs of escalation policies to update.
+  -l, --level=<value>              (required) Escalation policy level to add (the lowest level is 1; any existing levels
+                                   at or above the added level will be moved up. To add the top level, specify any
+                                   number higher than the existing number of levels (e.g., 99))
+  -n, --name=<value>               Update escalation policies whose names match this string.
+  -p, --pipe                       Read escalation policy ID's from stdin.
+  -s, --schedule_ids=<value>...    Add a target schedule with this ID. Specify multiple times for multiple targets.
+  -u, --user_ids=<value>...        Add a target user with this ID. Specify multiple times for multiple targets.
+  --debug                          Print REST API call debug logs
+  --token=<value>                  Ignore the saved configuration and use this token
 
-  -U, --user_emails=user_emails        Add a target user with this email. Specify multiple times for multiple targets.
-
-  -b, --useauth=useauth                Use the saved REST API token with this alias
-
-  -d, --delay=delay                    [default: 30] Delay in minutes before unacknowledged incidents escalate away from
-                                       this level
-
-  -h, --help                           Show CLI help.
-
-  -i, --ids=ids                        The IDs of escalation policies to update.
-
-  -l, --level=level                    (required) Escalation policy level to add (the lowest level is 1; any existing
-                                       levels at or above the added level will be moved up. To add the top level,
-                                       specify any number higher than the existing number of levels (e.g., 99))
-
-  -n, --name=name                      Update escalation policies whose names match this string.
-
-  -p, --pipe                           Read escalation policy ID's from stdin.
-
-  -s, --schedule_ids=schedule_ids      Add a target schedule with this ID. Specify multiple times for multiple targets.
-
-  -u, --user_ids=user_ids              Add a target user with this ID. Specify multiple times for multiple targets.
-
-  --debug                              Print REST API call debug logs
-
-  --token=token                        Ignore the saved configuration and use this token
+DESCRIPTION
+  Add a level to PagerDuty Escalation Policies
 ```
 
-_See code: [src/commands/ep/level/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/ep/level/add.ts)_
-
-## `pd ep:level:remove`
+## `pd ep:level:remove -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`
 
 Remove a level from PagerDuty Escalation Policies
 
 ```
 USAGE
-  $ pd ep:level:remove
+  $ pd ep level remove -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]
 
-OPTIONS
-  -b, --useauth=useauth  Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>  Use the saved REST API token with this alias
   -h, --help             Show CLI help.
-  -i, --ids=ids          The IDs of escalation policies to update.
-
-  -l, --level=level      (required) Escalation policy level to remove (the lowest level is 1; any existing levels above
+  -i, --ids=<value>...   The IDs of escalation policies to update.
+  -l, --level=<value>    (required) Escalation policy level to remove (the lowest level is 1; any existing levels above
                          the deleted level will be moved down.
-
-  -n, --name=name        Update escalation policies whose names match this string.
-
+  -n, --name=<value>     Update escalation policies whose names match this string.
   -p, --pipe             Read escalation policy ID's from stdin.
-
   --debug                Print REST API call debug logs
+  --token=<value>        Ignore the saved configuration and use this token
 
-  --token=token          Ignore the saved configuration and use this token
+DESCRIPTION
+  Remove a level from PagerDuty Escalation Policies
 ```
 
-_See code: [src/commands/ep/level/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/ep/level/remove.ts)_
-
-## `pd ep:list`
+## `pd ep:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 List PagerDuty Escalation Policies
 
 ```
 USAGE
-  $ pd ep:list
+  $ pd ep list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>]
+    [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
+    [--no-truncate] [--no-header]
 
-OPTIONS
-  -b, --useauth=useauth      Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -h, --help               Show CLI help.
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -n, --name=<value>       Select escalation policies whose names contain the given text
+  -p, --pipe               Print escalation policy ID's only to stdout, for use with pipes.
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --limit=<value>          Return no more than this many entries. This option turns off table filtering options.
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
 
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
-
-  -h, --help                 Show CLI help.
-
-  -j, --json                 output full details as JSON
-
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
-
-  -n, --name=name            Select escalation policies whose names contain the given text
-
-  -p, --pipe                 Print escalation policy ID's only to stdout, for use with pipes.
-
-  -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
-  --csv                      output is csv format [alias: --output=csv]
-
-  --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
-  --limit=limit              Return no more than this many entries. This option turns off table filtering options.
-
-  --no-header                hide table header from output
-
-  --no-truncate              do not truncate output to fit screen
-
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
+DESCRIPTION
+  List PagerDuty Escalation Policies
 ```
 
-_See code: [src/commands/ep/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/ep/list.ts)_
-
-## `pd ep:oncall`
+## `pd ep:oncall [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-k <value>] [-d <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 List a PagerDuty Escalation Policy's on call shifts.
 
 ```
 USAGE
-  $ pd ep:oncall
+  $ pd ep oncall [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>]
+    [--until <value>] [-k <value>] [-d <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv]
+    [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
 
-OPTIONS
-  -b, --useauth=useauth   Use the saved REST API token with this alias
-  -h, --help              Show CLI help.
-  -i, --id=id             Show oncalls for the EP with this ID.
-  -j, --json              output full details as JSON
-  -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
-  -n, --name=name         Show oncalls for the EP with this name.
-  -x, --extended          show extra columns
-  --columns=columns       only show provided columns (comma-separated)
-  --csv                   output is csv format [alias: --output=csv]
-  --debug                 Print REST API call debug logs
-  --filter=filter         filter property by partial string matching, ex: name=foo
-  --no-header             hide table header from output
-  --no-truncate           do not truncate output to fit screen
-  --output=csv|json|yaml  output in a more machine friendly format
-  --since=since           The start of the date range over which you want to search.
-  --sort=sort             property to sort by (prepend '-' for descending)
-  --token=token           Ignore the saved configuration and use this token
-  --until=until           The end of the date range over which you want to search.
+FLAGS
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -h, --help               Show CLI help.
+  -i, --id=<value>         Show oncalls for the EP with this ID.
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -n, --name=<value>       Show oncalls for the EP with this name.
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --since=<value>          The start of the date range over which you want to search.
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
+  --until=<value>          The end of the date range over which you want to search.
+
+DESCRIPTION
+  List a PagerDuty Escalation Policy's on call shifts.
 ```
 
-_See code: [src/commands/ep/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/ep/oncall.ts)_
-
-## `pd ep:open`
+## `pd ep:open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`
 
 Open PagerDuty Escalation policies in the browser
 
 ```
 USAGE
-  $ pd ep:open
+  $ pd ep open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]
 
-OPTIONS
-  -b, --useauth=useauth  Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>  Use the saved REST API token with this alias
   -h, --help             Show CLI help.
-  -i, --ids=ids          The IDs of escalation policies to open.
-  -n, --name=name        Open escalation policies whose names match this string.
+  -i, --ids=<value>...   The IDs of escalation policies to open.
+  -n, --name=<value>     Open escalation policies whose names match this string.
   -p, --pipe             Read escalation policy ID's from stdin.
   --debug                Print REST API call debug logs
-  --token=token          Ignore the saved configuration and use this token
+  --token=<value>        Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Open PagerDuty Escalation policies in the browser
 ```
 
-_See code: [src/commands/ep/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/ep/open.ts)_
-
-## `pd ep:target:add`
+## `pd ep:target:add -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p] [-u <value>] [-U <value>] [-s <value>] [-S <value>]`
 
 Add targets to PagerDuty Escalation Policies
 
 ```
 USAGE
-  $ pd ep:target:add
+  $ pd ep target add -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p] [-u
+    <value>] [-U <value>] [-s <value>] [-S <value>]
 
-OPTIONS
-  -S, --schedule_names=schedule_names  Add a target schedule with this name. Specify multiple times for multiple
-                                       targets.
+FLAGS
+  -S, --schedule_names=<value>...  Add a target schedule with this name. Specify multiple times for multiple targets.
+  -U, --user_emails=<value>...     Add a target user with this email. Specify multiple times for multiple targets.
+  -b, --useauth=<value>            Use the saved REST API token with this alias
+  -h, --help                       Show CLI help.
+  -i, --ids=<value>...             The IDs of escalation policies to update.
+  -l, --level=<value>              (required) Escalation policy level to add targets to
+  -n, --name=<value>               Update escalation policies whose names match this string.
+  -p, --pipe                       Read escalation policy ID's from stdin.
+  -s, --schedule_ids=<value>...    Add a target schedule with this ID. Specify multiple times for multiple targets.
+  -u, --user_ids=<value>...        Add a target user with this ID. Specify multiple times for multiple targets.
+  --debug                          Print REST API call debug logs
+  --token=<value>                  Ignore the saved configuration and use this token
 
-  -U, --user_emails=user_emails        Add a target user with this email. Specify multiple times for multiple targets.
-
-  -b, --useauth=useauth                Use the saved REST API token with this alias
-
-  -h, --help                           Show CLI help.
-
-  -i, --ids=ids                        The IDs of escalation policies to update.
-
-  -l, --level=level                    (required) Escalation policy level to add targets to
-
-  -n, --name=name                      Update escalation policies whose names match this string.
-
-  -p, --pipe                           Read escalation policy ID's from stdin.
-
-  -s, --schedule_ids=schedule_ids      Add a target schedule with this ID. Specify multiple times for multiple targets.
-
-  -u, --user_ids=user_ids              Add a target user with this ID. Specify multiple times for multiple targets.
-
-  --debug                              Print REST API call debug logs
-
-  --token=token                        Ignore the saved configuration and use this token
+DESCRIPTION
+  Add targets to PagerDuty Escalation Policies
 ```
 
-_See code: [src/commands/ep/target/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/ep/target/add.ts)_
-
-## `pd ep:target:remove`
+## `pd ep:target:remove -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p] [-u <value>] [-U <value>] [-s <value>] [-S <value>]`
 
 Remove targets from PagerDuty Escalation Policies
 
 ```
 USAGE
-  $ pd ep:target:remove
+  $ pd ep target remove -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p] [-u
+    <value>] [-U <value>] [-s <value>] [-S <value>]
 
-OPTIONS
-  -S, --schedule_names=schedule_names  Remove a target schedule with this name. Specify multiple times for multiple
-                                       targets.
+FLAGS
+  -S, --schedule_names=<value>...  Remove a target schedule with this name. Specify multiple times for multiple targets.
+  -U, --user_emails=<value>...     Remove a target user with this email. Specify multiple times for multiple targets.
+  -b, --useauth=<value>            Use the saved REST API token with this alias
+  -h, --help                       Show CLI help.
+  -i, --ids=<value>...             The IDs of escalation policies to update.
+  -l, --level=<value>              (required) Escalation policy level to remove targets from
+  -n, --name=<value>               Update escalation policies whose names match this string.
+  -p, --pipe                       Read escalation policy ID's from stdin.
+  -s, --schedule_ids=<value>...    Remove a target schedule with this ID. Specify multiple times for multiple targets.
+  -u, --user_ids=<value>...        Remove a target user with this ID. Specify multiple times for multiple targets.
+  --debug                          Print REST API call debug logs
+  --token=<value>                  Ignore the saved configuration and use this token
 
-  -U, --user_emails=user_emails        Remove a target user with this email. Specify multiple times for multiple
-                                       targets.
-
-  -b, --useauth=useauth                Use the saved REST API token with this alias
-
-  -h, --help                           Show CLI help.
-
-  -i, --ids=ids                        The IDs of escalation policies to update.
-
-  -l, --level=level                    (required) Escalation policy level to remove targets from
-
-  -n, --name=name                      Update escalation policies whose names match this string.
-
-  -p, --pipe                           Read escalation policy ID's from stdin.
-
-  -s, --schedule_ids=schedule_ids      Remove a target schedule with this ID. Specify multiple times for multiple
-                                       targets.
-
-  -u, --user_ids=user_ids              Remove a target user with this ID. Specify multiple times for multiple targets.
-
-  --debug                              Print REST API call debug logs
-
-  --token=token                        Ignore the saved configuration and use this token
+DESCRIPTION
+  Remove targets from PagerDuty Escalation Policies
 ```
 
-_See code: [src/commands/ep/target/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/ep/target/remove.ts)_
-
-## `pd event:alert`
+## `pd event:alert -r <value> --summary <value> --source <value> [-h] [--debug] [-d <value>] [-a trigger|acknowledge|resolve] [--severity critical|error|warning|info] [--timestamp <value>] [--component <value>] [--group <value>] [--class <value>] [-k <value>] [-v <value>] [-I <value>] [-H <value>] [-A <value>] [-L <value>] [-T <value>] [-c <value>] [-u <value>] [-e <value>] [--jsonvalues] [-j] [-p]`
 
 Send an Alert to PagerDuty
 
 ```
 USAGE
-  $ pd event:alert
+  $ pd event alert -r <value> --summary <value> --source <value> [-h] [--debug] [-d <value>] [-a
+    trigger|acknowledge|resolve] [--severity critical|error|warning|info] [--timestamp <value>] [--component <value>]
+    [--group <value>] [--class <value>] [-k <value>] [-v <value>] [-I <value>] [-H <value>] [-A <value>] [-L <value>]
+    [-T <value>] [-c <value>] [-u <value>] [-e <value>] [--jsonvalues] [-j] [-p]
 
-OPTIONS
-  -A, --image_alts=image_alts               Alternate text for included images. Specify in the same order as the image
-                                            URLs.
+FLAGS
+  -A, --image_alts=<value>...   Alternate text for included images. Specify in the same order as the image URLs.
+  -H, --image_hrefs=<value>...  A clickable link URL for included images. Specify in the same order as the image URLs.
+  -I, --image_srcs=<value>...   The source URL of an image to include. Multiple times for multiple images.
+  -L, --link_hrefs=<value>...   A clickable link URL for included links.
+  -T, --link_texts=<value>...   Link text for included links. Specify in the same order as the link URLs.
+  -a, --action=<option>         [default: trigger] The type of event.
+                                <options: trigger|acknowledge|resolve>
+  -c, --client=<value>          A human-readable description of the system that is sending the alert
+  -d, --dedup_key=<value>       Deduplication key for correlating triggers and resolves. The maximum permitted length of
+                                this property is 255 characters.
+  -e, --endpoint=<value>        Send the event to an alternate HTTPS endpoint, for example when using with PDaltagent.
+  -h, --help                    Show CLI help.
+  -j, --json                    Output PagerDuty response as JSON
+  -k, --keys=<value>...         Custom details keys to set. JSON paths OK. Specify multiple times to set multiple keys.
+  -p, --pipe                    Print dedup key only to stdout, for use with pipes.
+  -r, --routing_key=<value>     (required) The integration key to send to
+  -u, --client_url=<value>      A URL to the system that is sending the alert
+  -v, --values=<value>...       Custom details values to set. JSON OK. To set multiple key/values, specify multiple
+                                times in the same order as the keys.
+  --class=<value>               The class/type of the event, for example ping failure or cpu load
+  --component=<value>           Component of the source machine that is responsible for the event, for example mysql or
+                                eth0
+  --debug                       Print REST API call debug logs
+  --group=<value>               Logical grouping of components of a service, for example app-stack
+  --[no-]jsonvalues             Interpret values as JSON [default: true]
+  --severity=<option>           [default: critical] The perceived severity of the status the event is describing with
+                                respect to the affected system.
+                                <options: critical|error|warning|info>
+  --source=<value>              (required) The unique location of the affected system, preferably a hostname or FQDN.
+  --summary=<value>             (required) A brief text summary of the event, used to generate the summaries/titles of
+                                any associated alerts. The maximum permitted length of this property is 1024 characters.
+  --timestamp=<value>           The time at which the emitting tool detected or generated the event.
 
-  -H, --image_hrefs=image_hrefs             A clickable link URL for included images. Specify in the same order as the
-                                            image URLs.
-
-  -I, --image_srcs=image_srcs               The source URL of an image to include. Multiple times for multiple images.
-
-  -L, --link_hrefs=link_hrefs               A clickable link URL for included links.
-
-  -T, --link_texts=link_texts               Link text for included links. Specify in the same order as the link URLs.
-
-  -a, --action=trigger|acknowledge|resolve  [default: trigger] The type of event.
-
-  -c, --client=client                       A human-readable description of the system that is sending the alert
-
-  -d, --dedup_key=dedup_key                 Deduplication key for correlating triggers and resolves. The maximum
-                                            permitted length of this property is 255 characters.
-
-  -e, --endpoint=endpoint                   Send the event to an alternate HTTPS endpoint, for example when using with
-                                            PDaltagent.
-
-  -h, --help                                Show CLI help.
-
-  -j, --json                                Output PagerDuty response as JSON
-
-  -k, --keys=keys                           Custom details keys to set. JSON paths OK. Specify multiple times to set
-                                            multiple keys.
-
-  -p, --pipe                                Print dedup key only to stdout, for use with pipes.
-
-  -r, --routing_key=routing_key             (required) The integration key to send to
-
-  -u, --client_url=client_url               A URL to the system that is sending the alert
-
-  -v, --values=values                       Custom details values to set. JSON OK. To set multiple key/values, specify
-                                            multiple times in the same order as the keys.
-
-  --class=class                             The class/type of the event, for example ping failure or cpu load
-
-  --component=component                     Component of the source machine that is responsible for the event, for
-                                            example mysql or eth0
-
-  --debug                                   Print REST API call debug logs
-
-  --group=group                             Logical grouping of components of a service, for example app-stack
-
-  --[no-]jsonvalues                         Interpret values as JSON [default: true]
-
-  --severity=critical|error|warning|info    [default: critical] The perceived severity of the status the event is
-                                            describing with respect to the affected system.
-
-  --source=source                           (required) The unique location of the affected system, preferably a hostname
-                                            or FQDN.
-
-  --summary=summary                         (required) A brief text summary of the event, used to generate the
-                                            summaries/titles of any associated alerts. The maximum permitted length of
-                                            this property is 1024 characters.
-
-  --timestamp=timestamp                     The time at which the emitting tool detected or generated the event.
+DESCRIPTION
+  Send an Alert to PagerDuty
 ```
 
-_See code: [src/commands/event/alert.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/event/alert.ts)_
-
-## `pd event:change`
+## `pd event:change -r <value> --summary <value> [-h] [--debug] [--source <value>] [--timestamp <value>] [-k <value>] [-v <value>] [-L <value>] [-T <value>] [-e <value>] [--jsonvalues] [-j]`
 
 Send a Change Event to PagerDuty
 
 ```
 USAGE
-  $ pd event:change
+  $ pd event change -r <value> --summary <value> [-h] [--debug] [--source <value>] [--timestamp <value>] [-k
+    <value>] [-v <value>] [-L <value>] [-T <value>] [-e <value>] [--jsonvalues] [-j]
 
-OPTIONS
-  -L, --link_hrefs=link_hrefs    A clickable link URL for included links.
-  -T, --link_texts=link_texts    Link text for included links. Specify in the same order as the link URLs.
-  -e, --endpoint=endpoint        Send the event to an alternate HTTPS endpoint, for example when using with PDaltagent.
-  -h, --help                     Show CLI help.
-  -j, --json                     Output PagerDuty response as JSON
-  -k, --keys=keys                Custom details keys to set. JSON paths OK. Specify multiple times to set multiple keys.
-  -r, --routing_key=routing_key  (required) The integration key to send to
+FLAGS
+  -L, --link_hrefs=<value>...  A clickable link URL for included links.
+  -T, --link_texts=<value>...  Link text for included links. Specify in the same order as the link URLs.
+  -e, --endpoint=<value>       Send the event to an alternate HTTPS endpoint, for example when using with PDaltagent.
+  -h, --help                   Show CLI help.
+  -j, --json                   Output PagerDuty response as JSON
+  -k, --keys=<value>...        Custom details keys to set. JSON paths OK. Specify multiple times to set multiple keys.
+  -r, --routing_key=<value>    (required) The integration key to send to
+  -v, --values=<value>...      Custom details values to set. JSON OK. To set multiple key/values, specify multiple times
+                               in the same order as the keys.
+  --debug                      Print REST API call debug logs
+  --[no-]jsonvalues            Interpret values as JSON [default: true]
+  --source=<value>             The unique location of the affected system, preferably a hostname or FQDN.
+  --summary=<value>            (required) A brief text summary of the event, used to generate the summaries/titles of
+                               any associated alerts. The maximum permitted length of this property is 1024 characters.
+  --timestamp=<value>          The time at which the emitting tool detected or generated the event.
 
-  -v, --values=values            Custom details values to set. JSON OK. To set multiple key/values, specify multiple
-                                 times in the same order as the keys.
-
-  --debug                        Print REST API call debug logs
-
-  --[no-]jsonvalues              Interpret values as JSON [default: true]
-
-  --source=source                The unique location of the affected system, preferably a hostname or FQDN.
-
-  --summary=summary              (required) A brief text summary of the event, used to generate the summaries/titles of
-                                 any associated alerts. The maximum permitted length of this property is 1024
-                                 characters.
-
-  --timestamp=timestamp          The time at which the emitting tool detected or generated the event.
+DESCRIPTION
+  Send a Change Event to PagerDuty
 ```
-
-_See code: [src/commands/event/change.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/event/change.ts)_
 
 ## `pd help [COMMAND]`
 
@@ -889,1915 +723,1675 @@ Display help for pd.
 
 ```
 USAGE
-  $ pd help [COMMAND]
+  $ pd help [COMMAND] [-n]
 
 ARGUMENTS
   COMMAND  Command to show help for.
 
-OPTIONS
+FLAGS
   -n, --nested-commands  Include all nested commands in the output.
+
+DESCRIPTION
+  Display help for pd.
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.12/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.20/src/commands/help.ts)_
 
-## `pd incident:ack`
+## `pd incident:ack [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p] [-z <value>]`
 
 Acknowledge PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident:ack
+  $ pd incident ack [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p] [-z <value>]
 
-OPTIONS
-  -F, --from=from        Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
-  -b, --useauth=useauth  Use the saved REST API token with this alias
+FLAGS
+  -F, --from=<value>     Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
+  -b, --useauth=<value>  Use the saved REST API token with this alias
   -h, --help             Show CLI help.
-  -i, --ids=ids          Incident ID's to acknowledge. Specify multiple times for multiple incidents.
+  -i, --ids=<value>...   Incident ID's to acknowledge. Specify multiple times for multiple incidents.
   -m, --me               Acknowledge all incidents assigned to me
   -p, --pipe             Read incident ID's from stdin.
-
-  -z, --snooze=snooze    Also snooze selected incidents for the specified amount of time (5m, '1 hour', default unit is
+  -z, --snooze=<value>   Also snooze selected incidents for the specified amount of time (5m, '1 hour', default unit is
                          seconds).
-
   --debug                Print REST API call debug logs
+  --token=<value>        Ignore the saved configuration and use this token
 
-  --token=token          Ignore the saved configuration and use this token
+DESCRIPTION
+  Acknowledge PagerDuty Incidents
 
 ALIASES
-  $ pd incident:acknowledge
+  $ pd incident acknowledge
 ```
 
-_See code: [src/commands/incident/ack.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/incident/ack.ts)_
+## `pd incident:acknowledge [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p] [-z <value>]`
 
-## `pd incident:action:list`
-
-List Available Automation Actions to run on a PagerDuty Incident
+Acknowledge PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident:action:list
+  $ pd incident acknowledge [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p] [-z
+  <value>]
 
-OPTIONS
-  -b, --useauth=useauth      Use the saved REST API token with this alias
+FLAGS
+  -F, --from=<value>     Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
+  -b, --useauth=<value>  Use the saved REST API token with this alias
+  -h, --help             Show CLI help.
+  -i, --ids=<value>...   Incident ID's to acknowledge. Specify multiple times for multiple incidents.
+  -m, --me               Acknowledge all incidents assigned to me
+  -p, --pipe             Read incident ID's from stdin.
+  -z, --snooze=<value>   Also snooze selected incidents for the specified amount of time (5m, '1 hour', default unit is
+                         seconds).
+  --debug                Print REST API call debug logs
+  --token=<value>        Ignore the saved configuration and use this token
 
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
+DESCRIPTION
+  Acknowledge PagerDuty Incidents
 
-  -h, --help                 Show CLI help.
-
-  -i, --id=id                Incident ID to list actions for.
-
-  -j, --json                 output full details as JSON
-
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
-
-  -p, --pipe                 Print action ID's only to stdout, for use with pipes.
-
-  -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
-  --csv                      output is csv format [alias: --output=csv]
-
-  --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
-  --limit=limit              Return no more than this many entries. This option turns off table filtering options.
-
-  --no-header                hide table header from output
-
-  --no-truncate              do not truncate output to fit screen
-
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
+ALIASES
+  $ pd incident acknowledge
 ```
 
-_See code: [src/commands/incident/action/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/incident/action/list.ts)_
-
-## `pd incident:alerts`
+## `pd incident:alerts [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-p] [-j] [-k <value>] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 Show Alerts in PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident:alerts
+  $ pd incident alerts [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-p] [-j] [-k <value>] [-d
+    <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
+    [--no-truncate] [--no-header]
 
-OPTIONS
-  -b, --useauth=useauth      Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -h, --help               Show CLI help.
+  -i, --ids=<value>...     Show alerts for these Incident ID's. Specify multiple times for multiple incidents.
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -m, --me                 Show alerts for all incidents assigned to me
+  -p, --pipe               Read incident ID's from stdin.
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
 
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
-
-  -h, --help                 Show CLI help.
-
-  -i, --ids=ids              Show alerts for these Incident ID's. Specify multiple times for multiple incidents.
-
-  -j, --json                 output full details as JSON
-
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
-
-  -m, --me                   Show alerts for all incidents assigned to me
-
-  -p, --pipe                 Read incident ID's from stdin.
-
-  -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
-  --csv                      output is csv format [alias: --output=csv]
-
-  --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
-  --no-header                hide table header from output
-
-  --no-truncate              do not truncate output to fit screen
-
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
+DESCRIPTION
+  Show Alerts in PagerDuty Incidents
 ```
 
-_See code: [src/commands/incident/alerts.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/incident/alerts.ts)_
-
-## `pd incident:analytics`
+## `pd incident:analytics [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-k <value>] [-d <value>] [-j] [-p] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 Get Incident analytics
 
 ```
 USAGE
-  $ pd incident:analytics
+  $ pd incident analytics [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-k <value>] [-d <value>] [-j] [-p]
+    [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate]
+    [--no-header]
 
-OPTIONS
-  -b, --useauth=useauth   Use the saved REST API token with this alias
-  -h, --help              Show CLI help.
-  -i, --ids=ids           Incident ID's to look at. Specify multiple times for multiple incidents.
-  -j, --json              output full details as JSON
-  -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
-  -p, --pipe              Read incident ID's from stdin.
-  -x, --extended          show extra columns
-  --columns=columns       only show provided columns (comma-separated)
-  --csv                   output is csv format [alias: --output=csv]
-  --debug                 Print REST API call debug logs
-  --filter=filter         filter property by partial string matching, ex: name=foo
-  --no-header             hide table header from output
-  --no-truncate           do not truncate output to fit screen
-  --output=csv|json|yaml  output in a more machine friendly format
-  --sort=sort             property to sort by (prepend '-' for descending)
-  --token=token           Ignore the saved configuration and use this token
+FLAGS
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -h, --help               Show CLI help.
+  -i, --ids=<value>...     Incident ID's to look at. Specify multiple times for multiple incidents.
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -p, --pipe               Read incident ID's from stdin.
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Get Incident analytics
 ```
 
-_See code: [src/commands/incident/analytics.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/incident/analytics.ts)_
-
-## `pd incident:assign`
+## `pd incident:assign [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-u <value>] [-U <value>] [-e <value>] [-E <value>] [-F <value>] [-p]`
 
 Assign/Reassign PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident:assign
+  $ pd incident assign [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-u <value>] [-U <value>] [-e
+    <value>] [-E <value>] [-F <value>] [-p]
 
-OPTIONS
-  -E, --assign_to_ep_name=assign_to_ep_name          Escalation policy name to assign incidents to.
+FLAGS
+  -E, --assign_to_ep_name=<value>         Escalation policy name to assign incidents to.
+  -F, --from=<value>                      Login email of a PD user account for the "From:" header. Use only with legacy
+                                          API tokens.
+  -U, --assign_to_user_emails=<value>...  User emails to assign incidents to. Specify multiple times for multiple
+                                          assignees.
+  -b, --useauth=<value>                   Use the saved REST API token with this alias
+  -e, --assign_to_ep_id=<value>           Escalation policy ID to assign incidents to.
+  -h, --help                              Show CLI help.
+  -i, --ids=<value>...                    Incident ID's to assign. Specify multiple times for multiple incidents.
+  -m, --me                                Reassign all incidents that are currently assigned to me
+  -p, --pipe                              Read incident ID's from stdin.
+  -u, --assign_to_user_ids=<value>...     User ID's to assign incidents to. Specify multiple times for multiple
+                                          assignees.
+  --debug                                 Print REST API call debug logs
+  --token=<value>                         Ignore the saved configuration and use this token
 
-  -F, --from=from                                    Login email of a PD user account for the "From:" header. Use only
-                                                     with legacy API tokens.
-
-  -U, --assign_to_user_emails=assign_to_user_emails  User emails to assign incidents to. Specify multiple times for
-                                                     multiple assignees.
-
-  -b, --useauth=useauth                              Use the saved REST API token with this alias
-
-  -e, --assign_to_ep_id=assign_to_ep_id              Escalation policy ID to assign incidents to.
-
-  -h, --help                                         Show CLI help.
-
-  -i, --ids=ids                                      Incident ID's to assign. Specify multiple times for multiple
-                                                     incidents.
-
-  -m, --me                                           Reassign all incidents that are currently assigned to me
-
-  -p, --pipe                                         Read incident ID's from stdin.
-
-  -u, --assign_to_user_ids=assign_to_user_ids        User ID's to assign incidents to. Specify multiple times for
-                                                     multiple assignees.
-
-  --debug                                            Print REST API call debug logs
-
-  --token=token                                      Ignore the saved configuration and use this token
+DESCRIPTION
+  Assign/Reassign PagerDuty Incidents
 
 ALIASES
-  $ pd incident:reassign
+  $ pd incident reassign
 ```
 
-_See code: [src/commands/incident/assign.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/incident/assign.ts)_
-
-## `pd incident:create`
+## `pd incident:create -t <value> [-h] [--debug] [-b <value>] [--token <value>] [-S <value>] [--service_id <value>] [-E <value>] [--escalation_policy_id <value>] [-U <value>] [--user_id <value>] [-d <value>] [-u high|low] [-P <value>] [-k <value>] [-F <value>] [-o] [-p]`
 
 Create a PagerDuty Incident
 
 ```
 USAGE
-  $ pd incident:create
+  $ pd incident create -t <value> [-h] [--debug] [-b <value>] [--token <value>] [-S <value>] [--service_id <value>]
+    [-E <value>] [--escalation_policy_id <value>] [-U <value>] [--user_id <value>] [-d <value>] [-u high|low] [-P
+    <value>] [-k <value>] [-F <value>] [-o] [-p]
 
-OPTIONS
-  -E, --escalation_policy=escalation_policy    The name of the escalation policy to assign the incident to
+FLAGS
+  -E, --escalation_policy=<value>  The name of the escalation policy to assign the incident to
+  -F, --from=<value>               Login email of a PD user account for the "From:" header. Use only with legacy API
+                                   tokens.
+  -P, --priority=<value>           Incident priority
+  -S, --service=<value>            The name of the service to create the incident in
+  -U, --user=<value>...            The email of a user to assign the incident to
+  -b, --useauth=<value>            Use the saved REST API token with this alias
+  -d, --details=<value>            Incident details
+  -h, --help                       Show CLI help.
+  -k, --key=<value>                Incident key
+  -o, --open                       Open the new incident in the browser
+  -p, --pipe                       Print the incident ID only to stdout, for use with pipes.
+  -t, --title=<value>              (required) Incident title
+  -u, --urgency=<option>           Incident urgency
+                                   <options: high|low>
+  --debug                          Print REST API call debug logs
+  --escalation_policy_id=<value>   The ID of the escalation policy to assign the incident to
+  --service_id=<value>             The ID of the service to create the incident in
+  --token=<value>                  Ignore the saved configuration and use this token
+  --user_id=<value>...             The ID of a user to assign the incident to
 
-  -F, --from=from                              Login email of a PD user account for the "From:" header. Use only with
-                                               legacy API tokens.
-
-  -P, --priority=priority                      Incident priority
-
-  -S, --service=service                        The name of the service to create the incident in
-
-  -U, --user=user                              The email of a user to assign the incident to
-
-  -b, --useauth=useauth                        Use the saved REST API token with this alias
-
-  -d, --details=details                        Incident details
-
-  -h, --help                                   Show CLI help.
-
-  -k, --key=key                                Incident key
-
-  -o, --open                                   Open the new incident in the browser
-
-  -p, --pipe                                   Print the incident ID only to stdout, for use with pipes.
-
-  -t, --title=title                            (required) Incident title
-
-  -u, --urgency=high|low                       Incident urgency
-
-  --debug                                      Print REST API call debug logs
-
-  --escalation_policy_id=escalation_policy_id  The ID of the escalation policy to assign the incident to
-
-  --service_id=service_id                      The ID of the service to create the incident in
-
-  --token=token                                Ignore the saved configuration and use this token
-
-  --user_id=user_id                            The ID of a user to assign the incident to
+DESCRIPTION
+  Create a PagerDuty Incident
 ```
 
-_See code: [src/commands/incident/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/incident/create.ts)_
-
-## `pd incident:list`
+## `pd incident:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header] [-m] [-s open|closed|triggered|acknowledged|resolved] [-e <value>] [-t <value>] [-S <value>] [-u high|low] [--since <value>] [--until <value>] [--notes]`
 
 List PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident:list
+  $ pd incident list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>]
+    [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
+    [--no-truncate] [--no-header] [-m] [-s open|closed|triggered|acknowledged|resolved] [-e <value>] [-t <value>] [-S
+    <value>] [-u high|low] [--since <value>] [--until <value>] [--notes]
 
-OPTIONS
-  -S, --services=services                                     Service names to include. Specify multiple times for
-                                                              multiple services.
+FLAGS
+  -S, --services=<value>...    Service names to include. Specify multiple times for multiple services.
+  -b, --useauth=<value>        Use the saved REST API token with this alias
+  -d, --delimiter=<value>      [default: \n] Delimiter for fields that have more than one value
+  -e, --assignees=<value>...   Return only incidents assigned to this PD login email. Specify multiple times for
+                               multiple assignees.
+  -h, --help                   Show CLI help.
+  -j, --json                   output full details as JSON
+  -k, --keys=<value>...        Additional fields to display. Specify multiple times for multiple fields.
+  -m, --me                     Return only incidents assigned to me
+  -n, --name=<value>           Select incidents whose names contain the given text
+  -p, --pipe                   Print incident ID's only to stdout, for use with pipes.
+  -s, --statuses=<option>...   [default: open] Return only incidents with the given statuses. Specify multiple times for
+                               multiple statuses.
+                               <options: open|closed|triggered|acknowledged|resolved>
+  -t, --teams=<value>...       Team names to include. Specify multiple times for multiple teams.
+  -u, --urgencies=<option>...  [default: high,low] Urgencies to include.
+                               <options: high|low>
+  -x, --extended               show extra columns
+  --columns=<value>            only show provided columns (comma-separated)
+  --csv                        output is csv format [alias: --output=csv]
+  --debug                      Print REST API call debug logs
+  --filter=<value>             filter property by partial string matching, ex: name=foo
+  --limit=<value>              Return no more than this many entries. This option turns off table filtering options.
+  --no-header                  hide table header from output
+  --no-truncate                do not truncate output to fit screen
+  --notes                      Also show incident notes (Uses a lot more HTTPS requests!)
+  --output=<option>            output in a more machine friendly format
+                               <options: csv|json|yaml>
+  --since=<value>              The start of the date range over which you want to search.
+  --sort=<value>               property to sort by (prepend '-' for descending)
+  --token=<value>              Ignore the saved configuration and use this token
+  --until=<value>              The end of the date range over which you want to search.
 
-  -b, --useauth=useauth                                       Use the saved REST API token with this alias
-
-  -d, --delimiter=delimiter                                   [default:
-                                                              ] Delimiter for fields that have more than one value
-
-  -e, --assignees=assignees                                   Return only incidents assigned to this PD login email.
-                                                              Specify multiple times for multiple assignees.
-
-  -h, --help                                                  Show CLI help.
-
-  -j, --json                                                  output full details as JSON
-
-  -k, --keys=keys                                             Additional fields to display. Specify multiple times for
-                                                              multiple fields.
-
-  -m, --me                                                    Return only incidents assigned to me
-
-  -p, --pipe                                                  Print incident ID's only to stdout, for use with pipes.
-
-  -s, --statuses=open|closed|triggered|acknowledged|resolved  [default: open] Return only incidents with the given
-                                                              statuses. Specify multiple times for multiple statuses.
-
-  -t, --teams=teams                                           Team names to include. Specify multiple times for multiple
-                                                              teams.
-
-  -u, --urgencies=high|low                                    [default: high,low] Urgencies to include.
-
-  -x, --extended                                              show extra columns
-
-  --columns=columns                                           only show provided columns (comma-separated)
-
-  --csv                                                       output is csv format [alias: --output=csv]
-
-  --debug                                                     Print REST API call debug logs
-
-  --filter=filter                                             filter property by partial string matching, ex: name=foo
-
-  --limit=limit                                               Return no more than this many entries. This option turns
-                                                              off table filtering options.
-
-  --no-header                                                 hide table header from output
-
-  --no-truncate                                               do not truncate output to fit screen
-
-  --notes                                                     Also show incident notes (Uses a lot more HTTPS requests!)
-
-  --output=csv|json|yaml                                      output in a more machine friendly format
-
-  --since=since                                               The start of the date range over which you want to search.
-
-  --sort=sort                                                 property to sort by (prepend '-' for descending)
-
-  --token=token                                               Ignore the saved configuration and use this token
-
-  --until=until                                               The end of the date range over which you want to search.
+DESCRIPTION
+  List PagerDuty Incidents
 ```
 
-_See code: [src/commands/incident/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/incident/list.ts)_
-
-## `pd incident:log`
+## `pd incident:log [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-O] [-k <value>] [-d <value>] [-j] [-p] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 Show PagerDuty Incident Log Entries
 
 ```
 USAGE
-  $ pd incident:log
+  $ pd incident log [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-O] [-k <value>] [-d <value>] [-j]
+    [-p] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate]
+    [--no-header]
 
-OPTIONS
-  -O, --overview             Get only `overview` log entries
-  -b, --useauth=useauth      Use the saved REST API token with this alias
+FLAGS
+  -O, --overview           Get only `overview` log entries
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -h, --help               Show CLI help.
+  -i, --ids=<value>...     Select incidents with the given ID. Specify multiple times for multiple incidents.
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -p, --pipe               Read incident IDs from stdin, for use with pipes.
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
 
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
-
-  -h, --help                 Show CLI help.
-
-  -i, --ids=ids              Select incidents with the given ID. Specify multiple times for multiple incidents.
-
-  -j, --json                 output full details as JSON
-
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
-
-  -p, --pipe                 Read incident IDs from stdin, for use with pipes.
-
-  -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
-  --csv                      output is csv format [alias: --output=csv]
-
-  --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
-  --no-header                hide table header from output
-
-  --no-truncate              do not truncate output to fit screen
-
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
+DESCRIPTION
+  Show PagerDuty Incident Log Entries
 ```
 
-_See code: [src/commands/incident/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/incident/log.ts)_
-
-## `pd incident:merge`
+## `pd incident:merge [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-I <value>] [-p] [-F <value>] [-o]`
 
 Merge PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident:merge
+  $ pd incident merge [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-I <value>] [-p] [-F <value>] [-o]
 
-OPTIONS
-  -F, --from=from            Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
-  -I, --parent_id=parent_id  Use this incident ID as the parent ID.
-  -b, --useauth=useauth      Use the saved REST API token with this alias
-  -h, --help                 Show CLI help.
+FLAGS
+  -F, --from=<value>       Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
+  -I, --parent_id=<value>  Use this incident ID as the parent ID.
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -h, --help               Show CLI help.
+  -i, --ids=<value>...     Merge incidents with the given ID. Specify multiple times for multiple incidents. If -I is
+                           not given, the first incident in the list will be the parent incident.
+  -o, --open               Open the merged incident in the browser
+  -p, --pipe               Read incident IDs from stdin, for use with pipes. If -I is not given, the first incident ID
+                           from the pipe will be the parent incident.
+  --debug                  Print REST API call debug logs
+  --token=<value>          Ignore the saved configuration and use this token
 
-  -i, --ids=ids              Merge incidents with the given ID. Specify multiple times for multiple incidents. If -I is
-                             not given, the first incident in the list will be the parent incident.
-
-  -o, --open                 Open the merged incident in the browser
-
-  -p, --pipe                 Read incident IDs from stdin, for use with pipes. If -I is not given, the first incident ID
-                             from the pipe will be the parent incident.
-
-  --debug                    Print REST API call debug logs
-
-  --token=token              Ignore the saved configuration and use this token
+DESCRIPTION
+  Merge PagerDuty Incidents
 ```
 
-_See code: [src/commands/incident/merge.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/incident/merge.ts)_
-
-## `pd incident:notes`
+## `pd incident:notes -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-F <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 See or add notes on PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident:notes
+  $ pd incident notes -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-F <value>] [--columns
+    <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
 
-OPTIONS
-  -F, --from=from         Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
-  -b, --useauth=useauth   Use the saved REST API token with this alias
-  -h, --help              Show CLI help.
-  -i, --id=id             (required) Incident ID.
-  -n, --note=note         Note to add
-  -x, --extended          show extra columns
-  --columns=columns       only show provided columns (comma-separated)
-  --csv                   output is csv format [alias: --output=csv]
-  --debug                 Print REST API call debug logs
-  --filter=filter         filter property by partial string matching, ex: name=foo
-  --no-header             hide table header from output
-  --no-truncate           do not truncate output to fit screen
-  --output=csv|json|yaml  output in a more machine friendly format
-  --sort=sort             property to sort by (prepend '-' for descending)
-  --token=token           Ignore the saved configuration and use this token
+FLAGS
+  -F, --from=<value>     Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
+  -b, --useauth=<value>  Use the saved REST API token with this alias
+  -h, --help             Show CLI help.
+  -i, --id=<value>       (required) Incident ID.
+  -n, --note=<value>     Note to add
+  -x, --extended         show extra columns
+  --columns=<value>      only show provided columns (comma-separated)
+  --csv                  output is csv format [alias: --output=csv]
+  --debug                Print REST API call debug logs
+  --filter=<value>       filter property by partial string matching, ex: name=foo
+  --no-header            hide table header from output
+  --no-truncate          do not truncate output to fit screen
+  --output=<option>      output in a more machine friendly format
+                         <options: csv|json|yaml>
+  --sort=<value>         property to sort by (prepend '-' for descending)
+  --token=<value>        Ignore the saved configuration and use this token
+
+DESCRIPTION
+  See or add notes on PagerDuty Incidents
 ```
 
-_See code: [src/commands/incident/notes.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/incident/notes.ts)_
-
-## `pd incident:open`
+## `pd incident:open [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-p]`
 
 Open PagerDuty Incidents in your browser
 
 ```
 USAGE
-  $ pd incident:open
+  $ pd incident open [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-p]
 
-OPTIONS
-  -b, --useauth=useauth  Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>  Use the saved REST API token with this alias
   -h, --help             Show CLI help.
-  -i, --ids=ids          Incident ID's to open. Specify multiple times for multiple incidents.
+  -i, --ids=<value>...   Incident ID's to open. Specify multiple times for multiple incidents.
   -m, --me               Open all incidents assigned to me
   -p, --pipe             Read incident ID's from stdin.
   --debug                Print REST API call debug logs
-  --token=token          Ignore the saved configuration and use this token
+  --token=<value>        Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Open PagerDuty Incidents in your browser
 ```
 
-_See code: [src/commands/incident/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/incident/open.ts)_
-
-## `pd incident:priority`
+## `pd incident:priority -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]`
 
 Set priority on PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident:priority
+  $ pd incident priority -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]
 
-OPTIONS
-  -F, --from=from          Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
-  -b, --useauth=useauth    Use the saved REST API token with this alias
-  -h, --help               Show CLI help.
-  -i, --ids=ids            Incident ID's to set priority on. Specify multiple times for multiple incidents.
-  -m, --me                 Set priority on all incidents assigned to me
-  -n, --priority=priority  (required) The name of the priority to set.
-  -p, --pipe               Read incident ID's from stdin.
-  --debug                  Print REST API call debug logs
-  --token=token            Ignore the saved configuration and use this token
+FLAGS
+  -F, --from=<value>      Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
+  -b, --useauth=<value>   Use the saved REST API token with this alias
+  -h, --help              Show CLI help.
+  -i, --ids=<value>...    Incident ID's to set priority on. Specify multiple times for multiple incidents.
+  -m, --me                Set priority on all incidents assigned to me
+  -n, --priority=<value>  (required) The name of the priority to set.
+  -p, --pipe              Read incident ID's from stdin.
+  --debug                 Print REST API call debug logs
+  --token=<value>         Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Set priority on PagerDuty Incidents
 ```
 
-_See code: [src/commands/incident/priority.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/incident/priority.ts)_
+## `pd incident:reassign [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-u <value>] [-U <value>] [-e <value>] [-E <value>] [-F <value>] [-p]`
 
-## `pd incident:rename`
+Assign/Reassign PagerDuty Incidents
+
+```
+USAGE
+  $ pd incident reassign [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-u <value>] [-U <value>] [-e
+    <value>] [-E <value>] [-F <value>] [-p]
+
+FLAGS
+  -E, --assign_to_ep_name=<value>         Escalation policy name to assign incidents to.
+  -F, --from=<value>                      Login email of a PD user account for the "From:" header. Use only with legacy
+                                          API tokens.
+  -U, --assign_to_user_emails=<value>...  User emails to assign incidents to. Specify multiple times for multiple
+                                          assignees.
+  -b, --useauth=<value>                   Use the saved REST API token with this alias
+  -e, --assign_to_ep_id=<value>           Escalation policy ID to assign incidents to.
+  -h, --help                              Show CLI help.
+  -i, --ids=<value>...                    Incident ID's to assign. Specify multiple times for multiple incidents.
+  -m, --me                                Reassign all incidents that are currently assigned to me
+  -p, --pipe                              Read incident ID's from stdin.
+  -u, --assign_to_user_ids=<value>...     User ID's to assign incidents to. Specify multiple times for multiple
+                                          assignees.
+  --debug                                 Print REST API call debug logs
+  --token=<value>                         Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Assign/Reassign PagerDuty Incidents
+
+ALIASES
+  $ pd incident reassign
+```
+
+## `pd incident:rename [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-t <value>] [--prefix <value>] [-F <value>] [-p]`
 
 Rename (change the title of) PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident:rename
+  $ pd incident rename [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-t <value>] [--prefix
+    <value>] [-F <value>] [-p]
 
-OPTIONS
-  -F, --from=from        Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
-  -b, --useauth=useauth  Use the saved REST API token with this alias
+FLAGS
+  -F, --from=<value>     Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
+  -b, --useauth=<value>  Use the saved REST API token with this alias
   -h, --help             Show CLI help.
-  -i, --ids=ids          Incident ID's to rename. Specify multiple times for multiple incidents.
+  -i, --ids=<value>...   Incident ID's to rename. Specify multiple times for multiple incidents.
   -m, --me               Rename all incidents that are currently assigned to me
   -p, --pipe             Read incident ID's from stdin.
-  -t, --title=title      Set the incident title to this string
+  -t, --title=<value>    Set the incident title to this string
   --debug                Print REST API call debug logs
-  --prefix=prefix        Prefix the incident title with this string
-  --token=token          Ignore the saved configuration and use this token
+  --prefix=<value>       Prefix the incident title with this string
+  --token=<value>        Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Rename (change the title of) PagerDuty Incidents
 ```
 
-_See code: [src/commands/incident/rename.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/incident/rename.ts)_
-
-## `pd incident:resolve`
+## `pd incident:resolve [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]`
 
 Resolve PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident:resolve
+  $ pd incident resolve [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]
 
-OPTIONS
-  -F, --from=from        Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
-  -b, --useauth=useauth  Use the saved REST API token with this alias
+FLAGS
+  -F, --from=<value>     Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
+  -b, --useauth=<value>  Use the saved REST API token with this alias
   -h, --help             Show CLI help.
-  -i, --ids=ids          Incident ID's to resolve. Specify multiple times for multiple incidents.
+  -i, --ids=<value>...   Incident ID's to resolve. Specify multiple times for multiple incidents.
   -m, --me               Resolve all incidents assigned to me
   -p, --pipe             Read incident ID's from stdin.
   --debug                Print REST API call debug logs
-  --token=token          Ignore the saved configuration and use this token
+  --token=<value>        Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Resolve PagerDuty Incidents
 ```
 
-_See code: [src/commands/incident/resolve.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/incident/resolve.ts)_
-
-## `pd incident:set`
+## `pd incident:set -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]`
 
 Update PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident:set
+  $ pd incident set -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F
+    <value>] [-p]
 
-OPTIONS
-  -F, --from=from        Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
-  -b, --useauth=useauth  Use the saved REST API token with this alias
+FLAGS
+  -F, --from=<value>     Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
+  -b, --useauth=<value>  Use the saved REST API token with this alias
   -h, --help             Show CLI help.
-  -i, --ids=ids          Incident ID's to update. Specify multiple times for multiple incidents.
-  -k, --key=key          (required) Attribute key to set
+  -i, --ids=<value>...   Incident ID's to update. Specify multiple times for multiple incidents.
+  -k, --key=<value>      (required) Attribute key to set
   -m, --me               Update all incidents that are currently assigned to me
   -p, --pipe             Read incident ID's from stdin.
-  -v, --value=value      (required) Attribute value to set
+  -v, --value=<value>    (required) Attribute value to set
   --debug                Print REST API call debug logs
-  --token=token          Ignore the saved configuration and use this token
+  --token=<value>        Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Update PagerDuty Incidents
 
 ALIASES
-  $ pd incident:update
+  $ pd incident update
 ```
 
-_See code: [src/commands/incident/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/incident/set.ts)_
+## `pd incident:update -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]`
 
-## `pd log`
+Update PagerDuty Incidents
+
+```
+USAGE
+  $ pd incident update -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F
+    <value>] [-p]
+
+FLAGS
+  -F, --from=<value>     Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
+  -b, --useauth=<value>  Use the saved REST API token with this alias
+  -h, --help             Show CLI help.
+  -i, --ids=<value>...   Incident ID's to update. Specify multiple times for multiple incidents.
+  -k, --key=<value>      (required) Attribute key to set
+  -m, --me               Update all incidents that are currently assigned to me
+  -p, --pipe             Read incident ID's from stdin.
+  -v, --value=<value>    (required) Attribute value to set
+  --debug                Print REST API call debug logs
+  --token=<value>        Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Update PagerDuty Incidents
+
+ALIASES
+  $ pd incident update
+```
+
+## `pd log [-h] [--debug] [-b <value>] [--token <value>] [--since <value>] [--until <value>] [-O] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 Show PagerDuty Domain Log Entries
 
 ```
 USAGE
-  $ pd log
+  $ pd log [-h] [--debug] [-b <value>] [--token <value>] [--since <value>] [--until <value>] [-O] [-k
+    <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml]
+    [-x] [--no-truncate] [--no-header]
 
-OPTIONS
-  -O, --overview             Get only `overview` log entries
-  -b, --useauth=useauth      Use the saved REST API token with this alias
+FLAGS
+  -O, --overview           Get only `overview` log entries
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -h, --help               Show CLI help.
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --since=<value>          [default: 30 days ago] The start of the date range over which you want to search.
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
+  --until=<value>          The end of the date range over which you want to search.
 
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
-
-  -h, --help                 Show CLI help.
-
-  -j, --json                 output full details as JSON
-
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
-
-  -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
-  --csv                      output is csv format [alias: --output=csv]
-
-  --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
-  --no-header                hide table header from output
-
-  --no-truncate              do not truncate output to fit screen
-
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --since=since              [default: 30 days ago] The start of the date range over which you want to search.
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
-
-  --until=until              The end of the date range over which you want to search.
+DESCRIPTION
+  Show PagerDuty Domain Log Entries
 ```
 
-_See code: [src/commands/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/log.ts)_
+_See code: [src/commands/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.7/src/commands/log.ts)_
 
-## `pd orchestration:add`
+## `pd login [-h] [--debug] [-a <value>] [-d]`
+
+Authenticate with PagerDuty in the browser
+
+```
+USAGE
+  $ pd login [-h] [--debug] [-a <value>] [-d]
+
+FLAGS
+  -a, --alias=<value>  The alias to use for this token. Defaults to the name of the PD subdomain
+  -d, --[no-]default   Use this token as the default for all PD commands
+  -h, --help           Show CLI help.
+  --debug              Print REST API call debug logs
+
+DESCRIPTION
+  Authenticate with PagerDuty in the browser
+
+ALIASES
+  $ pd login
+```
+
+## `pd orchestration:add [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-d <value>] [-t <value>] [-T <value>]`
 
 Add a PagerDuty Event Orchestration
 
 ```
 USAGE
-  $ pd orchestration:add
+  $ pd orchestration add [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-d <value>] [-t <value>] [-T
+    <value>]
 
-OPTIONS
-  -T, --team_name=team_name      The name of the team that owns this orchestration. If none is specified, only admins
-                                 have access.
+FLAGS
+  -T, --team_name=<value>    The name of the team that owns this orchestration. If none is specified, only admins have
+                             access.
+  -b, --useauth=<value>      Use the saved REST API token with this alias
+  -d, --description=<value>  The description of the orchestration to add
+  -h, --help                 Show CLI help.
+  -n, --name=<value>         The name of the orchestration to add
+  -t, --team_id=<value>      The ID of the team that owns this orchestration. If none is specified, only admins have
+                             access.
+  --debug                    Print REST API call debug logs
+  --token=<value>            Ignore the saved configuration and use this token
 
-  -b, --useauth=useauth          Use the saved REST API token with this alias
-
-  -d, --description=description  The description of the orchestration to add
-
-  -h, --help                     Show CLI help.
-
-  -n, --name=name                The name of the orchestration to add
-
-  -t, --team_id=team_id          The ID of the team that owns this orchestration. If none is specified, only admins have
-                                 access.
-
-  --debug                        Print REST API call debug logs
-
-  --token=token                  Ignore the saved configuration and use this token
+DESCRIPTION
+  Add a PagerDuty Event Orchestration
 ```
 
-_See code: [src/commands/orchestration/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/orchestration/add.ts)_
-
-## `pd orchestration:list`
+## `pd orchestration:list [-h] [--debug] [-b <value>] [--token <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 List PagerDuty Event Orchestrations
 
 ```
 USAGE
-  $ pd orchestration:list
+  $ pd orchestration list [-h] [--debug] [-b <value>] [--token <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns
+    <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
 
-OPTIONS
-  -b, --useauth=useauth      Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -h, --help               Show CLI help.
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -p, --pipe               Print orchestration ID's only to stdout, for use with pipes.
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
 
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
-
-  -h, --help                 Show CLI help.
-
-  -j, --json                 output full details as JSON
-
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
-
-  -p, --pipe                 Print orchestration ID's only to stdout, for use with pipes.
-
-  -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
-  --csv                      output is csv format [alias: --output=csv]
-
-  --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
-  --no-header                hide table header from output
-
-  --no-truncate              do not truncate output to fit screen
-
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
+DESCRIPTION
+  List PagerDuty Event Orchestrations
 ```
 
-_See code: [src/commands/orchestration/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/orchestration/list.ts)_
-
-## `pd orchestration:route:add`
+## `pd orchestration:route:add -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [-c <value>] [-s <value>] [-S <value>]`
 
 Add a Route to a PagerDuty Event Orchestration
 
 ```
 USAGE
-  $ pd orchestration:route:add
+  $ pd orchestration route add -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [-c <value>] [-s
+    <value>] [-S <value>]
 
-OPTIONS
-  -S, --service_name=service_name  The name of a PagerDuty service to route to
-  -b, --useauth=useauth            Use the saved REST API token with this alias
-  -c, --conditions=conditions      The conditions that must be true for the route action to occur
-  -d, --description=description    A human-readable description of what the route does
-  -h, --help                       Show CLI help.
-  -i, --id=id                      (required) The ID of the orchestration to add a route to
-  -s, --service_id=service_id      The ID of a PagerDuty service to route to
-  --debug                          Print REST API call debug logs
-  --token=token                    Ignore the saved configuration and use this token
+FLAGS
+  -S, --service_name=<value>   The name of a PagerDuty service to route to
+  -b, --useauth=<value>        Use the saved REST API token with this alias
+  -c, --conditions=<value>...  The conditions that must be true for the route action to occur
+  -d, --description=<value>    A human-readable description of what the route does
+  -h, --help                   Show CLI help.
+  -i, --id=<value>             (required) The ID of the orchestration to add a route to
+  -s, --service_id=<value>     The ID of a PagerDuty service to route to
+  --debug                      Print REST API call debug logs
+  --token=<value>              Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Add a Route to a PagerDuty Event Orchestration
 ```
 
-_See code: [src/commands/orchestration/route/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/orchestration/route/add.ts)_
-
-## `pd orchestration:route:delete`
+## `pd orchestration:route:delete -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-r <value>] [-s <value>] [-S <value>]`
 
 Delete a Route from a PagerDuty Event Orchestration
 
 ```
 USAGE
-  $ pd orchestration:route:delete
+  $ pd orchestration route delete -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-r <value>] [-s <value>] [-S
+  <value>]
 
-OPTIONS
-  -S, --service_names=service_names  Delete routes that route to the PagerDuty service with this name. Specify multiple
-                                     times to delete multiple routes.
+FLAGS
+  -S, --service_names=<value>...  Delete routes that route to the PagerDuty service with this name. Specify multiple
+                                  times to delete multiple routes.
+  -b, --useauth=<value>           Use the saved REST API token with this alias
+  -h, --help                      Show CLI help.
+  -i, --id=<value>                (required) The ID of the orchestration to delete a route from
+  -r, --route_ids=<value>...      The ID of the route to delete. Specify multiple times to delete multiple routes.
+  -s, --service_ids=<value>...    Delete routes that route to the PagerDuty service with this ID. Specify multiple times
+                                  to delete multiple routes.
+  --debug                         Print REST API call debug logs
+  --token=<value>                 Ignore the saved configuration and use this token
 
-  -b, --useauth=useauth              Use the saved REST API token with this alias
-
-  -h, --help                         Show CLI help.
-
-  -i, --id=id                        (required) The ID of the orchestration to delete a route from
-
-  -r, --route_ids=route_ids          The ID of the route to delete. Specify multiple times to delete multiple routes.
-
-  -s, --service_ids=service_ids      Delete routes that route to the PagerDuty service with this ID. Specify multiple
-                                     times to delete multiple routes.
-
-  --debug                            Print REST API call debug logs
-
-  --token=token                      Ignore the saved configuration and use this token
+DESCRIPTION
+  Delete a Route from a PagerDuty Event Orchestration
 ```
 
-_See code: [src/commands/orchestration/route/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/orchestration/route/delete.ts)_
-
-## `pd orchestration:route:list`
+## `pd orchestration:route:list -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 List PagerDuty Event Orchestration Routes
 
 ```
 USAGE
-  $ pd orchestration:route:list
+  $ pd orchestration route list -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-k <value>] [-j] [-p] [-d <value>]
+    [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate]
+    [--no-header]
 
-OPTIONS
-  -b, --useauth=useauth      Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -h, --help               Show CLI help.
+  -i, --id=<value>         (required) The ID of the orchestration whose routes to list
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -p, --pipe               Print orchestration ID's only to stdout, for use with pipes.
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
 
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
-
-  -h, --help                 Show CLI help.
-
-  -i, --id=id                (required) The ID of the orchestration whose routes to list
-
-  -j, --json                 output full details as JSON
-
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
-
-  -p, --pipe                 Print orchestration ID's only to stdout, for use with pipes.
-
-  -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
-  --csv                      output is csv format [alias: --output=csv]
-
-  --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
-  --no-header                hide table header from output
-
-  --no-truncate              do not truncate output to fit screen
-
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
+DESCRIPTION
+  List PagerDuty Event Orchestration Routes
 ```
 
-_See code: [src/commands/orchestration/route/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/orchestration/route/list.ts)_
-
-## `pd rest:delete`
+## `pd rest:delete -e <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]`
 
 Make a DELETE request to PagerDuty
 
 ```
 USAGE
-  $ pd rest:delete
+  $ pd rest delete -e <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]
 
-OPTIONS
-  -H, --headers=headers    [default: ] Headers to add, for example, `From=martin@pagerduty.com`. Specify multiple times
-                           for multiple headers.
+FLAGS
+  -H, --headers=<value>...  [default: ] Headers to add, for example, `From=martin@pagerduty.com`. Specify multiple times
+                            for multiple headers.
+  -P, --params=<value>...   [default: ] Parameters to add, for example, `query=martin` or `include[]=teams`. Specify
+                            multiple times for multiple params.
+  -b, --useauth=<value>     Use the saved REST API token with this alias
+  -e, --endpoint=<value>    (required) The path to the endpoint, for example, `/users/PXXXXXX` or `/services`
+  -h, --help                Show CLI help.
+  --debug                   Print REST API call debug logs
+  --token=<value>           Ignore the saved configuration and use this token
 
-  -P, --params=params      [default: ] Parameters to add, for example, `query=martin` or `include[]=teams. Specify
-                           multiple times for multiple params.
-
-  -b, --useauth=useauth    Use the saved REST API token with this alias
-
-  -e, --endpoint=endpoint  (required) The path to the endpoint, for example, `/users/PXXXXXX` or `/services`
-
-  -h, --help               Show CLI help.
-
-  --debug                  Print REST API call debug logs
-
-  --token=token            Ignore the saved configuration and use this token
+DESCRIPTION
+  Make a DELETE request to PagerDuty
 ```
 
-_See code: [src/commands/rest/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/rest/delete.ts)_
-
-## `pd rest:fetch`
+## `pd rest:fetch -e <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>] [-t] [-k <value>] [-p] [-d <value>] [--limit <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 Fetch objects from PagerDuty
 
 ```
 USAGE
-  $ pd rest:fetch
+  $ pd rest fetch -e <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>] [-t] [-k
+    <value>] [-p] [-d <value>] [--limit <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv]
+    [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
 
-OPTIONS
-  -H, --headers=headers      [default: ] Headers to add, for example, `From=martin@pagerduty.com`. Specify multiple
-                             times for multiple headers.
+FLAGS
+  -H, --headers=<value>...  [default: ] Headers to add, for example, `From=martin@pagerduty.com`. Specify multiple times
+                            for multiple headers.
+  -P, --params=<value>...   [default: ] Parameters to add, for example, `query=martin` or `include[]=teams. Specify
+                            multiple times for multiple params.
+  -b, --useauth=<value>     Use the saved REST API token with this alias
+  -d, --delimiter=<value>   [default: \n] Delimiter for fields that have more than one value, for use with `--table`.
+  -e, --endpoint=<value>    (required) The path to the endpoint, for example, `users` or `services`
+  -h, --help                Show CLI help.
+  -k, --keys=<value>...     Additional fields to display, for use with `--table`. Specify multiple times for multiple
+                            fields.
+  -p, --pipe                Print object ID's only to stdout, for use with pipes.
+  -t, --table               Output in table format instead of JSON
+  -x, --extended            show extra columns
+  --columns=<value>         only show provided columns (comma-separated)
+  --csv                     output is csv format [alias: --output=csv]
+  --debug                   Print REST API call debug logs
+  --filter=<value>          filter property by partial string matching, ex: name=foo
+  --limit=<value>           Return no more than this many entries. This option turns off table filtering options.
+  --no-header               hide table header from output
+  --no-truncate             do not truncate output to fit screen
+  --output=<option>         output in a more machine friendly format
+                            <options: csv|json|yaml>
+  --sort=<value>            property to sort by (prepend '-' for descending)
+  --token=<value>           Ignore the saved configuration and use this token
 
-  -P, --params=params        [default: ] Parameters to add, for example, `query=martin` or `include[]=teams. Specify
-                             multiple times for multiple params.
-
-  -b, --useauth=useauth      Use the saved REST API token with this alias
-
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value, for use with `--table`.
-
-  -e, --endpoint=endpoint    (required) The path to the endpoint, for example, `/users/PXXXXXX` or `/services`
-
-  -h, --help                 Show CLI help.
-
-  -k, --keys=keys            Additional fields to display, for use with `--table`. Specify multiple times for multiple
-                             fields.
-
-  -p, --pipe                 Print object ID's only to stdout, for use with pipes.
-
-  -t, --table                Output in table format instead of JSON
-
-  -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
-  --csv                      output is csv format [alias: --output=csv]
-
-  --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
-  --limit=limit              Return no more than this many entries. This option turns off table filtering options.
-
-  --no-header                hide table header from output
-
-  --no-truncate              do not truncate output to fit screen
-
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
+DESCRIPTION
+  Fetch objects from PagerDuty
 ```
 
-_See code: [src/commands/rest/fetch.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/rest/fetch.ts)_
-
-## `pd rest:get`
+## `pd rest:get -e <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]`
 
 Make a GET request to PagerDuty
 
 ```
 USAGE
-  $ pd rest:get
+  $ pd rest get -e <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]
 
-OPTIONS
-  -H, --headers=headers    [default: ] Headers to add, for example, `From=martin@pagerduty.com`. Specify multiple times
-                           for multiple headers.
+FLAGS
+  -H, --headers=<value>...  [default: ] Headers to add, for example, `From=martin@pagerduty.com`. Specify multiple times
+                            for multiple headers.
+  -P, --params=<value>...   [default: ] Parameters to add, for example, `query=martin` or `include[]=teams`. Specify
+                            multiple times for multiple params.
+  -b, --useauth=<value>     Use the saved REST API token with this alias
+  -e, --endpoint=<value>    (required) The path to the endpoint, for example, `/users/PXXXXXX` or `/services`
+  -h, --help                Show CLI help.
+  --debug                   Print REST API call debug logs
+  --token=<value>           Ignore the saved configuration and use this token
 
-  -P, --params=params      [default: ] Parameters to add, for example, `query=martin` or `include[]=teams`. Specify
-                           multiple times for multiple params.
-
-  -b, --useauth=useauth    Use the saved REST API token with this alias
-
-  -e, --endpoint=endpoint  (required) The path to the endpoint, for example, `/users/PXXXXXX` or `/services`
-
-  -h, --help               Show CLI help.
-
-  --debug                  Print REST API call debug logs
-
-  --token=token            Ignore the saved configuration and use this token
+DESCRIPTION
+  Make a GET request to PagerDuty
 ```
 
-_See code: [src/commands/rest/get.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/rest/get.ts)_
-
-## `pd rest:post`
+## `pd rest:post -e <value> -d <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]`
 
 Make a POST request to PagerDuty
 
 ```
 USAGE
-  $ pd rest:post
+  $ pd rest post -e <value> -d <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]
 
-OPTIONS
-  -H, --headers=headers    [default: ] Headers to add, for example, `From=martin@pagerduty.com`. Specify multiple times
-                           for multiple headers.
+FLAGS
+  -H, --headers=<value>...  [default: ] Headers to add, for example, `From=martin@pagerduty.com`. Specify multiple times
+                            for multiple headers.
+  -P, --params=<value>...   [default: ] Parameters to add, for example, `query=martin` or `include[]=teams. Specify
+                            multiple times for multiple params.
+  -b, --useauth=<value>     Use the saved REST API token with this alias
+  -d, --data=<value>        (required) JSON data to send
+  -e, --endpoint=<value>    (required) The path to the endpoint, for example, `/users/PXXXXXX` or `/services`
+  -h, --help                Show CLI help.
+  --debug                   Print REST API call debug logs
+  --token=<value>           Ignore the saved configuration and use this token
 
-  -P, --params=params      [default: ] Parameters to add, for example, `query=martin` or `include[]=teams. Specify
-                           multiple times for multiple params.
-
-  -b, --useauth=useauth    Use the saved REST API token with this alias
-
-  -d, --data=data          (required) JSON data to send
-
-  -e, --endpoint=endpoint  (required) The path to the endpoint, for example, `/users/PXXXXXX` or `/services`
-
-  -h, --help               Show CLI help.
-
-  --debug                  Print REST API call debug logs
-
-  --token=token            Ignore the saved configuration and use this token
+DESCRIPTION
+  Make a POST request to PagerDuty
 ```
 
-_See code: [src/commands/rest/post.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/rest/post.ts)_
-
-## `pd rest:put`
+## `pd rest:put -e <value> -d <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]`
 
 Make a PUT request to PagerDuty
 
 ```
 USAGE
-  $ pd rest:put
+  $ pd rest put -e <value> -d <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]
 
-OPTIONS
-  -H, --headers=headers    [default: ] Headers to add, for example, `From=martin@pagerduty.com`. Specify multiple times
-                           for multiple headers.
+FLAGS
+  -H, --headers=<value>...  [default: ] Headers to add, for example, `From=martin@pagerduty.com`. Specify multiple times
+                            for multiple headers.
+  -P, --params=<value>...   [default: ] Parameters to add, for example, `query=martin` or `include[]=teams. Specify
+                            multiple times for multiple params.
+  -b, --useauth=<value>     Use the saved REST API token with this alias
+  -d, --data=<value>        (required) JSON data to send
+  -e, --endpoint=<value>    (required) The path to the endpoint, for example, `/users/PXXXXXX` or `/services`
+  -h, --help                Show CLI help.
+  --debug                   Print REST API call debug logs
+  --token=<value>           Ignore the saved configuration and use this token
 
-  -P, --params=params      [default: ] Parameters to add, for example, `query=martin` or `include[]=teams. Specify
-                           multiple times for multiple params.
-
-  -b, --useauth=useauth    Use the saved REST API token with this alias
-
-  -d, --data=data          (required) JSON data to send
-
-  -e, --endpoint=endpoint  (required) The path to the endpoint, for example, `/users/PXXXXXX` or `/services`
-
-  -h, --help               Show CLI help.
-
-  --debug                  Print REST API call debug logs
-
-  --token=token            Ignore the saved configuration and use this token
+DESCRIPTION
+  Make a PUT request to PagerDuty
 ```
 
-_See code: [src/commands/rest/put.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/rest/put.ts)_
-
-## `pd schedule:copy`
+## `pd schedule:copy [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-d <value>] [-o] [-p]`
 
 Make a copy of a PagerDuty Schedule
 
 ```
 USAGE
-  $ pd schedule:copy
+  $ pd schedule copy [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-d <value>] [-o] [-p]
 
-OPTIONS
-  -b, --useauth=useauth          Use the saved REST API token with this alias
-  -d, --destination=destination  The name for the new schedule
-  -h, --help                     Show CLI help.
-  -i, --id=id                    The ID of the schedule to copy.
-  -n, --name=name                The name of the schedule to copy.
-  -o, --open                     Open the new schedule in the browser
-  -p, --pipe                     Print the new schedule ID only to stdout, for use with pipes.
-  --debug                        Print REST API call debug logs
-  --token=token                  Ignore the saved configuration and use this token
+FLAGS
+  -b, --useauth=<value>      Use the saved REST API token with this alias
+  -d, --destination=<value>  The name for the new schedule
+  -h, --help                 Show CLI help.
+  -i, --id=<value>           The ID of the schedule to copy.
+  -n, --name=<value>         The name of the schedule to copy.
+  -o, --open                 Open the new schedule in the browser
+  -p, --pipe                 Print the new schedule ID only to stdout, for use with pipes.
+  --debug                    Print REST API call debug logs
+  --token=<value>            Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Make a copy of a PagerDuty Schedule
 ```
 
-_See code: [src/commands/schedule/copy.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/schedule/copy.ts)_
-
-## `pd schedule:create`
+## `pd schedule:create -n <value> -u <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [-z <value>] [-t <value>] [-l <value>] [-s <value>] [--rotation_virtual_start <value>] [-o] [-p]`
 
 Create a PagerDuty Schedule
 
 ```
 USAGE
-  $ pd schedule:create
+  $ pd schedule create -n <value> -u <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [-z <value>]
+    [-t <value>] [-l <value>] [-s <value>] [--rotation_virtual_start <value>] [-o] [-p]
 
-OPTIONS
-  -b, --useauth=useauth                            Use the saved REST API token with this alias
-  -d, --description=description                    The description of the schedule to create
-  -h, --help                                       Show CLI help.
+FLAGS
+  -b, --useauth=<value>             Use the saved REST API token with this alias
+  -d, --description=<value>         The description of the schedule to create
+  -h, --help                        Show CLI help.
+  -l, --turn_length=<value>         [default: 1 day] The rotation turn length of the first layer of the schedule
+  -n, --name=<value>                (required) The name of the schedule to create.
+  -o, --open                        Open the new schedule in the browser
+  -p, --pipe                        Print the new schedule ID only to stdout, for use with pipes.
+  -s, --start=<value>               [default: now] The start time of the first layer of the schedule
+  -t, --handoff_time=<value>        [default: 09:00] The handoff time of the first layer of the schedule (in the time
+                                    zone specified by -z)
+  -u, --users=<value>...            (required) The IDs of users to include in the first layer of the schedule. Specify
+                                    multiple times, in order, for multiple users.
+  -z, --timezone=<value>            [default: UTC] The time zone of the schedule
+  --debug                           Print REST API call debug logs
+  --rotation_virtual_start=<value>  The effective start time of the first layer. This can be before the start time of
+                                    the schedule.
+  --token=<value>                   Ignore the saved configuration and use this token
 
-  -l, --turn_length=turn_length                    [default: 1 day] The rotation turn length of the first layer of the
-                                                   schedule
-
-  -n, --name=name                                  (required) The name of the schedule to create.
-
-  -o, --open                                       Open the new schedule in the browser
-
-  -p, --pipe                                       Print the new schedule ID only to stdout, for use with pipes.
-
-  -s, --start=start                                [default: now] The start time of the first layer of the schedule
-
-  -t, --handoff_time=handoff_time                  [default: 09:00] The handoff time of the first layer of the schedule
-                                                   (in the time zone specified by -z)
-
-  -u, --users=users                                (required) The IDs of users to include in the first layer of the
-                                                   schedule. Specify multiple times, in order, for multiple users.
-
-  -z, --timezone=timezone                          [default: UTC] The time zone of the schedule
-
-  --debug                                          Print REST API call debug logs
-
-  --rotation_virtual_start=rotation_virtual_start  The effective start time of the first layer. This can be before the
-                                                   start time of the schedule.
-
-  --token=token                                    Ignore the saved configuration and use this token
+DESCRIPTION
+  Create a PagerDuty Schedule
 ```
 
-_See code: [src/commands/schedule/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/schedule/create.ts)_
-
-## `pd schedule:list`
+## `pd schedule:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 List PagerDuty Schedules
 
 ```
 USAGE
-  $ pd schedule:list
+  $ pd schedule list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>]
+    [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
+    [--no-truncate] [--no-header]
 
-OPTIONS
-  -b, --useauth=useauth      Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -h, --help               Show CLI help.
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -n, --name=<value>       Select schedules whose names contain the given text
+  -p, --pipe               Print schedule ID's only to stdout, for use with pipes.
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --limit=<value>          Return no more than this many entries. This option turns off table filtering options.
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
 
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
-
-  -h, --help                 Show CLI help.
-
-  -j, --json                 output full details as JSON
-
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
-
-  -n, --name=name            Select schedules whose names contain the given text
-
-  -p, --pipe                 Print schedule ID's only to stdout, for use with pipes.
-
-  -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
-  --csv                      output is csv format [alias: --output=csv]
-
-  --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
-  --limit=limit              Return no more than this many entries. This option turns off table filtering options.
-
-  --no-header                hide table header from output
-
-  --no-truncate              do not truncate output to fit screen
-
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
+DESCRIPTION
+  List PagerDuty Schedules
 ```
 
-_See code: [src/commands/schedule/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/schedule/list.ts)_
-
-## `pd schedule:oncall`
+## `pd schedule:oncall [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-k <value>] [-d <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 List a PagerDuty Schedule's on call shifts.
 
 ```
 USAGE
-  $ pd schedule:oncall
+  $ pd schedule oncall [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>]
+    [--until <value>] [-k <value>] [-d <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv]
+    [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
 
-OPTIONS
-  -b, --useauth=useauth   Use the saved REST API token with this alias
-  -h, --help              Show CLI help.
-  -i, --id=id             Show oncalls for the schedule with this ID.
-  -j, --json              output full details as JSON
-  -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
-  -n, --name=name         Show oncalls for the schedule with this name.
-  -x, --extended          show extra columns
-  --columns=columns       only show provided columns (comma-separated)
-  --csv                   output is csv format [alias: --output=csv]
-  --debug                 Print REST API call debug logs
-  --filter=filter         filter property by partial string matching, ex: name=foo
-  --no-header             hide table header from output
-  --no-truncate           do not truncate output to fit screen
-  --output=csv|json|yaml  output in a more machine friendly format
-  --since=since           The start of the date range over which you want to search.
-  --sort=sort             property to sort by (prepend '-' for descending)
-  --token=token           Ignore the saved configuration and use this token
-  --until=until           The end of the date range over which you want to search.
+FLAGS
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -h, --help               Show CLI help.
+  -i, --id=<value>         Show oncalls for the schedule with this ID.
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -n, --name=<value>       Show oncalls for the schedule with this name.
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --since=<value>          The start of the date range over which you want to search.
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
+  --until=<value>          The end of the date range over which you want to search.
+
+DESCRIPTION
+  List a PagerDuty Schedule's on call shifts.
 ```
 
-_See code: [src/commands/schedule/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/schedule/oncall.ts)_
-
-## `pd schedule:open`
+## `pd schedule:open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`
 
 Open PagerDuty Schedules in the browser
 
 ```
 USAGE
-  $ pd schedule:open
+  $ pd schedule open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]
 
-OPTIONS
-  -b, --useauth=useauth  Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>  Use the saved REST API token with this alias
   -h, --help             Show CLI help.
-  -i, --ids=ids          The IDs of schedules to open.
-  -n, --name=name        Open schedules matching this string.
+  -i, --ids=<value>...   The IDs of schedules to open.
+  -n, --name=<value>     Open schedules matching this string.
   -p, --pipe             Read schedule ID's from stdin.
   --debug                Print REST API call debug logs
-  --token=token          Ignore the saved configuration and use this token
+  --token=<value>        Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Open PagerDuty Schedules in the browser
 ```
 
-_See code: [src/commands/schedule/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/schedule/open.ts)_
-
-## `pd schedule:override:add`
+## `pd schedule:override:add [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--start <value>] [--end <value>] [-u <value>] [-U <value>]`
 
 Add an override to a PagerDuty schedule.
 
 ```
 USAGE
-  $ pd schedule:override:add
+  $ pd schedule override add [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--start <value>]
+    [--end <value>] [-u <value>] [-U <value>]
 
-OPTIONS
-  -U, --user_email=user_email  The email of the PagerDuty user for the override
-  -b, --useauth=useauth        Use the saved REST API token with this alias
-  -h, --help                   Show CLI help.
-  -i, --id=id                  Add an override to the schedule with this ID.
-  -n, --name=name              Add an override to the schedule with this name.
-  -u, --user_id=user_id        The ID of the PagerDuty user for the override
-  --debug                      Print REST API call debug logs
-  --end=end                    [default: in 1 day] The end time for the override.
-  --start=start                [default: now] The start time for the override.
-  --token=token                Ignore the saved configuration and use this token
+FLAGS
+  -U, --user_email=<value>  The email of the PagerDuty user for the override
+  -b, --useauth=<value>     Use the saved REST API token with this alias
+  -h, --help                Show CLI help.
+  -i, --id=<value>          Add an override to the schedule with this ID.
+  -n, --name=<value>        Add an override to the schedule with this name.
+  -u, --user_id=<value>     The ID of the PagerDuty user for the override
+  --debug                   Print REST API call debug logs
+  --end=<value>             [default: in 1 day] The end time for the override.
+  --start=<value>           [default: now] The start time for the override.
+  --token=<value>           Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Add an override to a PagerDuty schedule.
 ```
 
-_See code: [src/commands/schedule/override/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/schedule/override/add.ts)_
-
-## `pd schedule:override:list`
+## `pd schedule:override:list [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 List a PagerDuty Schedule's overrides.
 
 ```
 USAGE
-  $ pd schedule:override:list
+  $ pd schedule override list [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>]
+    [--until <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>]
+    [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
 
-OPTIONS
-  -b, --useauth=useauth      Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -h, --help               Show CLI help.
+  -i, --id=<value>         Show overrides for the schedule with this ID.
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -n, --name=<value>       Show overrides for the schedule with this name.
+  -p, --pipe               Print override ID's only to stdout, for use with pipes.
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --since=<value>          [default: now] The start of the date range over which you want to search.
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
+  --until=<value>          [default: in 30 days] The end of the date range over which you want to search.
 
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
-
-  -h, --help                 Show CLI help.
-
-  -i, --id=id                Show overrides for the schedule with this ID.
-
-  -j, --json                 output full details as JSON
-
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
-
-  -n, --name=name            Show overrides for the schedule with this name.
-
-  -p, --pipe                 Print override ID's only to stdout, for use with pipes.
-
-  -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
-  --csv                      output is csv format [alias: --output=csv]
-
-  --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
-  --no-header                hide table header from output
-
-  --no-truncate              do not truncate output to fit screen
-
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --since=since              [default: now] The start of the date range over which you want to search.
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
-
-  --until=until              [default: in 30 days] The end of the date range over which you want to search.
+DESCRIPTION
+  List a PagerDuty Schedule's overrides.
 ```
 
-_See code: [src/commands/schedule/override/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/schedule/override/list.ts)_
-
-## `pd schedule:render`
+## `pd schedule:render [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 Render a PagerDuty Schedule
 
 ```
 USAGE
-  $ pd schedule:render
+  $ pd schedule render [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>]
+    [--until <value>] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv]
+    [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
 
-OPTIONS
-  -b, --useauth=useauth      Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -h, --help               Show CLI help.
+  -i, --id=<value>         Render the schedule with this ID.
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -n, --name=<value>       Render the schedule with this name.
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --since=<value>          The start of the date range over which you want to search.
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
+  --until=<value>          The end of the date range over which you want to search.
 
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
-
-  -h, --help                 Show CLI help.
-
-  -i, --id=id                Render the schedule with this ID.
-
-  -j, --json                 output full details as JSON
-
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
-
-  -n, --name=name            Render the schedule with this name.
-
-  -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
-  --csv                      output is csv format [alias: --output=csv]
-
-  --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
-  --no-header                hide table header from output
-
-  --no-truncate              do not truncate output to fit screen
-
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --since=since              The start of the date range over which you want to search.
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
-
-  --until=until              The end of the date range over which you want to search.
+DESCRIPTION
+  Render a PagerDuty Schedule
 ```
 
-_See code: [src/commands/schedule/render.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/schedule/render.ts)_
-
-## `pd schedule:show`
+## `pd schedule:show [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 Show a PagerDuty Schedule
 
 ```
 USAGE
-  $ pd schedule:show
+  $ pd schedule show [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>]
+    [--until <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
+    [--no-truncate] [--no-header]
 
-OPTIONS
-  -b, --useauth=useauth   Use the saved REST API token with this alias
-  -h, --help              Show CLI help.
-  -i, --id=id             Show the schedule with this ID.
-  -j, --json              output full details as JSON
-  -n, --name=name         Show the schedule with this name.
-  -x, --extended          show extra columns
-  --columns=columns       only show provided columns (comma-separated)
-  --csv                   output is csv format [alias: --output=csv]
-  --debug                 Print REST API call debug logs
-  --filter=filter         filter property by partial string matching, ex: name=foo
-  --no-header             hide table header from output
-  --no-truncate           do not truncate output to fit screen
-  --output=csv|json|yaml  output in a more machine friendly format
-  --since=since           The start of the date range over which you want to search.
-  --sort=sort             property to sort by (prepend '-' for descending)
-  --token=token           Ignore the saved configuration and use this token
-  --until=until           The end of the date range over which you want to search.
+FLAGS
+  -b, --useauth=<value>  Use the saved REST API token with this alias
+  -h, --help             Show CLI help.
+  -i, --id=<value>       Show the schedule with this ID.
+  -j, --json             output full details as JSON
+  -n, --name=<value>     Show the schedule with this name.
+  -x, --extended         show extra columns
+  --columns=<value>      only show provided columns (comma-separated)
+  --csv                  output is csv format [alias: --output=csv]
+  --debug                Print REST API call debug logs
+  --filter=<value>       filter property by partial string matching, ex: name=foo
+  --no-header            hide table header from output
+  --no-truncate          do not truncate output to fit screen
+  --output=<option>      output in a more machine friendly format
+                         <options: csv|json|yaml>
+  --since=<value>        The start of the date range over which you want to search.
+  --sort=<value>         property to sort by (prepend '-' for descending)
+  --token=<value>        Ignore the saved configuration and use this token
+  --until=<value>        The end of the date range over which you want to search.
+
+DESCRIPTION
+  Show a PagerDuty Schedule
 ```
 
-_See code: [src/commands/schedule/show.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/schedule/show.ts)_
-
-## `pd service:create`
+## `pd service:create -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [-e <value>] [-E <value>] [-r <value>] [-t <value>] [--create_alerts] [-u high|low|use_support_hours|severity_based] [--Ss <value>] [--Se <value>] [--Sd <value>] [--Ud high|low|severity_based] [--Uo high|low|severity_based] [--Uc] [--Gd <value>] [--Gi] [--Gc any|all] [--Gf <value>] [-F <value>] [-o] [-p]`
 
 Create a PagerDuty Service
 
 ```
 USAGE
-  $ pd service:create
+  $ pd service create -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [-e <value>] [-E
+    <value>] [-r <value>] [-t <value>] [--create_alerts] [-u high|low|use_support_hours|severity_based] [--Ss <value>]
+    [--Se <value>] [--Sd <value>] [--Ud high|low|severity_based] [--Uo high|low|severity_based] [--Uc] [--Gd <value>]
+    [--Gi] [--Gc any|all] [--Gf <value>] [-F <value>] [-o] [-p]
 
-OPTIONS
-  -E, --escalation_policy_name=escalation_policy_name      The name of the service's escalation policy.
+FLAGS
+  -E, --escalation_policy_name=<value>  The name of the service's escalation policy.
+  -F, --from=<value>                    Login email of a PD user account for the "From:" header. Use only with legacy
+                                        API tokens.
+  -b, --useauth=<value>                 Use the saved REST API token with this alias
+  -d, --description=<value>             The service's description
+  -e, --escalation_policy_id=<value>    The ID of the service's escalation policy.
+  -h, --help                            Show CLI help.
+  -n, --name=<value>                    (required) The service's name
+  -o, --open                            Open the new service in the browser
+  -p, --pipe                            Print the service ID only to stdout, for use with pipes.
+  -r, --auto_resolve_timeout=<value>    Automatically resolve incidents after this number of minutes
+  -t, --ack_timeout=<value>             Automatically re-trigger incidents after this number of minutes
+  -u, --urgency=<option>                The urgency of incidents in the service
+                                        <options: high|low|use_support_hours|severity_based>
+  --Gc=<option>                         Do content-based alert grouping. Specify the fields to look at with --Gf and
+                                        choose 'any' or 'all' fields.
+                                        <options: any|all>
+  --Gd=<value>                          Do time based alert grouping for this number of minutes.
+  --Gf=<value>...                       The fields to look at for content based alert grouping. Specify multiple times
+                                        for multiple fields.
+  --Gi                                  Do intelligent alert grouping
+  --Sd=<value>...                       A day when support hours are active. Specify multiple times for multiple days.
+  --Se=<value>                          The time of day when support hours end
+  --Ss=<value>                          The time of day when support hours start
+  --Uc                                  Change unacknowledged incidents to high urgency when entering high-urgency
+                                        support hours
+  --Ud=<option>                         Incident urgency during support hours.
+                                        <options: high|low|severity_based>
+  --Uo=<option>                         Incident urgency outside of support hours.
+                                        <options: high|low|severity_based>
+  --create_alerts                       Turn on alert support in the service (default: true)
+  --debug                               Print REST API call debug logs
+  --token=<value>                       Ignore the saved configuration and use this token
 
-  -F, --from=from                                          Login email of a PD user account for the "From:" header. Use
-                                                           only with legacy API tokens.
-
-  -b, --useauth=useauth                                    Use the saved REST API token with this alias
-
-  -d, --description=description                            The service's description
-
-  -e, --escalation_policy_id=escalation_policy_id          The ID of the service's escalation policy.
-
-  -h, --help                                               Show CLI help.
-
-  -n, --name=name                                          (required) The service's name
-
-  -o, --open                                               Open the new service in the browser
-
-  -p, --pipe                                               Print the service ID only to stdout, for use with pipes.
-
-  -r, --auto_resolve_timeout=auto_resolve_timeout          Automatically resolve incidents after this number of minutes
-
-  -t, --ack_timeout=ack_timeout                            Automatically re-trigger incidents after this number of
-                                                           minutes
-
-  -u, --urgency=high|low|use_support_hours|severity_based  The urgency of incidents in the service
-
-  --Gc=any|all                                             Do content-based alert grouping. Specify the fields to look
-                                                           at with --Gf and choose 'any' or 'all' fields.
-
-  --Gd=Gd                                                  Do time based alert grouping for this number of minutes.
-
-  --Gf=Gf                                                  The fields to look at for content based alert grouping.
-                                                           Specify multiple times for multiple fields.
-
-  --Gi                                                     Do intelligent alert grouping
-
-  --Sd=Sd                                                  A day when support hours are active. Specify multiple times
-                                                           for multiple days.
-
-  --Se=Se                                                  The time of day when support hours end
-
-  --Ss=Ss                                                  The time of day when support hours start
-
-  --Uc                                                     Change unacknowledged incidents to high urgency when entering
-                                                           high-urgency support hours
-
-  --Ud=high|low|severity_based                             Incident urgency during support hours.
-
-  --Uo=high|low|severity_based                             Incident urgency outside of support hours.
-
-  --create_alerts                                          Turn on alert support in the service (default: true)
-
-  --debug                                                  Print REST API call debug logs
-
-  --token=token                                            Ignore the saved configuration and use this token
+DESCRIPTION
+  Create a PagerDuty Service
 ```
 
-_See code: [src/commands/service/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/service/create.ts)_
-
-## `pd service:disable`
+## `pd service:disable [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`
 
 Disable PagerDuty Services
 
 ```
 USAGE
-  $ pd service:disable
+  $ pd service disable [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]
 
-OPTIONS
-  -b, --useauth=useauth  Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>  Use the saved REST API token with this alias
   -h, --help             Show CLI help.
-  -i, --ids=ids          Select services with the given ID. Specify multiple times for multiple services.
-  -n, --name=name        Select services whose names contain the given text
+  -i, --ids=<value>...   Select services with the given ID. Specify multiple times for multiple services.
+  -n, --name=<value>     Select services whose names contain the given text
   -p, --pipe             Read service ID's from stdin.
   --debug                Print REST API call debug logs
-  --token=token          Ignore the saved configuration and use this token
+  --token=<value>        Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Disable PagerDuty Services
 ```
 
-_See code: [src/commands/service/disable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/service/disable.ts)_
-
-## `pd service:enable`
+## `pd service:enable [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`
 
 Enable PagerDuty Services
 
 ```
 USAGE
-  $ pd service:enable
+  $ pd service enable [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]
 
-OPTIONS
-  -b, --useauth=useauth  Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>  Use the saved REST API token with this alias
   -h, --help             Show CLI help.
-  -i, --ids=ids          Select services with the given ID. Specify multiple times for multiple services.
-  -n, --name=name        Select services whose names contain the given text
+  -i, --ids=<value>...   Select services with the given ID. Specify multiple times for multiple services.
+  -n, --name=<value>     Select services whose names contain the given text
   -p, --pipe             Read service ID's from stdin.
   --debug                Print REST API call debug logs
-  --token=token          Ignore the saved configuration and use this token
+  --token=<value>        Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Enable PagerDuty Services
 ```
 
-_See code: [src/commands/service/enable.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/service/enable.ts)_
-
-## `pd service:list`
+## `pd service:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header] [-t <value>]`
 
 List PagerDuty Services
 
 ```
 USAGE
-  $ pd service:list
+  $ pd service list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>]
+    [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
+    [--no-truncate] [--no-header] [-t <value>]
 
-OPTIONS
-  -b, --useauth=useauth      Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -h, --help               Show CLI help.
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -n, --name=<value>       Select services whose names contain the given text
+  -p, --pipe               Print service ID's only to stdout, for use with pipes.
+  -t, --teams=<value>...   Team names to include. Specify multiple times for multiple teams.
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --limit=<value>          Return no more than this many entries. This option turns off table filtering options.
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
 
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
-
-  -h, --help                 Show CLI help.
-
-  -j, --json                 output full details as JSON
-
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
-
-  -n, --name=name            Retrieve only services whose names contain this text
-
-  -p, --pipe                 Print service ID's only to stdout, for use with pipes.
-
-  -t, --teams=teams          Team names to include. Specify multiple times for multiple teams.
-
-  -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
-  --csv                      output is csv format [alias: --output=csv]
-
-  --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
-  --limit=limit              Return no more than this many entries. This option turns off table filtering options.
-
-  --no-header                hide table header from output
-
-  --no-truncate              do not truncate output to fit screen
-
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
+DESCRIPTION
+  List PagerDuty Services
 ```
 
-_See code: [src/commands/service/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/service/list.ts)_
-
-## `pd service:open`
+## `pd service:open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`
 
 Open PagerDuty Services in the browser
 
 ```
 USAGE
-  $ pd service:open
+  $ pd service open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]
 
-OPTIONS
-  -b, --useauth=useauth  Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>  Use the saved REST API token with this alias
   -h, --help             Show CLI help.
-  -i, --ids=ids          The IDs of services to open.
-  -n, --name=name        Open services matching this string.
+  -i, --ids=<value>...   The IDs of services to open.
+  -n, --name=<value>     Open services matching this string.
   -p, --pipe             Read service ID's from stdin.
   --debug                Print REST API call debug logs
-  --token=token          Ignore the saved configuration and use this token
+  --token=<value>        Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Open PagerDuty Services in the browser
 ```
 
-_See code: [src/commands/service/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/service/open.ts)_
-
-## `pd service:set`
+## `pd service:set -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-N <value>] [-i <value>] [--jsonvalues] [-p]`
 
 Set PagerDuty Service attributes
 
 ```
 USAGE
-  $ pd service:set
+  $ pd service set -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-N <value>]
+    [-i <value>] [--jsonvalues] [-p]
 
-OPTIONS
-  -N, --exact_names=exact_names  Select service whose name is this exact text. Specify multiple times for multiple
-                                 services.
+FLAGS
+  -N, --exact_names=<value>...  Select a service whose name is this exact text. Specify multiple times for multiple
+                                services.
+  -b, --useauth=<value>         Use the saved REST API token with this alias
+  -h, --help                    Show CLI help.
+  -i, --ids=<value>...          Select services with the given ID. Specify multiple times for multiple services.
+  -k, --keys=<value>...         (required) Attribute keys to set. Specify multiple times to set multiple keys.
+  -n, --names=<value>...        Select services whose names contain the given text. Specify multiple times for multiple
+                                names.
+  -p, --pipe                    Read service ID's from stdin.
+  -v, --values=<value>...       (required) Attribute values to set. To set multiple key/values, specify multiple times
+                                in the same order as the keys.
+  --debug                       Print REST API call debug logs
+  --[no-]jsonvalues             Interpret values as JSON [default: true]
+  --token=<value>               Ignore the saved configuration and use this token
 
-  -b, --useauth=useauth          Use the saved REST API token with this alias
-
-  -h, --help                     Show CLI help.
-
-  -i, --ids=ids                  Select services with the given ID. Specify multiple times for multiple services.
-
-  -k, --keys=keys                (required) Attribute keys to set. Specify multiple times to set multiple keys.
-
-  -n, --names=names              Select services whose names contain the given text. Specify multiple times for multiple
-                                 names.
-
-  -p, --pipe                     Read service ID's from stdin.
-
-  -v, --values=values            (required) Attribute values to set. To set multiple key/values, specify multiple times
-                                 in the same order as the keys.
-
-  --debug                        Print REST API call debug logs
-
-  --[no-]jsonvalues              Interpret values as JSON [default: true]
-
-  --token=token                  Ignore the saved configuration and use this token
+DESCRIPTION
+  Set PagerDuty Service attributes
 ```
 
-_See code: [src/commands/service/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/service/set.ts)_
-
-## `pd tag:assign`
+## `pd tag:assign [-h] [--debug] [-b <value>] [--token <value>] [-a <value>] [-A <value>] [-r <value>] [-R <value>] [-u <value>] [-U <value>] [-t <value>] [-e <value>]`
 
 Assign/Remove Tags to/from PagerDuty objects
 
 ```
 USAGE
-  $ pd tag:assign
+  $ pd tag assign [-h] [--debug] [-b <value>] [--token <value>] [-a <value>] [-A <value>] [-r <value>] [-R
+    <value>] [-u <value>] [-U <value>] [-t <value>] [-e <value>]
 
-OPTIONS
-  -A, --add_names=add_names        [default: ] The name of a Tag to add. If no tag with this name exists, a new tag will
-                                   be created. Specify multiple times for multiple tags
+FLAGS
+  -A, --add_names=<value>...     [default: ] The name of a Tag to add. If no tag with this name exists, a new tag will
+                                 be created. Specify multiple times for multiple tags
+  -R, --remove_names=<value>...  [default: ] The name of a Tag to remove. Specify multiple times for multiple tags
+  -U, --user_emails=<value>...   [default: ] The email of a User to assign this tag to. Specify multiple times for
+                                 multiple users
+  -a, --add_ids=<value>...       [default: ] The ID of a Tag to add. Specify multiple times for multiple tags
+  -b, --useauth=<value>          Use the saved REST API token with this alias
+  -e, --ep_ids=<value>...        [default: ] The ID of an Escalation Policy to assign this tag to. Specify multiple
+                                 times for multiple users
+  -h, --help                     Show CLI help.
+  -r, --remove_ids=<value>...    [default: ] The ID of a Tag to remove. Specify multiple times for multiple tags
+  -t, --team_ids=<value>...      [default: ] The ID of a Team to assign this tag to. Specify multiple times for multiple
+                                 teams
+  -u, --user_ids=<value>...      [default: ] The ID of a User to assign this tag to. Specify multiple times for multiple
+                                 users
+  --debug                        Print REST API call debug logs
+  --token=<value>                Ignore the saved configuration and use this token
 
-  -R, --remove_names=remove_names  [default: ] The name of a Tag to remove. Specify multiple times for multiple tags
-
-  -U, --user_emails=user_emails    [default: ] The email of a User to assign this tag to. Specify multiple times for
-                                   multiple users
-
-  -a, --add_ids=add_ids            [default: ] The ID of a Tag to add. Specify multiple times for multiple tags
-
-  -b, --useauth=useauth            Use the saved REST API token with this alias
-
-  -e, --ep_ids=ep_ids              [default: ] The ID of an Escalation Policy to assign this tag to. Specify multiple
-                                   times for multiple users
-
-  -h, --help                       Show CLI help.
-
-  -r, --remove_ids=remove_ids      [default: ] The ID of a Tag to remove. Specify multiple times for multiple tags
-
-  -t, --team_ids=team_ids          [default: ] The ID of a Team to assign this tag to. Specify multiple times for
-                                   multiple teams
-
-  -u, --user_ids=user_ids          [default: ] The ID of a User to assign this tag to. Specify multiple times for
-                                   multiple users
-
-  --debug                          Print REST API call debug logs
-
-  --token=token                    Ignore the saved configuration and use this token
+DESCRIPTION
+  Assign/Remove Tags to/from PagerDuty objects
 ```
 
-_See code: [src/commands/tag/assign.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/tag/assign.ts)_
-
-## `pd tag:list`
+## `pd tag:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 List PagerDuty Tags
 
 ```
 USAGE
-  $ pd tag:list
+  $ pd tag list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>]
+    [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
+    [--no-truncate] [--no-header]
 
-OPTIONS
-  -b, --useauth=useauth      Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -h, --help               Show CLI help.
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -n, --name=<value>       Select objects whose names contain the given text
+  -p, --pipe               Print object ID's only to stdout, for use with pipes.
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --limit=<value>          Return no more than this many entries. This option turns off table filtering options.
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
 
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
-
-  -h, --help                 Show CLI help.
-
-  -j, --json                 output full details as JSON
-
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
-
-  -p, --pipe                 Print tag ID's only to stdout, for use with pipes.
-
-  -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
-  --csv                      output is csv format [alias: --output=csv]
-
-  --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
-  --limit=limit              Return no more than this many entries. This option turns off table filtering options.
-
-  --no-header                hide table header from output
-
-  --no-truncate              do not truncate output to fit screen
-
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
+DESCRIPTION
+  List PagerDuty Tags
 ```
 
-_See code: [src/commands/tag/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/tag/list.ts)_
-
-## `pd tag:listobjects`
+## `pd tag:listobjects [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [-t users|teams|escalation_policies] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 List Tagged PagerDuty Objects (Connected Entities)
 
 ```
 USAGE
-  $ pd tag:listobjects
+  $ pd tag listobjects [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [-t
+    users|teams|escalation_policies] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter
+    <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
 
-OPTIONS
-  -b, --useauth=useauth                        Use the saved REST API token with this alias
-  -h, --help                                   Show CLI help.
+FLAGS
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -h, --help               Show CLI help.
+  -i, --ids=<value>...     [default: ] The ID of a Tag to show. Specify multiple times for multiple tags
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -n, --names=<value>...   [default: ] The name of a Tag to show. Specify multiple times for multiple tags
+  -p, --pipe               Print object ID's only to stdout, for use with pipes.
+  -t, --types=<option>...  [default: users,teams,escalation_policies] The types of objects to show. Specify multiple
+                           times for multiple types
+                           <options: users|teams|escalation_policies>
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
 
-  -i, --ids=ids                                [default: ] The ID of a Tag to show. Specify multiple times for multiple
-                                               tags
-
-  -j, --json                                   output full details as JSON
-
-  -n, --names=names                            [default: ] The name of a Tag to show. Specify multiple times for
-                                               multiple tags
-
-  -p, --pipe                                   Print object ID's only to stdout, for use with pipes.
-
-  -t, --types=users|teams|escalation_policies  [default: users,teams,escalation_policies] The types of objects to show.
-                                               Specify multiple times for multiple types
-
-  -x, --extended                               show extra columns
-
-  --columns=columns                            only show provided columns (comma-separated)
-
-  --csv                                        output is csv format [alias: --output=csv]
-
-  --debug                                      Print REST API call debug logs
-
-  --filter=filter                              filter property by partial string matching, ex: name=foo
-
-  --limit=limit                                Return no more than this many entries. This option turns off table
-                                               filtering options.
-
-  --no-header                                  hide table header from output
-
-  --no-truncate                                do not truncate output to fit screen
-
-  --output=csv|json|yaml                       output in a more machine friendly format
-
-  --sort=sort                                  property to sort by (prepend '-' for descending)
-
-  --token=token                                Ignore the saved configuration and use this token
+DESCRIPTION
+  List Tagged PagerDuty Objects (Connected Entities)
 ```
 
-_See code: [src/commands/tag/listobjects.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/tag/listobjects.ts)_
-
-## `pd team:create`
+## `pd team:create -n <value> [-h] [--debug] [-b <value>] [--token <value>] [--description <value>] [-a <value>] [-A <value>] [-o] [-p]`
 
 Create an empty PagerDuty Team. You can add escalation policies and users later with team:ep and team:user
 
 ```
 USAGE
-  $ pd team:create
+  $ pd team create -n <value> [-h] [--debug] [-b <value>] [--token <value>] [--description <value>] [-a <value>]
+    [-A <value>] [-o] [-p]
 
-OPTIONS
-  -A, --parent_name=parent_name  The name of the new team's parent team
-  -a, --parent_id=parent_id      The ID of the new team's parent team
-  -b, --useauth=useauth          Use the saved REST API token with this alias
-  -h, --help                     Show CLI help.
-  -n, --name=name                (required) The name of the team to add.
-  -o, --open                     Open the new team in the browser
-  -p, --pipe                     Print the team ID only to stdout, for use with pipes.
-  --debug                        Print REST API call debug logs
-  --description=description      The description of the team
-  --token=token                  Ignore the saved configuration and use this token
+FLAGS
+  -A, --parent_name=<value>  The name of the new team's parent team
+  -a, --parent_id=<value>    The ID of the new team's parent team
+  -b, --useauth=<value>      Use the saved REST API token with this alias
+  -h, --help                 Show CLI help.
+  -n, --name=<value>         (required) The name of the team to add.
+  -o, --open                 Open the new team in the browser
+  -p, --pipe                 Print the team ID only to stdout, for use with pipes.
+  --debug                    Print REST API call debug logs
+  --description=<value>      The description of the team
+  --token=<value>            Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Create an empty PagerDuty Team. You can add escalation policies and users later with team:ep and team:user
 ```
 
-_See code: [src/commands/team/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/team/create.ts)_
-
-## `pd team:ep:add`
+## `pd team:ep:add [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-e <value>] [-E <value>]`
 
 Add PagerDuty escalation policies to Teams.
 
 ```
 USAGE
-  $ pd team:ep:add
+  $ pd team ep add [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-e <value>] [-E
+    <value>]
 
-OPTIONS
-  -E, --ep_names=ep_names  Add an escalation policy with this name. Specify multiple times for multiple escalation
-                           policies.
+FLAGS
+  -E, --ep_names=<value>...  Add an escalation policy with this name. Specify multiple times for multiple escalation
+                             policies.
+  -b, --useauth=<value>      Use the saved REST API token with this alias
+  -e, --ep_ids=<value>...    Add an escalation policy with this ID. Specify multiple times for multiple escalation
+                             policies.
+  -h, --help                 Show CLI help.
+  -i, --ids=<value>...       The IDs of teams to add escalation policies to.
+  -n, --name=<value>         Select teams whose names contain the given text
+  --debug                    Print REST API call debug logs
+  --token=<value>            Ignore the saved configuration and use this token
 
-  -b, --useauth=useauth    Use the saved REST API token with this alias
-
-  -e, --ep_ids=ep_ids      Add an escalation policy with this ID. Specify multiple times for multiple escalation
-                           policies.
-
-  -h, --help               Show CLI help.
-
-  -i, --ids=ids            The IDs of teams to add escalation policies to.
-
-  -n, --name=name          Select teams whose names contain the given text
-
-  --debug                  Print REST API call debug logs
-
-  --token=token            Ignore the saved configuration and use this token
+DESCRIPTION
+  Add PagerDuty escalation policies to Teams.
 ```
 
-_See code: [src/commands/team/ep/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/team/ep/add.ts)_
-
-## `pd team:ep:list`
+## `pd team:ep:list [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 List the Escalation Policies for a PagerDuty Team
 
 ```
 USAGE
-  $ pd team:ep:list
+  $ pd team ep list [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-k <value>] [-j] [-p]
+    [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
+    [--no-truncate] [--no-header]
 
-OPTIONS
-  -b, --useauth=useauth      Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -h, --help               Show CLI help.
+  -i, --ids=<value>...     The IDs of teams to list escalation policies for.
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -n, --name=<value>       Select teams whose names contain the given text
+  -p, --pipe               Print escalation policy ID's only to stdout, for use with pipes.
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
 
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
-
-  -h, --help                 Show CLI help.
-
-  -i, --ids=ids              The IDs of teams to list escalation policies for.
-
-  -j, --json                 output full details as JSON
-
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
-
-  -n, --name=name            Select teams whose names contain the given text
-
-  -p, --pipe                 Print escalation policy ID's only to stdout, for use with pipes.
-
-  -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
-  --csv                      output is csv format [alias: --output=csv]
-
-  --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
-  --no-header                hide table header from output
-
-  --no-truncate              do not truncate output to fit screen
-
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
+DESCRIPTION
+  List the Escalation Policies for a PagerDuty Team
 ```
 
-_See code: [src/commands/team/ep/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/team/ep/list.ts)_
-
-## `pd team:ep:remove`
+## `pd team:ep:remove [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-e <value>] [-E <value>]`
 
 Remove PagerDuty escalation policies from Teams.
 
 ```
 USAGE
-  $ pd team:ep:remove
+  $ pd team ep remove [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-e <value>] [-E
+    <value>]
 
-OPTIONS
-  -E, --ep_names=ep_names  Remove an escalation policy with this name. Specify multiple times for multiple escalation
-                           policies.
+FLAGS
+  -E, --ep_names=<value>...  Remove an escalation policy with this name. Specify multiple times for multiple escalation
+                             policies.
+  -b, --useauth=<value>      Use the saved REST API token with this alias
+  -e, --ep_ids=<value>...    Remove an escalation policy with this ID. Specify multiple times for multiple escalation
+                             policies.
+  -h, --help                 Show CLI help.
+  -i, --ids=<value>...       The IDs of teams to remove escalation policies from.
+  -n, --name=<value>         Select teams whose names contain the given text
+  --debug                    Print REST API call debug logs
+  --token=<value>            Ignore the saved configuration and use this token
 
-  -b, --useauth=useauth    Use the saved REST API token with this alias
-
-  -e, --ep_ids=ep_ids      Remove an escalation policy with this ID. Specify multiple times for multiple escalation
-                           policies.
-
-  -h, --help               Show CLI help.
-
-  -i, --ids=ids            The IDs of teams to remove escalation policies from.
-
-  -n, --name=name          Select teams whose names contain the given text
-
-  --debug                  Print REST API call debug logs
-
-  --token=token            Ignore the saved configuration and use this token
+DESCRIPTION
+  Remove PagerDuty escalation policies from Teams.
 ```
 
-_See code: [src/commands/team/ep/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/team/ep/remove.ts)_
-
-## `pd team:list`
+## `pd team:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 List PagerDuty Teams
 
 ```
 USAGE
-  $ pd team:list
+  $ pd team list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>]
+    [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
+    [--no-truncate] [--no-header]
 
-OPTIONS
-  -b, --useauth=useauth      Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -h, --help               Show CLI help.
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -n, --name=<value>       Select teams whose names contain the given text
+  -p, --pipe               Print team ID's only to stdout, for use with pipes.
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --limit=<value>          Return no more than this many entries. This option turns off table filtering options.
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
 
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
-
-  -h, --help                 Show CLI help.
-
-  -j, --json                 output full details as JSON
-
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
-
-  -n, --name=name            Select teams whose names contain the given text
-
-  -p, --pipe                 Print user ID's only to stdout, for use with pipes.
-
-  -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
-  --csv                      output is csv format [alias: --output=csv]
-
-  --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
-  --limit=limit              Return no more than this many entries. This option turns off table filtering options.
-
-  --no-header                hide table header from output
-
-  --no-truncate              do not truncate output to fit screen
-
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
+DESCRIPTION
+  List PagerDuty Teams
 ```
 
-_See code: [src/commands/team/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/team/list.ts)_
-
-## `pd team:open`
+## `pd team:open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`
 
 Open PagerDuty Teams in the browser
 
 ```
 USAGE
-  $ pd team:open
+  $ pd team open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]
 
-OPTIONS
-  -b, --useauth=useauth  Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>  Use the saved REST API token with this alias
   -h, --help             Show CLI help.
-  -i, --ids=ids          The IDs of teams to open.
-  -n, --name=name        Open teams matching this string.
+  -i, --ids=<value>...   The IDs of teams to open.
+  -n, --name=<value>     Open teams matching this string.
   -p, --pipe             Read team ID's from stdin.
   --debug                Print REST API call debug logs
-  --token=token          Ignore the saved configuration and use this token
+  --token=<value>        Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Open PagerDuty Teams in the browser
 ```
 
-_See code: [src/commands/team/open.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/team/open.ts)_
-
-## `pd team:user:add`
+## `pd team:user:add [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-u <value>] [-U <value>] [-r manager|responder|observer]`
 
 Add PagerDuty users to Teams. If a given user is already a member, this command will set their role on the team.
 
 ```
 USAGE
-  $ pd team:user:add
+  $ pd team user add [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-u <value>] [-U
+    <value>] [-r manager|responder|observer]
 
-OPTIONS
-  -U, --user_emails=user_emails          Add a user with this email. Specify multiple times for multiple users.
-  -b, --useauth=useauth                  Use the saved REST API token with this alias
-  -h, --help                             Show CLI help.
-  -i, --ids=ids                          The IDs of teams to add members to.
-  -n, --name=name                        Select teams whose names contain the given text
-  -r, --role=manager|responder|observer  [default: manager] The role of the user(s) on the team(s)
-  -u, --user_ids=user_ids                Add a user with this ID. Specify multiple times for multiple users.
-  --debug                                Print REST API call debug logs
-  --token=token                          Ignore the saved configuration and use this token
+FLAGS
+  -U, --user_emails=<value>...  Add a user with this email. Specify multiple times for multiple users.
+  -b, --useauth=<value>         Use the saved REST API token with this alias
+  -h, --help                    Show CLI help.
+  -i, --ids=<value>...          The IDs of teams to add members to.
+  -n, --name=<value>            Select teams whose names contain the given text
+  -r, --role=<option>           [default: manager] The role of the user(s) on the team(s)
+                                <options: manager|responder|observer>
+  -u, --user_ids=<value>...     Add a user with this ID. Specify multiple times for multiple users.
+  --debug                       Print REST API call debug logs
+  --token=<value>               Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Add PagerDuty users to Teams. If a given user is already a member, this command will set their role on the team.
 ```
 
-_See code: [src/commands/team/user/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/team/user/add.ts)_
-
-## `pd team:user:list`
+## `pd team:user:list [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 List PagerDuty Team Members
 
 ```
 USAGE
-  $ pd team:user:list
+  $ pd team user list [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-k <value>] [-j] [-p]
+    [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
+    [--no-truncate] [--no-header]
 
-OPTIONS
-  -b, --useauth=useauth      Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -h, --help               Show CLI help.
+  -i, --ids=<value>...     The IDs of teams to list members for.
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -n, --name=<value>       Select teams whose names contain the given text
+  -p, --pipe               Print user ID's only to stdout, for use with pipes.
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
 
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
-
-  -h, --help                 Show CLI help.
-
-  -i, --ids=ids              The IDs of teams to list members for.
-
-  -j, --json                 output full details as JSON
-
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
-
-  -n, --name=name            Select teams whose names contain the given text
-
-  -p, --pipe                 Print user ID's only to stdout, for use with pipes.
-
-  -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
-  --csv                      output is csv format [alias: --output=csv]
-
-  --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
-  --no-header                hide table header from output
-
-  --no-truncate              do not truncate output to fit screen
-
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
+DESCRIPTION
+  List PagerDuty Team Members
 ```
 
-_See code: [src/commands/team/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/team/user/list.ts)_
-
-## `pd team:user:remove`
+## `pd team:user:remove [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-u <value>] [-U <value>]`
 
 Remove PagerDuty users from Teams
 
 ```
 USAGE
-  $ pd team:user:remove
+  $ pd team user remove [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-u <value>] [-U
+    <value>]
 
-OPTIONS
-  -U, --user_emails=user_emails  Remove a user with this email. Specify multiple times for multiple users.
-  -b, --useauth=useauth          Use the saved REST API token with this alias
-  -h, --help                     Show CLI help.
-  -i, --ids=ids                  The IDs of teams to remove members from.
-  -n, --name=name                Select teams whose names contain the given text
-  -u, --user_ids=user_ids        Remove a user with this ID. Specify multiple times for multiple users.
-  --debug                        Print REST API call debug logs
-  --token=token                  Ignore the saved configuration and use this token
+FLAGS
+  -U, --user_emails=<value>...  Remove a user with this email. Specify multiple times for multiple users.
+  -b, --useauth=<value>         Use the saved REST API token with this alias
+  -h, --help                    Show CLI help.
+  -i, --ids=<value>...          The IDs of teams to remove members from.
+  -n, --name=<value>            Select teams whose names contain the given text
+  -u, --user_ids=<value>...     Remove a user with this ID. Specify multiple times for multiple users.
+  --debug                       Print REST API call debug logs
+  --token=<value>               Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Remove PagerDuty users from Teams
 ```
-
-_See code: [src/commands/team/user/remove.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/team/user/remove.ts)_
 
 ## `pd update [CHANNEL]`
 
@@ -2805,503 +2399,452 @@ update the pd CLI
 
 ```
 USAGE
-  $ pd update [CHANNEL]
+  $ pd update [CHANNEL] [-a] [-v <value> | -i] [--force]
 
-OPTIONS
+FLAGS
   -a, --available        Install a specific version.
   -i, --interactive      Interactively select version to install. This is ignored if a channel is provided.
-  -v, --version=version  Install a specific version.
+  -v, --version=<value>  Install a specific version.
   --force                Force a re-download of the requested version.
 
+DESCRIPTION
+  update the pd CLI
+
 EXAMPLES
-  [object Object]
-  [object Object]
-  [object Object]
-  [object Object]
+  Update to the stable channel:
+
+    $ pd update stable
+
+  Update to a specific version:
+
+    $ pd update --version 1.0.0
+
+  Interactively select version:
+
+    $ pd update --interactive
+
+  See available versions:
+
+    $ pd update --available
 ```
 
-_See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v3.0.0/src/commands/update.ts)_
+_See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v3.0.8/src/commands/update.ts)_
 
-## `pd user:contact:add`
+## `pd user:contact:add -l <value> -T email|phone|sms -a <value> [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>]`
 
 Add a contact method to a PagerDuty user
 
 ```
 USAGE
-  $ pd user:contact:add
+  $ pd user contact add -l <value> -T email|phone|sms -a <value> [-h] [--debug] [-b <value>] [--token <value>] [-i
+    <value>] [-e <value>]
 
-OPTIONS
-  -T, --type=email|phone|sms  (required) The contact method type.
-  -a, --address=address       (required) The contact method address or phone number.
-  -b, --useauth=useauth       Use the saved REST API token with this alias
-  -e, --email=email           Add contact to the user with this login email.
-  -h, --help                  Show CLI help.
-  -i, --id=id                 Add contact to the user with this ID.
-  -l, --label=label           (required) The contact method label.
-  --debug                     Print REST API call debug logs
-  --token=token               Ignore the saved configuration and use this token
+FLAGS
+  -T, --type=<option>    (required) The contact method type.
+                         <options: email|phone|sms>
+  -a, --address=<value>  (required) The contact method address or phone number.
+  -b, --useauth=<value>  Use the saved REST API token with this alias
+  -e, --email=<value>    Add contact to the user with this login email.
+  -h, --help             Show CLI help.
+  -i, --id=<value>       Add contact to the user with this ID.
+  -l, --label=<value>    (required) The contact method label.
+  --debug                Print REST API call debug logs
+  --token=<value>        Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Add a contact method to a PagerDuty user
 ```
 
-_See code: [src/commands/user/contact/add.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/user/contact/add.ts)_
-
-## `pd user:contact:list`
+## `pd user:contact:list [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 List a PagerDuty User's contact methods.
 
 ```
 USAGE
-  $ pd user:contact:list
+  $ pd user contact list [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>] [-k <value>] [-j] [-p]
+    [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
+    [--no-truncate] [--no-header]
 
-OPTIONS
-  -b, --useauth=useauth      Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -e, --email=<value>      Show contacts for the user with this login email.
+  -h, --help               Show CLI help.
+  -i, --id=<value>         Show contacts for the user with this ID.
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -p, --pipe               Print contact ID's only to stdout, for use with pipes.
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
 
-  -d, --delimiter=delimiter  [default:
-                             ] Delimiter for fields that have more than one value
-
-  -e, --email=email          Show contacts for the user with this login email.
-
-  -h, --help                 Show CLI help.
-
-  -i, --id=id                Show contacts for the user with this ID.
-
-  -j, --json                 output full details as JSON
-
-  -k, --keys=keys            Additional fields to display. Specify multiple times for multiple fields.
-
-  -p, --pipe                 Print contact ID's only to stdout, for use with pipes.
-
-  -x, --extended             show extra columns
-
-  --columns=columns          only show provided columns (comma-separated)
-
-  --csv                      output is csv format [alias: --output=csv]
-
-  --debug                    Print REST API call debug logs
-
-  --filter=filter            filter property by partial string matching, ex: name=foo
-
-  --no-header                hide table header from output
-
-  --no-truncate              do not truncate output to fit screen
-
-  --output=csv|json|yaml     output in a more machine friendly format
-
-  --sort=sort                property to sort by (prepend '-' for descending)
-
-  --token=token              Ignore the saved configuration and use this token
+DESCRIPTION
+  List a PagerDuty User's contact methods.
 ```
 
-_See code: [src/commands/user/contact/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/user/contact/list.ts)_
-
-## `pd user:contact:set`
+## `pd user:contact:set -c <value> [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>] [-l <value>] [-a <value>]`
 
 Update a contact method for a PagerDuty user
 
 ```
 USAGE
-  $ pd user:contact:set
+  $ pd user contact set -c <value> [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>] [-l
+    <value>] [-a <value>]
 
-OPTIONS
-  -a, --address=address        The contact method address or phone number to set.
-  -b, --useauth=useauth        Use the saved REST API token with this alias
-  -c, --contact_id=contact_id  (required) Update the contact with this ID.
-  -e, --email=email            Update a contact for the user with this login email.
-  -h, --help                   Show CLI help.
-  -i, --id=id                  Update a contact for the user with this ID.
-  -l, --label=label            The contact method label to set.
-  --debug                      Print REST API call debug logs
-  --token=token                Ignore the saved configuration and use this token
+FLAGS
+  -a, --address=<value>     The contact method address or phone number to set.
+  -b, --useauth=<value>     Use the saved REST API token with this alias
+  -c, --contact_id=<value>  (required) Update the contact with this ID.
+  -e, --email=<value>       Update a contact for the user with this login email.
+  -h, --help                Show CLI help.
+  -i, --id=<value>          Update a contact for the user with this ID.
+  -l, --label=<value>       The contact method label to set.
+  --debug                   Print REST API call debug logs
+  --token=<value>           Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Update a contact method for a PagerDuty user
 ```
 
-_See code: [src/commands/user/contact/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/user/contact/set.ts)_
-
-## `pd user:create`
+## `pd user:create -e <value> -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-z <value>] [-c <value>] [-r admin|read_only_user|read_only_limited_user|user|limited_user|observer|restricted_access] [-t <value>] [-d <value>] [-w <value>] [--show_password] [-F <value>] [-o] [-p]`
 
 Create a PagerDuty User
 
 ```
 USAGE
-  $ pd user:create
+  $ pd user create -e <value> -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-z <value>] [-c <value>]
+    [-r admin|read_only_user|read_only_limited_user|user|limited_user|observer|restricted_access] [-t <value>] [-d
+    <value>] [-w <value>] [--show_password] [-F <value>] [-o] [-p]
 
-OPTIONS
-  -F, --from=from
-      Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
+FLAGS
+  -F, --from=<value>         Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
+  -b, --useauth=<value>      Use the saved REST API token with this alias
+  -c, --color=<value>        The user's schedule color
+  -d, --description=<value>  The user's job description
+  -e, --email=<value>        (required) The user's login email
+  -h, --help                 Show CLI help.
+  -n, --name=<value>         (required) The user's name
+  -o, --open                 Open the new user in the browser
+  -p, --pipe                 Print the user ID only to stdout, for use with pipes.
+  -r, --role=<option>        [default: user] The user's role
+                             <options:
+                             admin|read_only_user|read_only_limited_user|user|limited_user|observer|restricted_access>
+  -t, --title=<value>        The user's job title
+  -w, --password=<value>     The user's password - if not specified, a random password will be generated
+  -z, --timezone=<value>     [default: UTC] The user's time zone
+  --debug                    Print REST API call debug logs
+  --show_password            Show the user's password when creating
+  --token=<value>            Ignore the saved configuration and use this token
 
-  -b, --useauth=useauth
-      Use the saved REST API token with this alias
-
-  -c, --color=color
-      The user's schedule color
-
-  -d, --description=description
-      The user's job description
-
-  -e, --email=email
-      (required) The user's login email
-
-  -h, --help
-      Show CLI help.
-
-  -n, --name=name
-      (required) The user's name
-
-  -o, --open
-      Open the new user in the browser
-
-  -p, --pipe
-      Print the user ID only to stdout, for use with pipes.
-
-  -r, --role=admin|read_only_user|read_only_limited_user|user|limited_user|observer|restricted_access
-      [default: user] The user's role
-
-  -t, --title=title
-      The user's job title
-
-  -w, --password=password
-      The user's password - if not specified, a random password will be generated
-
-  -z, --timezone=timezone
-      [default: UTC] The user's time zone
-
-  --debug
-      Print REST API call debug logs
-
-  --show_password
-      Show the user's password when creating
-
-  --token=token
-      Ignore the saved configuration and use this token
+DESCRIPTION
+  Create a PagerDuty User
 ```
 
-_See code: [src/commands/user/create.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/user/create.ts)_
-
-## `pd user:delete`
+## `pd user:delete [-h] [--debug] [-b <value>] [--token <value>] [-e <value>] [-E <value>] [-i <value>] [-p] [--force]`
 
 Dangerous - Delete PagerDuty Users
 
 ```
 USAGE
-  $ pd user:delete
+  $ pd user delete [-h] [--debug] [-b <value>] [--token <value>] [-e <value>] [-E <value>] [-i <value>] [-p]
+    [--force]
 
-OPTIONS
-  -E, --exact_emails=exact_emails  Select a user whose login email is this exact text.  Specify multiple times for
-                                   multiple emails.
+FLAGS
+  -E, --exact_emails=<value>...  Select a user whose login email is this exact text.  Specify multiple times for
+                                 multiple emails.
+  -b, --useauth=<value>          Use the saved REST API token with this alias
+  -e, --emails=<value>...        Select users whose emails contain the given text. Specify multiple times for multiple
+                                 emails.
+  -h, --help                     Show CLI help.
+  -i, --ids=<value>...           Select users with the given ID. Specify multiple times for multiple users.
+  -p, --pipe                     Read user ID's from stdin.
+  --debug                        Print REST API call debug logs
+  --force                        Extreme danger mode: do not prompt before deleting
+  --token=<value>                Ignore the saved configuration and use this token
 
-  -b, --useauth=useauth            Use the saved REST API token with this alias
-
-  -e, --emails=emails              Select users whose emails contain the given text. Specify multiple times for multiple
-                                   emails.
-
-  -h, --help                       Show CLI help.
-
-  -i, --ids=ids                    Select users with the given ID. Specify multiple times for multiple users.
-
-  -p, --pipe                       Read user ID's from stdin.
-
-  --debug                          Print REST API call debug logs
-
-  --force                          Extreme danger mode: do not prompt before deleting
-
-  --token=token                    Ignore the saved configuration and use this token
+DESCRIPTION
+  Dangerous - Delete PagerDuty Users
 ```
 
-_See code: [src/commands/user/delete.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/user/delete.ts)_
-
-## `pd user:list`
+## `pd user:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header] [-e <value>] [-E <value>]`
 
 List PagerDuty Users
 
 ```
 USAGE
-  $ pd user:list
+  $ pd user list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>]
+    [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
+    [--no-truncate] [--no-header] [-e <value>] [-E <value>]
 
-OPTIONS
-  -E, --exact_email=exact_email  Select the user whose login email is this exact text
-  -b, --useauth=useauth          Use the saved REST API token with this alias
+FLAGS
+  -E, --exact_email=<value>  Select the user whose login email is this exact text
+  -b, --useauth=<value>      Use the saved REST API token with this alias
+  -d, --delimiter=<value>    [default: \n] Delimiter for fields that have more than one value
+  -e, --email=<value>        Select users whose login email addresses contain the given text
+  -h, --help                 Show CLI help.
+  -j, --json                 output full details as JSON
+  -k, --keys=<value>...      Additional fields to display. Specify multiple times for multiple fields.
+  -n, --name=<value>         Select users whose names contain the given text
+  -p, --pipe                 Print user ID's only to stdout, for use with pipes.
+  -x, --extended             show extra columns
+  --columns=<value>          only show provided columns (comma-separated)
+  --csv                      output is csv format [alias: --output=csv]
+  --debug                    Print REST API call debug logs
+  --filter=<value>           filter property by partial string matching, ex: name=foo
+  --limit=<value>            Return no more than this many entries. This option turns off table filtering options.
+  --no-header                hide table header from output
+  --no-truncate              do not truncate output to fit screen
+  --output=<option>          output in a more machine friendly format
+                             <options: csv|json|yaml>
+  --sort=<value>             property to sort by (prepend '-' for descending)
+  --token=<value>            Ignore the saved configuration and use this token
 
-  -d, --delimiter=delimiter      [default:
-                                 ] Delimiter for fields that have more than one value
-
-  -e, --email=email              Select users whose login email addresses contain the given text
-
-  -h, --help                     Show CLI help.
-
-  -j, --json                     output full details as JSON
-
-  -k, --keys=keys                Additional fields to display. Specify multiple times for multiple fields.
-
-  -p, --pipe                     Print user ID's only to stdout, for use with pipes.
-
-  -x, --extended                 show extra columns
-
-  --columns=columns              only show provided columns (comma-separated)
-
-  --csv                          output is csv format [alias: --output=csv]
-
-  --debug                        Print REST API call debug logs
-
-  --filter=filter                filter property by partial string matching, ex: name=foo
-
-  --limit=limit                  Return no more than this many entries. This option turns off table filtering options.
-
-  --no-header                    hide table header from output
-
-  --no-truncate                  do not truncate output to fit screen
-
-  --output=csv|json|yaml         output in a more machine friendly format
-
-  --sort=sort                    property to sort by (prepend '-' for descending)
-
-  --token=token                  Ignore the saved configuration and use this token
+DESCRIPTION
+  List PagerDuty Users
 ```
 
-_See code: [src/commands/user/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/user/list.ts)_
-
-## `pd user:log`
+## `pd user:log [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header] [-e <value>] [-E <value>] [-i <value>] [--since <value>] [--until <value>] [-O]`
 
 Show PagerDuty User Log Entries
 
 ```
 USAGE
-  $ pd user:log
+  $ pd user log [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>]
+    [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
+    [--no-truncate] [--no-header] [-e <value>] [-E <value>] [-i <value>] [--since <value>] [--until <value>] [-O]
 
-OPTIONS
-  -E, --exact_email=exact_email  Select the user whose login email is this exact text
-  -O, --overview                 Get only `overview` log entries
-  -b, --useauth=useauth          Use the saved REST API token with this alias
+FLAGS
+  -E, --exact_email=<value>  Select the user whose login email is this exact text
+  -O, --overview             Get only `overview` log entries
+  -b, --useauth=<value>      Use the saved REST API token with this alias
+  -d, --delimiter=<value>    [default: \n] Delimiter for fields that have more than one value
+  -e, --email=<value>        Select users whose login email addresses contain the given text
+  -h, --help                 Show CLI help.
+  -i, --ids=<value>...       Select users with the given ID. Specify multiple times for multiple users.
+  -j, --json                 output full details as JSON
+  -k, --keys=<value>...      Additional fields to display. Specify multiple times for multiple fields.
+  -n, --name=<value>         Select objects whose names contain the given text
+  -p, --pipe                 Print object ID's only to stdout, for use with pipes.
+  -x, --extended             show extra columns
+  --columns=<value>          only show provided columns (comma-separated)
+  --csv                      output is csv format [alias: --output=csv]
+  --debug                    Print REST API call debug logs
+  --filter=<value>           filter property by partial string matching, ex: name=foo
+  --limit=<value>            Return no more than this many entries. This option turns off table filtering options.
+  --no-header                hide table header from output
+  --no-truncate              do not truncate output to fit screen
+  --output=<option>          output in a more machine friendly format
+                             <options: csv|json|yaml>
+  --since=<value>            [default: 30 days ago] The start of the date range over which you want to search.
+  --sort=<value>             property to sort by (prepend '-' for descending)
+  --token=<value>            Ignore the saved configuration and use this token
+  --until=<value>            The end of the date range over which you want to search.
 
-  -d, --delimiter=delimiter      [default:
-                                 ] Delimiter for fields that have more than one value
-
-  -e, --email=email              Select users whose login email addresses contain the given text
-
-  -h, --help                     Show CLI help.
-
-  -i, --ids=ids                  Select users with the given ID. Specify multiple times for multiple users.
-
-  -j, --json                     output full details as JSON
-
-  -k, --keys=keys                Additional fields to display. Specify multiple times for multiple fields.
-
-  -p, --pipe                     Read user IDs from stdin, for use with pipes.
-
-  -x, --extended                 show extra columns
-
-  --columns=columns              only show provided columns (comma-separated)
-
-  --csv                          output is csv format [alias: --output=csv]
-
-  --debug                        Print REST API call debug logs
-
-  --filter=filter                filter property by partial string matching, ex: name=foo
-
-  --no-header                    hide table header from output
-
-  --no-truncate                  do not truncate output to fit screen
-
-  --output=csv|json|yaml         output in a more machine friendly format
-
-  --since=since                  [default: 30 days ago] The start of the date range over which you want to search.
-
-  --sort=sort                    property to sort by (prepend '-' for descending)
-
-  --token=token                  Ignore the saved configuration and use this token
-
-  --until=until                  The end of the date range over which you want to search.
+DESCRIPTION
+  Show PagerDuty User Log Entries
 ```
 
-_See code: [src/commands/user/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/user/log.ts)_
-
-## `pd user:oncall`
+## `pd user:oncall [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-e <value>] [--since <value>] [--until <value>] [-a] [-k <value>] [-d <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 List a PagerDuty User's on call shifts.
 
 ```
 USAGE
-  $ pd user:oncall
+  $ pd user oncall [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-e <value>] [--since <value>]
+    [--until <value>] [-a] [-k <value>] [-d <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>]
+    [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
 
-OPTIONS
-  -a, --always            Include 'Always on call.'
-  -b, --useauth=useauth   Use the saved REST API token with this alias
-  -e, --email=email       Show oncalls for the user with this login email.
-  -h, --help              Show CLI help.
-  -i, --id=id             Show oncalls for the user with this ID.
-  -j, --json              output full details as JSON
-  -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
-  -m, --me                Show my oncalls.
-  -x, --extended          show extra columns
-  --columns=columns       only show provided columns (comma-separated)
-  --csv                   output is csv format [alias: --output=csv]
-  --debug                 Print REST API call debug logs
-  --filter=filter         filter property by partial string matching, ex: name=foo
-  --no-header             hide table header from output
-  --no-truncate           do not truncate output to fit screen
-  --output=csv|json|yaml  output in a more machine friendly format
-  --since=since           The start of the date range over which you want to search.
-  --sort=sort             property to sort by (prepend '-' for descending)
-  --token=token           Ignore the saved configuration and use this token
-  --until=until           The end of the date range over which you want to search.
+FLAGS
+  -a, --always             Include 'Always on call.'
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -e, --email=<value>      Show oncalls for the user with this login email.
+  -h, --help               Show CLI help.
+  -i, --id=<value>         Show oncalls for the user with this ID.
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -m, --me                 Show my oncalls.
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --since=<value>          The start of the date range over which you want to search.
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
+  --until=<value>          The end of the date range over which you want to search.
+
+DESCRIPTION
+  List a PagerDuty User's on call shifts.
 ```
 
-_See code: [src/commands/user/oncall.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/user/oncall.ts)_
-
-## `pd user:replace`
+## `pd user:replace [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-d] [-u <value>] [-U <value>] [-p] [--force]`
 
 Replace PagerDuty Users in all Schedules and Escalation Policies
 
 ```
 USAGE
-  $ pd user:replace
+  $ pd user replace [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-d] [-u <value>] [-U <value>] [-p]
+    [--force]
 
-OPTIONS
-  -U, --user_email=user_email  The email of the replacement user.
-  -b, --useauth=useauth        Use the saved REST API token with this alias
-  -d, --deleted                Replace all deleted users
-  -h, --help                   Show CLI help.
-  -i, --ids=ids                Replace users with the given IDs. Specify multiple times for multiple users.
-  -p, --pipe                   Read user ID's from stdin.
-  -u, --user_id=user_id        The ID of the replacement user.
-  --debug                      Print REST API call debug logs
-  --force                      Extreme danger mode: do not prompt before updating
-  --token=token                Ignore the saved configuration and use this token
+FLAGS
+  -U, --user_email=<value>  The email of the replacement user.
+  -b, --useauth=<value>     Use the saved REST API token with this alias
+  -d, --deleted             Replace all deleted users
+  -h, --help                Show CLI help.
+  -i, --ids=<value>...      Replace the given user IDs. Specify multiple times for multiple users.
+  -p, --pipe                Read IDs of users to replace from stdin.
+  -u, --user_id=<value>     The ID of the replacement user.
+  --debug                   Print REST API call debug logs
+  --force                   Extreme danger mode: do not prompt before updating
+  --token=<value>           Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Replace PagerDuty Users in all Schedules and Escalation Policies
 ```
 
-_See code: [src/commands/user/replace.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/user/replace.ts)_
-
-## `pd user:session:list`
+## `pd user:session:list [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>] [-k <value>] [-d <value>] [--since <value>] [--until <value>] [-j] [-p] [-q <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
 
 List a PagerDuty User's sessions.
 
 ```
 USAGE
-  $ pd user:session:list
+  $ pd user session list [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>] [-k <value>] [-d
+    <value>] [--since <value>] [--until <value>] [-j] [-p] [-q <value>] [--columns <value>] [--sort <value>] [--filter
+    <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
 
-OPTIONS
-  -b, --useauth=useauth   Use the saved REST API token with this alias
-  -e, --email=email       Show sessions for the user with this login email.
-  -h, --help              Show CLI help.
-  -i, --id=id             Show sessions for the user with this ID.
-  -j, --json              output full details as JSON
-  -k, --keys=keys         Additional fields to display. Specify multiple times for multiple fields.
-  -p, --pipe              Print session ID's only to stdout, for use with pipes.
-  -q, --query=query       Query the API output
-  -x, --extended          show extra columns
-  --columns=columns       only show provided columns (comma-separated)
-  --csv                   output is csv format [alias: --output=csv]
-  --debug                 Print REST API call debug logs
-  --filter=filter         filter property by partial string matching, ex: name=foo
-  --no-header             hide table header from output
-  --no-truncate           do not truncate output to fit screen
-  --output=csv|json|yaml  output in a more machine friendly format
-  --since=since           The start of the date range over which you want to search.
-  --sort=sort             property to sort by (prepend '-' for descending)
-  --token=token           Ignore the saved configuration and use this token
-  --until=until           The end of the date range over which you want to search.
+FLAGS
+  -b, --useauth=<value>    Use the saved REST API token with this alias
+  -d, --delimiter=<value>  [default: \n] Delimiter for fields that have more than one value
+  -e, --email=<value>      Show sessions for the user with this login email.
+  -h, --help               Show CLI help.
+  -i, --id=<value>         Show sessions for the user with this ID.
+  -j, --json               output full details as JSON
+  -k, --keys=<value>...    Additional fields to display. Specify multiple times for multiple fields.
+  -p, --pipe               Print session ID's only to stdout, for use with pipes.
+  -q, --query=<value>      Query the API output
+  -x, --extended           show extra columns
+  --columns=<value>        only show provided columns (comma-separated)
+  --csv                    output is csv format [alias: --output=csv]
+  --debug                  Print REST API call debug logs
+  --filter=<value>         filter property by partial string matching, ex: name=foo
+  --no-header              hide table header from output
+  --no-truncate            do not truncate output to fit screen
+  --output=<option>        output in a more machine friendly format
+                           <options: csv|json|yaml>
+  --since=<value>          The start of the date range over which you want to search.
+  --sort=<value>           property to sort by (prepend '-' for descending)
+  --token=<value>          Ignore the saved configuration and use this token
+  --until=<value>          The end of the date range over which you want to search.
+
+DESCRIPTION
+  List a PagerDuty User's sessions.
 ```
 
-_See code: [src/commands/user/session/list.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/user/session/list.ts)_
-
-## `pd user:set`
+## `pd user:set -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-e <value>] [-E <value>] [-i <value>] [--jsonvalues] [-p]`
 
 Set PagerDuty User attributes
 
 ```
 USAGE
-  $ pd user:set
+  $ pd user set -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-e <value>] [-E <value>]
+    [-i <value>] [--jsonvalues] [-p]
 
-OPTIONS
-  -E, --exact_emails=exact_emails  Select a user whose login email is this exact text.  Specify multiple times for
-                                   multiple emails.
+FLAGS
+  -E, --exact_emails=<value>...  Select a user whose login email is this exact text.  Specify multiple times for
+                                 multiple emails.
+  -b, --useauth=<value>          Use the saved REST API token with this alias
+  -e, --emails=<value>...        Select users whose emails contain the given text. Specify multiple times for multiple
+                                 emails.
+  -h, --help                     Show CLI help.
+  -i, --ids=<value>...           Select users with the given ID. Specify multiple times for multiple users.
+  -k, --keys=<value>...          (required) Attribute keys to set. Specify multiple times to set multiple keys.
+  -p, --pipe                     Read user ID's from stdin.
+  -v, --values=<value>...        (required) Attribute values to set. To set multiple key/values, specify multiple times
+                                 in the same order as the keys.
+  --debug                        Print REST API call debug logs
+  --[no-]jsonvalues              Interpret values as JSON [default: true]
+  --token=<value>                Ignore the saved configuration and use this token
 
-  -b, --useauth=useauth            Use the saved REST API token with this alias
-
-  -e, --emails=emails              Select users whose emails contain the given text. Specify multiple times for multiple
-                                   emails.
-
-  -h, --help                       Show CLI help.
-
-  -i, --ids=ids                    Select users with the given ID. Specify multiple times for multiple users.
-
-  -k, --keys=keys                  (required) Attribute keys to set. Specify multiple times to set multiple keys.
-
-  -p, --pipe                       Read user ID's from stdin.
-
-  -v, --values=values              (required) Attribute values to set. To set multiple key/values, specify multiple
-                                   times in the same order as the keys.
-
-  --debug                          Print REST API call debug logs
-
-  --[no-]jsonvalues                Interpret values as JSON [default: true]
-
-  --token=token                    Ignore the saved configuration and use this token
+DESCRIPTION
+  Set PagerDuty User attributes
 ```
 
-_See code: [src/commands/user/set.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/user/set.ts)_
-
-## `pd util:deleteresource`
+## `pd util:deleteresource -t business_service|escalation_policy|extension|response_play|ruleset|schedule|service|tag|team|user|webhook_subscription [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-p] [--force]`
 
 Dangerous - Delete PagerDuty Resources
 
 ```
 USAGE
-  $ pd util:deleteresource
+  $ pd util deleteresource -t
+    business_service|escalation_policy|extension|response_play|ruleset|schedule|service|tag|team|user|webhook_subscripti
+    on [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-p] [--force]
 
-OPTIONS
-  -b, --useauth=useauth
-      Use the saved REST API token with this alias
+FLAGS
+  -b, --useauth=<value>         Use the saved REST API token with this alias
+  -h, --help                    Show CLI help.
+  -i, --ids=<value>...          Select resources with the given ID. Specify multiple times for multiple resources.
+  -p, --pipe                    Read resource ID's from stdin.
+  -t, --resource-type=<option>  (required) The type of PagerDuty resource to delete. You have to provide either -i or -p
+                                to specify IDs of objects to delete.
+                                <options: business_service|escalation_policy|extension|response_play|ruleset|schedule|se
+                                rvice|tag|team|user|webhook_subscription>
+  --debug                       Print REST API call debug logs
+  --force                       Extreme danger mode: do not prompt before deleting
+  --token=<value>               Ignore the saved configuration and use this token
 
-  -h, --help
-      Show CLI help.
-
-  -i, --ids=ids
-      Select resources with the given ID. Specify multiple times for multiple resources.
-
-  -p, --pipe
-      Read resource ID's from stdin.
-
-  -t, --resource-type=business_service|escalation_policy|extension|response_play|ruleset|schedule|service|tag|team|user|
-  webhook_subscription
-      (required) The type of PagerDuty resource to delete. You have to provide either -i or -p to specify IDs of objects
-      to delete.
-
-  --debug
-      Print REST API call debug logs
-
-  --force
-      Extreme danger mode: do not prompt before deleting
-
-  --token=token
-      Ignore the saved configuration and use this token
+DESCRIPTION
+  Dangerous - Delete PagerDuty Resources
 ```
 
-_See code: [src/commands/util/deleteresource.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/util/deleteresource.ts)_
-
-## `pd util:timestamp [DATE]`
+## `pd util:timestamp [-h] [--debug]`
 
 Make ISO8601 timestamps
 
 ```
 USAGE
-  $ pd util:timestamp [DATE]
+  $ pd util timestamp [-h] [--debug]
 
 ARGUMENTS
   DATE  A human-style date/time, like "4pm 1/1/2021" or "Dec 2 1pm", etc. Default: now
 
-OPTIONS
-  -b, --useauth=useauth  Use the saved REST API token with this alias
-  -h, --help             Show CLI help.
-  --debug                Print REST API call debug logs
-  --token=token          Ignore the saved configuration and use this token
-```
+FLAGS
+  -h, --help  Show CLI help.
+  --debug     Print REST API call debug logs
 
-_See code: [src/commands/util/timestamp.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.6/src/commands/util/timestamp.ts)_
+DESCRIPTION
+  Make ISO8601 timestamps
+```
 
 ## `pd version`
 
 ```
 USAGE
-  $ pd version
+  $ pd version [--json] [--verbose]
+
+FLAGS
+  --verbose  Show additional information about the CLI.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+FLAG DESCRIPTIONS
+  --verbose  Show additional information about the CLI.
+
+    Additionally shows the architecture, node version, operating system, and versions of plugins that the CLI is using.
 ```
 
-_See code: [@oclif/plugin-version](https://github.com/oclif/plugin-version/blob/v1.0.4/src/commands/version.ts)_
+_See code: [@oclif/plugin-version](https://github.com/oclif/plugin-version/blob/v1.1.3/src/commands/version.ts)_
 <!-- commandsstop -->
