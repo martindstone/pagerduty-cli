@@ -1,10 +1,10 @@
 import { ListBaseCommand } from '../../base/list-base-command'
-import {Flags, CliUx} from '@oclif/core'
+import { Flags, CliUx } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
 import * as chrono from 'chrono-node'
-import {PD} from '../../pd'
+import { PD } from '../../pd'
 
 export default class IncidentList extends ListBaseCommand<typeof IncidentList> {
   static pdObjectName = 'incident'
@@ -14,8 +14,7 @@ export default class IncidentList extends ListBaseCommand<typeof IncidentList> {
   static flags = {
     me: Flags.boolean({
       char: 'm',
-      description: 'Return only incidents assigned to me',
-      exclusive: ['assignees'],
+      description: 'Return incidents assigned to me',
     }),
     statuses: Flags.string({
       char: 's',
@@ -26,18 +25,34 @@ export default class IncidentList extends ListBaseCommand<typeof IncidentList> {
     }),
     assignees: Flags.string({
       char: 'e',
-      description: 'Return only incidents assigned to this PD login email. Specify multiple times for multiple assignees.',
+      description: 'Return incidents assigned to PD accounts whose login emails contain this text. Specify multiple times for multiple assignee filters.',
+      multiple: true,
+      exclusive: ['me'],
+    }),
+    exact_assignees: Flags.string({
+      char: 'E',
+      description: 'Return incidents assigned to the PD account whose login email is exactly this text. Specify multiple times for multiple assignees.',
       multiple: true,
       exclusive: ['me'],
     }),
     teams: Flags.string({
       char: 't',
-      description: 'Team names to include. Specify multiple times for multiple teams.',
+      description: 'Return incidents belonging to teams whose names contain this text. Specify multiple times for multiple team filters.',
+      multiple: true,
+    }),
+    exact_teams: Flags.string({
+      char: 'T',
+      description: 'Return incidents belonging to the team whose name is exactly this text. Specify multiple times for multiple teams.',
       multiple: true,
     }),
     services: Flags.string({
       char: 'S',
-      description: 'Service names to include. Specify multiple times for multiple services.',
+      description: 'Return incidents in services whose names contain this text. Specify multiple times for multiple service filters.',
+      multiple: true,
+    }),
+    exact_services: Flags.string({
+      char: 'X',
+      description: 'Return incidents in the service whose name is exactly this text. Specify multiple times for multiple services.',
       multiple: true,
     }),
     urgencies: Flags.string({
@@ -72,64 +87,124 @@ export default class IncidentList extends ListBaseCommand<typeof IncidentList> {
 
     if ((this.flags.me || this.flags.assignees) && statuses.length === 1 && statuses[0] === 'resolved') {
       // looking for assignees on resolved incidents, which will never return anything
-      this.error('You are looking for resolved incidents with assignees. PagerDuty incidents that are resolved are not considered to have any assigneed, so this will never return any incidents.', {exit: 1})
-    }
-
-    if (this.flags.me) {
-      const me = await this.me(true)
-      params.user_ids = [me.user.id]
+      this.error('You are looking for resolved incidents with assignees. PagerDuty incidents that are resolved are not considered to have any assignees, so this will never return any incidents.', { exit: 1 })
     }
 
     if (this.flags.urgencies) {
       params.urgencies = this.flags.urgencies
     }
 
+    const user_ids: string[] = []
+
+    if (this.flags.me) {
+      const me = await this.me(true)
+      if (!me) {
+        this.error('You specified -m but you are using a Legacy API token which does not belong to any PD user', { exit: 1 })
+      }
+      user_ids.push(me.user.id)
+    }
+
     if (this.flags.assignees) {
       CliUx.ux.action.start('Finding users')
-      let users: any[] = []
       for (const email of this.flags.assignees) {
         // eslint-disable-next-line no-await-in-loop
-        const r = await this.pd.fetch('users', {params: {query: email}})
-        users = [...users, ...r.map((e: { id: any }) => e.id)]
+        const r = await this.pd.fetch('users', { params: { query: email } })
+        if (r.length === 0) {
+          this.warn(`No users found for filter ${chalk.bold.blue(email)}`)
+        } else {
+          user_ids.push(...r.map((e: { id: string }) => e.id))
+        }
       }
-      const user_ids = [...new Set(users)]
-      if (user_ids.length === 0) {
-        CliUx.ux.action.stop(chalk.bold.red('none found'))
-        this.error('No assignee user IDs found. Please check your search.', {exit: 1})
-      }
-      params.user_ids = user_ids
     }
+
+    if (this.flags.exact_assignees) {
+      CliUx.ux.action.start('Finding users')
+      for (const email of this.flags.exact_assignees) {
+        // eslint-disable-next-line no-await-in-loop
+        const r = await this.pd.userIDForEmail(email)
+        if (r) {
+          user_ids.push(r)
+        } else {
+          this.warn(`No user found for email ${chalk.bold.blue(email)}`)
+        }
+      }
+    }
+
+    if (this.flags.me || this.flags.assignees || this.flags.exact_assignees) {
+      if (user_ids.length === 0) {
+        this.error('No users were found.', { exit: 1 })
+      }
+      params.user_ids = [...new Set(user_ids)]
+    }
+
+    const team_ids: string[] = []
 
     if (this.flags.teams) {
       CliUx.ux.action.start('Finding teams')
-      let teams: any[] = []
       for (const name of this.flags.teams) {
         // eslint-disable-next-line no-await-in-loop
-        const r = await this.pd.fetch('teams', {params: {query: name}})
-        teams = [...teams, ...r.map((e: { id: any }) => e.id)]
+        const r = await this.pd.fetch('teams', { params: { query: name } })
+        if (r.length === 0) {
+          this.warn(`No teams found for filter ${chalk.bold.blue(name)}`)
+        } else {
+          team_ids.push(...r.map((e: { id: string }) => e.id))
+        }
       }
-      const team_ids = [...new Set(teams)]
-      if (team_ids.length === 0) {
-        CliUx.ux.action.stop(chalk.bold.red('none found'))
-        this.error('No teams found. Please check your search.', {exit: 1})
-      }
-      params.team_ids = team_ids
     }
+
+    if (this.flags.exact_teams) {
+      CliUx.ux.action.start('Finding teams')
+      for (const name of this.flags.exact_teams) {
+        // eslint-disable-next-line no-await-in-loop
+        const r = await this.pd.teamIDForName(name)
+        if (r) {
+          team_ids.push(r)
+        } else {
+          this.warn(`No team found for name ${chalk.bold.blue(name)}`)
+        }
+      }
+    }
+
+    if (this.flags.teams || this.flags.exact_teams) {
+      if (team_ids.length === 0) {
+        this.error('No teams were found.', { exit: 1 })
+      }
+      params.team_ids = [...new Set(team_ids)]
+    }
+
+    const service_ids: string[] = []
 
     if (this.flags.services) {
       CliUx.ux.action.start('Finding services')
-      let services: any[] = []
       for (const name of this.flags.services) {
         // eslint-disable-next-line no-await-in-loop
-        const r = await this.pd.fetch('services', {params: {query: name}})
-        services = [...services, ...r.map((e: { id: any }) => e.id)]
+        const r = await this.pd.fetch('services', { params: { query: name } })
+        if (r.length === 0) {
+          this.warn(`No services found for filter ${chalk.bold.blue(name)}`)
+        } else {
+          service_ids.push(...r.map((e: { id: string }) => e.id))
+        }
       }
-      const service_ids = [...new Set(services)]
+    }
+
+    if (this.flags.exact_services) {
+      CliUx.ux.action.start('Finding services')
+      for (const name of this.flags.exact_services) {
+        // eslint-disable-next-line no-await-in-loop
+        const r = await this.pd.serviceIDForName(name)
+        if (r) {
+          service_ids.push(r)
+        } else {
+          this.warn(`No service found for name ${chalk.bold.blue(name)}`)
+        }
+      }
+    }
+
+    if (this.flags.services || this.flags.exact_services) {
       if (service_ids.length === 0) {
-        CliUx.ux.action.stop(chalk.bold.red('none found'))
-        this.error('No services found. Please check your search.', {exit: 1})
+        this.error('No services were found.', { exit: 1 })
       }
-      params.service_ids = service_ids
+      params.service_ids = [...new Set(service_ids)]
     }
 
     if (this.flags.since) {
@@ -158,7 +233,7 @@ export default class IncidentList extends ListBaseCommand<typeof IncidentList> {
     })
 
     if (incidents.length === 0) {
-      this.error('No incidents found', {exit: 0})
+      this.error('No incidents found', { exit: 0 })
     }
 
     if (this.flags.notes) {
@@ -174,7 +249,7 @@ export default class IncidentList extends ListBaseCommand<typeof IncidentList> {
       })
       const noteses = rr.getDatas()
       if (noteses.length !== incidents.length) {
-        this.error('Error getting incident notes', {exit: 1})
+        this.error('Error getting incident notes', { exit: 1 })
       }
       for (const [i, notes] of noteses.entries()) {
         incidents[i].notes = notes.notes
@@ -193,16 +268,16 @@ export default class IncidentList extends ListBaseCommand<typeof IncidentList> {
         header: '#',
       },
       status: {
-        get: (row: {status: string}) => {
+        get: (row: { status: string }) => {
           switch (row.status) {
-          case 'triggered':
-            return chalk.bold.red(row.status)
-          case 'acknowledged':
-            return chalk.bold.keyword('orange')(row.status)
-          case 'resolved':
-            return chalk.bold.green(row.status)
-          default:
-            return row.status
+            case 'triggered':
+              return chalk.bold.red(row.status)
+            case 'acknowledged':
+              return chalk.bold.keyword('orange')(row.status)
+            case 'resolved':
+              return chalk.bold.green(row.status)
+            default:
+              return row.status
           }
         },
       },
@@ -231,10 +306,10 @@ export default class IncidentList extends ListBaseCommand<typeof IncidentList> {
         get: (row: { created_at: string }) => (new Date(row.created_at)).toLocaleString(),
       },
       service: {
-        get: (row: { service: {summary: string}}) => row.service.summary,
+        get: (row: { service: { summary: string } }) => row.service.summary,
       },
       assigned_to: {
-        get: (row: {assignments: any[]}) => {
+        get: (row: { assignments: any[] }) => {
           if (row.assignments && row.assignments.length > 0) {
             return row.assignments.map(e => e.assignee.summary).join(this.flags.delimiter)
           }
@@ -242,7 +317,7 @@ export default class IncidentList extends ListBaseCommand<typeof IncidentList> {
         },
       },
       teams: {
-        get: (row: {teams: any[]}) => {
+        get: (row: { teams: any[] }) => {
           if (row.teams && row.teams.length > 0) {
             return row.teams.map(e => e.summary).join(this.flags.delimiter)
           }
