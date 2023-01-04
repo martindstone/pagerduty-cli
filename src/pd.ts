@@ -713,6 +713,15 @@ export namespace PD {
     public getFormattedError(): string {
       if (this.isSuccess) return ''
       const v = this.value as any
+      if (v.response?.data?.error?.message) {
+        // for weird errors from automation_actions endpoints
+        if (v.response.data.error.message.startsWith('%{')) {
+          try {
+            return `${v.response.status} ${v.response.statusText}: ${v.response.data.error.message.split('"')[1]}`
+          } catch (e) {}
+        }
+        return `${v.response.status} ${v.response.statusText}: ${v.response.data.error.message}`
+      }
       return `${v.response.status} ${v.response.statusText}` + (v.response?.data?.error?.errors ? `: ${v.response.data.error.errors.join('; ')}` : '')
     }
 
