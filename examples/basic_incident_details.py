@@ -46,9 +46,13 @@ for entry in incident_logs:
   if entry_type == 'acknowledge_log_entry':
     if not 'first_ack' in incident_log_map[incident_id]:
       incident_log_map[incident_id]['first_ack'] = entry['created_at']
+      incident_log_map[incident_id]['first_ack_by_id'] = entry['agent']['id']
+      incident_log_map[incident_id]['first_ack_by_summary'] = entry['agent']['summary']
   elif entry_type == 'resolve_log_entry':
     if not 'resolve' in incident_log_map[incident_id]:
       incident_log_map[incident_id]['resolve'] = entry['created_at']
+      incident_log_map[incident_id]['resolve_by_id'] = entry['agent']['id']
+      incident_log_map[incident_id]['resolve_by_summary'] = entry['agent']['summary']
   elif entry_type == 'annotate_log_entry':
     note_str = f"{entry['created_at']} {entry['agent']['summary']}: {entry['channel']['summary']}"
     incident_log_map[incident_id]['notes'].append(note_str)
@@ -59,7 +63,11 @@ rows = [[
   "Incident title",
   "Incident created time",
   "Incident first acknowledgement time",
+  "Incident first acknowledged by ID",
+  "Incident first acknowledged by Summary",
   "Incident resolved time",
+  "Incident resolved by ID",
+  "Incident resolved by Summary",
   "Incident notes"
 ]]
 
@@ -70,7 +78,11 @@ for incident in incidents:
     incident['title'],
     incident['created_at'],
     incident_log_map[incident['id']]['first_ack'] if 'first_ack' in incident_log_map[incident['id']] else '',
+    incident_log_map[incident['id']]['first_ack_by_id'] if 'first_ack_by_id' in incident_log_map[incident['id']] else '',
+    incident_log_map[incident['id']]['first_ack_by_summary'] if 'first_ack_by_summary' in incident_log_map[incident['id']] else '',
     incident_log_map[incident['id']]['resolve'] if 'resolve' in incident_log_map[incident['id']] else '',
+    incident_log_map[incident['id']]['resolve_by_id'] if 'resolve_by_id' in incident_log_map[incident['id']] else '',
+    incident_log_map[incident['id']]['resolve_by_summary'] if 'resolve_by_summary' in incident_log_map[incident['id']] else '',
     '\n'.join(incident_log_map[incident['id']]['notes'])
   ])
 
