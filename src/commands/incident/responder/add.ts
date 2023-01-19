@@ -56,6 +56,7 @@ export default class IncidentResponderAdd extends AuthenticatedBaseCommand<typeo
   }
 
   async run() {
+    this.pd.silent = true
     if (!(this.flags.ep_ids || this.flags.ep_names || this.flags.user_ids || this.flags.user_emails)) {
       this.error('You must specify one of: -u, -U, -e, -E', {exit: 1})
     }
@@ -99,7 +100,7 @@ export default class IncidentResponderAdd extends AuthenticatedBaseCommand<typeo
     }
 
     if (incident_ids.length === 0) {
-      this.error('No targets for responder request', {exit: 1})
+      this.error('No incidents to add responder requests to', {exit: 1})
     }
 
     let invalid_ids = utils.invalidPagerDutyIDs(incident_ids)
@@ -179,13 +180,27 @@ export default class IncidentResponderAdd extends AuthenticatedBaseCommand<typeo
     const messages: Record<string, string> = {}
     if (!this.flags.message) {
       const requests: PD.Request[] = incident_ids.map(incident_id => ({
-        endpoint: `/incidents/${incident_id}`,
+        endpoint: `incidents/${incident_id}`,
         method: 'GET',
       }))
       const r = await this.pd.batchedRequestWithSpinner(requests, {
         activityDescription: `Getting info for ${incident_ids.length} incidents`,
         stopSpinnerWhenDone: false,
       })
+      if (r.getFailedIndices().length > 0) {
+        CliUx.ux.action.stop(chalk.bold.yellow('warning'))
+        for (const i of r.getFailedIndices()) {
+          const incident_id = r.requests[i].endpoint.split('/')[1]
+          const message = r.results[i].getFormattedError()
+          this.warn(`Failed to get incident ${chalk.bold.blue(incident_id)}: ${chalk.bold.red(message)}`)
+          incident_ids = incident_ids.filter(x => x !== incident_id)
+        }
+      }
+
+      if (incident_ids.length === 0) {
+        this.error('No incidents to add responder requests to', {exit: 1})
+      }
+
       const incidents = r.getDatas()
       for (const incident of incidents) {
         messages[incident.incident.id] = `Please help with "${incident.incident.title}"`
@@ -211,7 +226,7 @@ export default class IncidentResponderAdd extends AuthenticatedBaseCommand<typeo
     const r = await this.pd.batchedRequestWithSpinner(requests, { activityDescription: `Adding responder requests for ${incident_ids.length} incidents` })
     for (const failure of r.getFailedIndices()) {
       // eslint-disable-next-line no-console
-      console.error(`${chalk.bold.red('Failed to add responders to incident ')}${chalk.bold.blue(requests[failure].endpoint.split('/')[1])}: ${r.results[failure].getFormattedError()}`)
+      console.error(`${chalk.bold.red('Failed to add responders to incident ')}${chalk.bold.blue(r.requests[failure].endpoint.split('/')[1])}: ${r.results[failure].getFormattedError()}`)
     }
   }
 }
