@@ -45,6 +45,8 @@ export class PD {
     stopSpinnerWhenDone: true,
   }
 
+  public silent = false
+
   public static isOldBearerToken(token: string): boolean {
     if (token && token.match(/^[0-9a-fA-F]{64}$/)) {
       return true
@@ -297,7 +299,7 @@ export class PD {
       this.progressState.failed++
       updateStatusText = true
     }
-    if (p.failureMessage) {
+    if (p.failureMessage && !this.silent) {
       log.error.bright.red(p.failureMessage)
     }
     if (updateStatusText) {
@@ -671,9 +673,38 @@ export namespace PD {
     }
   }
 
-  export interface Error {
-    statusCode: number;
-    errorObject: object;
+  export class Error {
+    constructor(public errorObj: any) {}
+
+    get isDocumentedErrorType(): boolean {
+      if (typeof this.errorObj === 'object') {
+        if (
+          (typeof this.errorObj?.message === 'string') &&
+          (typeof this.errorObj?.code === 'number') &&
+          Array.isArray(this.errorObj?.errors)
+        ) {
+          return true
+        }
+      }
+      return false
+    }
+
+    get formattedError(): string {
+      if (this.isDocumentedErrorType) {
+        const { message, code, errors } = this.errorObj
+        return `${code}: ${message} - ${errors.join(', ')}`
+      }
+      if (typeof this.errorObj?.message === 'string') {
+        if (this.errorObj.message.startsWith('%{')) {
+          return this.errorObj.message.split(/[\"%{}\[\]]/)
+            .filter((x: string) => Boolean(x))
+            .map((x: string) => x.trim().replace(/:$/, ''))
+            .join(' - ')
+        }
+        return this.errorObj.message
+      }
+      return 'unknown error'
+    }
   }
 
   export class Result<T> {
@@ -713,16 +744,11 @@ export namespace PD {
     public getFormattedError(): string {
       if (this.isSuccess) return ''
       const v = this.value as any
-      if (v.response?.data?.error?.message) {
-        // for weird errors from automation_actions endpoints
-        if (v.response.data.error.message.startsWith('%{')) {
-          try {
-            return `${v.response.status} ${v.response.statusText}: ${v.response.data.error.message.split('"')[1]}`
-          } catch (e) {}
-        }
-        return `${v.response.status} ${v.response.statusText}: ${v.response.data.error.message}`
+      if (!v.response?.data?.error) {
+        return 'no error data'
       }
-      return `${v.response.status} ${v.response.statusText}` + (v.response?.data?.error?.errors ? `: ${v.response.data.error.errors.join('; ')}` : '')
+      const error = new Error(v.response.data.error)
+      return `${v.response.status} ${v.response.statusText}: ${error.formattedError}`
     }
 
     public statusCode(): number {
