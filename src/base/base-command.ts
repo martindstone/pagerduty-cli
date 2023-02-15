@@ -1,5 +1,4 @@
 import { Command, Flags, Interfaces } from '@oclif/core'
-import { DocOpts } from './docopts'
 import { Config } from '../config'
 import { PD } from '../pd'
 import chalk from 'chalk'
@@ -16,9 +15,9 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     }),
   }
 
-  static get usage(): string {
+  static get usage(): any {
     const cmd = this as Interfaces.Command
-    return DocOpts.generate(cmd)
+    return cmd.id.split(':').join(' ')
   }
 
   protected _config!: Config
