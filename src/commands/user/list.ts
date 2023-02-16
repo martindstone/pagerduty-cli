@@ -45,7 +45,7 @@ export default class UserList extends ListBaseCommand<typeof UserList> {
       this.error('No users found.', { exit: 1 })
     }
     if (this.flags.json) {
-      await utils.printJsonAndExit(users)
+      this.printJsonAndExit(users)
     }
 
     const columns: Record<string, object> = {
@@ -89,18 +89,6 @@ export default class UserList extends ListBaseCommand<typeof UserList> {
       }
     }
 
-    const options = {
-      ...this.flags, // parsed flags
-    }
-    if (this.flags.pipe) {
-      for (const k of Object.keys(columns)) {
-        if (k !== 'id') {
-          const colAny = columns[k] as any
-          colAny.extended = true
-        }
-      }
-      options['no-header'] = true
-    }
-    CliUx.ux.table(users, columns, options)
+    this.printTable(users, columns, this.flags)
   }
 }

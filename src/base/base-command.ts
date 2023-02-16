@@ -1,4 +1,4 @@
-import { Command, Flags, Interfaces } from '@oclif/core'
+import { Command, Flags, Interfaces, CliUx } from '@oclif/core'
 import { Config } from '../config'
 import { PD } from '../pd'
 import chalk from 'chalk'
@@ -72,6 +72,22 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     if (!this.isAuthenticated()) {
       this.error('You are not logged in to any PagerDuty domains', { suggestions: ['pd auth:set', 'pd login'], exit: 1 })
     }
+  }
+
+  printJsonAndExit(data: any) {
+    if (!data) {
+      this.exit()
+    }
+    CliUx.ux.styledJSON(data)
+    this.exit()
+  }
+
+  printTable(rows: any[], columns: Record<string, object>, flags: any) {
+    if (flags.pipe && flags.pipe !== 'input') {
+      this.log(rows.map(x => x.id).join('\n'))
+      return
+    }
+    CliUx.ux.table(rows, columns, { ...flags })
   }
 
   protected async catch(err: Error & { exitCode?: number }): Promise<any> {

@@ -100,7 +100,7 @@ export default class IncidentAlerts extends AuthenticatedBaseCommand<typeof Inci
       this.error('No incidents found', { exit: 0 })
     }
     if (this.flags.json) {
-      await utils.printJsonAndExit(alerts)
+      this.printJsonAndExit(alerts)
     }
 
     const columns: Record<string, object> = {
@@ -145,10 +145,11 @@ export default class IncidentAlerts extends AuthenticatedBaseCommand<typeof Inci
       }
     }
 
-    const options = {
-      ...this.flags, // parsed flags
+    const flags: any = {
+      ...this.flags,
     }
+    if (flags.pipe) flags.pipe = 'input'
 
-    CliUx.ux.table(alerts, columns, options)
+    this.printTable(alerts, columns, flags)
   }
 }

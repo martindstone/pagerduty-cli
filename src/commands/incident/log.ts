@@ -94,7 +94,7 @@ export default class IncidentLog extends AuthenticatedBaseCommand<typeof Inciden
       this.exit(0)
     }
     if (this.flags.json) {
-      await utils.printJsonAndExit(log_entries)
+      this.printJsonAndExit(log_entries)
     }
 
     const columns: Record<string, object> = {
@@ -127,9 +127,11 @@ export default class IncidentLog extends AuthenticatedBaseCommand<typeof Inciden
       this.flags.sort = 'created'
     }
 
-    const options = {
-      ...this.flags, // parsed flags
+    const flags: any = {
+      ...this.flags,
     }
-    CliUx.ux.table(log_entries, columns, options)
+    if (flags.pipe) flags.pipe = 'input'
+
+    this.printTable(log_entries, columns, flags)
   }
 }

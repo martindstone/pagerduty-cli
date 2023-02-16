@@ -52,7 +52,7 @@ export default class ServiceList extends ListBaseCommand<typeof ServiceList> {
     }
 
     if (this.flags.json) {
-      await utils.printJsonAndExit(services)
+      this.printJsonAndExit(services)
     }
 
     const columns: Record<string, object> = {
@@ -98,20 +98,6 @@ export default class ServiceList extends ListBaseCommand<typeof ServiceList> {
       }
     }
 
-    const options = {
-      ...this.flags, // parsed flags
-    }
-
-    if (this.flags.pipe) {
-      for (const k of Object.keys(columns)) {
-        if (k !== 'id') {
-          const colAny = columns[k] as any
-          colAny.extended = true
-        }
-      }
-      options['no-header'] = true
-    }
-
-    CliUx.ux.table(services, columns, options)
+    this.printTable(services, columns, this.flags)
   }
 }

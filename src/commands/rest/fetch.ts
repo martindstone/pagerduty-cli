@@ -112,7 +112,7 @@ export default class RestFetch extends AuthenticatedBaseCommand<typeof RestFetch
     })
 
     if (!this.flags.table) {
-      await utils.printJsonAndExit(data)
+      this.printJsonAndExit(data)
     }
 
     const columns: Record<string, object> = {
@@ -121,13 +121,6 @@ export default class RestFetch extends AuthenticatedBaseCommand<typeof RestFetch
       },
     }
 
-    const options = {
-      ...this.flags, // parsed flags
-    }
-
-    if (this.flags.pipe) {
-      options['no-header'] = true
-    }
     if (this.flags.keys) {
       for (const key of this.flags.keys) {
         columns[key] = {
@@ -137,6 +130,6 @@ export default class RestFetch extends AuthenticatedBaseCommand<typeof RestFetch
       }
     }
 
-    CliUx.ux.table(data, columns, options)
+    this.printTable(data, columns, this.flags)
   }
 }

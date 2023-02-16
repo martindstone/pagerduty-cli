@@ -73,10 +73,8 @@ export default class IncidentNotes extends AuthenticatedBaseCommand<typeof Incid
         content: {
         },
       }
-      const options = {
-        ...this.flags, // parsed flags
-      }
-      CliUx.ux.table(notes, columns, options)
+
+      this.printTable(notes, columns, this.flags)
     }
   }
 }

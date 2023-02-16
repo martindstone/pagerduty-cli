@@ -100,12 +100,8 @@ export default class ScheduleRender extends AuthenticatedBaseCommand<typeof Sche
       name: schedule_name
     } = schedule
 
-    const options = {
-      ...this.flags, // parsed flags
-    }
-
     if (this.flags.json) {
-      await utils.printJsonAndExit(schedule.final_schedule.rendered_schedule_entries)
+      this.printJsonAndExit(schedule.final_schedule.rendered_schedule_entries)
     }
 
     const columns: Record<string, object> = {
@@ -143,6 +139,6 @@ export default class ScheduleRender extends AuthenticatedBaseCommand<typeof Sche
       }
     }
 
-    CliUx.ux.table(schedule.final_schedule.rendered_schedule_entries, columns, options)
+    this.printTable(schedule.final_schedule.rendered_schedule_entries, columns, this.flags)
   }
 }

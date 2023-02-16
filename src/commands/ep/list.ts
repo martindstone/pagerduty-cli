@@ -29,7 +29,7 @@ export default class EpList extends ListBaseCommand<typeof EpList> {
     CliUx.ux.action.stop(chalk.bold.green(`got ${eps.length}`))
 
     if (this.flags.json) {
-      await utils.printJsonAndExit(eps)
+      this.printJsonAndExit(eps)
     }
 
     const columns: Record<string, object> = {
@@ -64,18 +64,6 @@ export default class EpList extends ListBaseCommand<typeof EpList> {
       }
     }
 
-    const options = {
-      ...this.flags, // parsed flags
-    }
-    if (this.flags.pipe) {
-      for (const k of Object.keys(columns)) {
-        if (k !== 'id') {
-          const colAny = columns[k] as any
-          colAny.extended = true
-        }
-      }
-      options['no-header'] = true
-    }
-    CliUx.ux.table(eps, columns, options)
+    this.printTable(eps, columns, this.flags)
   }
 }

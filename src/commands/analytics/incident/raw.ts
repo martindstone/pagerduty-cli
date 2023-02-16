@@ -127,7 +127,7 @@ export default class AnalyticsIncidentRaw extends AuthenticatedBaseCommand<typeo
     }
 
     if (this.flags.json) {
-      await utils.printJsonAndExit(analytics)
+      this.printJsonAndExit(analytics)
     }
 
     const columns: Record<string, object> = {
@@ -185,10 +185,6 @@ export default class AnalyticsIncidentRaw extends AuthenticatedBaseCommand<typeo
       }
     }
 
-    const options = {
-      ...this.flags, // parsed flags
-    }
-
-    CliUx.ux.table(analytics, columns, options)
+    this.printTable(analytics, columns, this.flags)
   }
 }

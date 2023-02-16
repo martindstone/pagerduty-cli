@@ -76,7 +76,7 @@ export default class ScheduleShow extends AuthenticatedBaseCommand<typeof Schedu
     const schedule = r.getData().schedule
 
     if (this.flags.json) {
-      await utils.printJsonAndExit({ schedule })
+      this.printJsonAndExit({ schedule })
     }
 
     const coverage_int = schedule.final_schedule.rendered_coverage_percentage
@@ -93,10 +93,6 @@ export default class ScheduleShow extends AuthenticatedBaseCommand<typeof Schedu
     this.log(chalk.bold(`Schedule name:     ${schedule.summary}`))
     this.log(chalk.bold(`Time zone:         ${schedule.time_zone}`))
     this.log(`${chalk.bold('Schedule coverage:')} ${coverage_str}\n`)
-
-    const options = {
-      ...this.flags, // parsed flags
-    }
 
     this.log(chalk.bold.cyan('Schedule Layers:'))
     let columns: Record<string, object> = {
@@ -122,7 +118,7 @@ export default class ScheduleShow extends AuthenticatedBaseCommand<typeof Schedu
         get: (row: any) => utils.formatField(jp.query(row, 'users[*].user.summary'), '\n'),
       },
     }
-    CliUx.ux.table(schedule.schedule_layers, columns, options)
+    this.printTable(schedule.schedule_layers, columns, this.flags)
 
     columns = {
       start: {
@@ -145,11 +141,11 @@ export default class ScheduleShow extends AuthenticatedBaseCommand<typeof Schedu
     if (schedule.overrides_subschedule.rendered_schedule_entries.length > 0) {
       this.log('')
       this.log(chalk.bold.cyan('Overrides:'))
-      CliUx.ux.table(schedule.overrides_subschedule.rendered_schedule_entries, columns, options)
+      this.printTable(schedule.overrides_subschedule.rendered_schedule_entries, columns, this.flags)
     }
 
     this.log('')
     this.log(chalk.bold.cyan('Final Schedule:'))
-    CliUx.ux.table(schedule.final_schedule.rendered_schedule_entries, columns, options)
+    this.printTable(schedule.final_schedule.rendered_schedule_entries, columns, this.flags)
   }
 }

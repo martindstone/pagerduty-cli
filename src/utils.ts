@@ -88,20 +88,6 @@ export function invalidPagerDutyIDs(arr: string[]) {
   return arr.filter(e => !e.match(/^[P|Q][\w]{6,13}$/))
 }
 
-export async function printJsonAndExit(data: any) {
-  if (!data) {
-    process.exit(0)
-  }
-  process.stdout.on('drain', () => {
-    process.exit(0)
-  })
-  if (process.stdout.write(JSON.stringify(data, null, 2) + '\n')) {
-    process.exit(0)
-  }
-  await CliUx.ux.wait(10000)
-  console.error('Timed out waiting for pipe', {exit: 1})
-}
-
 export function setValueAtPath(obj: object, path: string, value: any) {
   // set the given value at the given path in an object, creating path elements along the way if they don't exist
   let dataPointer: any = obj

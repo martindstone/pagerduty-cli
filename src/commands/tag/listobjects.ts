@@ -100,7 +100,7 @@ export default class TagList extends AuthenticatedBaseCommand<typeof TagList> {
       this.error('No objects found.', { exit: 1 })
     }
     if (this.flags.json) {
-      await utils.printJsonAndExit(rows)
+      this.printJsonAndExit(rows)
     }
 
     const columns: Record<string, object> = {
@@ -125,18 +125,6 @@ export default class TagList extends AuthenticatedBaseCommand<typeof TagList> {
       }
     }
 
-    const options = {
-      ...this.flags, // parsed flags
-    }
-    if (this.flags.pipe) {
-      for (const k of Object.keys(columns)) {
-        if (k !== 'id') {
-          const colAny = columns[k] as any
-          colAny.extended = true
-        }
-      }
-      options['no-header'] = true
-    }
-    CliUx.ux.table(rows, columns, options)
+    this.printTable(rows, columns, this.flags)
   }
 }

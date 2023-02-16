@@ -35,6 +35,6 @@ export default class AuthList extends BaseCommand<typeof AuthList> {
       },
     }
 
-    CliUx.ux.table(subdomains, columns)
+    this.printTable(subdomains, columns, {})
   }
 }

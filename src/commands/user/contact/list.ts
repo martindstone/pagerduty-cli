@@ -80,7 +80,7 @@ export default class UserContactList extends AuthenticatedBaseCommand<typeof Use
     })
 
     if (this.flags.json) {
-      await utils.printJsonAndExit(contact_methods)
+      this.printJsonAndExit(contact_methods)
     }
 
     const columns: Record<string, object> = {
@@ -114,18 +114,6 @@ export default class UserContactList extends AuthenticatedBaseCommand<typeof Use
       }
     }
 
-    const options = {
-      ...this.flags, // parsed flags
-    }
-    if (this.flags.pipe) {
-      for (const k of Object.keys(columns)) {
-        if (k !== 'id') {
-          const colAny = columns[k] as any
-          colAny.extended = true
-        }
-      }
-      options['no-header'] = true
-    }
-    CliUx.ux.table(contact_methods, columns, options)
+    this.printTable(contact_methods, columns, this.flags)
   }
 }

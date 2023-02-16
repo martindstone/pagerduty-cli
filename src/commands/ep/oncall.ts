@@ -101,7 +101,7 @@ export default class EpOncall extends AuthenticatedBaseCommand<typeof EpOncall> 
     }
 
     if (this.flags.json) {
-      await utils.printJsonAndExit(oncalls)
+      this.printJsonAndExit(oncalls)
     }
 
     const columns: Record<string, object> = {
@@ -133,9 +133,6 @@ export default class EpOncall extends AuthenticatedBaseCommand<typeof EpOncall> 
       }
     }
 
-    const options = {
-      ...this.flags, // parsed flags
-    }
-    CliUx.ux.table(oncalls, columns, options)
+    this.printTable(oncalls, columns, this.flags)
   }
 }

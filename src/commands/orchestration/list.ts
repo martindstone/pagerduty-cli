@@ -75,7 +75,7 @@ export default class OrchestrationList extends AuthenticatedBaseCommand<typeof O
     }
 
     if (this.flags.json) {
-      await utils.printJsonAndExit(globalOrchestrations)
+      this.printJsonAndExit(globalOrchestrations)
     }
 
     const columns: Record<string, object> = {
@@ -104,20 +104,6 @@ export default class OrchestrationList extends AuthenticatedBaseCommand<typeof O
       }
     }
 
-    const options: any = {
-      ...this.flags, // parsed flags
-    }
-
-    if (this.flags.pipe) {
-      for (const k of Object.keys(columns)) {
-        if (k !== 'id') {
-          const colAny = columns[k] as any
-          colAny.extended = true
-        }
-      }
-      options['no-header'] = true
-    }
-
-    CliUx.ux.table(globalOrchestrations, columns, options)
+    this.printTable(globalOrchestrations, columns, this.flags)
   }
 }

@@ -119,7 +119,7 @@ export default class UserOncall extends AuthenticatedBaseCommand<typeof UserOnca
     CliUx.ux.action.stop(chalk.bold.green('done'))
 
     if (this.flags.json) {
-      await utils.printJsonAndExit(oncalls)
+      this.printJsonAndExit(oncalls)
     }
 
     const columns: Record<string, object> = {
@@ -151,9 +151,6 @@ export default class UserOncall extends AuthenticatedBaseCommand<typeof UserOnca
       }
     }
 
-    const options = {
-      ...this.flags, // parsed flags
-    }
-    CliUx.ux.table(oncalls, columns, options)
+    this.printTable(oncalls, columns, this.flags)
   }
 }

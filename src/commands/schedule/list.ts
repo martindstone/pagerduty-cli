@@ -25,7 +25,7 @@ export default class ScheduleList extends ListBaseCommand<typeof ScheduleList> {
     }
 
     if (this.flags.json) {
-      await utils.printJsonAndExit(schedules)
+      this.printJsonAndExit(schedules)
     }
 
     const columns: Record<string, object> = {
@@ -56,18 +56,6 @@ export default class ScheduleList extends ListBaseCommand<typeof ScheduleList> {
       }
     }
 
-    const options = {
-      ...this.flags, // parsed flags
-    }
-    if (this.flags.pipe) {
-      for (const k of Object.keys(columns)) {
-        if (k !== 'id') {
-          const colAny = columns[k] as any
-          colAny.extended = true
-        }
-      }
-      options['no-header'] = true
-    }
-    CliUx.ux.table(schedules, columns, options)
+    this.printTable(schedules, columns, this.flags)
   }
 }

@@ -22,7 +22,7 @@ export default class TeamList extends ListBaseCommand<typeof TeamList> {
     })
 
     if (this.flags.json) {
-      await utils.printJsonAndExit(teams)
+      this.printJsonAndExit(teams)
     }
 
     const columns: Record<string, object> = {
@@ -46,18 +46,6 @@ export default class TeamList extends ListBaseCommand<typeof TeamList> {
       }
     }
 
-    const options = {
-      ...this.flags, // parsed flags
-    }
-    if (this.flags.pipe) {
-      for (const k of Object.keys(columns)) {
-        if (k !== 'id') {
-          const colAny = columns[k] as any
-          colAny.extended = true
-        }
-      }
-      options['no-header'] = true
-    }
-    CliUx.ux.table(teams, columns, options)
+    this.printTable(teams, columns, this.flags)
   }
 }

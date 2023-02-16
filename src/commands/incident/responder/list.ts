@@ -124,10 +124,11 @@ export default class IncidentResponderList extends AuthenticatedBaseCommand<type
       }
     }
 
-    const options: any = {
-      ...this.flags, // parsed flags
+    const flags: any = {
+      ...this.flags,
     }
+    if (flags.pipe) flags.pipe = 'input'
 
-    CliUx.ux.table(rows, columns, options)
+    this.printTable(rows, columns, flags)
   }
 }

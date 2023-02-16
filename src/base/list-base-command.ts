@@ -5,9 +5,6 @@ import { splitDedupAndFlatten } from '../utils'
 export type Flags<T extends typeof Command> = Interfaces.InferredFlags<typeof ListBaseCommand['globalFlags'] & T['flags']>
 
 export abstract class ListBaseCommand<T extends typeof Command> extends AuthenticatedBaseCommand<typeof ListBaseCommand> {
-  // add the --json flag
-  static enableJsonFlag = true
-
   // define flags that can be inherited by any command that extends BaseCommand
   static globalFlags = {
     ...super.globalFlags,

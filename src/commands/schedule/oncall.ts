@@ -99,7 +99,7 @@ export default class ScheduleOncall extends AuthenticatedBaseCommand<typeof Sche
     }
 
     if (this.flags.json) {
-      await utils.printJsonAndExit(oncalls)
+      this.printJsonAndExit(oncalls)
     }
 
     const columns: Record<string, object> = {
@@ -131,9 +131,6 @@ export default class ScheduleOncall extends AuthenticatedBaseCommand<typeof Sche
       }
     }
 
-    const options = {
-      ...this.flags, // parsed flags
-    }
-    CliUx.ux.table(oncalls, columns, options)
+    this.printTable(oncalls, columns, this.flags)
   }
 }

@@ -75,7 +75,7 @@ export default class Log extends AuthenticatedBaseCommand<typeof Log> {
       this.exit(0)
     }
     if (this.flags.json) {
-      await utils.printJsonAndExit(log_entries)
+      this.printJsonAndExit(log_entries)
     }
 
     const columns: Record<string, object> = {
@@ -104,9 +104,6 @@ export default class Log extends AuthenticatedBaseCommand<typeof Log> {
       this.flags.sort = 'created'
     }
 
-    const options = {
-      ...this.flags, // parsed flags
-    }
-    CliUx.ux.table(log_entries, columns, options)
+    this.printTable(log_entries, columns, this.flags)
   }
 }

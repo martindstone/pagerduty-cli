@@ -75,7 +75,7 @@ export default class IncidentAnalytics extends AuthenticatedBaseCommand<typeof I
 
     const analytics = br.getDatas()
     if (this.flags.json) {
-      await utils.printJsonAndExit(analytics)
+      this.printJsonAndExit(analytics)
     }
 
     const columns: Record<string, object> = {
@@ -123,9 +123,11 @@ export default class IncidentAnalytics extends AuthenticatedBaseCommand<typeof I
       }
     }
 
-    const options = {
-      ...this.flags, // parsed flags
+    const flags: any = {
+      ...this.flags,
     }
-    CliUx.ux.table(analytics, columns, options)
+    if (flags.pipe) flags.pipe = 'input'
+
+    this.printTable(analytics, columns, flags)
   }
 }

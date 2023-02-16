@@ -16,7 +16,7 @@ export default class TeamUserList extends AuthenticatedBaseCommand<typeof TeamUs
     ids: Flags.string({
       char: 'i',
       description: 'The IDs of teams to list members for.',
-      exclusive: ['name', 'pipe'],
+      exclusive: ['name'],
       multiple: true,
     }),
     keys: Flags.string({
@@ -94,7 +94,7 @@ export default class TeamUserList extends AuthenticatedBaseCommand<typeof TeamUs
     CliUx.ux.action.stop(chalk.bold.green('done'))
 
     if (this.flags.json) {
-      await utils.printJsonAndExit(members)
+      this.printJsonAndExit(members)
     }
 
     const columns: Record<string, object> = {
@@ -124,18 +124,10 @@ export default class TeamUserList extends AuthenticatedBaseCommand<typeof TeamUs
       }
     }
 
-    const options = {
-      ...this.flags, // parsed flags
-    }
     if (this.flags.pipe) {
-      for (const k of Object.keys(columns)) {
-        if (k !== 'id') {
-          const colAny = columns[k] as any
-          colAny.extended = true
-        }
-      }
-      options['no-header'] = true
+      members = members.map(x => ({id: x.user.id}))
     }
-    CliUx.ux.table(members, columns, options)
+
+    this.printTable(members, columns, this.flags)
   }
 }

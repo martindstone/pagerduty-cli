@@ -34,7 +34,7 @@ export default class AutomationActionList extends ListBaseCommand<typeof Automat
     }
 
     if (this.flags.json) {
-      await utils.printJsonAndExit(actions)
+      this.printJsonAndExit(actions)
     }
 
     const columns: Record<string, object> = {
@@ -94,6 +94,6 @@ export default class AutomationActionList extends ListBaseCommand<typeof Automat
       options['no-header'] = true
     }
 
-    CliUx.ux.table(actions, columns, options)
+    this.printTable(actions, columns, this.flags)
   }
 }

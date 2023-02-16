@@ -110,7 +110,7 @@ export default class UserSessionList extends AuthenticatedBaseCommand<typeof Use
     }
 
     if (this.flags.json) {
-      await utils.printJsonAndExit(sessions)
+      this.printJsonAndExit(sessions)
     }
 
     const columns: Record<string, object> = {
@@ -134,18 +134,6 @@ export default class UserSessionList extends AuthenticatedBaseCommand<typeof Use
       }
     }
 
-    const options = {
-      ...this.flags, // parsed flags
-    }
-    if (this.flags.pipe) {
-      for (const k of Object.keys(columns)) {
-        if (k !== 'id') {
-          const colAny = columns[k] as any
-          colAny.extended = true
-        }
-      }
-      options['no-header'] = true
-    }
-    CliUx.ux.table(sessions, columns, options)
+    this.printTable(sessions, columns, this.flags)
   }
 }

@@ -53,7 +53,7 @@ export default class AutomationRunnerList extends ListBaseCommand<typeof Automat
     }
 
     if (this.flags.json) {
-      await utils.printJsonAndExit(runners)
+      this.printJsonAndExit(runners)
     }
 
     const columns: Record<string, object> = {
@@ -109,20 +109,6 @@ export default class AutomationRunnerList extends ListBaseCommand<typeof Automat
       }
     }
 
-    const options = {
-      ...this.flags, // parsed flags
-    }
-
-    if (this.flags.pipe) {
-      for (const k of Object.keys(columns)) {
-        if (k !== 'id') {
-          const colAny = columns[k] as any
-          colAny.extended = true
-        }
-      }
-      options['no-header'] = true
-    }
-
-    CliUx.ux.table(runners, columns, options)
+    this.printTable(runners, columns, this.flags)
   }
 }

@@ -144,12 +144,9 @@ export default class AnalyticsIncident extends AuthenticatedBaseCommand<typeof A
     }
 
     if (this.flags.json) {
-      await utils.printJsonAndExit(analytics)
+      this.printJsonAndExit(analytics)
     }
 
-    const options = {
-      ...this.flags, // parsed flags
-    }
     const columns: Record<string, any> = {
       range_start: {
         get: (row: { range_start: string }) => (new Date(row.range_start)).toLocaleString(),
@@ -202,7 +199,7 @@ export default class AnalyticsIncident extends AuthenticatedBaseCommand<typeof A
     }
 
     if (this.flags.csv || this.flags.output) {
-      CliUx.ux.table(analytics, columns, options)
+      this.printTable(analytics, columns, this.flags)
       this.exit(0)
     }
 
@@ -214,7 +211,7 @@ export default class AnalyticsIncident extends AuthenticatedBaseCommand<typeof A
     })
     const meanColumns = Object.fromEntries(meanColumnsArr)
     this.log(chalk.bold.blue('Mean values:'))
-    CliUx.ux.table(analytics, meanColumns, options)
+    this.printTable(analytics, meanColumns, this.flags)
 
     let totalColumnsArr = Object.entries(columns).filter(([k, _v]) => {
       return k === 'range_start' || k.indexOf('total') > -1
@@ -225,6 +222,6 @@ export default class AnalyticsIncident extends AuthenticatedBaseCommand<typeof A
     const totalColumns = Object.fromEntries(totalColumnsArr)
     this.log('')
     this.log(chalk.bold.blue('Total values:'))
-    CliUx.ux.table(analytics, totalColumns, options)
+    this.printTable(analytics, totalColumns, this.flags)
   }
 }
