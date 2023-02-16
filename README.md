@@ -18,114 +18,114 @@ PagerDuty Command Line Interface
 
 # Commands
 <!-- commands -->
-* [`pd analytics:incident [-h] [--debug] [-b <value>] [--token <value>] [-t <value>] [-S <value>] [-M] [-u high|low] [--since <value>] [--until <value>] [-g day|week|month] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-analyticsincident--h---debug--b-value---token-value--t-value--s-value--m--u-highlow---since-value---until-value--g-dayweekmonth--k-value--j--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd analytics:incident:raw [-h] [--debug] [-b <value>] [--token <value>] [-t <value>] [-S <value>] [-M] [--since <value>] [--until <value>] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-analyticsincidentraw--h---debug--b-value---token-value--t-value--s-value--m---since-value---until-value--k-value--j--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd auth:add [-h] [--debug] [-t <value>] [-a <value>] [-d]`](#pd-authadd--h---debug--t-value--a-value--d)
-* [`pd auth:delete -a <value> [-h] [--debug]`](#pd-authdelete--a-value--h---debug)
-* [`pd auth:get [-h] [--debug]`](#pd-authget--h---debug)
-* [`pd auth:list [-h] [--debug]`](#pd-authlist--h---debug)
-* [`pd auth:set [-h] [--debug] [-t <value>] [-a <value>] [-d]`](#pd-authset--h---debug--t-value--a-value--d)
-* [`pd auth:use -a <value> [-h] [--debug]`](#pd-authuse--a-value--h---debug)
-* [`pd auth:web [-h] [--debug] [-a <value>] [-d]`](#pd-authweb--h---debug--a-value--d)
+* [`pd analytics incident`](#pd-analytics-incident)
+* [`pd analytics incident raw`](#pd-analytics-incident-raw)
+* [`pd auth add`](#pd-auth-add)
+* [`pd auth delete`](#pd-auth-delete)
+* [`pd auth get`](#pd-auth-get)
+* [`pd auth list`](#pd-auth-list)
+* [`pd auth add`](#pd-auth-add-1)
+* [`pd auth use`](#pd-auth-use)
+* [`pd auth web`](#pd-auth-web)
 * [`pd autocomplete [SHELL]`](#pd-autocomplete-shell)
-* [`pd automation:action:create -n <value> -d <value> [-h] [--debug] [-b <value>] [--token <value>] [-c diagnostic|remediation] [-r <value>] [-R <value>] [-s <value>] [-S <value>] [-t <value>] [-T <value>] [-x <value>] [-X] [-i <value>] [-j <value>] [--job_arguments <value>] [-p] [-o]`](#pd-automationactioncreate--n-value--d-value--h---debug--b-value---token-value--c-diagnosticremediation--r-value--r-value--s-value--s-value--t-value--t-value--x-value--x--i-value--j-value---job_arguments-value--p--o)
-* [`pd automation:action:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-automationactionlist--h---debug--b-value---token-value--j--n-value--k-value---limit-value--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd automation:runner:create -n <value> -d <value> -y sidecar|runbook [-h] [--debug] [-b <value>] [--token <value>] [-t <value>] [-T <value>] [-u <value>] [-k <value>] [-p] [-o]`](#pd-automationrunnercreate--n-value--d-value--y-sidecarrunbook--h---debug--b-value---token-value--t-value--t-value--u-value--k-value--p--o)
-* [`pd automation:runner:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header] [--health]`](#pd-automationrunnerlist--h---debug--b-value---token-value--j--n-value--k-value---limit-value--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header---health)
+* [`pd automation action create`](#pd-automation-action-create)
+* [`pd automation action list`](#pd-automation-action-list)
+* [`pd automation runner create`](#pd-automation-runner-create)
+* [`pd automation runner list`](#pd-automation-runner-list)
 * [`pd commands`](#pd-commands)
-* [`pd ep:copy [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-d <value>] [-o] [-p]`](#pd-epcopy--h---debug--b-value---token-value--n-value--i-value--d-value--o--p)
-* [`pd ep:create -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [--description <value>] [-r <value>] [-u <value>] [-U <value>] [-s <value>] [-S <value>] [-o] [-p]`](#pd-epcreate--n-value--h---debug--b-value---token-value--d-value---description-value--r-value--u-value--u-value--s-value--s-value--o--p)
-* [`pd ep:level:add -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p] [-d <value>] [-u <value>] [-U <value>] [-s <value>] [-S <value>]`](#pd-epleveladd--l-value--h---debug--b-value---token-value--n-value--i-value--p--d-value--u-value--u-value--s-value--s-value)
-* [`pd ep:level:remove -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`](#pd-eplevelremove--l-value--h---debug--b-value---token-value--n-value--i-value--p)
-* [`pd ep:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-eplist--h---debug--b-value---token-value--j--n-value--k-value---limit-value--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd ep:oncall [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-k <value>] [-d <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-eponcall--h---debug--b-value---token-value--i-value--n-value---since-value---until-value--k-value--d-value--j---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd ep:open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`](#pd-epopen--h---debug--b-value---token-value--n-value--i-value--p)
-* [`pd ep:target:add -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p] [-u <value>] [-U <value>] [-s <value>] [-S <value>]`](#pd-eptargetadd--l-value--h---debug--b-value---token-value--n-value--i-value--p--u-value--u-value--s-value--s-value)
-* [`pd ep:target:remove -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p] [-u <value>] [-U <value>] [-s <value>] [-S <value>]`](#pd-eptargetremove--l-value--h---debug--b-value---token-value--n-value--i-value--p--u-value--u-value--s-value--s-value)
-* [`pd event:alert -r <value> --summary <value> --source <value> [-h] [--debug] [-d <value>] [-a trigger|acknowledge|resolve] [--severity critical|error|warning|info] [--timestamp <value>] [--component <value>] [--group <value>] [--class <value>] [-k <value>] [-v <value>] [-I <value>] [-H <value>] [-A <value>] [-L <value>] [-T <value>] [-c <value>] [-u <value>] [-e <value>] [--jsonvalues] [-j] [-p]`](#pd-eventalert--r-value---summary-value---source-value--h---debug--d-value--a-triggeracknowledgeresolve---severity-criticalerrorwarninginfo---timestamp-value---component-value---group-value---class-value--k-value--v-value--i-value--h-value--a-value--l-value--t-value--c-value--u-value--e-value---jsonvalues--j--p)
-* [`pd event:change -r <value> --summary <value> [-h] [--debug] [--source <value>] [--timestamp <value>] [-k <value>] [-v <value>] [-L <value>] [-T <value>] [-e <value>] [--jsonvalues] [-j]`](#pd-eventchange--r-value---summary-value--h---debug---source-value---timestamp-value--k-value--v-value--l-value--t-value--e-value---jsonvalues--j)
-* [`pd help [COMMAND]`](#pd-help-command)
-* [`pd incident:ack [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p] [-z <value>]`](#pd-incidentack--h---debug--b-value---token-value--m--i-value--f-value--p--z-value)
-* [`pd incident:acknowledge [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p] [-z <value>]`](#pd-incidentacknowledge--h---debug--b-value---token-value--m--i-value--f-value--p--z-value)
-* [`pd incident:alerts [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-p] [-j] [-k <value>] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-incidentalerts--h---debug--b-value---token-value--m--i-value--p--j--k-value--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd incident:analytics [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-k <value>] [-d <value>] [-j] [-p] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-incidentanalytics--h---debug--b-value---token-value--i-value--k-value--d-value--j--p---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd incident:assign [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-u <value>] [-U <value>] [-e <value>] [-E <value>] [-F <value>] [-p]`](#pd-incidentassign--h---debug--b-value---token-value--m--i-value--u-value--u-value--e-value--e-value--f-value--p)
-* [`pd incident:create -t <value> [-h] [--debug] [-b <value>] [--token <value>] [-S <value>] [--service_id <value>] [-E <value>] [--escalation_policy_id <value>] [-U <value>] [--user_id <value>] [-d <value>] [-u high|low] [-P <value>] [-k <value>] [-F <value>] [-o] [-p]`](#pd-incidentcreate--t-value--h---debug--b-value---token-value--s-value---service_id-value--e-value---escalation_policy_id-value--u-value---user_id-value--d-value--u-highlow--p-value--k-value--f-value--o--p)
-* [`pd incident:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header] [-m] [-s open|closed|triggered|acknowledged|resolved] [-e <value>] [-E <value>] [-t <value>] [-T <value>] [-S <value>] [-X <value>] [-u high|low] [--since <value>] [--until <value>] [--notes]`](#pd-incidentlist--h---debug--b-value---token-value--j--n-value--k-value---limit-value--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header--m--s-openclosedtriggeredacknowledgedresolved--e-value--e-value--t-value--t-value--s-value--x-value--u-highlow---since-value---until-value---notes)
-* [`pd incident:log [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-O] [-k <value>] [-d <value>] [-j] [-p] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-incidentlog--h---debug--b-value---token-value--i-value--o--k-value--d-value--j--p---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd incident:merge [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-I <value>] [-p] [-F <value>] [-o]`](#pd-incidentmerge--h---debug--b-value---token-value--i-value--i-value--p--f-value--o)
-* [`pd incident:notes -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-F <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-incidentnotes--i-value--h---debug--b-value---token-value--n-value--f-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd incident:open [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-p]`](#pd-incidentopen--h---debug--b-value---token-value--m--i-value--p)
-* [`pd incident:priority -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]`](#pd-incidentpriority--n-value--h---debug--b-value---token-value--m--i-value--f-value--p)
-* [`pd incident:reassign [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-u <value>] [-U <value>] [-e <value>] [-E <value>] [-F <value>] [-p]`](#pd-incidentreassign--h---debug--b-value---token-value--m--i-value--u-value--u-value--e-value--e-value--f-value--p)
-* [`pd incident:rename [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-t <value>] [--prefix <value>] [-F <value>] [-p]`](#pd-incidentrename--h---debug--b-value---token-value--m--i-value--t-value---prefix-value--f-value--p)
-* [`pd incident:resolve [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]`](#pd-incidentresolve--h---debug--b-value---token-value--m--i-value--f-value--p)
-* [`pd incident:set -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]`](#pd-incidentset--k-value--v-value--h---debug--b-value---token-value--m--i-value--f-value--p)
-* [`pd incident:update -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]`](#pd-incidentupdate--k-value--v-value--h---debug--b-value---token-value--m--i-value--f-value--p)
-* [`pd log [-h] [--debug] [-b <value>] [--token <value>] [--since <value>] [--until <value>] [-O] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-log--h---debug--b-value---token-value---since-value---until-value--o--k-value--j--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd login [-h] [--debug] [-a <value>] [-d]`](#pd-login--h---debug--a-value--d)
-* [`pd orchestration:add [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-d <value>] [-t <value>] [-T <value>]`](#pd-orchestrationadd--h---debug--b-value---token-value--n-value--d-value--t-value--t-value)
-* [`pd orchestration:list [-h] [--debug] [-b <value>] [--token <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-orchestrationlist--h---debug--b-value---token-value--k-value--j--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd orchestration:route:add -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [-c <value>] [-s <value>] [-S <value>]`](#pd-orchestrationrouteadd--i-value--h---debug--b-value---token-value--d-value--c-value--s-value--s-value)
-* [`pd orchestration:route:delete -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-r <value>] [-s <value>] [-S <value>]`](#pd-orchestrationroutedelete--i-value--h---debug--b-value---token-value--r-value--s-value--s-value)
-* [`pd orchestration:route:list -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-orchestrationroutelist--i-value--h---debug--b-value---token-value--k-value--j--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd rest:delete -e <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]`](#pd-restdelete--e-value--h---debug--b-value---token-value--p-value--h-value)
-* [`pd rest:fetch -e <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>] [-t] [-k <value>] [-p] [-d <value>] [--limit <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-restfetch--e-value--h---debug--b-value---token-value--p-value--h-value--t--k-value--p--d-value---limit-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd rest:get -e <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]`](#pd-restget--e-value--h---debug--b-value---token-value--p-value--h-value)
-* [`pd rest:post -e <value> -d <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]`](#pd-restpost--e-value--d-value--h---debug--b-value---token-value--p-value--h-value)
-* [`pd rest:put -e <value> -d <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]`](#pd-restput--e-value--d-value--h---debug--b-value---token-value--p-value--h-value)
-* [`pd schedule:copy [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-d <value>] [-o] [-p]`](#pd-schedulecopy--h---debug--b-value---token-value--n-value--i-value--d-value--o--p)
-* [`pd schedule:create -n <value> -u <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [-z <value>] [-t <value>] [-l <value>] [-s <value>] [--rotation_virtual_start <value>] [-o] [-p]`](#pd-schedulecreate--n-value--u-value--h---debug--b-value---token-value--d-value--z-value--t-value--l-value--s-value---rotation_virtual_start-value--o--p)
-* [`pd schedule:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-schedulelist--h---debug--b-value---token-value--j--n-value--k-value---limit-value--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd schedule:oncall [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-k <value>] [-d <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-scheduleoncall--h---debug--b-value---token-value--i-value--n-value---since-value---until-value--k-value--d-value--j---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd schedule:open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`](#pd-scheduleopen--h---debug--b-value---token-value--n-value--i-value--p)
-* [`pd schedule:override:add [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--start <value>] [--end <value>] [-u <value>] [-U <value>]`](#pd-scheduleoverrideadd--h---debug--b-value---token-value--i-value--n-value---start-value---end-value--u-value--u-value)
-* [`pd schedule:override:list [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-scheduleoverridelist--h---debug--b-value---token-value--i-value--n-value---since-value---until-value--k-value--j--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd schedule:render [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-schedulerender--h---debug--b-value---token-value--i-value--n-value---since-value---until-value--k-value--j--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd schedule:show [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-scheduleshow--h---debug--b-value---token-value--i-value--n-value---since-value---until-value--j---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd service:create -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [-e <value>] [-E <value>] [-r <value>] [-t <value>] [--create_alerts] [-u high|low|use_support_hours|severity_based] [--Ss <value>] [--Se <value>] [--Sd <value>] [--Ud high|low|severity_based] [--Uo high|low|severity_based] [--Uc] [--Gd <value>] [--Gi] [--Gc any|all] [--Gf <value>] [-F <value>] [-o] [-p]`](#pd-servicecreate--n-value--h---debug--b-value---token-value--d-value--e-value--e-value--r-value--t-value---create_alerts--u-highlowuse_support_hoursseverity_based---ss-value---se-value---sd-value---ud-highlowseverity_based---uo-highlowseverity_based---uc---gd-value---gi---gc-anyall---gf-value--f-value--o--p)
-* [`pd service:disable [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`](#pd-servicedisable--h---debug--b-value---token-value--n-value--i-value--p)
-* [`pd service:enable [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`](#pd-serviceenable--h---debug--b-value---token-value--n-value--i-value--p)
-* [`pd service:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header] [-t <value>]`](#pd-servicelist--h---debug--b-value---token-value--j--n-value--k-value---limit-value--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header--t-value)
-* [`pd service:open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`](#pd-serviceopen--h---debug--b-value---token-value--n-value--i-value--p)
-* [`pd service:set -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-N <value>] [-i <value>] [--jsonvalues] [-p]`](#pd-serviceset--k-value--v-value--h---debug--b-value---token-value--n-value--n-value--i-value---jsonvalues--p)
-* [`pd tag:assign [-h] [--debug] [-b <value>] [--token <value>] [-a <value>] [-A <value>] [-r <value>] [-R <value>] [-u <value>] [-U <value>] [-t <value>] [-e <value>]`](#pd-tagassign--h---debug--b-value---token-value--a-value--a-value--r-value--r-value--u-value--u-value--t-value--e-value)
-* [`pd tag:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-taglist--h---debug--b-value---token-value--j--n-value--k-value---limit-value--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd tag:listobjects [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [-t users|teams|escalation_policies] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-taglistobjects--h---debug--b-value---token-value--i-value--n-value--t-usersteamsescalation_policies--k-value--j--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd team:create -n <value> [-h] [--debug] [-b <value>] [--token <value>] [--description <value>] [-a <value>] [-A <value>] [-o] [-p]`](#pd-teamcreate--n-value--h---debug--b-value---token-value---description-value--a-value--a-value--o--p)
-* [`pd team:ep:add [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-e <value>] [-E <value>]`](#pd-teamepadd--h---debug--b-value---token-value--n-value--i-value--e-value--e-value)
-* [`pd team:ep:list [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-teameplist--h---debug--b-value---token-value--n-value--i-value--k-value--j--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd team:ep:remove [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-e <value>] [-E <value>]`](#pd-teamepremove--h---debug--b-value---token-value--n-value--i-value--e-value--e-value)
-* [`pd team:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-teamlist--h---debug--b-value---token-value--j--n-value--k-value---limit-value--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd team:open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`](#pd-teamopen--h---debug--b-value---token-value--n-value--i-value--p)
-* [`pd team:user:add [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-u <value>] [-U <value>] [-r manager|responder|observer]`](#pd-teamuseradd--h---debug--b-value---token-value--n-value--i-value--u-value--u-value--r-managerresponderobserver)
-* [`pd team:user:list [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-teamuserlist--h---debug--b-value---token-value--n-value--i-value--k-value--j--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd team:user:remove [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-u <value>] [-U <value>]`](#pd-teamuserremove--h---debug--b-value---token-value--n-value--i-value--u-value--u-value)
+* [`pd ep copy`](#pd-ep-copy)
+* [`pd ep create`](#pd-ep-create)
+* [`pd ep level add`](#pd-ep-level-add)
+* [`pd ep level remove`](#pd-ep-level-remove)
+* [`pd ep list`](#pd-ep-list)
+* [`pd ep oncall`](#pd-ep-oncall)
+* [`pd ep open`](#pd-ep-open)
+* [`pd ep target add`](#pd-ep-target-add)
+* [`pd ep target remove`](#pd-ep-target-remove)
+* [`pd event alert`](#pd-event-alert)
+* [`pd event change`](#pd-event-change)
+* [`pd help [COMMANDS]`](#pd-help-commands)
+* [`pd incident ack`](#pd-incident-ack)
+* [`pd incident ack`](#pd-incident-ack-1)
+* [`pd incident alerts`](#pd-incident-alerts)
+* [`pd incident analytics`](#pd-incident-analytics)
+* [`pd incident assign`](#pd-incident-assign)
+* [`pd incident create`](#pd-incident-create)
+* [`pd incident list`](#pd-incident-list)
+* [`pd incident log`](#pd-incident-log)
+* [`pd incident merge`](#pd-incident-merge)
+* [`pd incident notes`](#pd-incident-notes)
+* [`pd incident open`](#pd-incident-open)
+* [`pd incident priority`](#pd-incident-priority)
+* [`pd incident assign`](#pd-incident-assign-1)
+* [`pd incident rename`](#pd-incident-rename)
+* [`pd incident resolve`](#pd-incident-resolve)
+* [`pd incident responder add`](#pd-incident-responder-add)
+* [`pd incident responder list`](#pd-incident-responder-list)
+* [`pd incident set`](#pd-incident-set)
+* [`pd incident set`](#pd-incident-set-1)
+* [`pd log`](#pd-log)
+* [`pd auth web`](#pd-auth-web-1)
+* [`pd orchestration add`](#pd-orchestration-add)
+* [`pd orchestration list`](#pd-orchestration-list)
+* [`pd orchestration route add`](#pd-orchestration-route-add)
+* [`pd orchestration route delete`](#pd-orchestration-route-delete)
+* [`pd orchestration route list`](#pd-orchestration-route-list)
+* [`pd rest delete`](#pd-rest-delete)
+* [`pd rest fetch`](#pd-rest-fetch)
+* [`pd rest get`](#pd-rest-get)
+* [`pd rest post`](#pd-rest-post)
+* [`pd rest put`](#pd-rest-put)
+* [`pd schedule copy`](#pd-schedule-copy)
+* [`pd schedule create`](#pd-schedule-create)
+* [`pd schedule list`](#pd-schedule-list)
+* [`pd schedule oncall`](#pd-schedule-oncall)
+* [`pd schedule open`](#pd-schedule-open)
+* [`pd schedule override add`](#pd-schedule-override-add)
+* [`pd schedule override list`](#pd-schedule-override-list)
+* [`pd schedule render`](#pd-schedule-render)
+* [`pd schedule show`](#pd-schedule-show)
+* [`pd service create`](#pd-service-create)
+* [`pd service disable`](#pd-service-disable)
+* [`pd service enable`](#pd-service-enable)
+* [`pd service list`](#pd-service-list)
+* [`pd service open`](#pd-service-open)
+* [`pd service set`](#pd-service-set)
+* [`pd tag assign`](#pd-tag-assign)
+* [`pd tag list`](#pd-tag-list)
+* [`pd tag listobjects`](#pd-tag-listobjects)
+* [`pd team create`](#pd-team-create)
+* [`pd team ep add`](#pd-team-ep-add)
+* [`pd team ep list`](#pd-team-ep-list)
+* [`pd team ep remove`](#pd-team-ep-remove)
+* [`pd team list`](#pd-team-list)
+* [`pd team open`](#pd-team-open)
+* [`pd team user add`](#pd-team-user-add)
+* [`pd team user list`](#pd-team-user-list)
+* [`pd team user remove`](#pd-team-user-remove)
 * [`pd update [CHANNEL]`](#pd-update-channel)
-* [`pd user:contact:add -l <value> -T email|phone|sms -a <value> [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>]`](#pd-usercontactadd--l-value--t-emailphonesms--a-value--h---debug--b-value---token-value--i-value--e-value)
-* [`pd user:contact:list [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-usercontactlist--h---debug--b-value---token-value--i-value--e-value--k-value--j--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd user:contact:set -c <value> [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>] [-l <value>] [-a <value>]`](#pd-usercontactset--c-value--h---debug--b-value---token-value--i-value--e-value--l-value--a-value)
-* [`pd user:create -e <value> -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-z <value>] [-c <value>] [-r admin|read_only_user|read_only_limited_user|user|limited_user|observer|restricted_access] [-t <value>] [-d <value>] [-w <value>] [--show_password] [-F <value>] [-o] [-p]`](#pd-usercreate--e-value--n-value--h---debug--b-value---token-value--z-value--c-value--r-adminread_only_userread_only_limited_useruserlimited_userobserverrestricted_access--t-value--d-value--w-value---show_password--f-value--o--p)
-* [`pd user:delete [-h] [--debug] [-b <value>] [--token <value>] [-e <value>] [-E <value>] [-i <value>] [-p] [--force]`](#pd-userdelete--h---debug--b-value---token-value--e-value--e-value--i-value--p---force)
-* [`pd user:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header] [-e <value>] [-E <value>]`](#pd-userlist--h---debug--b-value---token-value--j--n-value--k-value---limit-value--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header--e-value--e-value)
-* [`pd user:log [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header] [-e <value>] [-E <value>] [-i <value>] [--since <value>] [--until <value>] [-O]`](#pd-userlog--h---debug--b-value---token-value--j--n-value--k-value---limit-value--p--d-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header--e-value--e-value--i-value---since-value---until-value--o)
-* [`pd user:oncall [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-e <value>] [--since <value>] [--until <value>] [-a] [-k <value>] [-d <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-useroncall--h---debug--b-value---token-value--m--i-value--e-value---since-value---until-value--a--k-value--d-value--j---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd user:replace [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-d] [-u <value>] [-U <value>] [-p] [--force]`](#pd-userreplace--h---debug--b-value---token-value--i-value--d--u-value--u-value--p---force)
-* [`pd user:session:list [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>] [-k <value>] [-d <value>] [--since <value>] [--until <value>] [-j] [-p] [-q <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`](#pd-usersessionlist--h---debug--b-value---token-value--i-value--e-value--k-value--d-value---since-value---until-value--j--p--q-value---columns-value---sort-value---filter-value---csv---output-csvjsonyaml--x---no-truncate---no-header)
-* [`pd user:set -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-e <value>] [-E <value>] [-i <value>] [--jsonvalues] [-p]`](#pd-userset--k-value--v-value--h---debug--b-value---token-value--e-value--e-value--i-value---jsonvalues--p)
-* [`pd util:deleteresource -t business_service|escalation_policy|extension|response_play|ruleset|schedule|service|tag|team|user|webhook_subscription|automation_action|automation_runner [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-p] [--force]`](#pd-utildeleteresource--t-business_serviceescalation_policyextensionresponse_playrulesetscheduleservicetagteamuserwebhook_subscriptionautomation_actionautomation_runner--h---debug--b-value---token-value--i-value--p---force)
-* [`pd util:timestamp [-h] [--debug]`](#pd-utiltimestamp--h---debug)
+* [`pd user contact add`](#pd-user-contact-add)
+* [`pd user contact list`](#pd-user-contact-list)
+* [`pd user contact set`](#pd-user-contact-set)
+* [`pd user create`](#pd-user-create)
+* [`pd user delete`](#pd-user-delete)
+* [`pd user list`](#pd-user-list)
+* [`pd user log`](#pd-user-log)
+* [`pd user oncall`](#pd-user-oncall)
+* [`pd user replace`](#pd-user-replace)
+* [`pd user session list`](#pd-user-session-list)
+* [`pd user set`](#pd-user-set)
+* [`pd util deleteresource`](#pd-util-deleteresource)
+* [`pd util timestamp`](#pd-util-timestamp)
 * [`pd version`](#pd-version)
 
-## `pd analytics:incident [-h] [--debug] [-b <value>] [--token <value>] [-t <value>] [-S <value>] [-M] [-u high|low] [--since <value>] [--until <value>] [-g day|week|month] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd analytics incident`
 
 Get PagerDuty Incident Analytics
 
 ```
 USAGE
-  $ pd analytics incident [-h] [--debug] [-b <value>] [--token <value>] [-t <value>] [-S <value>] [-M] [-u high|low]
-    [--since <value>] [--until <value>] [-g day|week|month] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort
-    <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
+  $ pd analytics incident
 
 FLAGS
   -M, --major                    Include only major incidents
@@ -159,15 +159,13 @@ DESCRIPTION
   Get PagerDuty Incident Analytics
 ```
 
-## `pd analytics:incident:raw [-h] [--debug] [-b <value>] [--token <value>] [-t <value>] [-S <value>] [-M] [--since <value>] [--until <value>] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd analytics incident raw`
 
 Get PagerDuty Raw Incident Analytics
 
 ```
 USAGE
-  $ pd analytics incident raw [-h] [--debug] [-b <value>] [--token <value>] [-t <value>] [-S <value>] [-M] [--since <value>]
-    [--until <value>] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv]
-    [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
+  $ pd analytics incident raw
 
 FLAGS
   -M, --major                Include only major incidents
@@ -196,13 +194,13 @@ DESCRIPTION
   Get PagerDuty Raw Incident Analytics
 ```
 
-## `pd auth:add [-h] [--debug] [-t <value>] [-a <value>] [-d]`
+## `pd auth add`
 
 Add an authenticated PagerDuty domain
 
 ```
 USAGE
-  $ pd auth add [-h] [--debug] [-t <value>] [-a <value>] [-d]
+  $ pd auth add
 
 FLAGS
   -a, --alias=<value>  The alias to use for this token. Defaults to the name of the PD subdomain
@@ -218,13 +216,13 @@ ALIASES
   $ pd auth set
 ```
 
-## `pd auth:delete -a <value> [-h] [--debug]`
+## `pd auth delete`
 
 Delete a PagerDuty domain authentication
 
 ```
 USAGE
-  $ pd auth delete -a <value> [-h] [--debug]
+  $ pd auth delete
 
 FLAGS
   -a, --alias=<value>  (required) The alias of the PD domain authentication to delete
@@ -235,13 +233,13 @@ DESCRIPTION
   Delete a PagerDuty domain authentication
 ```
 
-## `pd auth:get [-h] [--debug]`
+## `pd auth get`
 
 Get the current authenticated PagerDuty domain
 
 ```
 USAGE
-  $ pd auth get [-h] [--debug]
+  $ pd auth get
 
 FLAGS
   -h, --help  Show CLI help.
@@ -251,13 +249,13 @@ DESCRIPTION
   Get the current authenticated PagerDuty domain
 ```
 
-## `pd auth:list [-h] [--debug]`
+## `pd auth list`
 
 List authenticated PagerDuty domains
 
 ```
 USAGE
-  $ pd auth list [-h] [--debug]
+  $ pd auth list
 
 FLAGS
   -h, --help  Show CLI help.
@@ -267,13 +265,13 @@ DESCRIPTION
   List authenticated PagerDuty domains
 ```
 
-## `pd auth:set [-h] [--debug] [-t <value>] [-a <value>] [-d]`
+## `pd auth add`
 
 Add an authenticated PagerDuty domain
 
 ```
 USAGE
-  $ pd auth set [-h] [--debug] [-t <value>] [-a <value>] [-d]
+  $ pd auth add
 
 FLAGS
   -a, --alias=<value>  The alias to use for this token. Defaults to the name of the PD subdomain
@@ -289,13 +287,13 @@ ALIASES
   $ pd auth set
 ```
 
-## `pd auth:use -a <value> [-h] [--debug]`
+## `pd auth use`
 
 Choose a saved authenticated PagerDuty domain to use with all pd commands
 
 ```
 USAGE
-  $ pd auth use -a <value> [-h] [--debug]
+  $ pd auth use
 
 FLAGS
   -a, --alias=<value>  (required) The alias of the PD domain to use
@@ -306,13 +304,13 @@ DESCRIPTION
   Choose a saved authenticated PagerDuty domain to use with all pd commands
 ```
 
-## `pd auth:web [-h] [--debug] [-a <value>] [-d]`
+## `pd auth web`
 
 Authenticate with PagerDuty in the browser
 
 ```
 USAGE
-  $ pd auth web [-h] [--debug] [-a <value>] [-d]
+  $ pd auth web
 
 FLAGS
   -a, --alias=<value>  The alias to use for this token. Defaults to the name of the PD subdomain
@@ -354,17 +352,15 @@ EXAMPLES
   $ pd autocomplete --refresh-cache
 ```
 
-_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v1.3.7/src/commands/autocomplete/index.ts)_
+_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v1.4.6/src/commands/autocomplete/index.ts)_
 
-## `pd automation:action:create -n <value> -d <value> [-h] [--debug] [-b <value>] [--token <value>] [-c diagnostic|remediation] [-r <value>] [-R <value>] [-s <value>] [-S <value>] [-t <value>] [-T <value>] [-x <value>] [-X] [-i <value>] [-j <value>] [--job_arguments <value>] [-p] [-o]`
+## `pd automation action create`
 
 Create a PagerDuty Automation Action
 
 ```
 USAGE
-  $ pd automation action create -n <value> -d <value> [-h] [--debug] [-b <value>] [--token <value>] [-c
-    diagnostic|remediation] [-r <value>] [-R <value>] [-s <value>] [-S <value>] [-t <value>] [-T <value>] [-x <value>]
-    [-X] [-i <value>] [-j <value>] [--job_arguments <value>] [-p] [-o]
+  $ pd automation action create
 
 FLAGS
   -R, --runner_name=<value>         The name of the runner to run this action
@@ -394,15 +390,13 @@ DESCRIPTION
   Create a PagerDuty Automation Action
 ```
 
-## `pd automation:action:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd automation action list`
 
 List PagerDuty Automation Actions
 
 ```
 USAGE
-  $ pd automation action list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>]
-    [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
-    [--no-truncate] [--no-header]
+  $ pd automation action list
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -429,14 +423,13 @@ DESCRIPTION
   List PagerDuty Automation Actions
 ```
 
-## `pd automation:runner:create -n <value> -d <value> -y sidecar|runbook [-h] [--debug] [-b <value>] [--token <value>] [-t <value>] [-T <value>] [-u <value>] [-k <value>] [-p] [-o]`
+## `pd automation runner create`
 
 Create a PagerDuty Automation Action
 
 ```
 USAGE
-  $ pd automation runner create -n <value> -d <value> -y sidecar|runbook [-h] [--debug] [-b <value>] [--token <value>] [-t
-    <value>] [-T <value>] [-u <value>] [-k <value>] [-p] [-o]
+  $ pd automation runner create
 
 FLAGS
   -T, --team_names=<value>...     The names of teams associated with this runner
@@ -460,15 +453,13 @@ DESCRIPTION
   Create a PagerDuty Automation Action
 ```
 
-## `pd automation:runner:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header] [--health]`
+## `pd automation runner list`
 
 List PagerDuty Automation Actions Runners
 
 ```
 USAGE
-  $ pd automation runner list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>]
-    [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
-    [--no-truncate] [--no-header] [--health]
+  $ pd automation runner list
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -526,15 +517,15 @@ DESCRIPTION
   list all the commands
 ```
 
-_See code: [@oclif/plugin-commands](https://github.com/oclif/plugin-commands/blob/v2.2.1/src/commands/commands.ts)_
+_See code: [@oclif/plugin-commands](https://github.com/oclif/plugin-commands/blob/v2.2.9/src/commands/commands.ts)_
 
-## `pd ep:copy [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-d <value>] [-o] [-p]`
+## `pd ep copy`
 
 Make a copy of a PagerDuty Escalation Policy
 
 ```
 USAGE
-  $ pd ep copy [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-d <value>] [-o] [-p]
+  $ pd ep copy
 
 FLAGS
   -b, --useauth=<value>      Use the saved REST API token with this alias
@@ -551,14 +542,13 @@ DESCRIPTION
   Make a copy of a PagerDuty Escalation Policy
 ```
 
-## `pd ep:create -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [--description <value>] [-r <value>] [-u <value>] [-U <value>] [-s <value>] [-S <value>] [-o] [-p]`
+## `pd ep create`
 
 Create a PagerDuty Escalation Policy with a single level. You can add levels and targets later with ep:level and ep:target
 
 ```
 USAGE
-  $ pd ep create -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [--description <value>]
-    [-r <value>] [-u <value>] [-U <value>] [-s <value>] [-S <value>] [-o] [-p]
+  $ pd ep create
 
 FLAGS
   -S, --schedule_names=<value>...  Add a target schedule with this name. Specify multiple times for multiple targets.
@@ -582,14 +572,13 @@ DESCRIPTION
   ep:target
 ```
 
-## `pd ep:level:add -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p] [-d <value>] [-u <value>] [-U <value>] [-s <value>] [-S <value>]`
+## `pd ep level add`
 
 Add a level to PagerDuty Escalation Policies
 
 ```
 USAGE
-  $ pd ep level add -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p] [-d
-    <value>] [-u <value>] [-U <value>] [-s <value>] [-S <value>]
+  $ pd ep level add
 
 FLAGS
   -S, --schedule_names=<value>...  Add a target schedule with this name. Specify multiple times for multiple targets.
@@ -613,13 +602,13 @@ DESCRIPTION
   Add a level to PagerDuty Escalation Policies
 ```
 
-## `pd ep:level:remove -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`
+## `pd ep level remove`
 
 Remove a level from PagerDuty Escalation Policies
 
 ```
 USAGE
-  $ pd ep level remove -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]
+  $ pd ep level remove
 
 FLAGS
   -b, --useauth=<value>  Use the saved REST API token with this alias
@@ -636,15 +625,13 @@ DESCRIPTION
   Remove a level from PagerDuty Escalation Policies
 ```
 
-## `pd ep:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd ep list`
 
 List PagerDuty Escalation Policies
 
 ```
 USAGE
-  $ pd ep list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>]
-    [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
-    [--no-truncate] [--no-header]
+  $ pd ep list
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -671,15 +658,13 @@ DESCRIPTION
   List PagerDuty Escalation Policies
 ```
 
-## `pd ep:oncall [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-k <value>] [-d <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd ep oncall`
 
 List a PagerDuty Escalation Policy's on call shifts.
 
 ```
 USAGE
-  $ pd ep oncall [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>]
-    [--until <value>] [-k <value>] [-d <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv]
-    [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
+  $ pd ep oncall
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -707,13 +692,13 @@ DESCRIPTION
   List a PagerDuty Escalation Policy's on call shifts.
 ```
 
-## `pd ep:open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`
+## `pd ep open`
 
 Open PagerDuty Escalation policies in the browser
 
 ```
 USAGE
-  $ pd ep open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]
+  $ pd ep open
 
 FLAGS
   -b, --useauth=<value>  Use the saved REST API token with this alias
@@ -728,14 +713,13 @@ DESCRIPTION
   Open PagerDuty Escalation policies in the browser
 ```
 
-## `pd ep:target:add -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p] [-u <value>] [-U <value>] [-s <value>] [-S <value>]`
+## `pd ep target add`
 
 Add targets to PagerDuty Escalation Policies
 
 ```
 USAGE
-  $ pd ep target add -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p] [-u
-    <value>] [-U <value>] [-s <value>] [-S <value>]
+  $ pd ep target add
 
 FLAGS
   -S, --schedule_names=<value>...  Add a target schedule with this name. Specify multiple times for multiple targets.
@@ -755,14 +739,13 @@ DESCRIPTION
   Add targets to PagerDuty Escalation Policies
 ```
 
-## `pd ep:target:remove -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p] [-u <value>] [-U <value>] [-s <value>] [-S <value>]`
+## `pd ep target remove`
 
 Remove targets from PagerDuty Escalation Policies
 
 ```
 USAGE
-  $ pd ep target remove -l <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p] [-u
-    <value>] [-U <value>] [-s <value>] [-S <value>]
+  $ pd ep target remove
 
 FLAGS
   -S, --schedule_names=<value>...  Remove a target schedule with this name. Specify multiple times for multiple targets.
@@ -782,16 +765,13 @@ DESCRIPTION
   Remove targets from PagerDuty Escalation Policies
 ```
 
-## `pd event:alert -r <value> --summary <value> --source <value> [-h] [--debug] [-d <value>] [-a trigger|acknowledge|resolve] [--severity critical|error|warning|info] [--timestamp <value>] [--component <value>] [--group <value>] [--class <value>] [-k <value>] [-v <value>] [-I <value>] [-H <value>] [-A <value>] [-L <value>] [-T <value>] [-c <value>] [-u <value>] [-e <value>] [--jsonvalues] [-j] [-p]`
+## `pd event alert`
 
 Send an Alert to PagerDuty
 
 ```
 USAGE
-  $ pd event alert -r <value> --summary <value> --source <value> [-h] [--debug] [-d <value>] [-a
-    trigger|acknowledge|resolve] [--severity critical|error|warning|info] [--timestamp <value>] [--component <value>]
-    [--group <value>] [--class <value>] [-k <value>] [-v <value>] [-I <value>] [-H <value>] [-A <value>] [-L <value>]
-    [-T <value>] [-c <value>] [-u <value>] [-e <value>] [--jsonvalues] [-j] [-p]
+  $ pd event alert
 
 FLAGS
   -A, --image_alts=<value>...   Alternate text for included images. Specify in the same order as the image URLs.
@@ -831,14 +811,13 @@ DESCRIPTION
   Send an Alert to PagerDuty
 ```
 
-## `pd event:change -r <value> --summary <value> [-h] [--debug] [--source <value>] [--timestamp <value>] [-k <value>] [-v <value>] [-L <value>] [-T <value>] [-e <value>] [--jsonvalues] [-j]`
+## `pd event change`
 
 Send a Change Event to PagerDuty
 
 ```
 USAGE
-  $ pd event change -r <value> --summary <value> [-h] [--debug] [--source <value>] [--timestamp <value>] [-k
-    <value>] [-v <value>] [-L <value>] [-T <value>] [-e <value>] [--jsonvalues] [-j]
+  $ pd event change
 
 FLAGS
   -L, --link_hrefs=<value>...  A clickable link URL for included links.
@@ -861,16 +840,16 @@ DESCRIPTION
   Send a Change Event to PagerDuty
 ```
 
-## `pd help [COMMAND]`
+## `pd help [COMMANDS]`
 
 Display help for pd.
 
 ```
 USAGE
-  $ pd help [COMMAND] [-n]
+  $ pd help [COMMANDS] [-n]
 
 ARGUMENTS
-  COMMAND  Command to show help for.
+  COMMANDS  Command to show help for.
 
 FLAGS
   -n, --nested-commands  Include all nested commands in the output.
@@ -879,15 +858,15 @@ DESCRIPTION
   Display help for pd.
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.20/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.2.4/src/commands/help.ts)_
 
-## `pd incident:ack [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p] [-z <value>]`
+## `pd incident ack`
 
 Acknowledge PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident ack [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p] [-z <value>]
+  $ pd incident ack
 
 FLAGS
   -F, --from=<value>     Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
@@ -908,14 +887,13 @@ ALIASES
   $ pd incident acknowledge
 ```
 
-## `pd incident:acknowledge [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p] [-z <value>]`
+## `pd incident ack`
 
 Acknowledge PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident acknowledge [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p] [-z
-  <value>]
+  $ pd incident ack
 
 FLAGS
   -F, --from=<value>     Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
@@ -936,15 +914,13 @@ ALIASES
   $ pd incident acknowledge
 ```
 
-## `pd incident:alerts [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-p] [-j] [-k <value>] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd incident alerts`
 
 Show Alerts in PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident alerts [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-p] [-j] [-k <value>] [-d
-    <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
-    [--no-truncate] [--no-header]
+  $ pd incident alerts
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -971,15 +947,13 @@ DESCRIPTION
   Show Alerts in PagerDuty Incidents
 ```
 
-## `pd incident:analytics [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-k <value>] [-d <value>] [-j] [-p] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd incident analytics`
 
 Get Incident analytics
 
 ```
 USAGE
-  $ pd incident analytics [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-k <value>] [-d <value>] [-j] [-p]
-    [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate]
-    [--no-header]
+  $ pd incident analytics
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -1005,14 +979,13 @@ DESCRIPTION
   Get Incident analytics
 ```
 
-## `pd incident:assign [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-u <value>] [-U <value>] [-e <value>] [-E <value>] [-F <value>] [-p]`
+## `pd incident assign`
 
 Assign/Reassign PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident assign [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-u <value>] [-U <value>] [-e
-    <value>] [-E <value>] [-F <value>] [-p]
+  $ pd incident assign
 
 FLAGS
   -E, --assign_to_ep_name=<value>         Escalation policy name to assign incidents to.
@@ -1038,15 +1011,13 @@ ALIASES
   $ pd incident reassign
 ```
 
-## `pd incident:create -t <value> [-h] [--debug] [-b <value>] [--token <value>] [-S <value>] [--service_id <value>] [-E <value>] [--escalation_policy_id <value>] [-U <value>] [--user_id <value>] [-d <value>] [-u high|low] [-P <value>] [-k <value>] [-F <value>] [-o] [-p]`
+## `pd incident create`
 
 Create a PagerDuty Incident
 
 ```
 USAGE
-  $ pd incident create -t <value> [-h] [--debug] [-b <value>] [--token <value>] [-S <value>] [--service_id <value>]
-    [-E <value>] [--escalation_policy_id <value>] [-U <value>] [--user_id <value>] [-d <value>] [-u high|low] [-P
-    <value>] [-k <value>] [-F <value>] [-o] [-p]
+  $ pd incident create
 
 FLAGS
   -E, --escalation_policy=<value>  The name of the escalation policy to assign the incident to
@@ -1074,16 +1045,13 @@ DESCRIPTION
   Create a PagerDuty Incident
 ```
 
-## `pd incident:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header] [-m] [-s open|closed|triggered|acknowledged|resolved] [-e <value>] [-E <value>] [-t <value>] [-T <value>] [-S <value>] [-X <value>] [-u high|low] [--since <value>] [--until <value>] [--notes]`
+## `pd incident list`
 
 List PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>]
-    [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
-    [--no-truncate] [--no-header] [-m] [-s open|closed|triggered|acknowledged|resolved] [-e <value>] [-E <value>] [-t
-    <value>] [-T <value>] [-S <value>] [-X <value>] [-u high|low] [--since <value>] [--until <value>] [--notes]
+  $ pd incident list
 
 FLAGS
   -E, --exact_assignees=<value>...  Return incidents assigned to the PD account whose login email is exactly this text.
@@ -1132,15 +1100,13 @@ DESCRIPTION
   List PagerDuty Incidents
 ```
 
-## `pd incident:log [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-O] [-k <value>] [-d <value>] [-j] [-p] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd incident log`
 
 Show PagerDuty Incident Log Entries
 
 ```
 USAGE
-  $ pd incident log [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-O] [-k <value>] [-d <value>] [-j]
-    [-p] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate]
-    [--no-header]
+  $ pd incident log
 
 FLAGS
   -O, --overview           Get only `overview` log entries
@@ -1167,13 +1133,13 @@ DESCRIPTION
   Show PagerDuty Incident Log Entries
 ```
 
-## `pd incident:merge [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-I <value>] [-p] [-F <value>] [-o]`
+## `pd incident merge`
 
 Merge PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident merge [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-I <value>] [-p] [-F <value>] [-o]
+  $ pd incident merge
 
 FLAGS
   -F, --from=<value>       Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
@@ -1192,14 +1158,13 @@ DESCRIPTION
   Merge PagerDuty Incidents
 ```
 
-## `pd incident:notes -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-F <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd incident notes`
 
 See or add notes on PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident notes -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-F <value>] [--columns
-    <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
+  $ pd incident notes
 
 FLAGS
   -F, --from=<value>     Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
@@ -1223,13 +1188,13 @@ DESCRIPTION
   See or add notes on PagerDuty Incidents
 ```
 
-## `pd incident:open [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-p]`
+## `pd incident open`
 
 Open PagerDuty Incidents in your browser
 
 ```
 USAGE
-  $ pd incident open [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-p]
+  $ pd incident open
 
 FLAGS
   -b, --useauth=<value>  Use the saved REST API token with this alias
@@ -1244,13 +1209,13 @@ DESCRIPTION
   Open PagerDuty Incidents in your browser
 ```
 
-## `pd incident:priority -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]`
+## `pd incident priority`
 
 Set priority on PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident priority -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]
+  $ pd incident priority
 
 FLAGS
   -F, --from=<value>      Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
@@ -1267,14 +1232,13 @@ DESCRIPTION
   Set priority on PagerDuty Incidents
 ```
 
-## `pd incident:reassign [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-u <value>] [-U <value>] [-e <value>] [-E <value>] [-F <value>] [-p]`
+## `pd incident assign`
 
 Assign/Reassign PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident reassign [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-u <value>] [-U <value>] [-e
-    <value>] [-E <value>] [-F <value>] [-p]
+  $ pd incident assign
 
 FLAGS
   -E, --assign_to_ep_name=<value>         Escalation policy name to assign incidents to.
@@ -1300,14 +1264,13 @@ ALIASES
   $ pd incident reassign
 ```
 
-## `pd incident:rename [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-t <value>] [--prefix <value>] [-F <value>] [-p]`
+## `pd incident rename`
 
 Rename (change the title of) PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident rename [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-t <value>] [--prefix
-    <value>] [-F <value>] [-p]
+  $ pd incident rename
 
 FLAGS
   -F, --from=<value>     Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
@@ -1325,13 +1288,13 @@ DESCRIPTION
   Rename (change the title of) PagerDuty Incidents
 ```
 
-## `pd incident:resolve [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]`
+## `pd incident resolve`
 
 Resolve PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident resolve [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]
+  $ pd incident resolve
 
 FLAGS
   -F, --from=<value>     Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
@@ -1347,14 +1310,62 @@ DESCRIPTION
   Resolve PagerDuty Incidents
 ```
 
-## `pd incident:set -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]`
+## `pd incident responder add`
+
+Add Responders to PagerDuty Incidents
+
+```
+USAGE
+  $ pd incident responder add
+
+FLAGS
+  -E, --ep_names=<value>...     Escalation policy names to add as responders. Specify multiple times for multiple EPs
+  -F, --from=<value>            Login email of a PD user account for the "From:" header. Use only with legacy API
+                                tokens.
+  -U, --user_emails=<value>...  User emails to add as responders. Specify multiple times for multiple users.
+  -b, --useauth=<value>         Use the saved REST API token with this alias
+  -e, --ep_ids=<value>...       Escalation policy IDs to add as responders. Specify multiple times for multiple EPs
+  -h, --help                    Show CLI help.
+  -i, --ids=<value>...          Incident ID's to add responders to. Specify multiple times for multiple incidents.
+  -m, --me                      Add responders to all incidents that are currently assigned to me
+  -p, --pipe                    Read incident ID's from stdin.
+  -s, --message=<value>         A custom message to send to the responders
+  -u, --user_ids=<value>...     User ID's to add as responders. Specify multiple times for multiple users.
+  --debug                       Print REST API call debug logs
+  --token=<value>               Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Add Responders to PagerDuty Incidents
+```
+
+## `pd incident responder list`
+
+List Responders on PagerDuty Incidents
+
+```
+USAGE
+  $ pd incident responder list
+
+FLAGS
+  -b, --useauth=<value>  Use the saved REST API token with this alias
+  -h, --help             Show CLI help.
+  -i, --ids=<value>...   Incident ID's to list responders on. Specify multiple times for multiple incidents.
+  -m, --me               List responders on all incidents that are currently assigned to me
+  -p, --pipe             Read incident ID's from stdin.
+  --debug                Print REST API call debug logs
+  --token=<value>        Ignore the saved configuration and use this token
+
+DESCRIPTION
+  List Responders on PagerDuty Incidents
+```
+
+## `pd incident set`
 
 Update PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident set -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F
-    <value>] [-p]
+  $ pd incident set
 
 FLAGS
   -F, --from=<value>     Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
@@ -1375,14 +1386,13 @@ ALIASES
   $ pd incident update
 ```
 
-## `pd incident:update -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F <value>] [-p]`
+## `pd incident set`
 
 Update PagerDuty Incidents
 
 ```
 USAGE
-  $ pd incident update -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-F
-    <value>] [-p]
+  $ pd incident set
 
 FLAGS
   -F, --from=<value>     Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
@@ -1403,15 +1413,13 @@ ALIASES
   $ pd incident update
 ```
 
-## `pd log [-h] [--debug] [-b <value>] [--token <value>] [--since <value>] [--until <value>] [-O] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd log`
 
 Show PagerDuty Domain Log Entries
 
 ```
 USAGE
-  $ pd log [-h] [--debug] [-b <value>] [--token <value>] [--since <value>] [--until <value>] [-O] [-k
-    <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml]
-    [-x] [--no-truncate] [--no-header]
+  $ pd log
 
 FLAGS
   -O, --overview           Get only `overview` log entries
@@ -1440,13 +1448,13 @@ DESCRIPTION
 
 _See code: [src/commands/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.8/src/commands/log.ts)_
 
-## `pd login [-h] [--debug] [-a <value>] [-d]`
+## `pd auth web`
 
 Authenticate with PagerDuty in the browser
 
 ```
 USAGE
-  $ pd login [-h] [--debug] [-a <value>] [-d]
+  $ pd auth web
 
 FLAGS
   -a, --alias=<value>  The alias to use for this token. Defaults to the name of the PD subdomain
@@ -1461,14 +1469,13 @@ ALIASES
   $ pd login
 ```
 
-## `pd orchestration:add [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-d <value>] [-t <value>] [-T <value>]`
+## `pd orchestration add`
 
 Add a PagerDuty Event Orchestration
 
 ```
 USAGE
-  $ pd orchestration add [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-d <value>] [-t <value>] [-T
-    <value>]
+  $ pd orchestration add
 
 FLAGS
   -T, --team_name=<value>    The name of the team that owns this orchestration. If none is specified, only admins have
@@ -1486,14 +1493,13 @@ DESCRIPTION
   Add a PagerDuty Event Orchestration
 ```
 
-## `pd orchestration:list [-h] [--debug] [-b <value>] [--token <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd orchestration list`
 
 List PagerDuty Event Orchestrations
 
 ```
 USAGE
-  $ pd orchestration list [-h] [--debug] [-b <value>] [--token <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns
-    <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
+  $ pd orchestration list
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -1518,14 +1524,13 @@ DESCRIPTION
   List PagerDuty Event Orchestrations
 ```
 
-## `pd orchestration:route:add -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [-c <value>] [-s <value>] [-S <value>]`
+## `pd orchestration route add`
 
 Add a Route to a PagerDuty Event Orchestration
 
 ```
 USAGE
-  $ pd orchestration route add -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [-c <value>] [-s
-    <value>] [-S <value>]
+  $ pd orchestration route add
 
 FLAGS
   -S, --service_name=<value>   The name of a PagerDuty service to route to
@@ -1542,14 +1547,13 @@ DESCRIPTION
   Add a Route to a PagerDuty Event Orchestration
 ```
 
-## `pd orchestration:route:delete -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-r <value>] [-s <value>] [-S <value>]`
+## `pd orchestration route delete`
 
 Delete a Route from a PagerDuty Event Orchestration
 
 ```
 USAGE
-  $ pd orchestration route delete -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-r <value>] [-s <value>] [-S
-  <value>]
+  $ pd orchestration route delete
 
 FLAGS
   -S, --service_names=<value>...  Delete routes that route to the PagerDuty service with this name. Specify multiple
@@ -1567,15 +1571,13 @@ DESCRIPTION
   Delete a Route from a PagerDuty Event Orchestration
 ```
 
-## `pd orchestration:route:list -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd orchestration route list`
 
 List PagerDuty Event Orchestration Routes
 
 ```
 USAGE
-  $ pd orchestration route list -i <value> [-h] [--debug] [-b <value>] [--token <value>] [-k <value>] [-j] [-p] [-d <value>]
-    [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate]
-    [--no-header]
+  $ pd orchestration route list
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -1601,13 +1603,13 @@ DESCRIPTION
   List PagerDuty Event Orchestration Routes
 ```
 
-## `pd rest:delete -e <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]`
+## `pd rest delete`
 
 Make a DELETE request to PagerDuty
 
 ```
 USAGE
-  $ pd rest delete -e <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]
+  $ pd rest delete
 
 FLAGS
   -H, --headers=<value>...  [default: ] Headers to add, for example, `From=martin@pagerduty.com`. Specify multiple times
@@ -1624,15 +1626,13 @@ DESCRIPTION
   Make a DELETE request to PagerDuty
 ```
 
-## `pd rest:fetch -e <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>] [-t] [-k <value>] [-p] [-d <value>] [--limit <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd rest fetch`
 
 Fetch objects from PagerDuty
 
 ```
 USAGE
-  $ pd rest fetch -e <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>] [-t] [-k
-    <value>] [-p] [-d <value>] [--limit <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv]
-    [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
+  $ pd rest fetch
 
 FLAGS
   -H, --headers=<value>...  [default: ] Headers to add, for example, `From=martin@pagerduty.com`. Specify multiple times
@@ -1664,13 +1664,13 @@ DESCRIPTION
   Fetch objects from PagerDuty
 ```
 
-## `pd rest:get -e <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]`
+## `pd rest get`
 
 Make a GET request to PagerDuty
 
 ```
 USAGE
-  $ pd rest get -e <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]
+  $ pd rest get
 
 FLAGS
   -H, --headers=<value>...  [default: ] Headers to add, for example, `From=martin@pagerduty.com`. Specify multiple times
@@ -1687,13 +1687,13 @@ DESCRIPTION
   Make a GET request to PagerDuty
 ```
 
-## `pd rest:post -e <value> -d <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]`
+## `pd rest post`
 
 Make a POST request to PagerDuty
 
 ```
 USAGE
-  $ pd rest post -e <value> -d <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]
+  $ pd rest post
 
 FLAGS
   -H, --headers=<value>...  [default: ] Headers to add, for example, `From=martin@pagerduty.com`. Specify multiple times
@@ -1711,13 +1711,13 @@ DESCRIPTION
   Make a POST request to PagerDuty
 ```
 
-## `pd rest:put -e <value> -d <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]`
+## `pd rest put`
 
 Make a PUT request to PagerDuty
 
 ```
 USAGE
-  $ pd rest put -e <value> -d <value> [-h] [--debug] [-b <value>] [--token <value>] [-P <value>] [-H <value>]
+  $ pd rest put
 
 FLAGS
   -H, --headers=<value>...  [default: ] Headers to add, for example, `From=martin@pagerduty.com`. Specify multiple times
@@ -1735,13 +1735,13 @@ DESCRIPTION
   Make a PUT request to PagerDuty
 ```
 
-## `pd schedule:copy [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-d <value>] [-o] [-p]`
+## `pd schedule copy`
 
 Make a copy of a PagerDuty Schedule
 
 ```
 USAGE
-  $ pd schedule copy [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-d <value>] [-o] [-p]
+  $ pd schedule copy
 
 FLAGS
   -b, --useauth=<value>      Use the saved REST API token with this alias
@@ -1758,14 +1758,13 @@ DESCRIPTION
   Make a copy of a PagerDuty Schedule
 ```
 
-## `pd schedule:create -n <value> -u <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [-z <value>] [-t <value>] [-l <value>] [-s <value>] [--rotation_virtual_start <value>] [-o] [-p]`
+## `pd schedule create`
 
 Create a PagerDuty Schedule
 
 ```
 USAGE
-  $ pd schedule create -n <value> -u <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [-z <value>]
-    [-t <value>] [-l <value>] [-s <value>] [--rotation_virtual_start <value>] [-o] [-p]
+  $ pd schedule create
 
 FLAGS
   -b, --useauth=<value>             Use the saved REST API token with this alias
@@ -1790,15 +1789,13 @@ DESCRIPTION
   Create a PagerDuty Schedule
 ```
 
-## `pd schedule:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd schedule list`
 
 List PagerDuty Schedules
 
 ```
 USAGE
-  $ pd schedule list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>]
-    [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
-    [--no-truncate] [--no-header]
+  $ pd schedule list
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -1825,15 +1822,13 @@ DESCRIPTION
   List PagerDuty Schedules
 ```
 
-## `pd schedule:oncall [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-k <value>] [-d <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd schedule oncall`
 
 List a PagerDuty Schedule's on call shifts.
 
 ```
 USAGE
-  $ pd schedule oncall [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>]
-    [--until <value>] [-k <value>] [-d <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv]
-    [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
+  $ pd schedule oncall
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -1861,13 +1856,13 @@ DESCRIPTION
   List a PagerDuty Schedule's on call shifts.
 ```
 
-## `pd schedule:open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`
+## `pd schedule open`
 
 Open PagerDuty Schedules in the browser
 
 ```
 USAGE
-  $ pd schedule open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]
+  $ pd schedule open
 
 FLAGS
   -b, --useauth=<value>  Use the saved REST API token with this alias
@@ -1882,14 +1877,13 @@ DESCRIPTION
   Open PagerDuty Schedules in the browser
 ```
 
-## `pd schedule:override:add [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--start <value>] [--end <value>] [-u <value>] [-U <value>]`
+## `pd schedule override add`
 
 Add an override to a PagerDuty schedule.
 
 ```
 USAGE
-  $ pd schedule override add [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--start <value>]
-    [--end <value>] [-u <value>] [-U <value>]
+  $ pd schedule override add
 
 FLAGS
   -U, --user_email=<value>  The email of the PagerDuty user for the override
@@ -1907,15 +1901,13 @@ DESCRIPTION
   Add an override to a PagerDuty schedule.
 ```
 
-## `pd schedule:override:list [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd schedule override list`
 
 List a PagerDuty Schedule's overrides.
 
 ```
 USAGE
-  $ pd schedule override list [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>]
-    [--until <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>]
-    [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
+  $ pd schedule override list
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -1944,15 +1936,13 @@ DESCRIPTION
   List a PagerDuty Schedule's overrides.
 ```
 
-## `pd schedule:render [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd schedule render`
 
 Render a PagerDuty Schedule
 
 ```
 USAGE
-  $ pd schedule render [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>]
-    [--until <value>] [-k <value>] [-j] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv]
-    [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
+  $ pd schedule render
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -1980,15 +1970,13 @@ DESCRIPTION
   Render a PagerDuty Schedule
 ```
 
-## `pd schedule:show [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>] [--until <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd schedule show`
 
 Show a PagerDuty Schedule
 
 ```
 USAGE
-  $ pd schedule show [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [--since <value>]
-    [--until <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
-    [--no-truncate] [--no-header]
+  $ pd schedule show
 
 FLAGS
   -b, --useauth=<value>  Use the saved REST API token with this alias
@@ -2014,16 +2002,13 @@ DESCRIPTION
   Show a PagerDuty Schedule
 ```
 
-## `pd service:create -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [-e <value>] [-E <value>] [-r <value>] [-t <value>] [--create_alerts] [-u high|low|use_support_hours|severity_based] [--Ss <value>] [--Se <value>] [--Sd <value>] [--Ud high|low|severity_based] [--Uo high|low|severity_based] [--Uc] [--Gd <value>] [--Gi] [--Gc any|all] [--Gf <value>] [-F <value>] [-o] [-p]`
+## `pd service create`
 
 Create a PagerDuty Service
 
 ```
 USAGE
-  $ pd service create -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-d <value>] [-e <value>] [-E
-    <value>] [-r <value>] [-t <value>] [--create_alerts] [-u high|low|use_support_hours|severity_based] [--Ss <value>]
-    [--Se <value>] [--Sd <value>] [--Ud high|low|severity_based] [--Uo high|low|severity_based] [--Uc] [--Gd <value>]
-    [--Gi] [--Gc any|all] [--Gf <value>] [-F <value>] [-o] [-p]
+  $ pd service create
 
 FLAGS
   -E, --escalation_policy_name=<value>  The name of the service's escalation policy.
@@ -2064,13 +2049,13 @@ DESCRIPTION
   Create a PagerDuty Service
 ```
 
-## `pd service:disable [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`
+## `pd service disable`
 
 Disable PagerDuty Services
 
 ```
 USAGE
-  $ pd service disable [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]
+  $ pd service disable
 
 FLAGS
   -b, --useauth=<value>  Use the saved REST API token with this alias
@@ -2085,13 +2070,13 @@ DESCRIPTION
   Disable PagerDuty Services
 ```
 
-## `pd service:enable [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`
+## `pd service enable`
 
 Enable PagerDuty Services
 
 ```
 USAGE
-  $ pd service enable [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]
+  $ pd service enable
 
 FLAGS
   -b, --useauth=<value>  Use the saved REST API token with this alias
@@ -2106,15 +2091,13 @@ DESCRIPTION
   Enable PagerDuty Services
 ```
 
-## `pd service:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header] [-t <value>]`
+## `pd service list`
 
 List PagerDuty Services
 
 ```
 USAGE
-  $ pd service list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>]
-    [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
-    [--no-truncate] [--no-header] [-t <value>]
+  $ pd service list
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -2142,13 +2125,13 @@ DESCRIPTION
   List PagerDuty Services
 ```
 
-## `pd service:open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`
+## `pd service open`
 
 Open PagerDuty Services in the browser
 
 ```
 USAGE
-  $ pd service open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]
+  $ pd service open
 
 FLAGS
   -b, --useauth=<value>  Use the saved REST API token with this alias
@@ -2163,14 +2146,13 @@ DESCRIPTION
   Open PagerDuty Services in the browser
 ```
 
-## `pd service:set -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-N <value>] [-i <value>] [--jsonvalues] [-p]`
+## `pd service set`
 
 Set PagerDuty Service attributes
 
 ```
 USAGE
-  $ pd service set -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-N <value>]
-    [-i <value>] [--jsonvalues] [-p]
+  $ pd service set
 
 FLAGS
   -N, --exact_names=<value>...  Select a service whose name is this exact text. Specify multiple times for multiple
@@ -2192,14 +2174,13 @@ DESCRIPTION
   Set PagerDuty Service attributes
 ```
 
-## `pd tag:assign [-h] [--debug] [-b <value>] [--token <value>] [-a <value>] [-A <value>] [-r <value>] [-R <value>] [-u <value>] [-U <value>] [-t <value>] [-e <value>]`
+## `pd tag assign`
 
 Assign/Remove Tags to/from PagerDuty objects
 
 ```
 USAGE
-  $ pd tag assign [-h] [--debug] [-b <value>] [--token <value>] [-a <value>] [-A <value>] [-r <value>] [-R
-    <value>] [-u <value>] [-U <value>] [-t <value>] [-e <value>]
+  $ pd tag assign
 
 FLAGS
   -A, --add_names=<value>...     [default: ] The name of a Tag to add. If no tag with this name exists, a new tag will
@@ -2224,15 +2205,13 @@ DESCRIPTION
   Assign/Remove Tags to/from PagerDuty objects
 ```
 
-## `pd tag:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd tag list`
 
 List PagerDuty Tags
 
 ```
 USAGE
-  $ pd tag list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>]
-    [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
-    [--no-truncate] [--no-header]
+  $ pd tag list
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -2259,15 +2238,13 @@ DESCRIPTION
   List PagerDuty Tags
 ```
 
-## `pd tag:listobjects [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [-t users|teams|escalation_policies] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd tag listobjects`
 
 List Tagged PagerDuty Objects (Connected Entities)
 
 ```
 USAGE
-  $ pd tag listobjects [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-n <value>] [-t
-    users|teams|escalation_policies] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter
-    <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
+  $ pd tag listobjects
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -2297,14 +2274,13 @@ DESCRIPTION
   List Tagged PagerDuty Objects (Connected Entities)
 ```
 
-## `pd team:create -n <value> [-h] [--debug] [-b <value>] [--token <value>] [--description <value>] [-a <value>] [-A <value>] [-o] [-p]`
+## `pd team create`
 
 Create an empty PagerDuty Team. You can add escalation policies and users later with team:ep and team:user
 
 ```
 USAGE
-  $ pd team create -n <value> [-h] [--debug] [-b <value>] [--token <value>] [--description <value>] [-a <value>]
-    [-A <value>] [-o] [-p]
+  $ pd team create
 
 FLAGS
   -A, --parent_name=<value>  The name of the new team's parent team
@@ -2322,14 +2298,13 @@ DESCRIPTION
   Create an empty PagerDuty Team. You can add escalation policies and users later with team:ep and team:user
 ```
 
-## `pd team:ep:add [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-e <value>] [-E <value>]`
+## `pd team ep add`
 
 Add PagerDuty escalation policies to Teams.
 
 ```
 USAGE
-  $ pd team ep add [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-e <value>] [-E
-    <value>]
+  $ pd team ep add
 
 FLAGS
   -E, --ep_names=<value>...  Add an escalation policy with this name. Specify multiple times for multiple escalation
@@ -2347,15 +2322,13 @@ DESCRIPTION
   Add PagerDuty escalation policies to Teams.
 ```
 
-## `pd team:ep:list [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd team ep list`
 
 List the Escalation Policies for a PagerDuty Team
 
 ```
 USAGE
-  $ pd team ep list [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-k <value>] [-j] [-p]
-    [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
-    [--no-truncate] [--no-header]
+  $ pd team ep list
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -2382,14 +2355,13 @@ DESCRIPTION
   List the Escalation Policies for a PagerDuty Team
 ```
 
-## `pd team:ep:remove [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-e <value>] [-E <value>]`
+## `pd team ep remove`
 
 Remove PagerDuty escalation policies from Teams.
 
 ```
 USAGE
-  $ pd team ep remove [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-e <value>] [-E
-    <value>]
+  $ pd team ep remove
 
 FLAGS
   -E, --ep_names=<value>...  Remove an escalation policy with this name. Specify multiple times for multiple escalation
@@ -2407,15 +2379,13 @@ DESCRIPTION
   Remove PagerDuty escalation policies from Teams.
 ```
 
-## `pd team:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd team list`
 
 List PagerDuty Teams
 
 ```
 USAGE
-  $ pd team list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>]
-    [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
-    [--no-truncate] [--no-header]
+  $ pd team list
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -2442,13 +2412,13 @@ DESCRIPTION
   List PagerDuty Teams
 ```
 
-## `pd team:open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]`
+## `pd team open`
 
 Open PagerDuty Teams in the browser
 
 ```
 USAGE
-  $ pd team open [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-p]
+  $ pd team open
 
 FLAGS
   -b, --useauth=<value>  Use the saved REST API token with this alias
@@ -2463,14 +2433,13 @@ DESCRIPTION
   Open PagerDuty Teams in the browser
 ```
 
-## `pd team:user:add [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-u <value>] [-U <value>] [-r manager|responder|observer]`
+## `pd team user add`
 
 Add PagerDuty users to Teams. If a given user is already a member, this command will set their role on the team.
 
 ```
 USAGE
-  $ pd team user add [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-u <value>] [-U
-    <value>] [-r manager|responder|observer]
+  $ pd team user add
 
 FLAGS
   -U, --user_emails=<value>...  Add a user with this email. Specify multiple times for multiple users.
@@ -2488,15 +2457,13 @@ DESCRIPTION
   Add PagerDuty users to Teams. If a given user is already a member, this command will set their role on the team.
 ```
 
-## `pd team:user:list [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd team user list`
 
 List PagerDuty Team Members
 
 ```
 USAGE
-  $ pd team user list [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-k <value>] [-j] [-p]
-    [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
-    [--no-truncate] [--no-header]
+  $ pd team user list
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -2523,14 +2490,13 @@ DESCRIPTION
   List PagerDuty Team Members
 ```
 
-## `pd team:user:remove [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-u <value>] [-U <value>]`
+## `pd team user remove`
 
 Remove PagerDuty users from Teams
 
 ```
 USAGE
-  $ pd team user remove [-h] [--debug] [-b <value>] [--token <value>] [-n <value>] [-i <value>] [-u <value>] [-U
-    <value>]
+  $ pd team user remove
 
 FLAGS
   -U, --user_emails=<value>...  Remove a user with this email. Specify multiple times for multiple users.
@@ -2581,16 +2547,15 @@ EXAMPLES
     $ pd update --available
 ```
 
-_See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v3.0.8/src/commands/update.ts)_
+_See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v3.1.4/src/commands/update.ts)_
 
-## `pd user:contact:add -l <value> -T email|phone|sms -a <value> [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>]`
+## `pd user contact add`
 
 Add a contact method to a PagerDuty user
 
 ```
 USAGE
-  $ pd user contact add -l <value> -T email|phone|sms -a <value> [-h] [--debug] [-b <value>] [--token <value>] [-i
-    <value>] [-e <value>]
+  $ pd user contact add
 
 FLAGS
   -T, --type=<option>    (required) The contact method type.
@@ -2608,15 +2573,13 @@ DESCRIPTION
   Add a contact method to a PagerDuty user
 ```
 
-## `pd user:contact:list [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>] [-k <value>] [-j] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd user contact list`
 
 List a PagerDuty User's contact methods.
 
 ```
 USAGE
-  $ pd user contact list [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>] [-k <value>] [-j] [-p]
-    [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
-    [--no-truncate] [--no-header]
+  $ pd user contact list
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -2643,14 +2606,13 @@ DESCRIPTION
   List a PagerDuty User's contact methods.
 ```
 
-## `pd user:contact:set -c <value> [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>] [-l <value>] [-a <value>]`
+## `pd user contact set`
 
 Update a contact method for a PagerDuty user
 
 ```
 USAGE
-  $ pd user contact set -c <value> [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>] [-l
-    <value>] [-a <value>]
+  $ pd user contact set
 
 FLAGS
   -a, --address=<value>     The contact method address or phone number to set.
@@ -2667,15 +2629,13 @@ DESCRIPTION
   Update a contact method for a PagerDuty user
 ```
 
-## `pd user:create -e <value> -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-z <value>] [-c <value>] [-r admin|read_only_user|read_only_limited_user|user|limited_user|observer|restricted_access] [-t <value>] [-d <value>] [-w <value>] [--show_password] [-F <value>] [-o] [-p]`
+## `pd user create`
 
 Create a PagerDuty User
 
 ```
 USAGE
-  $ pd user create -e <value> -n <value> [-h] [--debug] [-b <value>] [--token <value>] [-z <value>] [-c <value>]
-    [-r admin|read_only_user|read_only_limited_user|user|limited_user|observer|restricted_access] [-t <value>] [-d
-    <value>] [-w <value>] [--show_password] [-F <value>] [-o] [-p]
+  $ pd user create
 
 FLAGS
   -F, --from=<value>         Login email of a PD user account for the "From:" header. Use only with legacy API tokens.
@@ -2701,14 +2661,13 @@ DESCRIPTION
   Create a PagerDuty User
 ```
 
-## `pd user:delete [-h] [--debug] [-b <value>] [--token <value>] [-e <value>] [-E <value>] [-i <value>] [-p] [--force]`
+## `pd user delete`
 
 Dangerous - Delete PagerDuty Users
 
 ```
 USAGE
-  $ pd user delete [-h] [--debug] [-b <value>] [--token <value>] [-e <value>] [-E <value>] [-i <value>] [-p]
-    [--force]
+  $ pd user delete
 
 FLAGS
   -E, --exact_emails=<value>...  Select a user whose login email is this exact text.  Specify multiple times for
@@ -2727,15 +2686,13 @@ DESCRIPTION
   Dangerous - Delete PagerDuty Users
 ```
 
-## `pd user:list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header] [-e <value>] [-E <value>]`
+## `pd user list`
 
 List PagerDuty Users
 
 ```
 USAGE
-  $ pd user list [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>]
-    [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
-    [--no-truncate] [--no-header] [-e <value>] [-E <value>]
+  $ pd user list
 
 FLAGS
   -E, --exact_email=<value>  Select the user whose login email is this exact text
@@ -2764,15 +2721,13 @@ DESCRIPTION
   List PagerDuty Users
 ```
 
-## `pd user:log [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>] [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header] [-e <value>] [-E <value>] [-i <value>] [--since <value>] [--until <value>] [-O]`
+## `pd user log`
 
 Show PagerDuty User Log Entries
 
 ```
 USAGE
-  $ pd user log [-h] [--debug] [-b <value>] [--token <value>] [-j] [-n <value>] [-k <value>] [--limit <value>]
-    [-p] [-d <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x]
-    [--no-truncate] [--no-header] [-e <value>] [-E <value>] [-i <value>] [--since <value>] [--until <value>] [-O]
+  $ pd user log
 
 FLAGS
   -E, --exact_email=<value>  Select the user whose login email is this exact text
@@ -2805,15 +2760,13 @@ DESCRIPTION
   Show PagerDuty User Log Entries
 ```
 
-## `pd user:oncall [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-e <value>] [--since <value>] [--until <value>] [-a] [-k <value>] [-d <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd user oncall`
 
 List a PagerDuty User's on call shifts.
 
 ```
 USAGE
-  $ pd user oncall [-h] [--debug] [-b <value>] [--token <value>] [-m] [-i <value>] [-e <value>] [--since <value>]
-    [--until <value>] [-a] [-k <value>] [-d <value>] [-j] [--columns <value>] [--sort <value>] [--filter <value>]
-    [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
+  $ pd user oncall
 
 FLAGS
   -a, --always             Include 'Always on call.'
@@ -2843,14 +2796,13 @@ DESCRIPTION
   List a PagerDuty User's on call shifts.
 ```
 
-## `pd user:replace [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-d] [-u <value>] [-U <value>] [-p] [--force]`
+## `pd user replace`
 
 Replace PagerDuty Users in all Schedules and Escalation Policies
 
 ```
 USAGE
-  $ pd user replace [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-d] [-u <value>] [-U <value>] [-p]
-    [--force]
+  $ pd user replace
 
 FLAGS
   -U, --user_email=<value>  The email of the replacement user.
@@ -2868,15 +2820,13 @@ DESCRIPTION
   Replace PagerDuty Users in all Schedules and Escalation Policies
 ```
 
-## `pd user:session:list [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>] [-k <value>] [-d <value>] [--since <value>] [--until <value>] [-j] [-p] [-q <value>] [--columns <value>] [--sort <value>] [--filter <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]`
+## `pd user session list`
 
 List a PagerDuty User's sessions.
 
 ```
 USAGE
-  $ pd user session list [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-e <value>] [-k <value>] [-d
-    <value>] [--since <value>] [--until <value>] [-j] [-p] [-q <value>] [--columns <value>] [--sort <value>] [--filter
-    <value>] [--csv] [--output csv|json|yaml] [-x] [--no-truncate] [--no-header]
+  $ pd user session list
 
 FLAGS
   -b, --useauth=<value>    Use the saved REST API token with this alias
@@ -2906,14 +2856,13 @@ DESCRIPTION
   List a PagerDuty User's sessions.
 ```
 
-## `pd user:set -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-e <value>] [-E <value>] [-i <value>] [--jsonvalues] [-p]`
+## `pd user set`
 
 Set PagerDuty User attributes
 
 ```
 USAGE
-  $ pd user set -k <value> -v <value> [-h] [--debug] [-b <value>] [--token <value>] [-e <value>] [-E <value>]
-    [-i <value>] [--jsonvalues] [-p]
+  $ pd user set
 
 FLAGS
   -E, --exact_emails=<value>...  Select a user whose login email is this exact text.  Specify multiple times for
@@ -2935,15 +2884,13 @@ DESCRIPTION
   Set PagerDuty User attributes
 ```
 
-## `pd util:deleteresource -t business_service|escalation_policy|extension|response_play|ruleset|schedule|service|tag|team|user|webhook_subscription|automation_action|automation_runner [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-p] [--force]`
+## `pd util deleteresource`
 
 Dangerous - Delete PagerDuty Resources
 
 ```
 USAGE
-  $ pd util deleteresource -t
-    business_service|escalation_policy|extension|response_play|ruleset|schedule|service|tag|team|user|webhook_subscripti
-    on|automation_action|automation_runner [-h] [--debug] [-b <value>] [--token <value>] [-i <value>] [-p] [--force]
+  $ pd util deleteresource
 
 FLAGS
   -b, --useauth=<value>         Use the saved REST API token with this alias
@@ -2962,13 +2909,13 @@ DESCRIPTION
   Dangerous - Delete PagerDuty Resources
 ```
 
-## `pd util:timestamp [-h] [--debug]`
+## `pd util timestamp`
 
 Make ISO8601 timestamps
 
 ```
 USAGE
-  $ pd util timestamp [-h] [--debug]
+  $ pd util timestamp
 
 ARGUMENTS
   DATE  A human-style date/time, like "4pm 1/1/2021" or "Dec 2 1pm", etc. Default: now
@@ -2999,5 +2946,5 @@ FLAG DESCRIPTIONS
     Additionally shows the architecture, node version, operating system, and versions of plugins that the CLI is using.
 ```
 
-_See code: [@oclif/plugin-version](https://github.com/oclif/plugin-version/blob/v1.1.3/src/commands/version.ts)_
+_See code: [@oclif/plugin-version](https://github.com/oclif/plugin-version/blob/v1.2.1/src/commands/version.ts)_
 <!-- commandsstop -->
