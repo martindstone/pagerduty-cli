@@ -1,7 +1,4 @@
 import { ListBaseCommand } from '../../../base/list-base-command'
-import { CliUx } from '@oclif/core'
-import * as utils from '../../../utils'
-import jp from 'jsonpath'
 
 export default class AutomationActionList extends ListBaseCommand<typeof AutomationActionList> {
   static pdObjectName = 'automation action'
@@ -71,27 +68,8 @@ export default class AutomationActionList extends ListBaseCommand<typeof Automat
       },
     }
 
-    if (this.flags.keys) {
-      for (const key of this.flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
-        }
-      }
-    }
-
     const options = {
       ...this.flags, // parsed flags
-    }
-
-    if (this.flags.pipe) {
-      for (const k of Object.keys(columns)) {
-        if (k !== 'id') {
-          const colAny = columns[k] as any
-          colAny.extended = true
-        }
-      }
-      options['no-header'] = true
     }
 
     this.printTable(actions, columns, this.flags)

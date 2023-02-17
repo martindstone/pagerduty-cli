@@ -1,9 +1,6 @@
 import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
 import { Flags, CliUx } from '@oclif/core'
-import * as utils from '../../utils'
-import jp from 'jsonpath'
 import { PD } from '../../pd'
-import { splitDedupAndFlatten } from '../../utils'
 
 export default class OrchestrationList extends AuthenticatedBaseCommand<typeof OrchestrationList> {
   static description = 'List PagerDuty Event Orchestrations'
@@ -38,7 +35,7 @@ export default class OrchestrationList extends AuthenticatedBaseCommand<typeof O
       this.flags.delimiter = '\n'
     }
     if (this.flags.keys) {
-      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+      this.flags.keys = this.flags.keys.map(x => x.split(/,\s*/)).flat().filter(x => x)
     }
   }
 
@@ -93,15 +90,6 @@ export default class OrchestrationList extends AuthenticatedBaseCommand<typeof O
         get: (row: any) => row.integrations ? row.integrations.map((x: any) => x.parameters.routing_key).join(this.flags.delimiter) : '',
       },
       routes: {},
-    }
-
-    if (this.flags.keys) {
-      for (const key of this.flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
-        }
-      }
     }
 
     this.printTable(globalOrchestrations, columns, this.flags)

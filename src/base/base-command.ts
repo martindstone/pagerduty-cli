@@ -1,6 +1,8 @@
 import { Command, Flags, Interfaces, CliUx } from '@oclif/core'
 import { Config } from '../config'
 import { PD } from '../pd'
+import * as utils from '../utils'
+import jp from 'jsonpath'
 import chalk from 'chalk'
 
 export type Flags<T extends typeof Command> = Interfaces.InferredFlags<typeof BaseCommand['globalFlags'] & T['flags']>
@@ -83,11 +85,28 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
   }
 
   printTable(rows: any[], columns: Record<string, object>, flags: any) {
+    const _columns = { ...columns }
     if (flags.pipe && flags.pipe !== 'input') {
       this.log(rows.map(x => x.id).join('\n'))
       return
     }
-    CliUx.ux.table(rows, columns, { ...flags })
+    if (flags.keys) {
+      for (const key of flags.keys) {
+        let header = key
+        let path = key
+        if (key.indexOf('=') > 0 && key.indexOf('=') < key.length - 1) {
+          const kvre = /([^=]+)=(.*)/
+          const match = key.match(kvre)
+          header = match[1]
+          path = match[2]
+        }
+        _columns[header] = {
+          header,
+          get: (row: any) => utils.formatField(jp.query(row, path), flags.delimiter),
+        }
+      }
+    }
+    CliUx.ux.table(rows, _columns, { ...flags })
   }
 
   protected async catch(err: Error & { exitCode?: number }): Promise<any> {

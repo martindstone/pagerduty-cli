@@ -3,8 +3,6 @@ import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 import * as chrono from 'chrono-node'
-import jp from 'jsonpath'
-import { splitDedupAndFlatten } from '../../utils'
 
 export default class EpOncall extends AuthenticatedBaseCommand<typeof EpOncall> {
   static description = 'List a PagerDuty Escalation Policy\'s on call shifts.'
@@ -50,7 +48,7 @@ export default class EpOncall extends AuthenticatedBaseCommand<typeof EpOncall> 
       this.flags.delimiter = '\n'
     }
     if (this.flags.keys) {
-      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+      this.flags.keys = this.flags.keys.map(x => x.split(/,\s*/)).flat().filter(x => x)
     }
   }
 
@@ -122,15 +120,6 @@ export default class EpOncall extends AuthenticatedBaseCommand<typeof EpOncall> 
         header: 'Schedule Name',
         get: (row: any) => row.schedule?.summary || '',
       },
-    }
-
-    if (this.flags.keys) {
-      for (const key of this.flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
-        }
-      }
     }
 
     this.printTable(oncalls, columns, this.flags)

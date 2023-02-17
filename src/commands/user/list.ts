@@ -1,7 +1,5 @@
 import { ListBaseCommand } from '../../base/list-base-command'
 import { CliUx, Flags } from '@oclif/core'
-import * as utils from '../../utils'
-import jp from 'jsonpath'
 
 export default class UserList extends ListBaseCommand<typeof UserList> {
   static pdObjectName = 'user'
@@ -78,15 +76,6 @@ export default class UserList extends ListBaseCommand<typeof UserList> {
       contact_sms: {
         get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'sms_contact_method').map((e: any) => e.address).join(this.flags.delimiter),
       },
-    }
-
-    if (this.flags.keys) {
-      for (const key of this.flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
-        }
-      }
     }
 
     this.printTable(users, columns, this.flags)

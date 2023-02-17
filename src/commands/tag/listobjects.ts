@@ -1,9 +1,6 @@
 import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
 import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
-import * as utils from '../../utils'
-import jp from 'jsonpath'
-import { splitDedupAndFlatten } from '../../utils'
 
 export default class TagList extends AuthenticatedBaseCommand<typeof TagList> {
   static description = 'List Tagged PagerDuty Objects (Connected Entities)'
@@ -57,7 +54,7 @@ export default class TagList extends AuthenticatedBaseCommand<typeof TagList> {
       this.flags.delimiter = '\n'
     }
     if (this.flags.keys) {
-      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+      this.flags.keys = this.flags.keys.map(x => x.split(/,\s*/)).flat().filter(x => x)
     }
   }
 
@@ -114,15 +111,6 @@ export default class TagList extends AuthenticatedBaseCommand<typeof TagList> {
         header: 'Object Type',
         get: (row: any) => row.type.split('_reference')[0],
       },
-    }
-
-    if (this.flags.keys) {
-      for (const key of this.flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
-        }
-      }
     }
 
     this.printTable(rows, columns, this.flags)

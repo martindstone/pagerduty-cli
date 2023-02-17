@@ -1,7 +1,4 @@
 import { ListBaseCommand } from '../../base/list-base-command'
-import { CliUx } from '@oclif/core'
-import * as utils from '../../utils'
-import jp from 'jsonpath'
 
 export default class ScheduleList extends ListBaseCommand<typeof ScheduleList> {
   static pdObjectName = 'schedule'
@@ -45,15 +42,6 @@ export default class ScheduleList extends ListBaseCommand<typeof ScheduleList> {
         get: (row: { teams: any[] }) => row.teams.map((e: any) => e.summary).join(this.flags.delimiter),
         extended: true,
       },
-    }
-
-    if (this.flags.keys) {
-      for (const key of this.flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
-        }
-      }
     }
 
     this.printTable(schedules, columns, this.flags)

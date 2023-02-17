@@ -3,8 +3,6 @@ import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../../utils'
 import * as chrono from 'chrono-node'
-import jp from 'jsonpath'
-import { splitDedupAndFlatten } from '../../../utils'
 
 export default class ScheduleOverrideList extends AuthenticatedBaseCommand<typeof ScheduleOverrideList> {
   static description = 'List a PagerDuty Schedule\'s overrides.'
@@ -57,7 +55,7 @@ export default class ScheduleOverrideList extends AuthenticatedBaseCommand<typeo
       this.flags.delimiter = '\n'
     }
     if (this.flags.keys) {
-      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+      this.flags.keys = this.flags.keys.map(x => x.split(/,\s*/)).flat().filter(x => x)
     }
   }
 
@@ -125,15 +123,6 @@ export default class ScheduleOverrideList extends AuthenticatedBaseCommand<typeo
       user_name: {
         get: (row: any) => row.user.summary,
       },
-    }
-
-    if (this.flags.keys) {
-      for (const key of this.flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
-        }
-      }
     }
 
     this.printTable(overrides, columns, this.flags)

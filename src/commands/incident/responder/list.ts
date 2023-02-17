@@ -94,9 +94,7 @@ export default class IncidentResponderList extends AuthenticatedBaseCommand<type
         })
       }
     }
-    // console.log(JSON.stringify(rows, null, 2))
 
-    // console.log(JSON.stringify(responder_request_targets, null, 2))
     const columns: Record<string, any> = {
       incident_id: {
         get: (row: any) => row.incident.id,

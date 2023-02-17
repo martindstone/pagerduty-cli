@@ -1,8 +1,5 @@
 import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
 import { CliUx, Flags } from '@oclif/core'
-import * as utils from '../../utils'
-import jp from 'jsonpath'
-import { splitDedupAndFlatten } from '../../utils'
 
 export default class RestFetch extends AuthenticatedBaseCommand<typeof RestFetch> {
   static description = 'Fetch objects from PagerDuty'
@@ -57,7 +54,7 @@ export default class RestFetch extends AuthenticatedBaseCommand<typeof RestFetch
       this.flags.delimiter = '\n'
     }
     if (this.flags.keys) {
-      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+      this.flags.keys = this.flags.keys.map(x => x.split(/,\s*/)).flat().filter(x => x)
     }
   }
 
@@ -119,15 +116,6 @@ export default class RestFetch extends AuthenticatedBaseCommand<typeof RestFetch
       id: {
         header: 'ID',
       },
-    }
-
-    if (this.flags.keys) {
-      for (const key of this.flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
-        }
-      }
     }
 
     this.printTable(data, columns, this.flags)

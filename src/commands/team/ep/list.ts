@@ -2,8 +2,6 @@ import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-comma
 import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../../utils'
-import jp from 'jsonpath'
-import { splitDedupAndFlatten } from '../../../utils'
 
 export default class TeamEpList extends AuthenticatedBaseCommand<typeof TeamEpList> {
   static description = 'List the Escalation Policies for a PagerDuty Team'
@@ -48,7 +46,7 @@ export default class TeamEpList extends AuthenticatedBaseCommand<typeof TeamEpLi
       this.flags.delimiter = '\n'
     }
     if (this.flags.keys) {
-      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+      this.flags.keys = this.flags.keys.map(x => x.split(/,\s*/)).flat().filter(x => x)
     }
   }
 
@@ -113,15 +111,6 @@ export default class TeamEpList extends AuthenticatedBaseCommand<typeof TeamEpLi
         header: 'Escalation Policy Name',
         get: (row: any) => row.summary,
       },
-    }
-
-    if (this.flags.keys) {
-      for (const key of this.flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
-        }
-      }
     }
 
     this.printTable(eps, columns, this.flags)

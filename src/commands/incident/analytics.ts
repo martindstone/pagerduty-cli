@@ -2,8 +2,6 @@ import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
 import { CliUx, Flags } from '@oclif/core'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
-import jp from 'jsonpath'
-import { splitDedupAndFlatten } from '../../utils'
 
 export default class IncidentAnalytics extends AuthenticatedBaseCommand<typeof IncidentAnalytics> {
   static description = 'Get Incident analytics'
@@ -44,7 +42,7 @@ export default class IncidentAnalytics extends AuthenticatedBaseCommand<typeof I
       this.flags.delimiter = '\n'
     }
     if (this.flags.keys) {
-      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+      this.flags.keys = this.flags.keys.map(x => x.split(/,\s*/)).flat().filter(x => x)
     }
   }
 
@@ -112,15 +110,6 @@ export default class IncidentAnalytics extends AuthenticatedBaseCommand<typeof I
         header: 'Engaged users',
         get: (row: any) => utils.formatField(row.engaged_user_count),
       },
-    }
-
-    if (this.flags.keys) {
-      for (const key of this.flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
-        }
-      }
     }
 
     const flags: any = {

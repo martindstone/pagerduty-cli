@@ -1,9 +1,7 @@
 import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
 import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
-import * as utils from '../../../utils'
 import * as chrono from 'chrono-node'
-import { splitDedupAndFlatten } from '../../../utils'
 
 export default class AnalyticsIncident extends AuthenticatedBaseCommand<typeof AnalyticsIncident> {
   static description = 'Get PagerDuty Incident Analytics'
@@ -67,7 +65,7 @@ export default class AnalyticsIncident extends AuthenticatedBaseCommand<typeof A
       this.flags.delimiter = '\n'
     }
     if (this.flags.keys) {
-      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+      this.flags.keys = this.flags.keys.map(x => x.split(/,\s*/)).flat().filter(x => x)
     }
   }
 

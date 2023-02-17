@@ -1,9 +1,6 @@
 import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
 import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
-import * as utils from '../../../utils'
-import jp from 'jsonpath'
-import { splitDedupAndFlatten } from '../../../utils'
 import parsePhoneNumber from 'libphonenumber-js'
 
 const types: Record<string, string> = {
@@ -56,7 +53,7 @@ export default class UserContactList extends AuthenticatedBaseCommand<typeof Use
       this.flags.delimiter = '\n'
     }
     if (this.flags.keys) {
-      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+      this.flags.keys = this.flags.keys.map(x => x.split(/,\s*/)).flat().filter(x => x)
     }
   }
 
@@ -103,15 +100,6 @@ export default class UserContactList extends AuthenticatedBaseCommand<typeof Use
           return row.address
         },
       },
-    }
-
-    if (this.flags.keys) {
-      for (const key of this.flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
-        }
-      }
     }
 
     this.printTable(contact_methods, columns, this.flags)

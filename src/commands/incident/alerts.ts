@@ -4,8 +4,6 @@ import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../utils'
 import log from 'ololog'
-import jp from 'jsonpath'
-import { splitDedupAndFlatten } from '../../utils'
 
 export default class IncidentAlerts extends AuthenticatedBaseCommand<typeof IncidentAlerts> {
   static description = 'Show Alerts in PagerDuty Incidents'
@@ -51,7 +49,7 @@ export default class IncidentAlerts extends AuthenticatedBaseCommand<typeof Inci
       this.flags.delimiter = '\n'
     }
     if (this.flags.keys) {
-      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+      this.flags.keys = this.flags.keys.map(x => x.split(/,\s*/)).flat().filter(x => x)
     }
   }
 
@@ -134,15 +132,6 @@ export default class IncidentAlerts extends AuthenticatedBaseCommand<typeof Inci
         header: 'URL',
         extended: true,
       },
-    }
-
-    if (this.flags.keys) {
-      for (const key of this.flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
-        }
-      }
     }
 
     const flags: any = {

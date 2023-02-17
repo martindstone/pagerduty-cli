@@ -1,8 +1,6 @@
 import { ListBaseCommand } from '../../base/list-base-command'
-import { CliUx, Flags } from '@oclif/core'
+import { CliUx } from '@oclif/core'
 import chalk from 'chalk'
-import * as utils from '../../utils'
-import jp from 'jsonpath'
 
 export default class EpList extends ListBaseCommand<typeof EpList> {
   static pdObjectName = 'escalation policy'
@@ -53,15 +51,6 @@ export default class EpList extends ListBaseCommand<typeof EpList> {
       '# Loops': {
         get: (row: any) => row.num_loops,
       },
-    }
-
-    if (this.flags.keys) {
-      for (const key of this.flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
-        }
-      }
     }
 
     this.printTable(eps, columns, this.flags)

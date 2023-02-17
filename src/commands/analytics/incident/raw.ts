@@ -1,10 +1,7 @@
 import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
 import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
-import * as utils from '../../../utils'
-import jp from 'jsonpath'
 import * as chrono from 'chrono-node'
-import { splitDedupAndFlatten } from '../../../utils'
 
 export default class AnalyticsIncidentRaw extends AuthenticatedBaseCommand<typeof AnalyticsIncidentRaw> {
   static description = 'Get PagerDuty Raw Incident Analytics'
@@ -54,7 +51,7 @@ export default class AnalyticsIncidentRaw extends AuthenticatedBaseCommand<typeo
       this.flags.delimiter = '\n'
     }
     if (this.flags.keys) {
-      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+      this.flags.keys = this.flags.keys.map(x => x.split(/,\s*/)).flat().filter(x => x)
     }
   }
 
@@ -174,15 +171,6 @@ export default class AnalyticsIncidentRaw extends AuthenticatedBaseCommand<typeo
       },
       service_name: {
       },
-    }
-
-    if (this.flags.keys) {
-      for (const key of this.flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
-        }
-      }
     }
 
     this.printTable(analytics, columns, this.flags)

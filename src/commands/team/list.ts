@@ -1,7 +1,4 @@
 import { ListBaseCommand } from '../../base/list-base-command'
-import { CliUx, Flags } from '@oclif/core'
-import * as utils from '../../utils'
-import jp from 'jsonpath'
 
 export default class TeamList extends ListBaseCommand<typeof TeamList> {
   static pdObjectName = 'team'
@@ -35,15 +32,6 @@ export default class TeamList extends ListBaseCommand<typeof TeamList> {
       description: {
         extended: true,
       },
-    }
-
-    if (this.flags.keys) {
-      for (const key of this.flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
-        }
-      }
     }
 
     this.printTable(teams, columns, this.flags)

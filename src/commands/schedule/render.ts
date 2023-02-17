@@ -2,9 +2,7 @@ import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
 import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
-import jp from 'jsonpath'
 import * as chrono from 'chrono-node'
-import { splitDedupAndFlatten } from '../../utils'
 
 export default class ScheduleRender extends AuthenticatedBaseCommand<typeof ScheduleRender> {
   static description = 'Render a PagerDuty Schedule'
@@ -50,7 +48,7 @@ export default class ScheduleRender extends AuthenticatedBaseCommand<typeof Sche
       this.flags.delimiter = '\n'
     }
     if (this.flags.keys) {
-      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+      this.flags.keys = this.flags.keys.map(x => x.split(/,\s*/)).flat().filter(x => x)
     }
   }
 
@@ -128,15 +126,6 @@ export default class ScheduleRender extends AuthenticatedBaseCommand<typeof Sche
       user_name: {
         get: (row: any) => row.user.summary,
       },
-    }
-
-    if (this.flags.keys) {
-      for (const key of this.flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
-        }
-      }
     }
 
     this.printTable(schedule.final_schedule.rendered_schedule_entries, columns, this.flags)

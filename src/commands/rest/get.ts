@@ -1,7 +1,6 @@
 import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
 import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
-import * as utils from '../../utils'
 
 export default class RestGet extends AuthenticatedBaseCommand<typeof RestGet> {
   static description = 'Make a GET request to PagerDuty'

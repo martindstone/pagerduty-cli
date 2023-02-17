@@ -1,6 +1,5 @@
 import { Command, Flags, Interfaces, CliUx } from '@oclif/core'
 import { AuthenticatedBaseCommand } from './authenticated-base-command'
-import { splitDedupAndFlatten } from '../utils'
 
 export type Flags<T extends typeof Command> = Interfaces.InferredFlags<typeof ListBaseCommand['globalFlags'] & T['flags']>
 
@@ -47,7 +46,7 @@ export abstract class ListBaseCommand<T extends typeof Command> extends Authenti
       this.flags.delimiter = '\n'
     }
     if (this.flags.keys) {
-      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+      this.flags.keys = this.flags.keys.map(x => x.split(/,\s*/)).flat().filter(x => x)
     }
   }
 

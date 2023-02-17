@@ -1,9 +1,6 @@
 import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
 import { Flags, CliUx } from '@oclif/core'
 import chalk from 'chalk'
-import * as utils from '../../../utils'
-import jp from 'jsonpath'
-import { splitDedupAndFlatten } from '../../../utils'
 
 export default class OrchestrationRouteList extends AuthenticatedBaseCommand<typeof OrchestrationRouteList> {
   static description = 'List PagerDuty Event Orchestration Routes'
@@ -43,7 +40,7 @@ export default class OrchestrationRouteList extends AuthenticatedBaseCommand<typ
       this.flags.delimiter = '\n'
     }
     if (this.flags.keys) {
-      this.flags.keys = splitDedupAndFlatten(this.flags.keys)
+      this.flags.keys = this.flags.keys.map(x => x.split(/,\s*/)).flat().filter(x => x)
     }
   }
 
@@ -106,16 +103,6 @@ export default class OrchestrationRouteList extends AuthenticatedBaseCommand<typ
       actions: {
         get: (row: any) => row.actions.join(this.flags.delimiter),
       },
-    }
-
-    if (this.flags.keys) {
-      for (const key of this.flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) =>
-            utils.formatField(jp.query(row, key), this.flags.delimiter),
-        }
-      }
     }
 
     this.printTable(rows, columns, this.flags)

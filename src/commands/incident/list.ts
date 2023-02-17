@@ -1,8 +1,6 @@
 import { ListBaseCommand } from '../../base/list-base-command'
 import { Flags, CliUx } from '@oclif/core'
 import chalk from 'chalk'
-import * as utils from '../../utils'
-import jp from 'jsonpath'
 import * as chrono from 'chrono-node'
 import { PD } from '../../pd'
 
@@ -341,15 +339,6 @@ export default class IncidentList extends ListBaseCommand<typeof IncidentList> {
           })
           return notesTextArr.join('\n')
         },
-      }
-    }
-
-    if (this.flags.keys) {
-      for (const key of this.flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
-        }
       }
     }
 

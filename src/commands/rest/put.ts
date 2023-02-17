@@ -1,7 +1,6 @@
 import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
 import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
-import * as utils from '../../utils'
 
 export default class RestPut extends AuthenticatedBaseCommand<typeof RestPut> {
   static description = 'Make a PUT request to PagerDuty'

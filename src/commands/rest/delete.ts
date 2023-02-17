@@ -1,7 +1,6 @@
 import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
 import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
-import * as utils from '../../utils'
 
 export default class RestDelete extends AuthenticatedBaseCommand<typeof RestDelete> {
   static description = 'Make a DELETE request to PagerDuty'

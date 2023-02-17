@@ -1,8 +1,6 @@
 import { ListBaseCommand } from '../../../base/list-base-command'
-import { CliUx, Flags } from '@oclif/core'
+import { Flags } from '@oclif/core'
 import chalk from 'chalk'
-import * as utils from '../../../utils'
-import jp from 'jsonpath'
 import { PD } from '../../../pd'
 
 export default class AutomationRunnerList extends ListBaseCommand<typeof AutomationRunnerList> {
@@ -97,15 +95,6 @@ export default class AutomationRunnerList extends ListBaseCommand<typeof Automat
       }
       columns.message = {
         get: (row: {id: string}) => healthMap[row.id].message ? healthMap[row.id].message : '',
-      }
-    }
-
-    if (this.flags.keys) {
-      for (const key of this.flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), this.flags.delimiter),
-        }
       }
     }
 
