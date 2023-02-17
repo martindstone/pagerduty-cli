@@ -1446,7 +1446,7 @@ DESCRIPTION
   Show PagerDuty Domain Log Entries
 ```
 
-_See code: [src/commands/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.8/src/commands/log.ts)_
+_See code: [src/commands/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.9/src/commands/log.ts)_
 
 ## `pd auth web`
 
