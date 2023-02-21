@@ -98,7 +98,7 @@ export default class IncidentAlerts extends AuthenticatedBaseCommand<typeof Inci
       this.error('No incidents found', { exit: 0 })
     }
     if (this.flags.json) {
-      this.printJsonAndExit(alerts)
+      await this.printJsonAndExit(alerts)
     }
 
     const columns: Record<string, object> = {

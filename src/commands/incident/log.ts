@@ -94,7 +94,7 @@ export default class IncidentLog extends AuthenticatedBaseCommand<typeof Inciden
       this.exit(0)
     }
     if (this.flags.json) {
-      this.printJsonAndExit(log_entries)
+      await this.printJsonAndExit(log_entries)
     }
 
     const columns: Record<string, object> = {

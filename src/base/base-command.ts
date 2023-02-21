@@ -76,11 +76,12 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     }
   }
 
-  printJsonAndExit(data: any) {
+  async printJsonAndExit(data: any) {
     if (!data) {
       this.exit()
     }
     CliUx.ux.styledJSON(data)
+    await CliUx.ux.flush(1000)
     this.exit()
   }
 

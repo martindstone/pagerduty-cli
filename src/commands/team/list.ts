@@ -19,7 +19,7 @@ export default class TeamList extends ListBaseCommand<typeof TeamList> {
     })
 
     if (this.flags.json) {
-      this.printJsonAndExit(teams)
+      await this.printJsonAndExit(teams)
     }
 
     const columns: Record<string, object> = {

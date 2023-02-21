@@ -261,7 +261,7 @@ export default class EventAlert extends BaseCommand<typeof EventAlert> {
     CliUx.ux.action.stop(chalk.bold.green('done'))
 
     if (json) {
-      this.printJsonAndExit(r.data)
+      await this.printJsonAndExit(r.data)
     }
     if (pipe) {
       this.log(r.data.dedup_key)

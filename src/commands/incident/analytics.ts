@@ -73,7 +73,7 @@ export default class IncidentAnalytics extends AuthenticatedBaseCommand<typeof I
 
     const analytics = br.getDatas()
     if (this.flags.json) {
-      this.printJsonAndExit(analytics)
+      await this.printJsonAndExit(analytics)
     }
 
     const columns: Record<string, object> = {

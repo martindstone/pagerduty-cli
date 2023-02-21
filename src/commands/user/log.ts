@@ -105,7 +105,7 @@ export default class UserLog extends ListBaseCommand<typeof UserLog> {
       this.exit(0)
     }
     if (this.flags.json) {
-      this.printJsonAndExit(log_entries)
+      await this.printJsonAndExit(log_entries)
     }
 
     const columns: Record<string, object> = {

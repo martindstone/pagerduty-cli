@@ -72,7 +72,7 @@ export default class Log extends AuthenticatedBaseCommand<typeof Log> {
       this.exit(0)
     }
     if (this.flags.json) {
-      this.printJsonAndExit(log_entries)
+      await this.printJsonAndExit(log_entries)
     }
 
     const columns: Record<string, object> = {

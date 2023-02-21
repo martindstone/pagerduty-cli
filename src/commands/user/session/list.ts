@@ -110,7 +110,7 @@ export default class UserSessionList extends AuthenticatedBaseCommand<typeof Use
     }
 
     if (this.flags.json) {
-      this.printJsonAndExit(sessions)
+      await this.printJsonAndExit(sessions)
     }
 
     const columns: Record<string, object> = {

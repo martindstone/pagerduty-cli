@@ -97,7 +97,7 @@ export default class TagList extends AuthenticatedBaseCommand<typeof TagList> {
       this.error('No objects found.', { exit: 1 })
     }
     if (this.flags.json) {
-      this.printJsonAndExit(rows)
+      await this.printJsonAndExit(rows)
     }
 
     const columns: Record<string, object> = {

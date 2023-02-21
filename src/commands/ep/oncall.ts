@@ -99,7 +99,7 @@ export default class EpOncall extends AuthenticatedBaseCommand<typeof EpOncall> 
     }
 
     if (this.flags.json) {
-      this.printJsonAndExit(oncalls)
+      await this.printJsonAndExit(oncalls)
     }
 
     const columns: Record<string, object> = {

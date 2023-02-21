@@ -92,7 +92,7 @@ export default class TeamUserList extends AuthenticatedBaseCommand<typeof TeamUs
     CliUx.ux.action.stop(chalk.bold.green('done'))
 
     if (this.flags.json) {
-      this.printJsonAndExit(members)
+      await this.printJsonAndExit(members)
     }
 
     const columns: Record<string, object> = {

@@ -43,7 +43,7 @@ export default class UserList extends ListBaseCommand<typeof UserList> {
       this.error('No users found.', { exit: 1 })
     }
     if (this.flags.json) {
-      this.printJsonAndExit(users)
+      await this.printJsonAndExit(users)
     }
 
     const columns: Record<string, object> = {

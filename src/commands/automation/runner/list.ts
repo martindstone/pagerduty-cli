@@ -51,7 +51,7 @@ export default class AutomationRunnerList extends ListBaseCommand<typeof Automat
     }
 
     if (this.flags.json) {
-      this.printJsonAndExit(runners)
+      await this.printJsonAndExit(runners)
     }
 
     const columns: Record<string, object> = {

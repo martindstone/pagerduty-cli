@@ -164,7 +164,7 @@ export default class EventChange extends BaseCommand<typeof EventChange> {
     CliUx.ux.action.stop(chalk.bold.green('done'))
 
     if (json) {
-      this.printJsonAndExit(r.data)
+      await this.printJsonAndExit(r.data)
     }
 
     this.log(r.data.message)

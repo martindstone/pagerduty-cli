@@ -89,7 +89,7 @@ export default class OrchestrationRouteList extends AuthenticatedBaseCommand<typ
     })
 
     if (this.flags.json) {
-      this.printJsonAndExit(rows)
+      await this.printJsonAndExit(rows)
     }
 
     const columns: Record<string, object> = {

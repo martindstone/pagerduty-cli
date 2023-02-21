@@ -95,7 +95,7 @@ export default class TeamEpList extends AuthenticatedBaseCommand<typeof TeamEpLi
     CliUx.ux.action.stop(chalk.bold.green('done'))
 
     if (this.flags.json) {
-      this.printJsonAndExit(eps)
+      await this.printJsonAndExit(eps)
     }
 
     const columns: Record<string, object> = {

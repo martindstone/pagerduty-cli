@@ -117,7 +117,7 @@ export default class UserOncall extends AuthenticatedBaseCommand<typeof UserOnca
     CliUx.ux.action.stop(chalk.bold.green('done'))
 
     if (this.flags.json) {
-      this.printJsonAndExit(oncalls)
+      await this.printJsonAndExit(oncalls)
     }
 
     const columns: Record<string, object> = {

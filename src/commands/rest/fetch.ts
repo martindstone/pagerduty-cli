@@ -109,7 +109,7 @@ export default class RestFetch extends AuthenticatedBaseCommand<typeof RestFetch
     })
 
     if (!this.flags.table) {
-      this.printJsonAndExit(data)
+      await this.printJsonAndExit(data)
     }
 
     const columns: Record<string, object> = {

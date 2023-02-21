@@ -142,7 +142,7 @@ export default class AnalyticsIncident extends AuthenticatedBaseCommand<typeof A
     }
 
     if (this.flags.json) {
-      this.printJsonAndExit(analytics)
+      await this.printJsonAndExit(analytics)
     }
 
     const columns: Record<string, any> = {

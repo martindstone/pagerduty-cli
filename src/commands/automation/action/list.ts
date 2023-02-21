@@ -31,7 +31,7 @@ export default class AutomationActionList extends ListBaseCommand<typeof Automat
     }
 
     if (this.flags.json) {
-      this.printJsonAndExit(actions)
+      await this.printJsonAndExit(actions)
     }
 
     const columns: Record<string, object> = {

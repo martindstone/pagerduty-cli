@@ -103,7 +103,7 @@ export default class ScheduleOverrideList extends AuthenticatedBaseCommand<typeo
     }
 
     if (this.flags.json) {
-      this.printJsonAndExit(overrides)
+      await this.printJsonAndExit(overrides)
     }
 
     const columns: Record<string, object> = {

@@ -21,7 +21,7 @@ export default class TagList extends ListBaseCommand<typeof TagList> {
       this.error('No tags found.', { exit: 1 })
     }
     if (this.flags.json) {
-      this.printJsonAndExit(tags)
+      await this.printJsonAndExit(tags)
     }
 
     const columns: Record<string, object> = {

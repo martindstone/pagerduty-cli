@@ -50,7 +50,7 @@ export default class ServiceList extends ListBaseCommand<typeof ServiceList> {
     }
 
     if (this.flags.json) {
-      this.printJsonAndExit(services)
+      await this.printJsonAndExit(services)
     }
 
     const columns: Record<string, object> = {

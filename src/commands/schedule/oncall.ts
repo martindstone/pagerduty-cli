@@ -97,7 +97,7 @@ export default class ScheduleOncall extends AuthenticatedBaseCommand<typeof Sche
     }
 
     if (this.flags.json) {
-      this.printJsonAndExit(oncalls)
+      await this.printJsonAndExit(oncalls)
     }
 
     const columns: Record<string, object> = {

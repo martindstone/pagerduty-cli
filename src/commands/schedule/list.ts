@@ -22,7 +22,7 @@ export default class ScheduleList extends ListBaseCommand<typeof ScheduleList> {
     }
 
     if (this.flags.json) {
-      this.printJsonAndExit(schedules)
+      await this.printJsonAndExit(schedules)
     }
 
     const columns: Record<string, object> = {

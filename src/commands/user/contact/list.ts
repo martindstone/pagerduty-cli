@@ -77,7 +77,7 @@ export default class UserContactList extends AuthenticatedBaseCommand<typeof Use
     })
 
     if (this.flags.json) {
-      this.printJsonAndExit(contact_methods)
+      await this.printJsonAndExit(contact_methods)
     }
 
     const columns: Record<string, object> = {

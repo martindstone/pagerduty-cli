@@ -255,7 +255,7 @@ export default class IncidentList extends ListBaseCommand<typeof IncidentList> {
     }
 
     if (this.flags.json) {
-      this.printJsonAndExit(incidents)
+      await this.printJsonAndExit(incidents)
     }
 
     const columns: Record<string, object> = {

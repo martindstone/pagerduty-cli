@@ -99,7 +99,7 @@ export default class ScheduleRender extends AuthenticatedBaseCommand<typeof Sche
     } = schedule
 
     if (this.flags.json) {
-      this.printJsonAndExit(schedule.final_schedule.rendered_schedule_entries)
+      await this.printJsonAndExit(schedule.final_schedule.rendered_schedule_entries)
     }
 
     const columns: Record<string, object> = {

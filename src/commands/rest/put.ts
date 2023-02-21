@@ -84,6 +84,6 @@ export default class RestPut extends AuthenticatedBaseCommand<typeof RestPut> {
       this.error(`Request failed: ${response.getFormattedError()}`)
     }
     CliUx.ux.action.stop(chalk.bold.green('done'))
-    this.printJsonAndExit(response.getData())
+    await this.printJsonAndExit(response.getData())
   }
 }

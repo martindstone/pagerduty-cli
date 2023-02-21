@@ -124,7 +124,7 @@ export default class AnalyticsIncidentRaw extends AuthenticatedBaseCommand<typeo
     }
 
     if (this.flags.json) {
-      this.printJsonAndExit(analytics)
+      await this.printJsonAndExit(analytics)
     }
 
     const columns: Record<string, object> = {

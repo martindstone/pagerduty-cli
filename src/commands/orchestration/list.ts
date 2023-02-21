@@ -72,7 +72,7 @@ export default class OrchestrationList extends AuthenticatedBaseCommand<typeof O
     }
 
     if (this.flags.json) {
-      this.printJsonAndExit(globalOrchestrations)
+      await this.printJsonAndExit(globalOrchestrations)
     }
 
     const columns: Record<string, object> = {

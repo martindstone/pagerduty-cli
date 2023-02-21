@@ -27,7 +27,7 @@ export default class EpList extends ListBaseCommand<typeof EpList> {
     CliUx.ux.action.stop(chalk.bold.green(`got ${eps.length}`))
 
     if (this.flags.json) {
-      this.printJsonAndExit(eps)
+      await this.printJsonAndExit(eps)
     }
 
     const columns: Record<string, object> = {

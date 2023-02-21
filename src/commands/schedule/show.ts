@@ -76,7 +76,7 @@ export default class ScheduleShow extends AuthenticatedBaseCommand<typeof Schedu
     const schedule = r.getData().schedule
 
     if (this.flags.json) {
-      this.printJsonAndExit({ schedule })
+      await this.printJsonAndExit({ schedule })
     }
 
     const coverage_int = schedule.final_schedule.rendered_coverage_percentage
