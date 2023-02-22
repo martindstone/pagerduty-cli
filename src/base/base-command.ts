@@ -78,11 +78,20 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
 
   async printJsonAndExit(data: any) {
     if (!data) {
-      this.exit()
+      process.exit(0)
     }
-    CliUx.ux.styledJSON(data)
-    await CliUx.ux.flush(1000)
-    this.exit()
+    process.stdout.on('drain', () => {
+      process.exit(0)
+    })
+    const cardinal = require('cardinal')
+    const theme = require('cardinal/themes/jq')
+    let json = JSON.stringify(data, null, 2) + '\n'
+    if (chalk.level) json = cardinal.highlight(json, {json: true, theme})
+    if (process.stdout.write(json)) {
+      process.exit(0)
+    }
+    await CliUx.ux.wait(10000)
+    console.error('Timed out waiting for pipe', {exit: 1})
   }
 
   printTable(rows: any[], columns: Record<string, object>, flags: any) {
