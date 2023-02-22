@@ -6,7 +6,7 @@ import * as utils from '../../../utils'
 import { PD } from '../../../pd'
 
 export default class IncidentSubscriberUpdate extends AuthenticatedBaseCommand<typeof IncidentSubscriberUpdate> {
-  static description = 'Send a ststus update to PagerDuty Incident Subscribers'
+  static description = 'Send a status update to PagerDuty Incident Subscribers'
 
   static flags = {
     me: Flags.boolean({
