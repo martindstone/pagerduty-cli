@@ -25,6 +25,7 @@ export default class IncidentResponderList extends AuthenticatedBaseCommand<type
       description: 'Read incident ID\'s from stdin.',
       exclusive: ['me', 'ids'],
     }),
+    ...CliUx.ux.table.Flags,
   }
 
   async run() {
