@@ -157,12 +157,12 @@ export default class IncidentResponderAdd extends AuthenticatedBaseCommand<typeo
     }
 
     if (this.flags.ep_names) {
-      CliUx.ux.action.start(`Finding EP ID for ${chalk.bold.blue(this.flags.ep_names)}`)
       for (const ep_name of this.flags.ep_names) {
+        CliUx.ux.action.start(`Finding EP ID for ${chalk.bold.blue(ep_name)}`)
         // eslint-disable-next-line no-await-in-loop
         const ep_id = await this.pd.epIDForName(ep_name)
         if (!ep_id) {
-          this.error(`No EP or multiple EPs found for name ${this.flags.ep_names}`, { exit: 1 })
+          this.error(`No EP or multiple EPs found for name ${ep_name}`, { exit: 1 })
         }
         responder_request_targets = [...responder_request_targets, {
           responder_request_target: {
