@@ -53,7 +53,7 @@ export default class AuthWeb extends BaseCommand<typeof AuthWeb> {
       Math.random().toString(36).substring(2, 15)
     const authorizationUri = this.client.authorizeURL({
       redirect_uri: 'http://127.0.0.1:8000/callback',
-      scope: 'user',
+      scope: 'read write openid',
       state: state,
     })
 
