@@ -12,19 +12,33 @@ export default class UtilDeleteResource extends AuthenticatedBaseCommand<typeof 
       char: 't',
       description: 'The type of PagerDuty resource to delete. You have to provide either -i or -p to specify IDs of objects to delete.',
       options: [
+        
         'business_service',
+       
         'escalation_policy',
+       
         'extension',
+       
         'response_play',
+       
         'ruleset',
+       
         'schedule',
+       
         'service',
+       
         'tag',
+       
         'team',
+       
         'user',
+       
         'webhook_subscription',
         'automation_action',
         'automation_runner'
+      ,
+        'field',
+        'field_schema'
       ],
       exclusive: ['endpoint'],
       required: true,
@@ -102,6 +116,8 @@ export default class UtilDeleteResource extends AuthenticatedBaseCommand<typeof 
         endpoint: 'automation_actions/runners',
         name: 'automation runners',
       },
+      'field': 'fields',
+      'field_schema': 'field_schemas',
     }
 
     const resource_types_with_weird_ids = [
@@ -110,6 +126,11 @@ export default class UtilDeleteResource extends AuthenticatedBaseCommand<typeof 
     ]
 
     const resource = resource_types[this.flags['resource-type']]
+
+    const headers: Record<string, string> = {}
+    if (['field', 'field_schema'].includes(flags['resource-type'])) {
+      headers['X-EARLY-ACCESS'] = 'flex-service-early-access'
+    }
 
     let resource_ids: string[] = []
     if (this.flags.ids) {
@@ -159,6 +180,7 @@ export default class UtilDeleteResource extends AuthenticatedBaseCommand<typeof 
         endpoint: `/${resource.endpoint}/${resource_id}`,
         method: 'DELETE',
         params: {},
+        headers
       })
     }
 
