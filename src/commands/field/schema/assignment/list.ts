@@ -45,28 +45,25 @@ export default class FieldSchemaAssignmentList extends AuthenticatedBaseCommand<
       'X-EARLY-ACCESS': 'flex-service-early-access',
     }
 
-    if (!service_ids) {
-      service_ids = []
-    } else {
-      service_ids = [...new Set(service_ids)]
-    }
-
-    const schemas = await this.pd.fetchWithSpinner('customfields/schemas', {
-      activityDescription: 'Getting field schemas from PD',
-      headers,
-      stopSpinnerWhenDone: false,
-    })
-    if (schemas.length === 0) {
-      this.error('No schemas found. Please check your search.', {exit: 1})
-    }
-
     if (!schema_ids && !service_ids) {
+      const schemas = await this.pd.fetchWithSpinner('customfields/schemas', {
+        activityDescription: 'Getting field schemas from PD',
+        headers,
+        stopSpinnerWhenDone: false,
+      })
+      if (schemas.length === 0) {
+        this.error('No schemas found. Please check your search.', {exit: 1})
+      }
       schema_ids = schemas.map(x => x.id)
     } else {
       schema_ids = [...new Set(schema_ids)]
     }
 
-    const schemasMap = Object.assign({}, ...schemas.map((schema: any) => ({[schema.id]: schema})))
+    if (!service_ids) {
+      service_ids = []
+    } else {
+      service_ids = [...new Set(service_ids)]
+    }
 
     const services = await this.pd.fetchWithSpinner('services', {
       activityDescription: 'Getting services from PD',
@@ -127,7 +124,7 @@ export default class FieldSchemaAssignmentList extends AuthenticatedBaseCommand<
         get: (row: any) => row.schema.id,
       },
       schema_name: {
-        get: (row: any) => schemasMap[row.schema.id].title,
+        get: (row: any) => row.schema.summary,
       },
       service_id: {
         get: (row: any) => row.service.id,
