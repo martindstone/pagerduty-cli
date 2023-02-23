@@ -1481,7 +1481,7 @@ DESCRIPTION
 
 ## `pd incident subscriber update`
 
-Send a ststus update to PagerDuty Incident Subscribers
+Send a status update to PagerDuty Incident Subscribers
 
 ```
 USAGE
@@ -1504,7 +1504,7 @@ FLAGS
   --token=<value>         Ignore the saved configuration and use this token
 
 DESCRIPTION
-  Send a ststus update to PagerDuty Incident Subscribers
+  Send a status update to PagerDuty Incident Subscribers
 ```
 
 ## `pd incident set`
