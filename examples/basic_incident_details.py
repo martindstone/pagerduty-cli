@@ -20,7 +20,7 @@ def runcmd(cmd):
     return None
 
 print("Getting incidents... ", end='', flush=True)
-incidents = runcmd(f"pd incident:list -s open -s closed --since '{args.start}' --until {args.end} -j")
+incidents = runcmd(f"pd incident:list -s open -s closed --since \"{args.start}\" --until \"{args.end}\" -j")
 if incidents is None or len(incidents) == 0:
   print("didn't get any")
   sys.exit(1)
