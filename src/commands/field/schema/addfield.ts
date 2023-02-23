@@ -1,12 +1,11 @@
-import Command from '../../../base'
+import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
 import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 
-export default class FieldSchemaAddField extends Command {
+export default class FieldSchemaAddField extends AuthenticatedBaseCommand<typeof FieldSchemaAddField> {
   static description = 'Add a Field to a PagerDuty Custom Field Schema'
 
   static flags = {
-    ...Command.flags,
     id: Flags.string({
       char: 'i',
       description: 'The ID of a Field Schema to add fields to.',
@@ -26,11 +25,12 @@ export default class FieldSchemaAddField extends Command {
       description: 'Provide a default value for the field. You can specify multiple times if the field is multi-valued.',
       multiple: true,
     }),
+    overwrite: Flags.boolean({
+      description: 'Overwrite existing configuration for this field if it is already present in the schema',
+    })
   }
 
   async run() {
-    const {flags} = await this.parse(this.ctor)
-
     const headers = {
       'X-EARLY-ACCESS': 'flex-service-early-access',
     }
@@ -39,15 +39,16 @@ export default class FieldSchemaAddField extends Command {
       id:schema_id,
       field_id,
       required,
-      defaultvalue
-    } = flags
+      defaultvalue,
+      overwrite,
+    } = this.flags
 
     if (required && !defaultvalue) {
       this.error('When specifying -r, you must also specify a default value with -d', {exit: 1})
     }
 
     let r = await this.pd.request({
-      endpoint: `fields/${field_id}`,
+      endpoint: `customfields/fields/${field_id}`,
       headers
     })
     if (r.isFailure) {
@@ -55,20 +56,42 @@ export default class FieldSchemaAddField extends Command {
     }
     const field = r.getData()
 
+    CliUx.ux.action.start('Getting schema field configurations')
+    r = await this.pd.request({
+      endpoint: `customfields/schemas/${schema_id}`,
+      method: 'GET',
+      params: {
+        include: ['field_configurations']
+      },
+      headers,
+    })
+    if (r.isFailure) {
+      CliUx.ux.action.stop(chalk.bold.red('failed!'))
+      this.error(`Failed to get schema ${schema_id}`, {exit: 1})
+    }
+    CliUx.ux.action.stop(chalk.bold.green('done'))
+
+    const schema = r.getData().schema
+    const field_configurations = schema.field_configurations
+
+    if (!overwrite && field_configurations.some((x: any) => x.field.id === field_id)) {
+      this.error(`Field ${chalk.bold.blue(field_id)} already exists in schema ${chalk.bold.blue(schema_id)}`, {
+        suggestions: ['Use --overwrite to overwrite the existing configuration for this field'],
+        exit: 1,
+      })
+    }
     if (defaultvalue && defaultvalue.length > 1 && !field.field.multi_value) {
       this.error(`Field ${chalk.bold.blue(field_id)} is single-valued but you gave multiple defaults.`, {exit: 1})
     }
 
-    const field_configuration: any = {
-      field_configuration: {
-        field: {
-          id: field_id,
-          type: 'field_reference'
-        },
-        required: required ? true : false,
-      }
+    const new_field_configuration: any = {
+      field: {
+        id: field_id,
+        type: 'field_reference'
+      },
+      required: required ? true : false,
     }
-
+    
     if (defaultvalue) {
       const value = defaultvalue.map((v: any) => {
         switch(field.field.datatype) {
@@ -78,28 +101,35 @@ export default class FieldSchemaAddField extends Command {
           default: return v
         }
       })
-      field_configuration.field_configuration.default_value = {
+      new_field_configuration.default_value = {
         datatype: field.field.datatype,
         multi_value: field.field.multi_value,
         value: field.field.multi_value ? value : value[0],
       }
     }
 
+    const new_field_configurations = [
+      ...field_configurations.filter((x: any) => x.field.id !== field_id),
+      new_field_configuration,
+    ]
+
+    const data = {
+      schema: {
+        field_configurations: new_field_configurations,
+      }
+    }
+
     CliUx.ux.action.start(`Adding field ${chalk.bold.blue(field.field.name)} to PagerDuty field schema ${chalk.bold.blue(schema_id)}`)
     r = await this.pd.request({
-      endpoint: `field_schemas/${schema_id}/field_configurations`,
-      method: 'POST',
-      data: field_configuration,
+      endpoint: `customfields/schemas/${schema_id}`,
+      method: 'PUT',
+      data,
       headers,
     })
     if (r.isFailure) {
+      CliUx.ux.action.stop(chalk.bold.red('failed!'))
       this.error(`Failed to add field to schema: ${r.getFormattedError()}`, {exit: 1})
     }
     CliUx.ux.action.stop(chalk.bold.green('done'))
-    const returned_field = r.getData()
-
-    if (flags.pipe) {
-      this.log(returned_field.field.id)
-    }
   }
 }

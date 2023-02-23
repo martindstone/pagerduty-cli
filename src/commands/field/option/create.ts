@@ -1,13 +1,12 @@
-import Command from '../../../base'
-import {CliUx, Flags} from '@oclif/core'
+import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
+import { CliUx, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../../utils'
 
-export default class FieldOptionCreate extends Command {
+export default class FieldOptionCreate extends AuthenticatedBaseCommand<typeof FieldOptionCreate> {
   static description = 'Create an option for a fixed-options Custom Field'
 
   static flags = {
-    ...Command.flags,
     id: Flags.string({
       char: 'i',
       description: 'The ID of a fixed-options Field to add an option to.',
@@ -58,8 +57,6 @@ export default class FieldOptionCreate extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(this.ctor)
-
     const headers = {
       'X-EARLY-ACCESS': 'flex-service-early-access',
     }
@@ -67,7 +64,8 @@ export default class FieldOptionCreate extends Command {
     const {
       id,
       value,
-    } = flags
+      pipe,
+    } = this.flags
 
     if (utils.invalidPagerDutyIDs([id]).length > 0) {
       this.error(`Invalid PagerDuty ID ${chalk.bold.blue(id)}`, {exit: 1})
@@ -75,7 +73,7 @@ export default class FieldOptionCreate extends Command {
 
     CliUx.ux.action.start(`Getting field details from PD`)
     let r = await this.pd.request({
-      endpoint: `fields/${id}`,
+      endpoint: `customfields/fields/${id}`,
       method: 'GET',
       headers
     })
@@ -109,7 +107,7 @@ export default class FieldOptionCreate extends Command {
 
     CliUx.ux.action.start('Creating PagerDuty field option')
     r = await this.pd.request({
-      endpoint: `fields/${id}/field_options`,
+      endpoint: `customfields/fields/${id}/field_options`,
       method: 'POST',
       data: fieldOption,
       headers,
@@ -120,7 +118,7 @@ export default class FieldOptionCreate extends Command {
     CliUx.ux.action.stop(chalk.bold.green('done'))
     const returned_field = r.getData()
 
-    if (flags.pipe) {
+    if (pipe) {
       this.log(returned_field.field_option.id)
     } else {
       this.log(`Created field option ${chalk.bold.blue(returned_field.field_option.id)}`)

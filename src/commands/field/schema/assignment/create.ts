@@ -1,12 +1,11 @@
-import Command from '../../../../base'
+import { AuthenticatedBaseCommand } from '../../../../base/authenticated-base-command'
 import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 
-export default class FieldSchemaAssignmentRemove extends Command {
-  static description = 'Unassign a PagerDuty Custom Field Schema to a Service'
+export default class FieldSchemaAssignmentCreate extends AuthenticatedBaseCommand<typeof FieldSchemaAssignmentCreate> {
+  static description = 'Create a PagerDuty Custom Field Schema Assignment'
 
   static flags = {
-    ...Command.flags,
     id: Flags.string({
       char: 'i',
       description: 'The ID of a Field Schema to assign.',
@@ -20,33 +19,33 @@ export default class FieldSchemaAssignmentRemove extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(this.ctor)
-
     const headers = {
       'X-EARLY-ACCESS': 'flex-service-early-access',
     }
 
     const {
-      id,
+      id: schema_id,
       service_id
-    } = flags
+    } = this.flags
 
-
-    const assignment = {
-      field_schema_assignment: {
-        resource: {
+    const data = {
+      schema_assignment: {
+        service: {
           id: service_id,
-          type: 'service_reference'
+          type: 'service_reference',
         },
-        field_schema_id: id,
+        schema: {
+          id: schema_id,
+          type: 'schema_reference',
+        }
       }
     }
 
-    CliUx.ux.action.start(`Unassigning PagerDuty field schema ${chalk.bold.blue(id)} from service ${chalk.bold.blue(service_id)}`)
+    CliUx.ux.action.start(`Assigning PagerDuty field schema ${chalk.bold.blue(schema_id)} to service ${chalk.bold.blue(service_id)}`)
     const r = await this.pd.request({
-      endpoint: 'field_schema_assignments/unassign',
+      endpoint: 'customfields/schema_assignments',
       method: 'POST',
-      data: assignment,
+      data,
       headers,
     })
     if (r.isFailure) {

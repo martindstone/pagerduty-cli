@@ -1,14 +1,13 @@
-import Command from '../../../base'
+import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
 import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../../utils'
 import jp from 'jsonpath'
 
-export default class FieldOptionRemove extends Command {
+export default class FieldOptionRemove extends AuthenticatedBaseCommand<typeof FieldOptionRemove> {
   static description = 'Remove an option from a fixed-options Custom Field'
 
   static flags = {
-    ...Command.flags,
     id: Flags.string({
       char: 'i',
       description: 'The ID of a fixed-options Field to remove an option from.',
@@ -22,12 +21,10 @@ export default class FieldOptionRemove extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(this.ctor)
-
     const {
       id,
       option_id,
-    } = flags
+    } = this.flags
 
     if (utils.invalidPagerDutyIDs([id]).length > 0) {
       this.error(`Invalid PagerDuty field ID ${chalk.bold.blue(id)}`, {exit: 1})
@@ -43,7 +40,7 @@ export default class FieldOptionRemove extends Command {
 
     CliUx.ux.action.start(`Getting field details from PD`)
     let r = await this.pd.request({
-      endpoint: `fields/${id}`,
+      endpoint: `customfields/fields/${id}`,
       method: 'GET',
       headers
     })
@@ -59,7 +56,7 @@ export default class FieldOptionRemove extends Command {
 
     CliUx.ux.action.start('Removing PagerDuty field option')
     r = await this.pd.request({
-      endpoint: `fields/${id}/field_options/${option_id}`,
+      endpoint: `customfields/fields/${id}/field_options/${option_id}`,
       method: 'DELETE',
       headers,
     })

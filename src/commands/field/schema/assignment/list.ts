@@ -1,16 +1,21 @@
-import Command from '../../../../base'
+import { AuthenticatedBaseCommand } from '../../../../base/authenticated-base-command'
 import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
-import * as utils from '../../../../utils'
-import jp from 'jsonpath'
-import { PD } from '../../../../pd'
 
-export default class FieldSchemaAssignmentList extends Command {
+export default class FieldSchemaAssignmentList extends AuthenticatedBaseCommand<typeof FieldSchemaAssignmentList> {
   static description = 'List PagerDuty Custom Field Schema Service Assignments'
 
   static flags = {
-    ...Command.flags,
-    ...Command.listCommandFlags,
+    ids: Flags.string({
+      char: 'i',
+      description: 'A schema ID to list assignments for. Specify multiple times for multiple schemas.',
+      multiple: true,
+    }),
+    service_ids: Flags.string({
+      char: 's',
+      description: 'A service ID to list assignments for. Specify multiple times for multiple services.',
+      multiple: true,
+    }),
     keys: Flags.string({
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
@@ -21,11 +26,6 @@ export default class FieldSchemaAssignmentList extends Command {
       description: 'output full details as JSON',
       exclusive: ['columns', 'filter', 'sort', 'csv', 'extended'],
     }),
-    pipe: Flags.boolean({
-      char: 'p',
-      description: 'Print field ID\'s only to stdout, for use with pipes.',
-      exclusive: ['columns', 'sort', 'csv', 'extended', 'json'],
-    }),
     delimiter: Flags.string({
       char: 'd',
       description: 'Delimiter for fields that have more than one value',
@@ -35,19 +35,35 @@ export default class FieldSchemaAssignmentList extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(this.ctor)
+    let {
+      ids: schema_ids,
+      service_ids,
+      json,
+    } = this.flags
 
     const headers = {
       'X-EARLY-ACCESS': 'flex-service-early-access',
     }
 
-    const schemas = await this.pd.fetchWithSpinner('field_schemas', {
+    if (!service_ids) {
+      service_ids = []
+    } else {
+      service_ids = [...new Set(service_ids)]
+    }
+
+    const schemas = await this.pd.fetchWithSpinner('customfields/schemas', {
       activityDescription: 'Getting field schemas from PD',
       headers,
       stopSpinnerWhenDone: false,
     })
     if (schemas.length === 0) {
       this.error('No schemas found. Please check your search.', {exit: 1})
+    }
+
+    if (!schema_ids) {
+      schema_ids = schemas.map(x => x.id)
+    } else {
+      schema_ids = [...new Set(schema_ids)]
     }
 
     const schemasMap = Object.assign({}, ...schemas.map((schema: any) => ({[schema.id]: schema})))
@@ -57,80 +73,70 @@ export default class FieldSchemaAssignmentList extends Command {
       headers,
       stopSpinnerWhenDone: false,
     })
-    if (schemas.length === 0) {
+    if (services.length === 0) {
       this.error('No services found. Please check your search.', {exit: 1})
     }
 
     const servicesMap = Object.assign({}, ...services.map((service: any) => ({[service.id]: service})))
 
-    const requests: PD.Request[] = schemas.map((schema: any) => ({
-      endpoint: `field_schema_assignments/field_schemas/${schema.id}`,
-      method: 'GET',
-      params: {
-        limit: 100,
-      },
-      headers,
-    }))
-    const rs = await this.pd.batchedRequestWithSpinner(requests, {
-      activityDescription: `Getting assignments for ${schemas.length} schemas`
-    })
+    let schema_assignments: any[] = []
+
+    for (const schema_id of schema_ids) {
+      const r = await this.pd.fetchWithSpinner('customfields/schema_assignments', {
+        activityDescription: `Getting schema assignments for schema ${chalk.bold.blue(schema_id)}`,
+        stopSpinnerWhenDone: false,
+        params: {
+          schema_id
+        },
+        headers,
+      })
+      schema_assignments.push(...r)
+    }
+    for (const service_id of service_ids) {
+      const r = await this.pd.fetchWithSpinner('customfields/schema_assignments', {
+        activityDescription: `Getting schema assignments for service ${chalk.bold.blue(service_id)}`,
+        stopSpinnerWhenDone: false,
+        params: {
+          service_id
+        },
+        headers,
+      })
+      schema_assignments.push(...r)
+    }
+
     CliUx.ux.action.stop(chalk.bold.green('done'))
 
-    const assignments: any[] = []
-
-    for (const [i, v] of rs.results.entries()) {
-      const schema_id = rs.requests[i].endpoint.split('/').pop()
-      const data = v.getData()
-      for (const resource of data.resources) {
-        assignments.push({
-          schema_id,
-          service_id: resource.id
-        })
-      }
+    if (schema_assignments.length === 0) {
+      this.error('No schema assignments found.', {exit: 1})
     }
 
-    if (assignments.length === 0) {
-      this.error('No assignments found.', {exit: 1})
-    }
+    // deduplicate schema assignments on the schema assignment id
+    schema_assignments = schema_assignments.filter((x, idx, self) => {
+      return idx === self.findIndex(y => y.id === x.id)
+    })
 
-    if (flags.json) {
-      await utils.printJsonAndExit(assignments)
+    if (json) {
+      await this.printJsonAndExit(schema_assignments)
     }
 
     const columns: Record<string, object> = {
-      schema_id: {},
-      schema_name: {
-        get: (row: any) => schemasMap[row.schema_id].title,
+      assignment_id: {
+        get: (row: any) => row.id,
       },
-      service_id: {},
+      schema_id: {
+        get: (row: any) => row.schema.id,
+      },
+      schema_name: {
+        get: (row: any) => schemasMap[row.schema.id].title,
+      },
+      service_id: {
+        get: (row: any) => row.service.id,
+      },
       service_name: {
-        get: (row: any) => servicesMap[row.service_id].name,
+        get: (row: any) => servicesMap[row.service.id].name,
       }
     }
 
-    if (flags.keys) {
-      for (const key of flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
-        }
-      }
-    }
-
-    const options = {
-      ...flags, // parsed flags
-    }
-
-    if (flags.pipe) {
-      for (const k of Object.keys(columns)) {
-        if (k !== 'id') {
-          const colAny = columns[k] as any
-          colAny.extended = true
-        }
-      }
-      options['no-header'] = true
-    }
-
-    CliUx.ux.table(assignments, columns, options)
+    this.printTable(schema_assignments, columns, this.flags)
   }
 }

@@ -1,12 +1,11 @@
-import Command from '../../../base'
+import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
 import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 
-export default class FieldSchemaCreate extends Command {
+export default class FieldSchemaCreate extends AuthenticatedBaseCommand<typeof FieldSchemaCreate> {
   static description = 'Create a PagerDuty Custom Field Schema'
 
   static flags = {
-    ...Command.flags,
     title: Flags.string({
       char: 't',
       description: 'An identifier for the schema intended primarily for scripting or other programmatic use.',
@@ -23,8 +22,6 @@ export default class FieldSchemaCreate extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(this.ctor)
-
     const headers = {
       'X-EARLY-ACCESS': 'flex-service-early-access',
     }
@@ -32,10 +29,11 @@ export default class FieldSchemaCreate extends Command {
     const {
       title,
       description,
-    } = flags
+      pipe,
+    } = this.flags
 
     const field_schema = {
-      field_schema: {
+      schema: {
         title,
         description: description as string,
       }
@@ -43,7 +41,7 @@ export default class FieldSchemaCreate extends Command {
 
     CliUx.ux.action.start('Creating PagerDuty field schema')
     const r = await this.pd.request({
-      endpoint: 'field_schemas',
+      endpoint: 'customfields/schemas',
       method: 'POST',
       data: field_schema,
       headers,
@@ -54,10 +52,10 @@ export default class FieldSchemaCreate extends Command {
     CliUx.ux.action.stop(chalk.bold.green('done'))
     const returned_field = r.getData()
 
-    if (flags.pipe) {
+    if (pipe) {
       this.log(returned_field.field.id)
     } else {
-      this.log(`Created field schema ${chalk.bold.blue(returned_field.field_schema.title)} (${chalk.bold.blue(returned_field.field_schema.id)})`)
+      this.log(`Created field schema ${chalk.bold.blue(returned_field.schema.title)} (${chalk.bold.blue(returned_field.schema.id)})`)
     }
   }
 }

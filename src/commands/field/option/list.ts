@@ -1,15 +1,13 @@
-import Command from '../../../base'
+import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
 import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../../utils'
 import jp from 'jsonpath'
 
-export default class FieldOptionList extends Command {
+export default class FieldOptionList extends AuthenticatedBaseCommand<typeof FieldOptionList> {
   static description = 'List PagerDuty Custom Field Options'
 
   static flags = {
-    ...Command.flags,
-    ...Command.listCommandFlags,
     id: Flags.string({
       char: 'i',
       description: 'The ID of a fixed-options Field to list options for.',
@@ -34,11 +32,10 @@ export default class FieldOptionList extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(this.ctor)
-
     const {
       id,
-    } = flags
+      json,
+    } = this.flags
 
     if (utils.invalidPagerDutyIDs([id]).length > 0) {
       this.error(`Invalid PagerDuty ID ${chalk.bold.blue(id)}`, {exit: 1})
@@ -50,7 +47,7 @@ export default class FieldOptionList extends Command {
 
     CliUx.ux.action.start(`Getting field details from PD`)
     let r = await this.pd.request({
-      endpoint: `fields/${id}`,
+      endpoint: `customfields/fields/${id}`,
       method: 'GET',
       headers
     })
@@ -64,17 +61,16 @@ export default class FieldOptionList extends Command {
       this.error(`${chalk.bold.blue(id)} is not a fixed-options field`)
     }
 
-    const fieldOptions = await this.pd.fetchWithSpinner(`fields/${id}/field_options`, {
+    const fieldOptions = await this.pd.fetchWithSpinner(`customfields/fields/${id}/field_options`, {
       activityDescription: 'Getting field options from PD',
-      fetchLimit: flags.limit,
       headers,
     })
     if (fieldOptions.length === 0) {
       this.error('No field options found. Please check your field ID.', {exit: 1})
     }
 
-    if (flags.json) {
-      await utils.printJsonAndExit(fieldOptions)
+    if (json) {
+      await this.printJsonAndExit(fieldOptions)
     }
 
     const columns: Record<string, object> = {
@@ -94,29 +90,6 @@ export default class FieldOptionList extends Command {
       },
     }
 
-    if (flags.keys) {
-      for (const key of flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
-        }
-      }
-    }
-
-    const options = {
-      ...flags, // parsed flags
-    }
-
-    if (flags.pipe) {
-      for (const k of Object.keys(columns)) {
-        if (k !== 'id') {
-          const colAny = columns[k] as any
-          colAny.extended = true
-        }
-      }
-      options['no-header'] = true
-    }
-
-    CliUx.ux.table(fieldOptions, columns, options)
+    this.printTable(fieldOptions, columns, this.flags)
   }
 }

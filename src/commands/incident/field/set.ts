@@ -1,15 +1,14 @@
-import Command from '../../../base'
+import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
 import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../../utils'
 import { PD } from '../../../pd'
 
-export default class IncidentFieldSet extends Command {
+export default class IncidentFieldSet extends AuthenticatedBaseCommand<typeof IncidentFieldSet> {
   static description = 'Set Custom Field Values on PagerDuty Incidents'
 
   static flags = {
-    ...Command.flags,
     me: Flags.boolean({
       char: 'm',
       description: 'Update all incidents that are currently assigned to me',
@@ -79,20 +78,28 @@ export default class IncidentFieldSet extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(this.ctor)
-
     const headers = {
       'X-EARLY-ACCESS': 'flex-service-early-access',
     }
 
-    if (flags.names.length !== flags.values.length) {
+    const {
+      me,
+      ids,
+      pipe,
+      names,
+      values,
+      jsonvalues,
+    } = this.flags
+
+    if (names.length !== values.length) {
       this.error('You must specify the same number of names and values for this to work.', {exit: 1})
     }
 
     const attributes: Record<string, any>[] = []
-    for (const [i, name] of flags.names.entries()) {
-      let value = flags.values[i]
-      if (flags.jsonvalues) {
+    let value: any
+    for (const [i, name] of names.entries()) {
+      value = values[i]
+      if (jsonvalues) {
         try {
           const jsonvalue = JSON.parse(value)
           if (jsonvalue instanceof Array && jsonvalue.length > 0) {
@@ -104,7 +111,7 @@ export default class IncidentFieldSet extends Command {
     }
 
     let incident_ids: string[] = []
-    if (flags.me) {
+    if (me) {
       const me = await this.me(true)
       const params = {user_ids: [me.user.id]}
       CliUx.ux.action.start('Getting incidents from PD')
@@ -115,9 +122,9 @@ export default class IncidentFieldSet extends Command {
         this.exit(1)
       }
       incident_ids = incidents.map((e: { id: any }) => e.id)
-    } else if (flags.ids) {
-      incident_ids = utils.splitDedupAndFlatten(flags.ids)
-    } else if (flags.pipe) {
+    } else if (ids) {
+      incident_ids = utils.splitDedupAndFlatten(ids)
+    } else if (pipe) {
       const str: string = await getStream(process.stdin)
       incident_ids = utils.splitDedupAndFlatten([str])
     } else {
@@ -148,14 +155,14 @@ export default class IncidentFieldSet extends Command {
     for (const [i, v] of rs.results.entries()) {
       const incident_id = rs.requests[i].endpoint.split('/')[1]
       const data = v.getData()
-      const fieldsByName = Object.assign({}, ...data.field_schema.field_configurations.map((config: any) => ({
+      const fieldsByName = Object.assign({}, ...data.schema.field_configurations.map((config: any) => ({
         [config.field.name]: config.field
       })))
-      incidentSchemas[incident_id] = data.field_schema
+      incidentSchemas[incident_id] = data.schema
       incidentFields[incident_id] = fieldsByName
     }
 
-    for (const name of flags.names) {
+    for (const name of names) {
       const incidentsMissingField = incident_ids.filter(incident_id => !incidentFields[incident_id][name])
       if (incidentsMissingField.length > 0) {
         this.error(`Incidents ${chalk.bold.blue(incidentsMissingField.join(', '))} are missing field ${chalk.bold.blue(name)}!`, {exit: 1})
@@ -177,7 +184,6 @@ export default class IncidentFieldSet extends Command {
             value = this.valueForDatatype(attribute.value, datatype, multi)
           }
           field_values.push({
-            namespace: incidentFields[incident_id][attribute.name].namespace,
             name: attribute.name,
             value: value
           })
@@ -193,7 +199,7 @@ export default class IncidentFieldSet extends Command {
       })
     }
     rs = await this.pd.batchedRequestWithSpinner(fieldSetRequests, {
-      activityDescription: `Setting ${chalk.bold.blue(flags.names.join(', '))} on incidents ${chalk.bold.blue(incident_ids.join(', '))}`,
+      activityDescription: `Setting ${chalk.bold.blue(names.join(', '))} on incidents ${chalk.bold.blue(incident_ids.join(', '))}`,
       stopSpinnerWhenDone: false,
     })
     if (rs.getFailedIndices().length > 0) {

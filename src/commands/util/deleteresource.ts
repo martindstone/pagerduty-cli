@@ -12,33 +12,21 @@ export default class UtilDeleteResource extends AuthenticatedBaseCommand<typeof 
       char: 't',
       description: 'The type of PagerDuty resource to delete. You have to provide either -i or -p to specify IDs of objects to delete.',
       options: [
-        
         'business_service',
-       
         'escalation_policy',
-       
         'extension',
-       
         'response_play',
-       
         'ruleset',
-       
         'schedule',
-       
         'service',
-       
         'tag',
-       
         'team',
-       
         'user',
-       
         'webhook_subscription',
         'automation_action',
-        'automation_runner'
-      ,
+        'automation_runner',
         'field',
-        'field_schema'
+        'field_schema',
       ],
       exclusive: ['endpoint'],
       required: true,
@@ -116,8 +104,14 @@ export default class UtilDeleteResource extends AuthenticatedBaseCommand<typeof 
         endpoint: 'automation_actions/runners',
         name: 'automation runners',
       },
-      'field': 'fields',
-      'field_schema': 'field_schemas',
+      'field': {
+        endpoint: 'customfields/fields',
+        name: 'fields',
+      },
+      'field_schema': {
+        endpoint: 'customfields/schemas',
+        name: 'field schemas',
+      }
     }
 
     const resource_types_with_weird_ids = [
@@ -128,7 +122,7 @@ export default class UtilDeleteResource extends AuthenticatedBaseCommand<typeof 
     const resource = resource_types[this.flags['resource-type']]
 
     const headers: Record<string, string> = {}
-    if (['field', 'field_schema'].includes(flags['resource-type'])) {
+    if (['field', 'field_schema'].includes(this.flags['resource-type'])) {
       headers['X-EARLY-ACCESS'] = 'flex-service-early-access'
     }
 
@@ -158,7 +152,7 @@ export default class UtilDeleteResource extends AuthenticatedBaseCommand<typeof 
     if (this.flags.force) {
       let countdown = 5
       while (countdown > -1) {
-        CliUx.ux.action.start(`Warning: util:deleteresource running in ${chalk.bold.red('extreme danger mode')}!\nHit ${chalk.bold.blue('Ctrl-C')} if you don't want to delete ${things_to_delete_str}.\nStarting in ${chalk.bold(String(countdown) + ' seconds')}`)
+        CliUx.ux.action.start(`Warning: util deleteresource running in ${chalk.bold.red('extreme danger mode')}!\nHit ${chalk.bold.blue('Ctrl-C')} if you don't want to delete ${things_to_delete_str}.\nStarting in ${chalk.bold(String(countdown) + ' seconds')}`)
         // eslint-disable-next-line no-await-in-loop
         await CliUx.ux.wait(1000)
         countdown--

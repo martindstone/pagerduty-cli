@@ -1,15 +1,13 @@
-import Command from '../../../base'
+import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
 import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../../utils'
 import jp from 'jsonpath'
 
-export default class FieldSchemaListFields extends Command {
+export default class FieldSchemaListFields extends AuthenticatedBaseCommand<typeof FieldSchemaListFields> {
   static description = 'List Fields in a PagerDuty Custom Field Schema'
 
   static flags = {
-    ...Command.flags,
-    ...Command.listCommandFlags,
     id: Flags.string({
       char: 'i',
       description: 'The ID of the schema to show fields for',
@@ -39,31 +37,42 @@ export default class FieldSchemaListFields extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(this.ctor)
+    const {
+      id,
+      json,
+    } = this.flags
 
     const headers = {
       'X-EARLY-ACCESS': 'flex-service-early-access',
     }
 
-    const fields = await this.pd.fetchWithSpinner('fields', {
+    const fields = await this.pd.fetchWithSpinner('customfields/fields', {
       activityDescription: 'Getting fields from PD',
-      fetchLimit: flags.limit,
       headers,
       stopSpinnerWhenDone: false
     })
     const fieldsMap = Object.assign({}, ...fields.map((field) => ({[field.id]: field})))
 
-    const schema_fields = await this.pd.fetchWithSpinner(`field_schemas/${flags.id}/field_configurations`, {
-      activityDescription: 'Getting schema fields from PD',
-      fetchLimit: flags.limit,
+    CliUx.ux.action.start('Getting schema field configurations')
+    const r = await this.pd.request({
+      endpoint: `customfields/schemas/${id}`,
+      method: 'GET',
+      params: {
+        include: ['field_configurations']
+      },
       headers,
     })
-    if (schema_fields.length === 0) {
-      this.error('No schemas found. Please check your search.', {exit: 1})
+    if (r.isFailure) {
+      CliUx.ux.action.stop(chalk.bold.red('failed!'))
+      this.error(`Failed to get schema ${id}`, {exit: 1})
     }
+    CliUx.ux.action.stop(chalk.bold.green('done'))
 
-    if (flags.json) {
-      await utils.printJsonAndExit(schema_fields)
+    const schema = r.getData().schema
+    const field_configurations = schema.field_configurations
+
+    if (json) {
+      await this.printJsonAndExit(field_configurations)
     }
 
     const columns: Record<string, object> = {
@@ -75,14 +84,11 @@ export default class FieldSchemaListFields extends Command {
         extended: true,
       },
       updated: {
-        get: (row: { updated_at: string }) => (new Date(row.updated_at)).toLocaleString(),
+        get: (row: { updated_at: string }) => row.updated_at ? (new Date(row.updated_at)).toLocaleString() : '',
         extended: true,
       },
       field_id: {
         get: (row: { field: any }) => row.field.id,
-      },
-      field_namespace: {
-        get: (row: { field: any }) => fieldsMap[row.field.id].namespace,
       },
       field_name: {
         get: (row: { field: any }) => fieldsMap[row.field.id].name,
@@ -106,29 +112,29 @@ export default class FieldSchemaListFields extends Command {
       },
     }
 
-    if (flags.keys) {
-      for (const key of flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
-        }
-      }
-    }
+    // if (flags.keys) {
+    //   for (const key of flags.keys) {
+    //     columns[key] = {
+    //       header: key,
+    //       get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
+    //     }
+    //   }
+    // }
 
-    const options = {
-      ...flags, // parsed flags
-    }
+    // const options = {
+    //   ...flags, // parsed flags
+    // }
 
-    if (flags.pipe) {
-      for (const k of Object.keys(columns)) {
-        if (k !== 'id') {
-          const colAny = columns[k] as any
-          colAny.extended = true
-        }
-      }
-      options['no-header'] = true
-    }
+    // if (flags.pipe) {
+    //   for (const k of Object.keys(columns)) {
+    //     if (k !== 'id') {
+    //       const colAny = columns[k] as any
+    //       colAny.extended = true
+    //     }
+    //   }
+    //   options['no-header'] = true
+    // }
 
-    CliUx.ux.table(schema_fields, columns, options)
+    this.printTable(field_configurations, columns, this.flags)
   }
 }

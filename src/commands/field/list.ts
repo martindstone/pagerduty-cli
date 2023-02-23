@@ -1,15 +1,14 @@
-import Command from '../../base'
+// import { ListBaseCommand } from '../../base/list-base-command'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
 import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../utils'
 import jp from 'jsonpath'
 
-export default class FieldList extends Command {
+export default class FieldList extends AuthenticatedBaseCommand<typeof FieldList> {
   static description = 'List PagerDuty Custom Fields'
 
   static flags = {
-    ...Command.flags,
-    ...Command.listCommandFlags,
     keys: Flags.string({
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
@@ -34,23 +33,24 @@ export default class FieldList extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(this.ctor)
+    const {
+      json,
+    } = this.flags
 
     const headers = {
       'X-EARLY-ACCESS': 'flex-service-early-access',
     }
 
-    const fields = await this.pd.fetchWithSpinner('fields', {
+    const fields = await this.pd.fetchWithSpinner('customfields/fields', {
       activityDescription: 'Getting fields from PD',
-      fetchLimit: flags.limit,
       headers,
     })
     if (fields.length === 0) {
       this.error('No fields found. Please check your search.', {exit: 1})
     }
 
-    if (flags.json) {
-      await utils.printJsonAndExit(fields)
+    if (json) {
+      await this.printJsonAndExit(fields)
     }
 
     const columns: Record<string, object> = {
@@ -65,7 +65,6 @@ export default class FieldList extends Command {
         get: (row: { updated_at: string }) => (new Date(row.updated_at)).toLocaleString(),
         extended: true,
       },
-      namespace: {},
       name: {},
       display_name: {},
       description: {
@@ -77,29 +76,6 @@ export default class FieldList extends Command {
       multi_value: {},
     }
 
-    if (flags.keys) {
-      for (const key of flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
-        }
-      }
-    }
-
-    const options = {
-      ...flags, // parsed flags
-    }
-
-    if (flags.pipe) {
-      for (const k of Object.keys(columns)) {
-        if (k !== 'id') {
-          const colAny = columns[k] as any
-          colAny.extended = true
-        }
-      }
-      options['no-header'] = true
-    }
-
-    CliUx.ux.table(fields, columns, options)
+    this.printTable(fields, columns, this.flags)
   }
 }

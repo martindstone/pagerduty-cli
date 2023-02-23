@@ -1,17 +1,11 @@
-import Command from '../../base'
+import { AuthenticatedBaseCommand } from '../../base/authenticated-base-command'
 import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 
-export default class FieldCreate extends Command {
+export default class FieldCreate extends AuthenticatedBaseCommand<typeof FieldCreate> {
   static description = 'Create a PagerDuty Custom Field'
 
   static flags = {
-    ...Command.flags,
-    namespace: Flags.string({
-      char: 's',
-      description: 'The logical grouping of fields to which this field belongs',
-      default: 'incidents',
-    }),
     name: Flags.string({
       char: 'n',
       description: 'An identifier for the field intended primarily for scripting or other programmatic use.',
@@ -46,25 +40,22 @@ export default class FieldCreate extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(this.ctor)
-
     const headers = {
       'X-EARLY-ACCESS': 'flex-service-early-access',
     }
 
     const {
-      namespace,
       name,
       display_name,
       description,
-      type:datatype,
-      multi:multi_value,
-      fixed:fixed_options
-    } = flags
+      type: datatype,
+      multi: multi_value,
+      fixed: fixed_options,
+      pipe,
+    } = this.flags
 
     const field = {
       field: {
-        namespace,
         name,
         display_name,
         description: description as string,
@@ -76,7 +67,7 @@ export default class FieldCreate extends Command {
 
     CliUx.ux.action.start('Creating PagerDuty field')
     const r = await this.pd.request({
-      endpoint: 'fields',
+      endpoint: 'customfields/fields',
       method: 'POST',
       data: field,
       headers,
@@ -87,7 +78,7 @@ export default class FieldCreate extends Command {
     CliUx.ux.action.stop(chalk.bold.green('done'))
     const returned_field = r.getData()
 
-    if (flags.pipe) {
+    if (pipe) {
       this.log(returned_field.field.id)
     } else {
       this.log(`Created field ${chalk.bold.blue(returned_field.field.name)} (${chalk.bold.blue(returned_field.field.id)})`)

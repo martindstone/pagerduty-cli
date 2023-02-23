@@ -1,15 +1,13 @@
-import Command from '../../../base'
+import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
 import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import * as utils from '../../../utils'
 import jp from 'jsonpath'
 
-export default class FieldSchemaList extends Command {
+export default class FieldSchemaList extends AuthenticatedBaseCommand<typeof FieldSchemaList> {
   static description = 'List PagerDuty Custom Field Schemas'
 
   static flags = {
-    ...Command.flags,
-    ...Command.listCommandFlags,
     keys: Flags.string({
       char: 'k',
       description: 'Additional fields to display. Specify multiple times for multiple fields.',
@@ -34,23 +32,24 @@ export default class FieldSchemaList extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(this.ctor)
+    const {
+      json,
+    } = this.flags
 
     const headers = {
       'X-EARLY-ACCESS': 'flex-service-early-access',
     }
 
-    const schemas = await this.pd.fetchWithSpinner('field_schemas', {
+    const schemas = await this.pd.fetchWithSpinner('customfields/schemas', {
       activityDescription: 'Getting field schemas from PD',
-      fetchLimit: flags.limit,
       headers,
     })
     if (schemas.length === 0) {
       this.error('No schemas found. Please check your search.', {exit: 1})
     }
 
-    if (flags.json) {
-      await utils.printJsonAndExit(schemas)
+    if (json) {
+      await this.printJsonAndExit(schemas)
     }
 
     const columns: Record<string, object> = {
@@ -71,29 +70,29 @@ export default class FieldSchemaList extends Command {
       },
     }
 
-    if (flags.keys) {
-      for (const key of flags.keys) {
-        columns[key] = {
-          header: key,
-          get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
-        }
-      }
-    }
+    // if (flags.keys) {
+    //   for (const key of flags.keys) {
+    //     columns[key] = {
+    //       header: key,
+    //       get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
+    //     }
+    //   }
+    // }
 
-    const options = {
-      ...flags, // parsed flags
-    }
+    // const options = {
+    //   ...flags, // parsed flags
+    // }
 
-    if (flags.pipe) {
-      for (const k of Object.keys(columns)) {
-        if (k !== 'id') {
-          const colAny = columns[k] as any
-          colAny.extended = true
-        }
-      }
-      options['no-header'] = true
-    }
+    // if (flags.pipe) {
+    //   for (const k of Object.keys(columns)) {
+    //     if (k !== 'id') {
+    //       const colAny = columns[k] as any
+    //       colAny.extended = true
+    //     }
+    //   }
+    //   options['no-header'] = true
+    // }
 
-    CliUx.ux.table(schemas, columns, options)
+    this.printTable(schemas, columns, this.flags)
   }
 }

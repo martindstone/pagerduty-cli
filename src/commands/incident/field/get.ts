@@ -1,15 +1,14 @@
-import Command from '../../../base'
+import { AuthenticatedBaseCommand } from '../../../base/authenticated-base-command'
 import {CliUx, Flags} from '@oclif/core'
 import chalk from 'chalk'
 import getStream from 'get-stream'
 import * as utils from '../../../utils'
 import { PD } from '../../../pd'
 
-export default class IncidentFieldGet extends Command {
+export default class IncidentFieldGet extends AuthenticatedBaseCommand<typeof IncidentFieldGet> {
   static description = 'Get Custom Field Values on PagerDuty Incidents'
 
   static flags = {
-    ...Command.flags,
     me: Flags.boolean({
       char: 'm',
       description: 'Show all incidents that are currently assigned to me',
@@ -35,18 +34,23 @@ export default class IncidentFieldGet extends Command {
       description: 'Delimiter for fields that have more than one value',
       default: '\n',
     }),
-    ...this.listCommandFlags,
   }
 
   async run() {
-    const {flags} = await this.parse(this.ctor)
-
     const headers = {
       'X-EARLY-ACCESS': 'flex-service-early-access',
     }
 
+    const {
+      me,
+      ids,
+      pipe,
+      delimiter,
+      display_name,
+    } = this.flags
+
     let incident_ids: string[] = []
-    if (flags.me) {
+    if (me) {
       const me = await this.me(true)
       const params = {user_ids: [me.user.id]}
       CliUx.ux.action.start('Getting incidents from PD')
@@ -57,9 +61,9 @@ export default class IncidentFieldGet extends Command {
         this.exit(1)
       }
       incident_ids = incidents.map((e: { id: any }) => e.id)
-    } else if (flags.ids) {
-      incident_ids = utils.splitDedupAndFlatten(flags.ids)
-    } else if (flags.pipe) {
+    } else if (ids) {
+      incident_ids = utils.splitDedupAndFlatten(ids)
+    } else if (pipe) {
       const str: string = await getStream(process.stdin)
       incident_ids = utils.splitDedupAndFlatten([str])
     } else {
@@ -96,22 +100,25 @@ export default class IncidentFieldGet extends Command {
 
     const fieldValues = datas.map((v, i) => {
       const incident_id = rs.requests[i].endpoint.split('/')[1]
-      return Object.assign({incident_id}, ...v.field_values.map((field_value: any) => ({[flags.display_name ? field_value.display_name : field_value.name]: field_value.value})))
+      return Object.assign({incident_id}, ...v.field_values.map((field_value: any) => ({[display_name ? field_value.display_name : field_value.name]: field_value.value})))
     })
 
     const fieldNames = [...new Set(fieldValues.map(v => Object.keys(v)).flat())]
+    // this.printJsonAndExit(fieldNames)
 
     const columns: Record<string, object> = Object.assign({}, ...fieldNames.map(n => ({
       [n]: {
         header: n === 'incident_id' ? 'Incident ID' : n,
-        get: (row: any) => utils.formatField(row[n], flags.delimiter),
+        get: (row: any) => utils.formatField(row[n], delimiter),
       }
     })))
-    const options = {
-      ...flags, // parsed flags
-    }
 
-    CliUx.ux.table(fieldValues, columns, options)
+    const flags: any = {
+      ...this.flags
+    }
+    if (flags.pipe) flags.pipe = 'input'
+
+    this.printTable(fieldValues, columns, flags)
 
   }
 }
