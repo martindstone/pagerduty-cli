@@ -60,7 +60,7 @@ export default class FieldSchemaAssignmentList extends AuthenticatedBaseCommand<
       this.error('No schemas found. Please check your search.', {exit: 1})
     }
 
-    if (!schema_ids) {
+    if (!schema_ids && !service_ids) {
       schema_ids = schemas.map(x => x.id)
     } else {
       schema_ids = [...new Set(schema_ids)]
