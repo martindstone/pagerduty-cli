@@ -173,15 +173,17 @@ export default class IncidentFieldSet extends AuthenticatedBaseCommand<typeof In
     for (const incident_id of incident_ids) {
       const field_values = []
       for (const attribute of attributes) {
-        const datatype = incidentFields[incident_id][attribute.name].datatype
-        const multi = incidentFields[incident_id][attribute.name].multi_value
+        const {
+          datatype,
+          multi_value,
+        } = incidentFields[incident_id][attribute.name]
         try {
           let value
           if (attribute.value instanceof Array) {
-            if (!multi) throw 'you can\'t set an array value on a non-multivalued field'
+            if (!multi_value) throw 'you can\'t set an array value on a non-multivalued field'
             value = attribute.value.map(x => this.valueForDatatype(x, datatype, false))
           } else {
-            value = this.valueForDatatype(attribute.value, datatype, multi)
+            value = this.valueForDatatype(attribute.value, datatype, multi_value)
           }
           field_values.push({
             name: attribute.name,

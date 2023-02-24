@@ -93,7 +93,7 @@ export default class FieldSchemaAddField extends AuthenticatedBaseCommand<typeof
     }
     
     if (defaultvalue) {
-      const value = defaultvalue.map((v: any) => {
+      let value = defaultvalue.map((v: any) => {
         switch(field.field.datatype) {
           case 'integer': return parseInt(v)
           case 'float': return parseFloat(v)
@@ -101,10 +101,15 @@ export default class FieldSchemaAddField extends AuthenticatedBaseCommand<typeof
           default: return v
         }
       })
+      if (!field.field.multi_value) value = value[0]
+
       new_field_configuration.default_value = {
-        datatype: field.field.datatype,
+        datatype: field.field.fixed_options ? "field_option" : field.field.datatype,
         multi_value: field.field.multi_value,
-        value: field.field.multi_value ? value : value[0],
+        value: field.field.fixed_options ? {
+          type: "field_option_reference",
+          value: value
+        } : value,
       }
     }
 

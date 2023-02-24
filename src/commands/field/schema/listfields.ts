@@ -40,6 +40,7 @@ export default class FieldSchemaListFields extends AuthenticatedBaseCommand<type
     const {
       id,
       json,
+      delimiter,
     } = this.flags
 
     const headers = {
@@ -108,32 +109,17 @@ export default class FieldSchemaListFields extends AuthenticatedBaseCommand<type
       },
       required: {},
       default: {
-        get: (row: {default_value: any}) => row.default_value ? row.default_value.value : ''
+        get: (row: {default_value: any}) => {
+          if (row.default_value && row.default_value.value) {
+            if (row.default_value.value.type === 'field_option_reference') {
+              return utils.formatField(row.default_value.value.value, delimiter)
+            }
+            return utils.formatField(row.default_value.value, delimiter)
+          }
+          return ''
+        }
       },
     }
-
-    // if (flags.keys) {
-    //   for (const key of flags.keys) {
-    //     columns[key] = {
-    //       header: key,
-    //       get: (row: any) => utils.formatField(jp.query(row, key), flags.delimiter),
-    //     }
-    //   }
-    // }
-
-    // const options = {
-    //   ...flags, // parsed flags
-    // }
-
-    // if (flags.pipe) {
-    //   for (const k of Object.keys(columns)) {
-    //     if (k !== 'id') {
-    //       const colAny = columns[k] as any
-    //       colAny.extended = true
-    //     }
-    //   }
-    //   options['no-header'] = true
-    // }
 
     this.printTable(field_configurations, columns, this.flags)
   }
