@@ -38,6 +38,7 @@ PagerDuty Command Line Interface
 * [`pd ep level add`](#pd-ep-level-add)
 * [`pd ep level remove`](#pd-ep-level-remove)
 * [`pd ep list`](#pd-ep-list)
+* [`pd ep listdeletedusers`](#pd-ep-listdeletedusers)
 * [`pd ep oncall`](#pd-ep-oncall)
 * [`pd ep open`](#pd-ep-open)
 * [`pd ep target add`](#pd-ep-target-add)
@@ -98,6 +99,7 @@ PagerDuty Command Line Interface
 * [`pd schedule copy`](#pd-schedule-copy)
 * [`pd schedule create`](#pd-schedule-create)
 * [`pd schedule list`](#pd-schedule-list)
+* [`pd schedule listdeletedusers`](#pd-schedule-listdeletedusers)
 * [`pd schedule oncall`](#pd-schedule-oncall)
 * [`pd schedule open`](#pd-schedule-open)
 * [`pd schedule override add`](#pd-schedule-override-add)
@@ -675,6 +677,33 @@ FLAGS
 
 DESCRIPTION
   List PagerDuty Escalation Policies
+```
+
+## `pd ep listdeletedusers`
+
+List deleted users in all PagerDuty Escalation Policies
+
+```
+USAGE
+  $ pd ep listdeletedusers
+
+FLAGS
+  -b, --useauth=<value>  Use the saved REST API token with this alias
+  -h, --help             Show CLI help.
+  -x, --extended         show extra columns
+  --columns=<value>      only show provided columns (comma-separated)
+  --csv                  output is csv format [alias: --output=csv]
+  --debug                Print REST API call debug logs
+  --filter=<value>       filter property by partial string matching, ex: name=foo
+  --no-header            hide table header from output
+  --no-truncate          do not truncate output to fit screen
+  --output=<option>      output in a more machine friendly format
+                         <options: csv|json|yaml>
+  --sort=<value>         property to sort by (prepend '-' for descending)
+  --token=<value>        Ignore the saved configuration and use this token
+
+DESCRIPTION
+  List deleted users in all PagerDuty Escalation Policies
 ```
 
 ## `pd ep oncall`
@@ -2340,6 +2369,33 @@ FLAGS
 
 DESCRIPTION
   List PagerDuty Schedules
+```
+
+## `pd schedule listdeletedusers`
+
+List deleted users in all PagerDuty Schedules
+
+```
+USAGE
+  $ pd schedule listdeletedusers
+
+FLAGS
+  -b, --useauth=<value>  Use the saved REST API token with this alias
+  -h, --help             Show CLI help.
+  -x, --extended         show extra columns
+  --columns=<value>      only show provided columns (comma-separated)
+  --csv                  output is csv format [alias: --output=csv]
+  --debug                Print REST API call debug logs
+  --filter=<value>       filter property by partial string matching, ex: name=foo
+  --no-header            hide table header from output
+  --no-truncate          do not truncate output to fit screen
+  --output=<option>      output in a more machine friendly format
+                         <options: csv|json|yaml>
+  --sort=<value>         property to sort by (prepend '-' for descending)
+  --token=<value>        Ignore the saved configuration and use this token
+
+DESCRIPTION
+  List deleted users in all PagerDuty Schedules
 ```
 
 ## `pd schedule oncall`
