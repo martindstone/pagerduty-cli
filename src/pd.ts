@@ -560,6 +560,14 @@ export class PD {
     return [...new Set(fetchedIDs)]
   }
 
+  public async businessServiceIDForName(name: string): Promise<string | null> {
+    return this.objectIDForName('business_services', name)
+  }
+
+  public async businessServiceIDsForNames(names: string[], exact = false): Promise<string[]> {
+    return this.objectIDsForNames('business_services', names, exact)
+  }
+
   public async serviceIDForName(name: string): Promise<string | null> {
     return this.objectIDForName('services', name)
   }
