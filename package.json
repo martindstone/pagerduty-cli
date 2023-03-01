@@ -91,20 +91,20 @@
       "auth": {
         "description": "Get/Set authentication token"
       },
-      "user": {
-        "description": "See/manage users"
+      "automation": {
+        "description": "Manage automation actions and runners"
       },
-      "user:contact": {
-        "description": "Manage user contact methods"
+      "automation:runner": {
+        "description": "Manage automation actions"
       },
-      "incident": {
-        "description": "See/manage incidents"
+      "automation:action": {
+        "description": "Manage automation runners"
       },
-      "rest": {
-        "description": "Make raw requests to PagerDuty REST endpoints"
+      "bs": {
+        "description": "See/manage business services"
       },
-      "service": {
-        "description": "See/manage services"
+      "bs:subscriber": {
+        "description": "See/manage business service subscribers"
       },
       "ep": {
         "description": "See/manage escalation policies"
@@ -114,6 +114,42 @@
       },
       "ep:level": {
         "description": "Manage escalation policy levels"
+      },
+      "field": {
+        "description": "Manage custom fields"
+      },
+      "field:option": {
+        "description": "Manage options for fixed-option custom fields"
+      },
+      "field:schema": {
+        "description": "Manage custom field schemas"
+      },
+      "field:schema:assignment": {
+        "description": "Manage custom field schema assignments"
+      },
+      "incident": {
+        "description": "See/manage incidents"
+      },
+      "incident:field": {
+        "description": "Get/set incident custom field values"
+      },
+      "incident:responder": {
+        "description": "See/manage incident responders"
+      },
+      "incident:subscriber": {
+        "description": "See/manage incident subscriberss"
+      },
+      "orchestration": {
+        "description": "Manage global orchestrations"
+      },
+      "orchestration:route": {
+        "description": "Manage global orchestration routes"
+      },
+      "rest": {
+        "description": "Make raw requests to PagerDuty REST endpoints"
+      },
+      "service": {
+        "description": "See/manage services"
       },
       "schedule": {
         "description": "See/manage schedules"
@@ -129,6 +165,15 @@
       },
       "team:user": {
         "description": "Manage team members"
+      },
+      "user": {
+        "description": "See/manage users"
+      },
+      "user:contact": {
+        "description": "Manage user contact methods"
+      },
+      "user:session": {
+        "description": "Manage user sessions"
       },
       "util": {
         "description": "Utility commands"
@@ -149,7 +194,7 @@
     "posttest": "eslint . --ext .ts --config .eslintrc",
     "prepack": "rm -rf lib && tsc -b && oclif manifest && oclif readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif readme && git add README.md"
+    "version": "oclif readme --multi && git add README.md docs"
   },
   "types": "lib/index.d.ts"
 }
