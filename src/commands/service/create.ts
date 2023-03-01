@@ -25,7 +25,7 @@ export default class ServiceCreate extends AuthenticatedBaseCommand<typeof Servi
     escalation_policy_name: Flags.string({
       char: 'E',
       description: 'The name of the service\'s escalation policy.',
-      exclusive: ['user_id'],
+      exclusive: ['escalation_policy_id'],
     }),
     auto_resolve_timeout: Flags.integer({
       char: 'r',
