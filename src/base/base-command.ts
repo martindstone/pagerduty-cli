@@ -95,9 +95,26 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
   }
 
   printTable(rows: any[], columns: Record<string, object>, flags: any) {
-    const _columns = { ...columns }
+    const _columns: any = { ...columns }
     if (flags.pipe && flags.pipe !== 'input') {
-      this.log(rows.map(x => x.id).join('\n'))
+      // pipe output
+      // make all columns extended so that they don't show but any filters still work
+      for (const k of Object.keys(_columns)) {
+        _columns[k].extended = true
+      }
+      // add back plain ID column
+      _columns.id = {}
+      const options = {
+        ...flags,
+        'no-header': true,
+        extended: false,
+        // trim off spaces from IDs
+        printLine: (s: any) => {
+          const str = s as string
+          console.log(str.trim())
+        },
+      }
+      CliUx.ux.table(rows, _columns, options)
       return
     }
     if (flags.keys) {
