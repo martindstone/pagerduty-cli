@@ -30,6 +30,9 @@ export default class BsSubscriberList extends AuthenticatedBaseCommand<typeof Bs
   }
 
   async run() {
+    if (!(this.flags.id || this.flags.name)) {
+      this.error('No business service selected. Please choose one by specifying either -i or -n', {exit: 1})
+    }
     let id = this.flags.id
     if (this.flags.name) {
       const found = await this.pd.businessServiceIDForName(this.flags.name)

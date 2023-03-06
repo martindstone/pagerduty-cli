@@ -39,6 +39,9 @@ export default class BsSubscriberAdd extends AuthenticatedBaseCommand<typeof BsS
   }
 
   async run() {
+    if (!(this.flags.id || this.flags.name)) {
+      this.error('No business service selected. Please choose one by specifying either -i or -n', {exit: 1})
+    }
     const {
       team_ids,
       team_names,
