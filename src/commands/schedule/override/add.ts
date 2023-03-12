@@ -29,12 +29,17 @@ export default class ScheduleOverrideAdd extends AuthenticatedBaseCommand<typeof
     user_id: Flags.string({
       char: 'u',
       description: 'The ID of the PagerDuty user for the override',
-      exclusive: ['user_email'],
+      exclusive: ['user_email', 'me'],
     }),
     user_email: Flags.string({
       char: 'U',
       description: 'The email of the PagerDuty user for the override',
-      exclusive: ['user_id'],
+      exclusive: ['user_id', 'me'],
+    }),
+    me: Flags.boolean({
+      char: 'm',
+      description: 'The PagerDuty user for the override is me (use with OAuth tokens only)',
+      exclusive: ['user_id', 'user_email']
     }),
   }
 
@@ -69,8 +74,16 @@ export default class ScheduleOverrideAdd extends AuthenticatedBaseCommand<typeof
         CliUx.ux.action.stop(chalk.bold.red('failed!'))
         this.error(`No user was found for the email "${this.flags.user_email}"`, {exit: 1})
       }
+    } else if (this.flags.me) {
+      CliUx.ux.action.start('Finding your user ID')
+      const me = await this.pd.me()
+      if (!me) {
+        CliUx.ux.action.stop(chalk.bold.red('failed!'))
+        this.error('PagerDuty doesn\'t know who you are. Are you using a Legacy API token?', {exit: 1})
+      }
+      userID = me.user.id
     } else {
-      this.error('You must specify one of: -u, -U', {exit: 1})
+      this.error('You must specify one of: -u, -U, -m', {exit: 1})
     }
 
     const body: any = {
