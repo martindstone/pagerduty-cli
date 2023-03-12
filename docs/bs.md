@@ -5,7 +5,9 @@ See/manage business services
 
 * [`pd bs create`](#pd-bs-create)
 * [`pd bs list`](#pd-bs-list)
+* [`pd bs subscriber add`](#pd-bs-subscriber-add)
 * [`pd bs subscriber list`](#pd-bs-subscriber-list)
+* [`pd bs subscriber remove`](#pd-bs-subscriber-remove)
 
 ## `pd bs create`
 
@@ -65,6 +67,30 @@ DESCRIPTION
   List PagerDuty Business Services
 ```
 
+## `pd bs subscriber add`
+
+Add Subscribers to a PagerDuty Business Service
+
+```
+USAGE
+  $ pd bs subscriber add
+
+FLAGS
+  -T, --team_names=<value>...   The name of a team to add as a subscriber. Specify multiple times for multiple teams
+  -U, --user_emails=<value>...  The email of a user to add as a subscriber. Specify multiple times for multiple users
+  -b, --useauth=<value>         Use the saved REST API token with this alias
+  -h, --help                    Show CLI help.
+  -i, --id=<value>              Business Service ID to add subscribers to.
+  -n, --name=<value>            Business Service name to add subscribers to.
+  -t, --team_ids=<value>...     The ID of a team to add as a subscriber. Specify multiple times for multiple teams
+  -u, --user_ids=<value>...     The ID of a user to add as a subscriber. Specify multiple times for multiple users
+  --debug                       Print REST API call debug logs
+  --token=<value>               Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Add Subscribers to a PagerDuty Business Service
+```
+
 ## `pd bs subscriber list`
 
 List PagerDuty Business Service Subscribers
@@ -94,4 +120,28 @@ FLAGS
 
 DESCRIPTION
   List PagerDuty Business Service Subscribers
+```
+
+## `pd bs subscriber remove`
+
+Remove Subscribers from a PagerDuty Business Service
+
+```
+USAGE
+  $ pd bs subscriber remove
+
+FLAGS
+  -T, --team_names=<value>...   The name of a team to remove. Specify multiple times for multiple teams
+  -U, --user_emails=<value>...  The email of a user to remove. Specify multiple times for multiple users
+  -b, --useauth=<value>         Use the saved REST API token with this alias
+  -h, --help                    Show CLI help.
+  -i, --id=<value>              Business Service ID to remove subscribers from.
+  -n, --name=<value>            Business Service name to remove subscribers from.
+  -t, --team_ids=<value>...     The ID of a team to remove. Specify multiple times for multiple teams
+  -u, --user_ids=<value>...     The ID of a user to remove. Specify multiple times for multiple users
+  --debug                       Print REST API call debug logs
+  --token=<value>               Ignore the saved configuration and use this token
+
+DESCRIPTION
+  Remove Subscribers from a PagerDuty Business Service
 ```

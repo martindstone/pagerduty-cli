@@ -1,7 +1,7 @@
 {
   "name": "pagerduty-cli",
   "description": "PagerDuty Command Line Interface",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "author": "Martin Stone @martindstone",
   "bin": {
     "pd": "bin/run"
