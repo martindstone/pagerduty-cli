@@ -20,11 +20,13 @@ USAGE
   $ pd auth add
 
 FLAGS
-  -a, --alias=<value>  The alias to use for this token. Defaults to the name of the PD subdomain
-  -d, --[no-]default   Use this token as the default for all PD commands
-  -h, --help           Show CLI help.
-  -t, --token=<value>  A PagerDuty API token
-  --debug              Print REST API call debug logs
+  -a, --alias=<value>          The alias to use for this token. Defaults to the name of the PD subdomain
+  -d, --[no-]default           Use this token as the default for all PD commands
+  -e, --expires_at=<value>     Expiration date for token. Required if using --refresh_token
+  -h, --help                   Show CLI help.
+  -r, --refresh_token=<value>  OAuth2 refresh token
+  -t, --token=<value>          A PagerDuty API token
+  --debug                      Print REST API call debug logs
 
 DESCRIPTION
   Add an authenticated PagerDuty domain
@@ -91,11 +93,13 @@ USAGE
   $ pd auth add
 
 FLAGS
-  -a, --alias=<value>  The alias to use for this token. Defaults to the name of the PD subdomain
-  -d, --[no-]default   Use this token as the default for all PD commands
-  -h, --help           Show CLI help.
-  -t, --token=<value>  A PagerDuty API token
-  --debug              Print REST API call debug logs
+  -a, --alias=<value>          The alias to use for this token. Defaults to the name of the PD subdomain
+  -d, --[no-]default           Use this token as the default for all PD commands
+  -e, --expires_at=<value>     Expiration date for token. Required if using --refresh_token
+  -h, --help                   Show CLI help.
+  -r, --refresh_token=<value>  OAuth2 refresh token
+  -t, --token=<value>          A PagerDuty API token
+  --debug                      Print REST API call debug logs
 
 DESCRIPTION
   Add an authenticated PagerDuty domain

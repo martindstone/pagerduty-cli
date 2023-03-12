@@ -196,6 +196,7 @@ FLAGS
   -b, --useauth=<value>     Use the saved REST API token with this alias
   -h, --help                Show CLI help.
   -i, --id=<value>          Add an override to the schedule with this ID.
+  -m, --me                  The PagerDuty user for the override is me (use with OAuth tokens only)
   -n, --name=<value>        Add an override to the schedule with this name.
   -u, --user_id=<value>     The ID of the PagerDuty user for the override
   --debug                   Print REST API call debug logs
