@@ -38,4 +38,4 @@ DESCRIPTION
   Show PagerDuty Domain Log Entries
 ```
 
-_See code: [src/commands/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.15/src/commands/log.ts)_
+_See code: [src/commands/log.ts](https://github.com/martindstone/pagerduty-cli/blob/v0.1.16/src/commands/log.ts)_
