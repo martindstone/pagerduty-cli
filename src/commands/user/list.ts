@@ -1,5 +1,6 @@
 import { ListBaseCommand } from '../../base/list-base-command'
 import { CliUx, Flags } from '@oclif/core'
+import parsePhoneNumber from 'libphonenumber-js'
 
 export default class UserList extends ListBaseCommand<typeof UserList> {
   static pdObjectName = 'user'
@@ -71,10 +72,16 @@ export default class UserList extends ListBaseCommand<typeof UserList> {
         get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'email_contact_method').map((e: any) => e.address).join(this.flags.delimiter),
       },
       contact_phones: {
-        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'phone_contact_method').map((e: any) => e.address).join(this.flags.delimiter),
+        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'phone_contact_method').map((e: any) => {
+          const number = parsePhoneNumber(`+${e.country_code} ${e.address}`)
+          return number?.formatInternational() || ""
+        }).join(this.flags.delimiter),
       },
       contact_sms: {
-        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'sms_contact_method').map((e: any) => e.address).join(this.flags.delimiter),
+        get: (row: { contact_methods: any[] }) => row.contact_methods.filter((e: any) => e.type === 'sms_contact_method').map((e: any) => {
+          const number = parsePhoneNumber(`+${e.country_code} ${e.address}`)
+          return number?.formatInternational() || ""
+        }).join(this.flags.delimiter),
       },
     }
 
