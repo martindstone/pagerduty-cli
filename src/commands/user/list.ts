@@ -1,6 +1,6 @@
 import { ListBaseCommand } from '../../base/list-base-command'
 import { CliUx, Flags } from '@oclif/core'
-import parsePhoneNumber from 'libphonenumber-js'
+import parsePhoneNumber, { PhoneNumber } from 'libphonenumber-js'
 
 export default class UserList extends ListBaseCommand<typeof UserList> {
   static pdObjectName = 'user'
@@ -17,6 +17,11 @@ export default class UserList extends ListBaseCommand<typeof UserList> {
       char: 'E',
       description: 'Select the user whose login email is this exact text',
       exclusive: ['email', 'name'],
+    }),
+    contact_country_code: Flags.string({
+      char: 'C',
+      description: 'Select only users with an SMS or Phone Contact method in the country (defined by the ISO 3166-1 alpha-2 country code)',
+      multiple: true
     }),
     ...CliUx.ux.table.flags(),
   }
@@ -38,6 +43,16 @@ export default class UserList extends ListBaseCommand<typeof UserList> {
 
     if (this.flags.exact_email) {
       users = users.filter((user: any) => user.email === this.flags.exact_email)
+    }
+
+    if (this.flags.contact_country_code) {
+      users = users.filter((user: any) => {
+        return user.contact_methods.filter((e: any) => e.type === 'phone_contact_method' || e.type === 'sms_contact_method').map((e: any) => {
+          return parsePhoneNumber(`+${e.country_code} ${e.address}`)
+        }).some((n: PhoneNumber) => {
+          return n && n.country && this.flags.contact_country_code?.includes(n.country);
+        })
+      })
     }
 
     if (users.length === 0) {
