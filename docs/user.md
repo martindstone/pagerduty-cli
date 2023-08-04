@@ -161,27 +161,30 @@ USAGE
   $ pd user list
 
 FLAGS
-  -E, --exact_email=<value>  Select the user whose login email is this exact text
-  -b, --useauth=<value>      Use the saved REST API token with this alias
-  -d, --delimiter=<value>    [default: \n] Delimiter for fields that have more than one value
-  -e, --email=<value>        Select users whose login email addresses contain the given text
-  -h, --help                 Show CLI help.
-  -j, --json                 output full details as JSON
-  -k, --keys=<value>...      Additional fields to display. Specify multiple times for multiple fields.
-  -n, --name=<value>         Select users whose names contain the given text
-  -p, --pipe                 Print user ID's only to stdout, for use with pipes.
-  -x, --extended             show extra columns
-  --columns=<value>          only show provided columns (comma-separated)
-  --csv                      output is csv format [alias: --output=csv]
-  --debug                    Print REST API call debug logs
-  --filter=<value>           filter property by partial string matching, ex: name=foo
-  --limit=<value>            Return no more than this many entries. This option turns off table filtering options.
-  --no-header                hide table header from output
-  --no-truncate              do not truncate output to fit screen
-  --output=<option>          output in a more machine friendly format
-                             <options: csv|json|yaml>
-  --sort=<value>             property to sort by (prepend '-' for descending)
-  --token=<value>            Ignore the saved configuration and use this token
+  -C, --contact_country_code=<value>...  Select only users with an SMS or Phone Contact method in the country (defined
+                                         by the ISO 3166-1 alpha-2 country code)
+  -E, --exact_email=<value>              Select the user whose login email is this exact text
+  -b, --useauth=<value>                  Use the saved REST API token with this alias
+  -d, --delimiter=<value>                [default: \n] Delimiter for fields that have more than one value
+  -e, --email=<value>                    Select users whose login email addresses contain the given text
+  -h, --help                             Show CLI help.
+  -j, --json                             output full details as JSON
+  -k, --keys=<value>...                  Additional fields to display. Specify multiple times for multiple fields.
+  -n, --name=<value>                     Select users whose names contain the given text
+  -p, --pipe                             Print user ID's only to stdout, for use with pipes.
+  -x, --extended                         show extra columns
+  --columns=<value>                      only show provided columns (comma-separated)
+  --csv                                  output is csv format [alias: --output=csv]
+  --debug                                Print REST API call debug logs
+  --filter=<value>                       filter property by partial string matching, ex: name=foo
+  --limit=<value>                        Return no more than this many entries. This option turns off table filtering
+                                         options.
+  --no-header                            hide table header from output
+  --no-truncate                          do not truncate output to fit screen
+  --output=<option>                      output in a more machine friendly format
+                                         <options: csv|json|yaml>
+  --sort=<value>                         property to sort by (prepend '-' for descending)
+  --token=<value>                        Ignore the saved configuration and use this token
 
 DESCRIPTION
   List PagerDuty Users
