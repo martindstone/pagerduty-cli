@@ -9,8 +9,8 @@ import {
   AccessToken,
   AuthorizationCode,
   AuthorizationTokenConfig,
+  ModuleOptions,
 } from 'simple-oauth2'
-
 
 export default class AuthWeb extends BaseCommand<typeof AuthWeb> {
   static description = 'Authenticate with PagerDuty in the browser'
@@ -37,7 +37,7 @@ export default class AuthWeb extends BaseCommand<typeof AuthWeb> {
   private nextSocketID = 0
 
   async run() {
-    const config = {
+    const config: ModuleOptions = {
       client: {
         id: CLIENT_ID,
         secret: CLIENT_SECRET,
@@ -45,6 +45,10 @@ export default class AuthWeb extends BaseCommand<typeof AuthWeb> {
       auth: {
         tokenHost: 'https://app.pagerduty.com',
       },
+      options: {
+        bodyFormat: 'form',
+        authorizationMethod: 'body',
+      }
     }
     this.client = new AuthorizationCode(config)
 
