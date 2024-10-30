@@ -1,6 +1,8 @@
 pagerduty-cli
 =============
 
+# Note: I am not maintaining this project any more and it will be archived soon. Please reach out to support@pagerduty.com if you have any questions about PagerDuty CLI.
+
 PagerDuty Command Line Interface
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
